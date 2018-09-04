@@ -4,13 +4,14 @@
 
 class Game
 {
-private:
-	Window window;
 public:
 	Game();
 	~Game();
-
 	void run();
+private:
+	void render();
+	void update();
+	Window window;
 };
 
 #endif
