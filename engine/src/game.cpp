@@ -1,8 +1,6 @@
 #include "game.hpp"
 #include <iostream>
 
-
-
 Game::Game()
 	:window(glm::ivec2(1280, 720), "Untitled")
 {
