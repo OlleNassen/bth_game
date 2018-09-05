@@ -1,10 +1,13 @@
 #ifndef SHADER_HPP
 #define SHADER_HPP
-
 #include <string>
 #include <vector>
 #include <array>
 #include <glm/glm.hpp>
+
+//::.. authors ..:://
+// Olle
+// Edvard
 
 class shader
 {

@@ -1,6 +1,9 @@
 #ifndef ENTITY_COMPONENT_SYSTEM_HPP
 #define ENTITY_COMPONENT_SYSTEM_HPP
 
+//::.. authors ..:://
+// Edvard
+
 namespace ecs
 {
 using entity = int;

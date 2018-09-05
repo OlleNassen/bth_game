@@ -2,6 +2,10 @@
 #define GAME_HPP
 #include "window.hpp"
 
+//::.. authors ..:://
+// Edvard
+// Olle
+
 class Game
 {
 public:
