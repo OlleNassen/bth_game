@@ -3,10 +3,11 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <lua.hpp>
 //::.. authors ..:://
 // Olle
 // Edvard
-/*
+
 class LuaScript
 {
 public:
@@ -25,7 +26,7 @@ public:
 	}
 	// Generic get
 	template<typename T>
-	T get(const std::string& variable_name)
+	T _get(const std::string& variable_name)
 	{
 		return 0;
 	}
@@ -37,5 +38,5 @@ public:
 private:
 	lua_State* L;
 };
-*/
+
 #endif
