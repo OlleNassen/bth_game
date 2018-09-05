@@ -1,18 +1,23 @@
 #ifndef GAME_HPP
 #define GAME_HPP
-#include "placeholder.hpp"
 #include "window.hpp"
+
+//::.. authors ..:://
+// Edvard
+// Olle
 
 class Game
 {
-private:
-	Placeholder placeholder;
-	Window window;
 public:
 	Game();
 	~Game();
-
 	void run();
+private:
+	void render();
+	void update();
+	Window window;
 };
+
+
 
 #endif
