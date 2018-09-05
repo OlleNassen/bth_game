@@ -17,7 +17,7 @@ public:
 	void swap_buffers();
 	void poll_events();
 private:
-	GLFWwindow * glfw_window;
+	GLFWwindow* glfw_window;
 };
 
 #endif
