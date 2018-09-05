@@ -1,5 +1,5 @@
-#ifndef LUA_SCRIPT_H
-#define LUA_SCRIPT_H
+#ifndef LUA_SCRIPT_HPP
+#define LUA_SCRIPT_HPP
 #include <string>
 #include <vector>
 #include <iostream>
