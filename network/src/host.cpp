@@ -8,24 +8,6 @@ constexpr char nl = '\n';
 
 int main()
 {
-	if (enet_initialize() != 0)
-		cout << "Error while initializing ENet" << nl;
-
-	int i = 0;
-	cin >> i;
-
-	if (i == 0)
-	{
-		server s;
-		while (true) s.update();
-	}
-	else
-	{
-		client c;
-		while (true) c.update();
-	}
-
-	enet_deinitialize();
 	return 0;
 }
 
