@@ -10,7 +10,7 @@ Window::Window(const glm::ivec2& window_size, const std::string& title)
 		cout << "Failed to init glfw";
 	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	glfw_window = glfwCreateWindow(window_size.x, window_size.y,

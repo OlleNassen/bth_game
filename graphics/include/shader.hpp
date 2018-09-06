@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <gl/glew.h>
 #include <glm/glm.hpp>
 
 //::.. authors ..:://
