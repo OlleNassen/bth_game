@@ -6,15 +6,10 @@ using std::cin;
 using std::string;
 constexpr char nl = '\n';
 
-int main()
-{
-	return 0;
-}
-
 client::client()
 {
 	host = enet_host_create(nullptr, 1, 2, 0, 0);
-	enet_address_set_host(&address, "192.168.0.195");
+	enet_address_set_host(&address, "192.168.43.205");
 	address.port = 1234;
 	peer = enet_host_connect(host, &address, 2, 0);
 
@@ -66,9 +61,6 @@ void client::disconnect()
 
 }
 
-
-
-
 server::server()
 {
 	address.host = ENET_HOST_ANY;
@@ -103,4 +95,25 @@ void server::disconnect()
 
 }
 
+void test_net()
+{
+	if (enet_initialize() != 0)
+		std::cout << "Error while initializing ENet" << '\n';
+
+	int i = 0;
+	std::cin >> i;
+
+	if (i == 0)
+	{
+		server s;
+		while (true) s.update();
+	}
+	else
+	{
+		client c;
+		while (true) c.update();
+	}
+
+	enet_deinitialize();
+}
 

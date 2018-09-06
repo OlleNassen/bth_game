@@ -57,27 +57,7 @@ private:
 	ENetPeer* peer;
 };
 
-void test_net()
-{
-	if (enet_initialize() != 0)
-		std::cout << "Error while initializing ENet" << '\n';
-
-	int i = 0;
-	std::cin >> i;
-
-	if (i == 0)
-	{
-		server s;
-		while (true) s.update();
-	}
-	else
-	{
-		client c;
-		while (true) c.update();
-	}
-
-	enet_deinitialize();
-}
+void test_net();
 
 #endif
 
