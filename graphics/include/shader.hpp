@@ -10,15 +10,15 @@
 // Olle
 // Edvard
 
-class shader
+class Shader
 {
 public:
-	shader(const std::string& vertex_path, const std::string& fragment_path);
+	Shader(const std::string& vertex_path, const std::string& fragment_path);
 
-	shader(const std::string& vertex_path,
+	Shader(const std::string& vertex_path,
 		const std::string& geo_path, const std::string& fragment_path);
 
-	~shader();
+	~Shader();
 
 	void use() const;
 

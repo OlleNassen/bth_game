@@ -3,7 +3,7 @@
 
 int main()
 {
-	test_net();
+	//test_net();
 	
 	Game game;
 	game.run();

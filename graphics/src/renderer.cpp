@@ -2,6 +2,7 @@
 
 Renderer::Renderer()
 {
+	models.emplace_back(new Model);
 }
 
 Renderer::~Renderer()
@@ -11,4 +12,5 @@ Renderer::~Renderer()
 void Renderer::render()const
 {
 	//Render your models here
+	models.back()->draw();
 }

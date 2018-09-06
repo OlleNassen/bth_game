@@ -1,5 +1,6 @@
 #ifndef GAME_HPP
 #define GAME_HPP
+#include <renderer.hpp>
 #include "window.hpp"
 
 //::.. authors ..:://
@@ -16,6 +17,7 @@ private:
 	void render();
 	void update();
 	Window window;
+	Renderer* renderer;
 };
 
 

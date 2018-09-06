@@ -1,4 +1,4 @@
-#include "shader.hpp"
+#include "Shader.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-shader::shader(const std::string& vertex_path, const std::string& fragment_path)
+Shader::Shader(const std::string& vertex_path, const std::string& fragment_path)
 {
 	auto vertex_code = load(vertex_path);
 	auto fragment_code = load(fragment_path);
@@ -35,7 +35,7 @@ shader::shader(const std::string& vertex_path, const std::string& fragment_path)
 	glDeleteShader(fragment_shader);
 }
 
-shader::shader(const std::string& vertex_path,
+Shader::Shader(const std::string& vertex_path,
 	const std::string& geo_path, const std::string& fragment_path)
 {
 	auto vertex_code = load(vertex_path);
@@ -68,60 +68,60 @@ shader::shader(const std::string& vertex_path,
 	glDeleteShader(fragment_shader);
 }
 
-shader::~shader()
+Shader::~Shader()
 {
 	glDeleteProgram(id);
 }
 
-void shader::use() const
+void Shader::use() const
 {
 	glUseProgram(id);
 }
 
-void shader::uniform(const std::string& name, int value) const
+void Shader::uniform(const std::string& name, int value) const
 {
 	glUniform1iv(glGetUniformLocation(id, name.c_str()),
 		1, &value);
 }
 
-void shader::uniform(const std::string& name, float value) const
+void Shader::uniform(const std::string& name, float value) const
 {
 	glUniform1fv(glGetUniformLocation(id, name.c_str()),
 		1, &value);
 }
 
-void shader::uniform(const std::string& name, const glm::vec2& value) const
+void Shader::uniform(const std::string& name, const glm::vec2& value) const
 {
 	glUniform2fv(glGetUniformLocation(id, name.c_str()),
 		1, glm::value_ptr(value));
 }
 
-void shader::uniform(const std::string& name, const glm::vec3& value) const
+void Shader::uniform(const std::string& name, const glm::vec3& value) const
 {
 	glUniform3fv(glGetUniformLocation(id, name.c_str()),
 		1, glm::value_ptr(value));
 }
 
-void shader::uniform(const std::string& name, const glm::vec4& value) const
+void Shader::uniform(const std::string& name, const glm::vec4& value) const
 {
 	glUniform4fv(glGetUniformLocation(id, name.c_str()),
 		1, glm::value_ptr(value));
 }
 
-void shader::uniform(const std::string& name,
+void Shader::uniform(const std::string& name,
 	const glm::ivec4& value) const
 {
 	glUniform4iv(glGetUniformLocation(id, name.c_str()),
 		1, glm::value_ptr(value));
 }
 
-void shader::uniform(const std::string& name, const glm::mat4& value) const
+void Shader::uniform(const std::string& name, const glm::mat4& value) const
 {
 	glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()),
 		1, GL_FALSE, glm::value_ptr(value));
 }
 
-void shader::uniform(const std::string& name,
+void Shader::uniform(const std::string& name,
 	const std::vector<int>& value) const
 {
 	if (value.size() > 0)
@@ -131,7 +131,7 @@ void shader::uniform(const std::string& name,
 	}
 }
 
-void shader::uniform(const std::string& name,
+void Shader::uniform(const std::string& name,
 	const std::vector<float>& value) const
 {
 	if (value.size() > 0)
@@ -141,7 +141,7 @@ void shader::uniform(const std::string& name,
 	}
 }
 
-void shader::uniform(const std::string& name,
+void Shader::uniform(const std::string& name,
 	const std::vector<glm::vec2>& value) const
 {
 	if (value.size() > 0)
@@ -151,7 +151,7 @@ void shader::uniform(const std::string& name,
 	}
 }
 
-void shader::uniform(const std::string& name,
+void Shader::uniform(const std::string& name,
 	const std::vector<glm::vec3>& value) const
 {
 	if (value.size() > 0)
@@ -161,7 +161,7 @@ void shader::uniform(const std::string& name,
 	}
 }
 
-void shader::uniform(const std::string& name,
+void Shader::uniform(const std::string& name,
 	const std::vector<glm::vec4>& value) const
 {
 	if (value.size() > 0)
@@ -171,7 +171,7 @@ void shader::uniform(const std::string& name,
 	}
 }
 
-void shader::uniform(const std::string& name,
+void Shader::uniform(const std::string& name,
 	const std::vector<glm::mat4>& value) const
 {
 	if (value.size() > 0)
@@ -181,7 +181,7 @@ void shader::uniform(const std::string& name,
 	}
 }
 
-std::string shader::load(const std::string& path) const
+std::string Shader::load(const std::string& path) const
 {
 	std::string code;
 	std::ifstream shader_file;
@@ -195,7 +195,7 @@ std::string shader::load(const std::string& path) const
 	return code;
 }
 
-unsigned int shader::create(unsigned int shader_type,
+unsigned int Shader::create(unsigned int shader_type,
 	const char* shader_code) const
 {
 	auto shader_id = 0;
