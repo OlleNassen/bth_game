@@ -3,11 +3,13 @@
 Model::Model()
 {
 	shader = new Shader("../resources/shaders/template.vs", "../resources/shaders/template.fs");
-	mesh = new Mesh{};
+	mesh = new Mesh;
 }
 
 Model::~Model()
 {
+	delete shader;
+	delete mesh;
 }
 
 void Model::draw()

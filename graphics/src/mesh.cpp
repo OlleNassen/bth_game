@@ -1,6 +1,5 @@
 #include "mesh.hpp"
 #include <GL/glew.h>
-#include <iostream>
 
 Mesh::Mesh()
 {

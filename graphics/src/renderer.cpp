@@ -7,6 +7,11 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
+	while (models.size() > 0)
+	{
+		delete models.back();
+		models.pop_back();
+	}
 }
 
 void Renderer::render()const
