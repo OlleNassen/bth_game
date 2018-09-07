@@ -1,6 +1,7 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
 #include <vector>
+#include <tuple>
 #include "model.hpp"
 //::.. authors ..:://
 // Olle
@@ -15,6 +16,7 @@ public:
 	void render()const;
 private:
 	std::vector<Model*>models;
+
 };
 
 #endif

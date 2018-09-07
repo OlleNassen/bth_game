@@ -8,7 +8,7 @@ public:
 	Mesh();
 	~Mesh();
 
-	void render(const Shader& shader);
+	void render();
 private:
 	unsigned int vao_id;
 	unsigned int vbo_id;

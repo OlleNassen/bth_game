@@ -1,5 +1,7 @@
 #ifndef GAME_HPP
 #define GAME_HPP
+#include <array>
+#include <vector>
 #include <renderer.hpp>
 #include "window.hpp"
 
@@ -18,6 +20,8 @@ private:
 	void update();
 	Window window;
 	Renderer* renderer;
+
+	std::vector<Shader> shaders;
 };
 
 

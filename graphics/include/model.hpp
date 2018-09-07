@@ -13,8 +13,7 @@ public:
 
 	void render();
 private:
-	Mesh* mesh;
-	Shader* shader;
+	Mesh* mesh; //Change where this is created and implement flyweight pattern
 };
 
 #endif
