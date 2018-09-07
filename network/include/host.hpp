@@ -21,11 +21,11 @@ void host_service(std::chrono::milliseconds time, ENetHost* h, T1 connect, T2 re
 	}
 }
 
-class client
+class Client
 {
 public:
-	client();
-	~client();
+	Client();
+	~Client();
 
 	void update();
 
@@ -39,11 +39,11 @@ private:
 	ENetPeer* peer;
 };
 
-class server
+class Server
 {
 public:
-	server();
-	~server();
+	Server();
+	~Server();
 
 	void update();
 

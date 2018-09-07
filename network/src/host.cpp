@@ -6,7 +6,7 @@ using std::cin;
 using std::string;
 constexpr char nl = '\n';
 
-client::client()
+Client::Client()
 {
 	host = enet_host_create(nullptr, 1, 2, 0, 0);
 	enet_address_set_host(&address, "192.168.43.205");
@@ -28,12 +28,12 @@ client::client()
 	}
 }
 
-client::~client()
+Client::~Client()
 {
 	enet_host_destroy(host);
 }
 
-void client::update()
+void Client::update()
 {
 	/* Create a reliable packet of size 7 containing "packet\0" */
 	std::string s = "packet";
@@ -46,22 +46,22 @@ void client::update()
 	host_service(1000ms, host, [this]{ connect(); }, [this]{ recieve(); }, [this]{ disconnect(); });
 }
 
-void client::connect()
+void Client::connect()
 {
 
 }
 
-void client::recieve()
+void Client::recieve()
 {
 
 }
 
-void client::disconnect()
+void Client::disconnect()
 {
 
 }
 
-server::server()
+Server::Server()
 {
 	address.host = ENET_HOST_ANY;
 	address.port = 1234;
@@ -69,28 +69,31 @@ server::server()
 	host = enet_host_create(&address, 32, 2, 0, 0);
 }
 
-server::~server()
+Server::~Server()
 {
 	enet_host_destroy(host);
 }
 
-void server::update()
+void Server::update()
 {
 	using namespace std::chrono_literals;
-	host_service(1000ms, host, [this] { connect(); }, [this] { recieve(); }, [this] { disconnect(); });
+	host_service(1000ms, host, 
+		[this] { connect(); }, 
+		[this] { recieve(); },
+		[this] { disconnect(); });
 }
 
-void server::connect()
+void Server::connect()
 {
 
 }
 
-void server::recieve()
+void Server::recieve()
 {
 	cout << "Recieving" << nl;
 }
 
-void server::disconnect()
+void Server::disconnect()
 {
 
 }
@@ -105,12 +108,12 @@ void test_net()
 
 	if (i == 0)
 	{
-		server s;
+		Server s;
 		while (true) s.update();
 	}
 	else
 	{
-		client c;
+		Client c;
 		while (true) c.update();
 	}
 
