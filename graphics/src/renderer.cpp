@@ -17,5 +17,5 @@ Renderer::~Renderer()
 void Renderer::render()const
 {
 	//Render your models here
-	models.back()->draw();
+	models.back()->render();
 }

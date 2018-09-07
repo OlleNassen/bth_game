@@ -11,7 +11,7 @@ public:
 	Model();
 	~Model();
 
-	void draw();
+	void render();
 private:
 	Mesh* mesh;
 	Shader* shader;

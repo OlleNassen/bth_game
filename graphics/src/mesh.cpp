@@ -3,7 +3,7 @@
 
 Mesh::Mesh()
 {
-	//REMOVE THIS pIECe OF SHIT CODE PLEASE, THANKSSS
+	//REMOVE THIS bad CODE PLEASE, THANKSSS
 	constexpr float vertices[9] =
 	{
 		-0.5, -0.5, 0.0,
@@ -24,7 +24,7 @@ Mesh::~Mesh()
 
 }
 
-void Mesh::draw(const Shader& shader)
+void Mesh::render(const Shader& shader)
 {
 	shader.use();
 	glBindVertexArray(vao_id);
