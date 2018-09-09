@@ -20,10 +20,8 @@ public:
 	{
 		// will be implemented later in tutorial
 	}
-	bool get_to_stack(const std::string& variable_name)
-	{
-		// will be explained later too
-	}
+	bool get_to_stack(const std::string& variable_name);
+
 	// Generic get
 	template<typename T>
 	T _get(const std::string& variable_name)
@@ -64,10 +62,10 @@ T get(const std::string& variableName)
 	return result;
 }
 */
-template<typename T>
-bool lua_gettostack(const std::string& variableName)
+
+bool LuaScript::get_to_stack(const std::string& variableName)
 {
-	level = 0;
+	auto level = 0;
 	std::string var = "";
 	for (unsigned int i = 0; i < variableName.size(); i++)
 	{
@@ -81,7 +79,7 @@ bool lua_gettostack(const std::string& variableName)
 			}
 
 			if (lua_isnil(L, -1)) {
-				printError(variableName, var + " is not defined");
+				print_error(variableName, var + " is not defined");
 				return false;
 			}
 			else {

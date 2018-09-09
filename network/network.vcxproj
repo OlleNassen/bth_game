@@ -127,9 +127,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\host.hpp" />
+    <ClInclude Include="include\packet.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\host.cpp" />
+    <ClCompile Include="src\packet.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
