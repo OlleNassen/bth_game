@@ -6,23 +6,6 @@ using std::cin;
 using std::string;
 constexpr char nl = '\n';
 
-void host_service(std::chrono::milliseconds time, ENetHost* h,
-	std::function<void(const ENetEvent&)> recieve,
-	std::function<void(const ENetEvent&)> connect,
-	std::function<void(const ENetEvent&)> disconnect)
-{
-	ENetEvent event;
-	while (enet_host_service(h, &event, static_cast<enet_uint32>(time.count())) > 0)
-	{
-		switch (event.type)
-		{
-		case ENET_EVENT_TYPE_RECEIVE: recieve(event); break;
-		case ENET_EVENT_TYPE_CONNECT: connect(event); break;
-		case ENET_EVENT_TYPE_DISCONNECT: disconnect(event); break;
-		}
-	}
-}
-
 client::client(const std::string& ip_address)
 {
 	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);

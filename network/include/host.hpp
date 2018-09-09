@@ -11,6 +11,24 @@
 inline void net_init() { enet_initialize(); }
 inline void net_uninit() { enet_deinitialize(); }
 
+template <typename F1, typename F2, typename F3>
+void host_service(std::chrono::milliseconds time, ENetHost* h,
+	F1 recieve,
+	F2 connect,
+	F3 disconnect)
+{
+	ENetEvent event;
+	while (enet_host_service(h, &event, static_cast<enet_uint32>(time.count())) > 0)
+	{
+		switch (event.type)
+		{
+		case ENET_EVENT_TYPE_RECEIVE: recieve(event); break;
+		case ENET_EVENT_TYPE_CONNECT: connect(event); break;
+		case ENET_EVENT_TYPE_DISCONNECT: disconnect(event); break;
+		}
+	}
+}
+
 class host
 {
 public:
