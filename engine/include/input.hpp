@@ -2,6 +2,9 @@
 #define INPUT_HPP
 
 #include <functional>
+#include <map>
+
+#include <GLFW/glfw3.h>
 
 enum class button
 {
@@ -12,24 +15,25 @@ enum class button
 	count
 };
 
-
-struct callback
+enum class button_state
 {
-	std::function<void()> pressed = [] {};
-	std::function<void()> released = [] {};
+	pressed,
+	released
 };
-
 
 class input
 {
 public:
 	input();
 
-	void bind(button b, callback c);
-	void unbind(button b);
+	void update(GLFWwindow* glfw_window);
+
+	button_state state(button b);
+	void assign_key(button name, int keybind);
 
 private:
-	callback callbacks[static_cast<int>(button::count)];
+	button_state buttons[static_cast<int>(button::count)];
+	std::map<int, button> keybinds;
 };
 
 #endif

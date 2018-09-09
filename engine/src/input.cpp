@@ -5,12 +5,33 @@ input::input()
 
 }
 
-void input::bind(button b, callback c)
+void input::update(GLFWwindow* glfw_window)
 {
-	callbacks[static_cast<int>(b)] = c;
+	for (auto&[key, value] : keybinds)
+	{
+		auto key_state = glfwGetKey(glfw_window, key);
+		auto& button = buttons[static_cast<int>(value)];
+		
+		if (key_state == GLFW_PRESS)
+		{
+			button = button_state::pressed;
+		}
+		else
+		{
+			button = button_state::released;
+		}
+			
+	}
 }
 
-void input::unbind(button b)
+button_state input::state(button b)
 {
-	callbacks[static_cast<int>(b)] = callback{};
+	return buttons[static_cast<int>(b)];
 }
+
+
+void input::assign_key(button name, int keybind)
+{
+	keybinds.insert(std::make_pair(keybind, name));
+}
+

@@ -6,6 +6,12 @@ Game::Game()
 {
 	renderer = new Renderer;
 	shaders.emplace_back("../resources/shaders/template.vs", "../resources/shaders/template.fs");
+
+	player_input.assign_key(button::up, GLFW_KEY_W);
+	player_input.assign_key(button::left, GLFW_KEY_A);
+	player_input.assign_key(button::down, GLFW_KEY_S);
+	player_input.assign_key(button::right, GLFW_KEY_D);
+	window.bind(player_input);
 }
 
 Game::~Game()
@@ -39,4 +45,24 @@ void Game::render()
 
 void Game::update()
 {
+	using std::cout;
+	constexpr char nl = '\n';
+	
+	if (player_input.state(button::up) == button_state::pressed)
+	{
+		cout << "up" << nl;
+	}
+	if (player_input.state(button::left) == button_state::pressed)
+	{
+		cout << "left" << nl;
+	}
+	if (player_input.state(button::down) == button_state::pressed)
+	{
+		cout << "down" << nl;
+	}
+	if (player_input.state(button::right) == button_state::pressed)
+	{
+		cout << "right" << nl;
+	}
+
 }

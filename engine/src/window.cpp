@@ -57,4 +57,11 @@ void Window::swap_buffers()
 void Window::poll_events()
 {
 	glfwPollEvents();
+	
+	if(current_input) current_input->update(glfw_window);
+}
+
+void Window::bind(input& i)
+{
+	current_input = &i;
 }

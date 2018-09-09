@@ -4,6 +4,7 @@
 #include <vector>
 #include <renderer.hpp>
 #include "window.hpp"
+#include "input.hpp"
 
 //::.. authors ..:://
 // Edvard
@@ -19,6 +20,7 @@ private:
 	void render();
 	void update();
 	Window window;
+	input player_input;
 	Renderer* renderer;
 
 	std::vector<Shader> shaders;
