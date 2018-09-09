@@ -12,6 +12,7 @@ enum class button
 	left,
 	down,
 	right,
+	quit,
 	count
 };
 

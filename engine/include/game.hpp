@@ -2,6 +2,7 @@
 #define GAME_HPP
 #include <array>
 #include <vector>
+#include <chrono>
 #include <renderer.hpp>
 #include "window.hpp"
 #include "input.hpp"
@@ -18,7 +19,9 @@ public:
 	void run();
 private:
 	void render();
-	void update();
+	void update(std::chrono::milliseconds delta);
+	
+	std::chrono::milliseconds timestep{16};
 	Window window;
 	input player_input;
 	Renderer* renderer;
