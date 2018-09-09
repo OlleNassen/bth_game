@@ -6,10 +6,27 @@ using std::cin;
 using std::string;
 constexpr char nl = '\n';
 
-Client::Client()
+void host_service(std::chrono::milliseconds time, ENetHost* h,
+	std::function<void(const ENetEvent&)> recieve,
+	std::function<void(const ENetEvent&)> connect,
+	std::function<void(const ENetEvent&)> disconnect)
+{
+	ENetEvent event;
+	while (enet_host_service(h, &event, static_cast<enet_uint32>(time.count())) > 0)
+	{
+		switch (event.type)
+		{
+		case ENET_EVENT_TYPE_RECEIVE: recieve(event); break;
+		case ENET_EVENT_TYPE_CONNECT: connect(event); break;
+		case ENET_EVENT_TYPE_DISCONNECT: disconnect(event); break;
+		}
+	}
+}
+
+client::client()
 {
 	host = enet_host_create(nullptr, 1, 2, 0, 0);
-	enet_address_set_host(&address, "192.168.43.205");
+	enet_address_set_host(&address, "192.168.1.114");
 	address.port = 1234;
 	peer = enet_host_connect(host, &address, 2, 0);
 
@@ -18,50 +35,53 @@ Client::Client()
 		ENetEvent event;
 		if (enet_host_service(host, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
 		{
-			cout << "Connection to 192.168.0.195:1234 succeeded." << nl;
+			cout << "Connection to 192.168.1.114:1234 succeeded." << nl;
 		}
 		else
 		{
 			enet_peer_reset(peer);
-			cout << "Connection to 192.168.0.195:1234 failed." << nl;
+			cout << "Connection to 192.168.1.114:1234 failed." << nl;
 		}
 	}
 }
 
-Client::~Client()
+client::~client()
 {
 	enet_host_destroy(host);
 }
 
-void Client::update()
+void client::update(const packet& p)
 {
-	/* Create a reliable packet of size 7 containing "packet\0" */
-	std::string s = "packet";
-	ENetPacket * packet = enet_packet_create(s.c_str(), s.length() + 1, ENET_PACKET_FLAG_RELIABLE);
+	std::cin >> msg;
+	ENetPacket* enet_packet = enet_packet_create(msg.c_str(), msg.length() + 1, //p.data(), p.size() + 1, 
+		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 
 	/* Send the packet to the peer over channel id 0. */
-	enet_peer_send(peer, 0, packet);
-	
+	enet_peer_send(peer, 0, enet_packet);
+
 	using namespace std::chrono_literals;
-	host_service(1000ms, host, [this]{ connect(); }, [this]{ recieve(); }, [this]{ disconnect(); });
+	host_service(0ms, host,
+		[this](const ENetEvent& event) { recieve(event); },
+		[this](const ENetEvent& event) { connect(event); },
+		[this](const ENetEvent& event) { disconnect(event); });
 }
 
-void Client::connect()
+void client::connect(const ENetEvent& event)
 {
 
 }
 
-void Client::recieve()
+void client::recieve(const ENetEvent& event)
+{
+	cout << msg << nl;
+}
+
+void client::disconnect(const ENetEvent& event)
 {
 
 }
 
-void Client::disconnect()
-{
-
-}
-
-Server::Server()
+server::server()
 {
 	address.host = ENET_HOST_ANY;
 	address.port = 1234;
@@ -69,31 +89,42 @@ Server::Server()
 	host = enet_host_create(&address, 32, 2, 0, 0);
 }
 
-Server::~Server()
+server::~server()
 {
 	enet_host_destroy(host);
 }
 
-void Server::update()
+void server::update(const packet& p)
 {
+	//std::cin >> msg;
+
+	ENetPacket* enet_packet = enet_packet_create(msg.c_str(), msg.length() + 1, //p.data(), p.size() + 1, 
+		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
+
+	/* Send the packet to the peer over channel id 0. */
+	for (auto* peer : peers)
+	{
+		//if (peer) enet_peer_send(peer, 0, enet_packet);	
+	}
+
 	using namespace std::chrono_literals;
-	host_service(1000ms, host, 
-		[this] { connect(); }, 
-		[this] { recieve(); },
-		[this] { disconnect(); });
+	host_service(0ms, host,
+		[this, &p](const ENetEvent& event) { recieve(event); },
+		[this, &p](const ENetEvent& event) { connect(event); },
+		[this, &p](const ENetEvent& event) { disconnect(event); });
 }
 
-void Server::connect()
+void server::connect(const ENetEvent& event)
 {
-
+	peers[num_peers++] = event.peer;
 }
 
-void Server::recieve()
+void server::recieve(const ENetEvent& event)
 {
-	cout << "Recieving" << nl;
+	cout << event.packet->data << nl;
 }
 
-void Server::disconnect()
+void server::disconnect(const ENetEvent& event)
 {
 
 }
@@ -106,15 +137,17 @@ void test_net()
 	int i = 0;
 	std::cin >> i;
 
+	packet p;
+
 	if (i == 0)
 	{
-		Server s;
-		while (true) s.update();
+		server s;
+		while (true) s.update(p);
 	}
 	else
 	{
-		Client c;
-		while (true) c.update();
+		client c;
+		while (true) c.update(p);
 	}
 
 	enet_deinitialize();

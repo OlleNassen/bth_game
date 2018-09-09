@@ -1,60 +1,52 @@
 #ifndef HOST_HPP
 #define HOST_HPP
 
+#include <functional>
 #include <iostream>
 #include <chrono>
 #include <string>
 #include <enet/enet.h>
+#include "packet.hpp"
 
-template <typename T1, typename T2, typename T3>
-void host_service(std::chrono::milliseconds time, ENetHost* h, T1 connect, T2 recieve, T3 disconnect)
-{
-	ENetEvent event;
-	while (enet_host_service(h, &event, static_cast<enet_uint32>(time.count())) > 0)
-	{
-		switch (event.type)
-		{
-		case ENET_EVENT_TYPE_CONNECT: connect(); break;
-		case ENET_EVENT_TYPE_RECEIVE: recieve(); break;
-		case ENET_EVENT_TYPE_DISCONNECT: disconnect(); break;
-		}
-	}
-}
-
-class Client
+class client
 {
 public:
-	Client();
-	~Client();
+	client();
+	~client();
 
-	void update();
+	void update(const packet& p);
+
+	std::string msg = "receive";
 
 private:
-	void connect();
-	void recieve();
-	void disconnect();
+	void connect(const ENetEvent& event);
+	void recieve(const ENetEvent& event);
+	void disconnect(const ENetEvent& event);
 
 	ENetAddress address;
 	ENetHost* host;
 	ENetPeer* peer;
 };
 
-class Server
+class server
 {
 public:
-	Server();
-	~Server();
+	server();
+	~server();
 
-	void update();
+	void update(const packet& p);
+
+	std::string msg = "receive";
 
 private:
-	void connect();
-	void recieve();
-	void disconnect();
+	void connect(const ENetEvent& event);
+	void recieve(const ENetEvent& event);
+	void disconnect(const ENetEvent& event);
 
 	ENetAddress address;
 	ENetHost* host;
-	ENetPeer* peer;
+	ENetPeer* peers[10];
+	int num_peers = 0;
 };
 
 void test_net();
