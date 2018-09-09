@@ -45,8 +45,6 @@ public:
 
 	void update(const packet& p) override;
 
-	std::string msg = "receive";
-
 private:
 	void connect(const ENetEvent& event);
 	void recieve(const ENetEvent& event);
@@ -65,8 +63,6 @@ public:
 
 	void update(const packet& p) override;
 
-	std::string msg = "receive";
-
 private:
 	void connect(const ENetEvent& event);
 	void recieve(const ENetEvent& event);
@@ -74,7 +70,7 @@ private:
 
 	ENetAddress address;
 	ENetHost* enet_host;
-	ENetPeer* peers[10];
+	ENetPeer* peers[10] = { nullptr };
 	int num_peers = 0;
 };
 

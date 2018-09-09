@@ -1,14 +1,18 @@
 #ifndef PACKET_HPP
 #define PACKET_HPP
 
+#include <string>
+
 class packet
 {
 public:
 	packet();
 	~packet();
 
-	char* data() const;
+	const char* data() const;
 	int size() const;
+
+	std::string s;
 
 private:
 

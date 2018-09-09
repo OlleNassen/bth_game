@@ -10,12 +10,12 @@ packet::~packet()
 
 }
 
-char* packet::data() const
+const char* packet::data() const
 {
-	return nullptr;
+	return s.c_str();
 }
 
 int packet::size() const
 {
-	return 0;
+	return s.length();
 }

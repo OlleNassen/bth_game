@@ -78,24 +78,26 @@ void Game::update(std::chrono::milliseconds delta)
 {
 	using std::cout;
 	constexpr char nl = '\n';
+
+	packet p;
 	
 	if (player_input.state(button::up) == button_state::pressed)
 	{
-		cout << "up" << nl;
+		p.s = "up";
 	}
 	if (player_input.state(button::left) == button_state::pressed)
 	{
-		cout << "left" << nl;
+		p.s = "left";
 	}
 	if (player_input.state(button::down) == button_state::pressed)
 	{
-		cout << "down" << nl;
+		p.s = "down";
 	}
 	if (player_input.state(button::right) == button_state::pressed)
 	{
-		cout << "right" << nl;
+		p.s = "right";
 	}
 
-	packet p;
+	
 	host->update(p);
 }

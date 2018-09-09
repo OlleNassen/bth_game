@@ -35,8 +35,7 @@ client::~client()
 
 void client::update(const packet& p)
 {
-	std::cin >> msg;
-	ENetPacket* enet_packet = enet_packet_create(msg.c_str(), msg.length() + 1, //p.data(), p.size() + 1, 
+	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 
 	/* Send the packet to the peer over channel id 0. */
@@ -56,7 +55,7 @@ void client::connect(const ENetEvent& event)
 
 void client::recieve(const ENetEvent& event)
 {
-	cout << msg << nl;
+	cout << event.packet->data << nl;
 }
 
 void client::disconnect(const ENetEvent& event)
@@ -79,15 +78,13 @@ server::~server()
 
 void server::update(const packet& p)
 {
-	//std::cin >> msg;
-
-	ENetPacket* enet_packet = enet_packet_create(msg.c_str(), msg.length() + 1, //p.data(), p.size() + 1, 
+	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 
 	/* Send the packet to the peer over channel id 0. */
 	for (auto* peer : peers)
 	{
-		//if (peer) enet_peer_send(peer, 0, enet_packet);	
+		if (peer) enet_peer_send(peer, 0, enet_packet);	
 	}
 
 	using namespace std::chrono_literals;
