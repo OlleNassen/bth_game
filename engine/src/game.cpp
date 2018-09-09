@@ -15,10 +15,25 @@ Game::Game()
 	player_input.assign_key(button::right, GLFW_KEY_D);
 	player_input.assign_key(button::quit, GLFW_KEY_ESCAPE);
 	window.bind(player_input);
+
+	net_init();
+
+	std::string s;
+	std::cin >> s;
+
+	if (s == "server")
+	{
+		host = std::make_unique<server>();
+	}
+	else
+	{
+		host = std::make_unique<client>(s);
+	}
 }
 
 Game::~Game()
 {
+	net_uninit();
 }
 
 void Game::run()
@@ -81,4 +96,6 @@ void Game::update(std::chrono::milliseconds delta)
 		cout << "right" << nl;
 	}
 
+	packet p;
+	host->update(p);
 }

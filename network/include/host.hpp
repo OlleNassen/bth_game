@@ -8,13 +8,24 @@
 #include <enet/enet.h>
 #include "packet.hpp"
 
-class client
+inline void net_init() { enet_initialize(); }
+inline void net_uninit() { enet_deinitialize(); }
+
+class host
 {
 public:
-	client();
+	virtual ~host() = default;
+	virtual void update(const packet& p) = 0;
+};
+
+
+class client : public host
+{
+public:
+	client(const std::string& ip_address);
 	~client();
 
-	void update(const packet& p);
+	void update(const packet& p) override;
 
 	std::string msg = "receive";
 
@@ -24,17 +35,17 @@ private:
 	void disconnect(const ENetEvent& event);
 
 	ENetAddress address;
-	ENetHost* host;
+	ENetHost* enet_host;
 	ENetPeer* peer;
 };
 
-class server
+class server : public host
 {
 public:
 	server();
 	~server();
 
-	void update(const packet& p);
+	void update(const packet& p) override;
 
 	std::string msg = "receive";
 
@@ -44,12 +55,10 @@ private:
 	void disconnect(const ENetEvent& event);
 
 	ENetAddress address;
-	ENetHost* host;
+	ENetHost* enet_host;
 	ENetPeer* peers[10];
 	int num_peers = 0;
 };
-
-void test_net();
 
 #endif
 
