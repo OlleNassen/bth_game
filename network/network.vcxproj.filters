@@ -21,12 +21,18 @@
     <ClInclude Include="include\packet.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\serialize.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\host.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\packet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\serialize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
