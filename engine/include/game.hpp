@@ -31,7 +31,7 @@ private:
 	input player_input;
 	Renderer* renderer;
 
-	std::vector<Shader> shaders;
+	
 };
 
 

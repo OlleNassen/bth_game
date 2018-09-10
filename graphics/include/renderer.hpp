@@ -16,7 +16,7 @@ public:
 	void render()const;
 private:
 	std::vector<Model*>models;
-
+	std::vector<Shader> shaders;
 };
 
 #endif
