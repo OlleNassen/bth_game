@@ -18,6 +18,8 @@ Game::Game()
 	net_init();
 
 	std::string s;
+	//Edvards networking code:
+	/*
 	std::cin >> s;
 
 	if (s == "server")
@@ -28,6 +30,7 @@ Game::Game()
 	{
 		host = std::make_unique<client>(s);
 	}
+	*/
 }
 
 Game::~Game()
