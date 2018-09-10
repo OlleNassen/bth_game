@@ -1,16 +1,11 @@
 #include "input.hpp"
 
-input::input()
-{
-
-}
-
-void input::update(GLFWwindow* glfw_window)
+void input_events::update(GLFWwindow* glfw_window)
 {
 	for (auto&[key, value] : keybinds)
 	{
 		auto key_state = glfwGetKey(glfw_window, key);
-		auto& button = buttons[static_cast<int>(value)];
+		auto& button = inputs[value];
 		
 		if (key_state == GLFW_PRESS)
 		{
@@ -24,13 +19,13 @@ void input::update(GLFWwindow* glfw_window)
 	}
 }
 
-button_state input::state(button b)
+input& input_events::state()
 {
-	return buttons[static_cast<int>(b)];
+	return inputs;
 }
 
 
-void input::assign_key(button name, int keybind)
+void input_events::assign_key(button name, int keybind)
 {
 	keybinds.insert(std::make_pair(keybind, name));
 }

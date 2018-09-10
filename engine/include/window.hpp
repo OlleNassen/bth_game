@@ -23,11 +23,12 @@ public:
 	void swap_buffers();
 	void poll_events();
 
-	void bind(input& i);
+	input& input() { return current_input.state();  }
+	void assign_key(button name, int keybind) { current_input.assign_key(name, keybind); }
 
 private:
 	GLFWwindow* glfw_window;
-	input* current_input = nullptr;
+	input_events current_input;
 };
 
 #endif

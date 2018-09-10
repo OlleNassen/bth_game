@@ -8,12 +8,11 @@ Game::Game()
 {
 	renderer = new Renderer;
 
-	player_input.assign_key(button::up, GLFW_KEY_W);
-	player_input.assign_key(button::left, GLFW_KEY_A);
-	player_input.assign_key(button::down, GLFW_KEY_S);
-	player_input.assign_key(button::right, GLFW_KEY_D);
-	player_input.assign_key(button::quit, GLFW_KEY_ESCAPE);
-	window.bind(player_input);
+	window.assign_key(button::up, GLFW_KEY_W);
+	window.assign_key(button::left, GLFW_KEY_A);
+	window.assign_key(button::down, GLFW_KEY_S);
+	window.assign_key(button::right, GLFW_KEY_D);
+	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 	net_init();
 
@@ -45,7 +44,7 @@ void Game::run()
 	auto delta_time = 0ns;
 	
 	while (window.is_open() && 
-		player_input.state(button::quit) != button_state::pressed)
+		player_input[button::quit] != button_state::pressed)
 	{
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();
@@ -74,19 +73,19 @@ void Game::update(std::chrono::milliseconds delta)
 
 	packet p;
 	
-	if (player_input.state(button::up) == button_state::pressed)
+	if (player_input[button::up] == button_state::pressed)
 	{
 		p.s = "up";
 	}
-	if (player_input.state(button::left) == button_state::pressed)
+	if (player_input[button::left] == button_state::pressed)
 	{
 		p.s = "left";
 	}
-	if (player_input.state(button::down) == button_state::pressed)
+	if (player_input[button::down] == button_state::pressed)
 	{
 		p.s = "down";
 	}
-	if (player_input.state(button::right) == button_state::pressed)
+	if (player_input[button::right] == button_state::pressed)
 	{
 		p.s = "right";
 	}
