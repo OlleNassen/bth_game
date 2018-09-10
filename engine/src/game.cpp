@@ -34,7 +34,7 @@ Game::Game()
 
 Game::~Game()
 {
-	net_uninit();
+	net_deinit();
 }
 
 void Game::run()
@@ -90,6 +90,6 @@ void Game::update(std::chrono::milliseconds delta)
 		p.s = "right";
 	}
 
-	
+	renderer->update(delta, player_input);
 	//host->update(p);
 }

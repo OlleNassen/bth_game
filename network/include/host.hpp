@@ -9,7 +9,7 @@
 #include "packet.hpp"
 
 inline void net_init() { enet_initialize(); }
-inline void net_uninit() { enet_deinitialize(); }
+inline void net_deinit() { enet_deinitialize(); }
 
 template <typename F1, typename F2, typename F3>
 void host_service(std::chrono::milliseconds time, ENetHost* h,
