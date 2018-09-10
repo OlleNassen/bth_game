@@ -19,8 +19,8 @@ Game::Game()
 
 	std::string s;
 	//Edvards networking code:
-	/*
-	std::cin >> s;
+	
+	/*std::cin >> s;
 
 	if (s == "server")
 	{
@@ -29,8 +29,8 @@ Game::Game()
 	else
 	{
 		host = std::make_unique<client>(s);
-	}
-	*/
+	}*/
+	
 }
 
 Game::~Game()
@@ -92,5 +92,5 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 
 	
-	host->update(p);
+	//host->update(p);
 }
