@@ -21,6 +21,36 @@ Camera::~Camera()
 {
 }
 
+void Camera::update(std::chrono::milliseconds delta, const input & i)
+{
+	using namespace glm;
+	
+	float speed{ 10.f };
+	vec3 offset{ 0.0f, 0.0f, 0.0f };
+	float dt = delta.count() / 1000.0f;
+	
+	if (i.state(button::up) == button_state::pressed)
+	{
+		offset += vec3{ 0, speed, 0 } * dt;
+	}
+	if (i.state(button::left) == button_state::pressed)
+	{
+		offset += vec3{ -speed, 0, 0 } * dt;
+	}
+	if (i.state(button::down) == button_state::pressed)
+	{
+		offset += vec3{ 0, -speed, 0 } * dt;
+	}
+	if (i.state(button::right) == button_state::pressed)
+	{
+		offset += vec3{ speed, 0, 0 } * dt;
+	}
+
+	position += offset;
+}
+
+
+
 glm::mat4 Camera::projection_matrix() const
 {
 	return projection;
@@ -68,9 +98,3 @@ void Camera::mouse_movement(const glm::vec2& mouse_pos)
 	front.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
 	forward = glm::normalize(front);
 }
-
-void Camera::move(const glm::vec3 & offset)
-{
-	position += offset;
-}
-

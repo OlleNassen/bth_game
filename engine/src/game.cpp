@@ -91,6 +91,6 @@ void Game::update(std::chrono::milliseconds delta)
 		p.s = "right";
 	}
 
-	
+	renderer->update(delta, player_input);
 	//host->update(p);
 }
