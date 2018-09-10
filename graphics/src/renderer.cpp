@@ -38,6 +38,6 @@ void Renderer::render()const
 
 void Renderer::update(std::chrono::milliseconds delta, const input& i)
 {
-	cam.update(delta, i);
+	cam.fps_update(delta, i);
 	cam.mouse_movement(i.mouse_pos());
 }

@@ -11,6 +11,7 @@ public:
 	Camera(float fovy, float width, float height, float near, float far);
 	~Camera();
 
+	void fps_update(std::chrono::milliseconds delta, const input& i);
 	void update(std::chrono::milliseconds delta, const input& i);
 
 	glm::mat4 projection_matrix()const;

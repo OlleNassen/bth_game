@@ -21,7 +21,7 @@ Camera::~Camera()
 {
 }
 
-void Camera::update(std::chrono::milliseconds delta, const input & i)
+void Camera::fps_update(std::chrono::milliseconds delta, const input & i)
 {
 	using namespace std::chrono;
 	using float_seconds = duration<float>;
@@ -39,7 +39,32 @@ void Camera::update(std::chrono::milliseconds delta, const input & i)
 		position += glm::normalize(glm::cross(forward, up)) * velocity;
 }
 
+void Camera::update(std::chrono::milliseconds delta, const input & i)
+{
+	using namespace glm;
 
+	float speed{ 10.f };
+	vec3 offset{ 0.0f, 0.0f, 0.0f };
+	float dt = delta.count() / 1000.0f;
+
+	if (i.state(button::up) == button_state::pressed)
+	{
+		offset += vec3{ 0, speed, 0 } *dt;
+	}
+	if (i.state(button::left) == button_state::pressed)
+	{
+		offset += vec3{ -speed, 0, 0 } *dt;
+	}
+	if (i.state(button::down) == button_state::pressed)
+	{
+		offset += vec3{ 0, -speed, 0 } *dt;
+	}
+	if (i.state(button::right) == button_state::pressed)
+	{
+		offset += vec3{ speed, 0, 0 } *dt;
+	}
+	position += offset;
+}
 
 glm::mat4 Camera::projection_matrix() const
 {
