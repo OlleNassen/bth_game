@@ -151,14 +151,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\input.cpp" />
-    <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\camera.hpp" />
-    <ClInclude Include="include\entity_component_system.hpp" />
+    <ClInclude Include="include\ecs.hpp" />
     <ClInclude Include="include\game.hpp" />
     <ClInclude Include="include\window.hpp" />
     <ClInclude Include="include\input.hpp" />

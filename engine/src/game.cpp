@@ -1,42 +1,95 @@
 #include "game.hpp"
 #include <iostream>
 
+using namespace std::chrono_literals;
+
 Game::Game()
 	:window(glm::ivec2(1280, 720), "Untitled")
 {
 	renderer = new Renderer;
-	shaders.emplace_back("../resources/shaders/template.vs", "../resources/shaders/template.fs");
+
+	window.assign_key(button::up, GLFW_KEY_W);
+	window.assign_key(button::left, GLFW_KEY_A);
+	window.assign_key(button::down, GLFW_KEY_S);
+	window.assign_key(button::right, GLFW_KEY_D);
+	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
+
+	net_init();
+
+	std::string s;
+	//Edvards networking code:
+	
+	/*std::cin >> s;
+
+	if (s == "server")
+	{
+		host = std::make_unique<server>();
+	}
+	else
+	{
+		host = std::make_unique<client>(s);
+	}*/
+	
 }
 
 Game::~Game()
 {
+	net_deinit();
 }
 
 void Game::run()
 {
-	while (window.is_open())
+	using clock = std::chrono::steady_clock;
+	auto last_time = clock::now();
+	auto delta_time = 0ns;
+	
+	while (window.is_open() && 
+		player_input[button::quit] != button_state::pressed)
 	{
-		window.poll_events();
-		update();
+		delta_time += clock::now() - last_time;
+		last_time = clock::now();
+
+		if (delta_time > timestep)
+		{
+			delta_time = 0ns;
+			update(timestep);
+		}
+
 		render();
 		window.swap_buffers();
+		window.poll_events();
 	}
 }
 
 void Game::render()
 {
-	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	for (auto& shader: shaders)
-	{
-		shader.use();
-		//Update uniforms here
-		renderer->render();			
-	}
-
+	renderer->render();			
 }
 
-void Game::update()
+void Game::update(std::chrono::milliseconds delta)
 {
+	using std::cout;
+	constexpr char nl = '\n';
+
+	packet p;
+	
+	if (player_input[button::up] == button_state::pressed)
+	{
+		p.s = "up";
+	}
+	if (player_input[button::left] == button_state::pressed)
+	{
+		p.s = "left";
+	}
+	if (player_input[button::down] == button_state::pressed)
+	{
+		p.s = "down";
+	}
+	if (player_input[button::right] == button_state::pressed)
+	{
+		p.s = "right";
+	}
+
+	renderer->update(delta, window.input_ev());
+	//host->update(p);
 }

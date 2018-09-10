@@ -6,57 +6,59 @@ using std::cin;
 using std::string;
 constexpr char nl = '\n';
 
-client::client()
+client::client(const std::string& ip_address)
 {
-	host = enet_host_create(nullptr, 1, 2, 0, 0);
-	enet_address_set_host(&address, "192.168.43.205");
+	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
+	enet_address_set_host(&address, ip_address.c_str());
 	address.port = 1234;
-	peer = enet_host_connect(host, &address, 2, 0);
+	peer = enet_host_connect(enet_host, &address, 2, 0);
 
 	if (peer)
 	{
 		ENetEvent event;
-		if (enet_host_service(host, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
+		if (enet_host_service(enet_host, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
 		{
-			cout << "Connection to 192.168.0.195:1234 succeeded." << nl;
+			cout << "Connection succeeded." << nl;
 		}
 		else
 		{
 			enet_peer_reset(peer);
-			cout << "Connection to 192.168.0.195:1234 failed." << nl;
+			cout << "Connection failed." << nl;
 		}
 	}
 }
 
 client::~client()
 {
-	enet_host_destroy(host);
+	enet_host_destroy(enet_host);
 }
 
-void client::update()
+void client::update(const packet& p)
 {
-	/* Create a reliable packet of size 7 containing "packet\0" */
-	std::string s = "packet";
-	ENetPacket * packet = enet_packet_create(s.c_str(), s.length() + 1, ENET_PACKET_FLAG_RELIABLE);
+	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
+		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 
 	/* Send the packet to the peer over channel id 0. */
-	enet_peer_send(peer, 0, packet);
-	
+	enet_peer_send(peer, 0, enet_packet);
+
 	using namespace std::chrono_literals;
-	host_service(1000ms, host, [this]{ connect(); }, [this]{ recieve(); }, [this]{ disconnect(); });
+	host_service(0ms, enet_host,
+		[this](const ENetEvent& event) { recieve(event); },
+		[this](const ENetEvent& event) { connect(event); },
+		[this](const ENetEvent& event) { disconnect(event); });
 }
 
-void client::connect()
+void client::connect(const ENetEvent& event)
 {
 
 }
 
-void client::recieve()
+void client::recieve(const ENetEvent& event)
 {
-
+	cout << event.packet->data << nl;
 }
 
-void client::disconnect()
+void client::disconnect(const ENetEvent& event)
 {
 
 }
@@ -66,54 +68,44 @@ server::server()
 	address.host = ENET_HOST_ANY;
 	address.port = 1234;
 
-	host = enet_host_create(&address, 32, 2, 0, 0);
+	enet_host = enet_host_create(&address, 32, 2, 0, 0);
 }
 
 server::~server()
 {
-	enet_host_destroy(host);
+	enet_host_destroy(enet_host);
 }
 
-void server::update()
+void server::update(const packet& p)
 {
+	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
+		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
+
+	/* Send the packet to the peer over channel id 0. */
+	for (auto* peer : peers)
+	{
+		if (peer) enet_peer_send(peer, 0, enet_packet);	
+	}
+
 	using namespace std::chrono_literals;
-	host_service(1000ms, host, [this] { connect(); }, [this] { recieve(); }, [this] { disconnect(); });
+	host_service(0ms, enet_host,
+		[this, &p](const ENetEvent& event) { recieve(event); },
+		[this, &p](const ENetEvent& event) { connect(event); },
+		[this, &p](const ENetEvent& event) { disconnect(event); });
 }
 
-void server::connect()
+void server::connect(const ENetEvent& event)
 {
-
+	peers[num_peers++] = event.peer;
 }
 
-void server::recieve()
+void server::recieve(const ENetEvent& event)
 {
-	cout << "Recieving" << nl;
+	cout << event.packet->data << nl;
 }
 
-void server::disconnect()
+void server::disconnect(const ENetEvent& event)
 {
 
-}
-
-void test_net()
-{
-	if (enet_initialize() != 0)
-		std::cout << "Error while initializing ENet" << '\n';
-
-	int i = 0;
-	std::cin >> i;
-
-	if (i == 0)
-	{
-		server s;
-		while (true) s.update();
-	}
-	else
-	{
-		client c;
-		while (true) c.update();
-	}
-
-	enet_deinitialize();
 }
 
