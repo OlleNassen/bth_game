@@ -23,7 +23,8 @@ public:
 	void swap_buffers();
 	void poll_events();
 
-	input& input() { return current_input.state();  }
+	const input& input() { return current_input.state();  } const
+	const input_events& input_ev() { return current_input; } const
 	void assign_key(button name, int keybind) { current_input.assign_key(name, keybind); }
 
 private:

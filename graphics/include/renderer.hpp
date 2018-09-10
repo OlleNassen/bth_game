@@ -15,7 +15,7 @@ public:
 	~Renderer();
 
 	void render()const;
-	void update(std::chrono::milliseconds delta, const input& i);
+	void update(std::chrono::milliseconds delta, const input_events& i);
 private:
 	Text test_text;
 	Camera cam;

@@ -54,8 +54,8 @@ void Renderer::render()const
 	test_text.render_text("HELLO, IS IT ME YOU'RE LOOKING FOR", 0, 0, 1);
 }
 
-void Renderer::update(std::chrono::milliseconds delta, const input& i)
+void Renderer::update(std::chrono::milliseconds delta, const input_events& i)
 {
-	cam.fps_update(delta, i);
+	cam.fps_update(delta, i.state());
 	cam.mouse_movement(i.mouse_pos());
 }

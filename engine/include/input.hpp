@@ -5,6 +5,7 @@
 #include <map>
 
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 enum class button
 {
@@ -47,10 +48,14 @@ class input_events
 public:
 	void update(GLFWwindow* glfw_window);
 
-	input& state();
+	glm::vec2 mouse_pos() const;
+
+	const input& state() const;
 	void assign_key(button name, int keybind);
 
 private:
+	glm::vec2 mouse_position;
+
 	input inputs;
 	std::map<int, button> keybinds;
 };

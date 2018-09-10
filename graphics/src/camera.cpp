@@ -29,13 +29,13 @@ void Camera::fps_update(std::chrono::milliseconds delta, const input & i)
 
 	velocity *= duration_cast<float_seconds>(delta).count();
 
-	if (i.state(button::up) == button_state::pressed)
+	if (i[button::up] == button_state::pressed)
 		position += forward * velocity;
-	if (i.state(button::left) == button_state::pressed)
+	if (i[button::left] == button_state::pressed)
 		position -= glm::normalize(glm::cross(forward, up)) * velocity;
-	if (i.state(button::down) == button_state::pressed)
+	if (i[button::down] == button_state::pressed)
 		position -= forward * velocity;
-	if (i.state(button::right) == button_state::pressed)
+	if (i[button::right] == button_state::pressed)
 		position += glm::normalize(glm::cross(forward, up)) * velocity;
 }
 
@@ -47,19 +47,19 @@ void Camera::update(std::chrono::milliseconds delta, const input & i)
 	vec3 offset{ 0.0f, 0.0f, 0.0f };
 	float dt = delta.count() / 1000.0f;
 
-	if (i.state(button::up) == button_state::pressed)
+	if (i[button::up] == button_state::pressed)
 	{
 		offset += vec3{ 0, speed, 0 } *dt;
 	}
-	if (i.state(button::left) == button_state::pressed)
+	if (i[button::left] == button_state::pressed)
 	{
 		offset += vec3{ -speed, 0, 0 } *dt;
 	}
-	if (i.state(button::down) == button_state::pressed)
+	if (i[button::down] == button_state::pressed)
 	{
 		offset += vec3{ 0, -speed, 0 } *dt;
 	}
-	if (i.state(button::right) == button_state::pressed)
+	if (i[button::right] == button_state::pressed)
 	{
 		offset += vec3{ speed, 0, 0 } *dt;
 	}
