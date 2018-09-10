@@ -24,11 +24,13 @@ public:
 private:
 	void render();
 	void update(std::chrono::milliseconds delta);
+
+	std::string s;
 	
 	std::unique_ptr<host> host;
 	std::chrono::milliseconds timestep{16};
 	Window window;
-	const input& player_input{ window.input() };
+	input player_input;
 	Renderer* renderer;
 
 	

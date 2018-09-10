@@ -55,7 +55,7 @@ void client::connect(const ENetEvent& event)
 
 void client::recieve(const ENetEvent& event)
 {
-	cout << event.packet->data << nl;
+	i = reinterpret_cast<input*>(event.packet->data);
 }
 
 void client::disconnect(const ENetEvent& event)
@@ -101,7 +101,7 @@ void server::connect(const ENetEvent& event)
 
 void server::recieve(const ENetEvent& event)
 {
-	cout << event.packet->data << nl;
+	i = reinterpret_cast<input*>(event.packet->data);
 }
 
 void server::disconnect(const ENetEvent& event)

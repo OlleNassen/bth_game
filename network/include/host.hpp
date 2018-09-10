@@ -34,6 +34,8 @@ class host
 public:
 	virtual ~host() = default;
 	virtual void update(const packet& p) = 0;
+
+	input* i = nullptr;
 };
 
 

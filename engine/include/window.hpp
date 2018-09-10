@@ -1,6 +1,7 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 #include <string>
+#include <map>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -22,14 +23,12 @@ public:
 
 	void swap_buffers();
 	void poll_events();
-
-	const input& input() { return current_input.state();  } const
-	const input_events& input_ev() { return current_input; } const
-	void assign_key(button name, int keybind) { current_input.assign_key(name, keybind); }
+	void update_input(input& input);
+	void assign_key(button name, int keybind) { keybinds.insert(std::make_pair(keybind, name)); }
 
 private:
 	GLFWwindow* glfw_window;
-	input_events current_input;
+	std::map<int, button> keybinds;
 };
 
 #endif

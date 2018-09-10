@@ -57,7 +57,37 @@ void Window::swap_buffers()
 void Window::poll_events()
 {
 	glfwPollEvents();
-	
-	current_input.update(glfw_window);
+}
+
+void Window::update_input(input& input)
+{
+	for (auto&[key, value] : keybinds)
+	{
+		auto key_state = glfwGetKey(glfw_window, key);
+		auto& button = input[value];
+		
+		
+		if (key_state == GLFW_RELEASE && button == button_state::held)
+		{
+			button = button_state::released;			
+		}
+		else if (button == button_state::pressed || button == button_state::held)
+		{
+			button = button_state::held;		
+		}
+		else if (key_state == GLFW_PRESS && button == button_state::none)
+		{
+			button = button_state::pressed;		
+		}	
+		else
+		{
+			button = button_state::none;
+		}				
+	}
+
+	double x = 0.0;
+	double y = 0.0;
+	glfwGetCursorPos(glfw_window, &x, &y);
+	input.cursor = { x, y };
 }
 

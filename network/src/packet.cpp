@@ -10,12 +10,12 @@ packet::~packet()
 
 }
 
-const char* packet::data() const
+const input* packet::data() const
 {
-	return s.c_str();
+	return i;
 }
 
 int packet::size() const
 {
-	return s.length();
+	return sizeof(input);
 }

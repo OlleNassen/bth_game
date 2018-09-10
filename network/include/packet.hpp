@@ -2,6 +2,7 @@
 #define PACKET_HPP
 
 #include <string>
+#include "../../engine/include/input.hpp"
 
 class packet
 {
@@ -9,10 +10,10 @@ public:
 	packet();
 	~packet();
 
-	const char* data() const;
+	const input* data() const;
 	int size() const;
 
-	std::string s;
+	input* i = nullptr;
 
 private:
 

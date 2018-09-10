@@ -16,10 +16,7 @@ Game::Game()
 
 	net_init();
 
-	std::string s;
-	//Edvards networking code:
-	
-	/*std::cin >> s;
+	std::cin >> s;
 
 	if (s == "server")
 	{
@@ -28,7 +25,7 @@ Game::Game()
 	else
 	{
 		host = std::make_unique<client>(s);
-	}*/
+	}
 	
 }
 
@@ -58,6 +55,7 @@ void Game::run()
 		render();
 		window.swap_buffers();
 		window.poll_events();
+		window.update_input(player_input);
 	}
 }
 
@@ -72,24 +70,19 @@ void Game::update(std::chrono::milliseconds delta)
 	constexpr char nl = '\n';
 
 	packet p;
-	
-	if (player_input[button::up] == button_state::pressed)
+	p.i = &player_input;
+	host->update(p);
+
+	if (host->i && s == "server")
 	{
-		p.s = "up";
-	}
-	if (player_input[button::left] == button_state::pressed)
-	{
-		p.s = "left";
-	}
-	if (player_input[button::down] == button_state::pressed)
-	{
-		p.s = "down";
-	}
-	if (player_input[button::right] == button_state::pressed)
-	{
-		p.s = "right";
+		input& inp = *host->i;
+		player_input.cursor = inp.cursor;
+		for (int i = 0; i < 5; ++i)
+		{		
+			player_input[static_cast<button>(i)] = inp[static_cast<button>(i)];			
+		}
+		host->i = nullptr;
 	}
 
-	renderer->update(delta, window.input_ev());
-	//host->update(p);
+	renderer->update(delta, player_input);
 }
