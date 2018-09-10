@@ -35,7 +35,7 @@ Game::Game()
 
 Game::~Game()
 {
-	net_uninit();
+	net_deinit();
 }
 
 void Game::run()
