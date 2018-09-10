@@ -156,7 +156,7 @@
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\entity_component_system.hpp" />
+    <ClInclude Include="include\ecs.hpp" />
     <ClInclude Include="include\game.hpp" />
     <ClInclude Include="include\window.hpp" />
     <ClInclude Include="include\input.hpp" />

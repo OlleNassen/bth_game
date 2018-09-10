@@ -35,10 +35,10 @@
     <ClInclude Include="include\window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\entity_component_system.hpp">
+    <ClInclude Include="include\input.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\input.hpp">
+    <ClInclude Include="include\ecs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
