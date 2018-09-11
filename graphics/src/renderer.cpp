@@ -1,7 +1,7 @@
 #include "renderer.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 Renderer::Renderer()
-	:cam(90, 1280.f, 720.f, 0.f, 100.f)
+	:cam(90, 1280.f, 720.f, 0.1f, 100.f)
 {
 	models.emplace_back(new Model);
 	shaders.reserve(sizeof(Shader) * 2);
