@@ -16,7 +16,7 @@ Game::Game()
 
 	net_init();
 
-	std::cin >> s;
+	/*std::cin >> s;
 
 	if (s == "server")
 	{
@@ -25,7 +25,7 @@ Game::Game()
 	else
 	{
 		host = std::make_unique<client>(s);
-	}
+	}*/
 	
 }
 
@@ -71,7 +71,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 	packet p;
 	p.i = &player_input;
-	host->update(p);
+	/*host->update(p);
 
 	if (host->i && s == "server")
 	{
@@ -82,7 +82,7 @@ void Game::update(std::chrono::milliseconds delta)
 			player_input[static_cast<button>(i)] = inp[static_cast<button>(i)];			
 		}
 		host->i = nullptr;
-	}
+	}*/
 
 	renderer->update(delta, player_input);
 }
