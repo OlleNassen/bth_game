@@ -11,7 +11,7 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
-	while (models.size() > 0)
+	while (!models.empty())
 	{
 		delete models.back();
 		models.pop_back();
