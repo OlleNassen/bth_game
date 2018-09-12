@@ -4,7 +4,7 @@
 using namespace std::chrono_literals;
 
 Game::Game()
-	:window(glm::ivec2(1280, 720), "Untitled")
+	:window(glm::ivec2(1280, 720), "Scrap Escape")
 {
 	renderer = new Renderer;
 
@@ -49,13 +49,13 @@ void Game::run()
 		if (delta_time > timestep)
 		{
 			delta_time = 0ns;
+			window.update_input(player_input);
 			update(timestep);
 		}
 
 		render();
 		window.swap_buffers();
-		window.poll_events();
-		window.update_input(player_input);
+		window.poll_events();		
 	}
 }
 
@@ -83,6 +83,9 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 		host->i = nullptr;
 	}*/
+
+	if (player_input[button::up] == button_state::pressed)
+		cout << "funkar";
 
 	renderer->update(delta, player_input);
 }
