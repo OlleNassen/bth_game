@@ -4,6 +4,17 @@
 #include <chrono>
 #include "../../engine/include/input.hpp"
 
+class SpectatorCamera
+{
+public:
+	SpectatorCamera(float fovy, float width, float height, float near, float far);
+	void update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end);
+
+private:
+	glm::mat4 projection;
+	glm::mat4 view;
+};
+
 class Camera
 {
 public:

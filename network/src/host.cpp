@@ -50,7 +50,7 @@ void client::update(const packet& p)
 
 void client::connect(const ENetEvent& event)
 {
-
+	peer = event.peer;
 }
 
 void client::recieve(const ENetEvent& event)

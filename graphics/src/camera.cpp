@@ -1,6 +1,37 @@
 #include "camera.hpp"
+
+#include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
+
+SpectatorCamera::SpectatorCamera(float fovy, float width,
+	float height, float near, float far)
+	: projection{glm::perspective(fovy, width / height, near, far)}
+	, view{1.0f}
+{
+
+}
+
+void SpectatorCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
+{
+	using namespace std;
+	//projection * glm::vec4{ pos.x, pos.y, 0.0f, 1.0f };
+
+	auto pos_x = [](const auto& l, const auto& r) { return l.x < r.x; };
+	auto pos_y = [](const auto& l, const auto& r) { return l.y < r.y; };
+
+	auto minmax_x = minmax_element(begin, end, pos_x);
+	auto minmax_y = minmax_element(begin, end, pos_y);
+
+
+}
+
+
+
+
+
+
+
 
 Camera::Camera()
 {
