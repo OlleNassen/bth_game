@@ -4,6 +4,8 @@
 #include <array>
 #include <glm/glm.hpp>
 #include <ft2build.h>
+#include "camera.hpp"
+#include "shader.hpp"
 #include FT_FREETYPE_H
 
 struct character

@@ -1,7 +1,8 @@
 #ifndef ECS_HPP
 #define ECS_HPP
-#include <array>
-#include <vector>
+
+#include <algorithm>
+
 //::.. authors ..:://
 // Edvard
 //Olle
@@ -10,10 +11,20 @@ namespace ecs
 {
 using entity = int;
 
-template <typename T>
-T& find(T data, entity* begin, entity* end, entity e)
+int find(entity* begin, entity* end, entity e)
 {
-	return data[end - std::find(begin, end, e)];
+	return end - std::find(begin, end, e);
+}
+
+int find_empty(entity* begin, entity* end)
+{
+	return find(begin, end, 0);
+}
+
+template <typename T>
+const T& find(const T* components, entity* begin, entity* end, entity e)
+{
+	return components[find(begin, end, e)];
 }
 	
 }
