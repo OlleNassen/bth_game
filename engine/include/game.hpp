@@ -10,6 +10,7 @@
 #include <host.hpp>
 #include "window.hpp"
 #include "input.hpp"
+#include <lua_load.hpp>
 
 //::.. authors ..:://
 // Edvard
@@ -31,8 +32,9 @@ private:
 	std::chrono::milliseconds timestep{16};
 	Window window;
 	input player_input;
+	LuaLoad luaLoad; //Test
 	Renderer* renderer;
-
+	
 	
 };
 

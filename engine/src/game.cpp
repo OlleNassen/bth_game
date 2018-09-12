@@ -1,23 +1,20 @@
 #include "game.hpp"
 #include <iostream>
-#include "lua_script.hpp"
 
 using namespace std::chrono_literals;
 
 Game::Game()
 	:window(glm::ivec2(1280, 720), "Untitled")
 {
-	//LuaLoad test;
 	renderer = new Renderer;
-
+	
 	window.assign_key(button::up, GLFW_KEY_W);
 	window.assign_key(button::left, GLFW_KEY_A);
 	window.assign_key(button::down, GLFW_KEY_S);
 	window.assign_key(button::right, GLFW_KEY_D);
+	window.assign_key(button::jump, GLFW_KEY_SPACE);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
-	//TEST
-	LuaScript jump("jump.lua");
 
 	net_init();
 
@@ -90,4 +87,5 @@ void Game::update(std::chrono::milliseconds delta)
 	}*/
 
 	renderer->update(delta, player_input);
+	luaLoad.processInput(player_input);
 }

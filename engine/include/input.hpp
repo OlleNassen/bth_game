@@ -10,6 +10,7 @@ enum class button
 	left,
 	down,
 	right,
+	jump,
 	quit
 };
 
@@ -25,7 +26,7 @@ class input
 {
 public:	
 	glm::vec2 cursor;
-	
+
 	const button_state& operator[](button b)const
 	{
 		return data[static_cast<int>(b)];
