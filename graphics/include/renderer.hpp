@@ -16,7 +16,7 @@ public:
 	void render()const;
 	void update(std::chrono::milliseconds delta, const input& i);
 private:
-	Camera cam;
+	Camera camera;
 	std::vector<Model> models;
 	std::vector<Text> texts;
 	std::vector<Shader> shaders;

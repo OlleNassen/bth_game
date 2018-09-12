@@ -17,5 +17,6 @@
   <ItemGroup>
     <None Include="shaders\text.vs" />
     <None Include="shaders\text.fs" />
+    <None Include="shaders\blinn_phong.vs" />
   </ItemGroup>
 </Project>

@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\camera.hpp" />
+    <ClInclude Include="include\lights.hpp" />
     <ClInclude Include="include\mesh.hpp" />
     <ClInclude Include="include\model.hpp" />
     <ClInclude Include="include\primitives.hpp" />
