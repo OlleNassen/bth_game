@@ -6,8 +6,6 @@ using namespace std::chrono_literals;
 Game::Game()
 	:window(glm::ivec2(1280, 720), "Scrap Escape")
 {
-	renderer = new Renderer;
-
 	window.assign_key(button::up, GLFW_KEY_W);
 	window.assign_key(button::left, GLFW_KEY_A);
 	window.assign_key(button::down, GLFW_KEY_S);
@@ -61,7 +59,7 @@ void Game::run()
 
 void Game::render()
 {
-	renderer->render();			
+	renderer.render();			
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -87,5 +85,5 @@ void Game::update(std::chrono::milliseconds delta)
 	if (player_input[button::up] == button_state::pressed)
 		cout << "funkar";
 
-	renderer->update(delta, player_input);
+	renderer.update(delta, player_input);
 }

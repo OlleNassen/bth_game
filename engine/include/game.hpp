@@ -31,7 +31,7 @@ private:
 	std::chrono::milliseconds timestep{16};
 	Window window;
 	input player_input;
-	Renderer* renderer;
+	Renderer renderer;
 
 	
 };
