@@ -22,6 +22,7 @@
     <ClCompile Include="src\lua_script.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\lua_load.hpp" />
     <ClInclude Include="include\lua_script.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
