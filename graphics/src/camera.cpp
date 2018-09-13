@@ -8,6 +8,12 @@ SpectatorCamera::SpectatorCamera(float fovy, float width,
 	float height, float near, float far)
 	: projection{glm::perspective(fovy, width / height, near, far)}
 	, view{1.0f}
+	, aspect_ratio{width / height}
+	, view_angle{ 
+		glm::tan(fovy / 4.0f), 
+		glm::tan((2 * glm::atan(aspect_ratio * glm::tan(fovy / 2.0f))) / 4.0f) , 
+		0}
+	
 {
 
 }
@@ -15,7 +21,6 @@ SpectatorCamera::SpectatorCamera(float fovy, float width,
 void SpectatorCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
 {
 	using namespace std;
-	//projection * glm::vec4{ pos.x, pos.y, 0.0f, 1.0f };
 
 	auto pos_x = [](const auto& l, const auto& r) { return l.x < r.x; };
 	auto pos_y = [](const auto& l, const auto& r) { return l.y < r.y; };
@@ -23,7 +28,28 @@ void SpectatorCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, 
 	auto minmax_x = minmax_element(begin, end, pos_x);
 	auto minmax_y = minmax_element(begin, end, pos_y);
 
+	using glm::vec2;
+	auto size = vec2{ minmax_x.second->x - minmax_x.first->x, minmax_y.second->y - minmax_y.first->y };
+	auto new_xy = vec2{ vec2{ minmax_x.first->x, minmax_y.first->y } + (size / 2.0f) };
+	
+	auto distance = glm::vec3{ new_xy + (size / 2.0f), 0.0f};
+	
+	auto new_z = position.z;
+	if (aspect_ratio > (size.x / size.y)) //check height
+	{
+		new_z = distance.y / view_angle.y;
+	}
+	else
+	{
+		new_z = distance.x / view_angle.x;
+	}
 
+	position = { new_xy, new_z };
+}
+
+glm::mat4 SpectatorCamera::view_matrix() const
+{
+	return glm::lookAt(position, position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 

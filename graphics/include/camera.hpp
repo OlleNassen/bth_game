@@ -1,6 +1,6 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
-#include <glm\glm.hpp>
+#include <glm/glm.hpp>
 #include <chrono>
 #include "../../engine/include/input.hpp"
 
@@ -10,9 +10,18 @@ public:
 	SpectatorCamera(float fovy, float width, float height, float near, float far);
 	void update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end);
 
+	glm::mat4 projection_matrix() const { return projection; }
+	glm::mat4 view_matrix() const;
+
+
 private:
 	glm::mat4 projection;
 	glm::mat4 view;
+
+	float aspect_ratio;
+	
+	glm::vec3 position;
+	glm::vec3 view_angle;	
 };
 
 class Camera
