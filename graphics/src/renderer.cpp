@@ -32,7 +32,7 @@ void Renderer::render()const
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	render_type(shaders[0], s_cam, models);
+	render_type(shaders[0], camera, models);
 
 	shaders[1].use();
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
