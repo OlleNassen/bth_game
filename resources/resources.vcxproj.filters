@@ -18,5 +18,7 @@
     <None Include="shaders\text.vs" />
     <None Include="shaders\text.fs" />
     <None Include="shaders\blinn_phong.vs" />
+    <None Include="shaders\uber.fs" />
+    <None Include="shaders\uber.vs" />
   </ItemGroup>
 </Project>
