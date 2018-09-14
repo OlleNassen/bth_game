@@ -50,11 +50,16 @@ void client::update(const packet& p, input* begin, input* end)
 
 void client::recieve(const ENetEvent& event, input* begin, input* end)
 {
-	const input* i = reinterpret_cast<input*>(event.packet->data);
-	const auto* index = &i[client_id];
+	const input* data = reinterpret_cast<input*>(event.packet->data);
+	const auto* index = &data[client_id];
 	
-	std::copy_if(i, i + (end - begin), begin, 
-		[index](const auto& in) { return &in != index; });
+	for (int i = 0; i < (end - begin); ++i)
+	{
+		if (&data[i] != index)
+		{
+			begin[i] = data[i];
+		}
+	}
 }
 
 void client::connect(const ENetEvent& event)
@@ -101,11 +106,16 @@ void server::update(const packet& p, input* begin, input* end)
 
 void server::recieve(const ENetEvent& event, input* begin, input* end)
 {
-	const input* i = reinterpret_cast<input*>(event.packet->data);
-	const auto* index = &i[server_id];
-	
-	std::copy_if(i, i + (end - begin), begin, 
-		[index](const auto& in){ return &in != index; });
+	const input* data = reinterpret_cast<input*>(event.packet->data);
+	const auto* index = &data[server_id];
+
+	for (int i = 0; i < (end - begin); ++i)
+	{
+		if (&data[i] != index)
+		{
+			begin[i] = data[i];
+		}
+	}
 }
 
 void server::connect(const ENetEvent& event)
