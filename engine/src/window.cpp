@@ -24,6 +24,7 @@ Window::Window(const glm::ivec2& window_size, const std::string& title)
 	glfwMakeContextCurrent(glfw_window);
 	glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCharCallback(glfw_window, gui::character_callback);
+	glfwSetKeyCallback(glfw_window, gui::key_callback);
 
 	glViewport(0, 0, window_size.x, window_size.y);
 

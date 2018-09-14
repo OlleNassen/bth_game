@@ -7,10 +7,10 @@
 namespace gui
 {
 
-void clear_buffer();
 const std::string& text_buffer();
 
 void character_callback(GLFWwindow* window, unsigned int codepoint);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 }
 
