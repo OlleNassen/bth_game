@@ -23,18 +23,22 @@ Renderer::Renderer()
 	shaders.emplace_back("../resources/shaders/template.vs", "../resources/shaders/template.fs");
 	shaders.emplace_back("../resources/shaders/text.vs", "../resources/shaders/text.fs");
 	shaders.emplace_back("../resources/shaders/blinn_phong.vs", "../resources/shaders/blinn_phong.fs");
+	shaders.emplace_back("../resources/shaders/post_processing_effects.vs", "../resources/shaders/post_processing_effects.fs"); //3
 
 }
 
 
 void Renderer::render()const
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT);
+	scene_texture.bind_framebuffer();
 
 	render_type(shaders[0], camera, models);
 
 	shaders[1].use();
+	scene_texture.bind_framebuffer();
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	shaders[1].uniform("projection", projection);
 	shaders[1].uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
@@ -42,6 +46,14 @@ void Renderer::render()const
 	{
 		text.render_text("HELLO, IS IT ME YOU'RE LOOKING FOR", 0, 0, 1);
 	}
+
+	shaders[3].use();
+	shaders[3].uniform("scene_texture", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, scene_texture.fbo_texture);
+	
+	post_processing_effects.render();
+
 }
 
 void Renderer::update(std::chrono::milliseconds delta, const input& i)

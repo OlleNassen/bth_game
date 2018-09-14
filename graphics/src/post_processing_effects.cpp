@@ -1,7 +1,6 @@
-#include "mesh.hpp"
-#include <GL/glew.h>
+#include "post_processing_effects.hpp"
 
-Mesh::Mesh()
+PostProcessingEffects::PostProcessingEffects()
 {
 	constexpr float vertices[16] = {
 		1,  1, 1.0f, 1.0f,
@@ -18,12 +17,11 @@ Mesh::Mesh()
 	glEnableVertexAttribArray(0);
 }
 
-Mesh::~Mesh()
+PostProcessingEffects::~PostProcessingEffects()
 {
-
 }
 
-void Mesh::render()const
+void PostProcessingEffects::render() const
 {
 	glBindVertexArray(vao_id);
 	glDrawArrays(GL_TRIANGLES, 0, 16);

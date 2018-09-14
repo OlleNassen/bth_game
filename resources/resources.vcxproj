@@ -119,6 +119,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="shaders\blinn_phong.vs" />
+    <None Include="shaders\post_processing_effects.fs" />
+    <None Include="shaders\post_processing_effects.vs" />
     <None Include="shaders\text.fs" />
     <None Include="shaders\text.vs" />
     <None Include="shaders\uber.fs" />

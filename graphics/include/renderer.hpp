@@ -4,6 +4,8 @@
 #include "model.hpp"
 #include "camera.hpp"
 #include "text.hpp"
+#include "framebuffer.hpp"
+#include "post_processing_effects.hpp"
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -15,6 +17,7 @@ public:
 
 	void render()const;
 	void update(std::chrono::milliseconds delta, const input& i);
+
 private:
 	Camera camera;
 	SpectatorCamera s_cam;
@@ -24,6 +27,9 @@ private:
 	std::vector<Mesh> meshes;
 
 	glm::vec2 v[4];
+
+	Framebuffer scene_texture;
+	PostProcessingEffects post_processing_effects;
 };
 
 template <typename T>

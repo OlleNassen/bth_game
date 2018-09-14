@@ -147,6 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\post_processing_effects.cpp" />
+    <ClCompile Include="src\framebuffer.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\dll_main.cpp" />
     <ClCompile Include="src\mesh.cpp" />
@@ -157,9 +159,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\camera.hpp" />
+    <ClInclude Include="include\framebuffer.hpp" />
     <ClInclude Include="include\lights.hpp" />
     <ClInclude Include="include\mesh.hpp" />
     <ClInclude Include="include\model.hpp" />
+    <ClInclude Include="include\post_processing_effects.hpp" />
     <ClInclude Include="include\primitives.hpp" />
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\shader.hpp" />
