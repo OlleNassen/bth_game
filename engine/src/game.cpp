@@ -74,5 +74,8 @@ void Game::update(std::chrono::milliseconds delta)
 		std::begin(player_inputs.components), 
 		std::end(player_inputs.components));
 
-	renderer.update(delta, player_inputs.components[host->id()], host->id());
+	renderer.update(delta, player_inputs.components[0], 0);
+	renderer.update(delta, player_inputs.components[1], 1);
+	renderer.update(delta, player_inputs.components[2], 2);
+	renderer.update(delta, player_inputs.components[3], 3);
 }
