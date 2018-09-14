@@ -78,7 +78,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Fu\source\repos\bth_game\external\include\;$(ProjectDir)include/;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include/;$(SolutionDir)external/include/;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)game\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>

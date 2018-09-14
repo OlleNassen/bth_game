@@ -11,11 +11,14 @@ public:
 	LuaLoad();
 	~LuaLoad();
 
+	static int jump(lua_State* luaState);
+	static int leftRun(lua_State* luaState);
+	static int rightRun(lua_State* luaState);
+	void addLuaFunctins(lua_State* luaState);
 	void processInput(const input& i);
 private:
 	
-	
-	//LuaScript myLuaScript;
+	LuaScript myLuaScript[2];
 };
 
 #endif

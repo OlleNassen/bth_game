@@ -11,6 +11,7 @@
 class LuaScript
 {
 public:
+	LuaScript();
 	LuaScript(const std::string& filename);
 	~LuaScript();
 
@@ -39,6 +40,8 @@ public:
 private:
 	lua_State* L;
 };
+
+
 /*
 template<typename T>
 T get(const std::string& variableName)

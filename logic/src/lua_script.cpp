@@ -1,5 +1,10 @@
 #include "lua_script.hpp"
 
+LuaScript::LuaScript()
+{
+
+}
+
 LuaScript::LuaScript(const std::string& filename)
 {
 	L = luaL_newstate();
