@@ -22,8 +22,7 @@ Renderer::Renderer()
 	shaders.reserve(sizeof(Shader) * 2);
 	shaders.emplace_back("../resources/shaders/template.vs", "../resources/shaders/template.fs");
 	shaders.emplace_back("../resources/shaders/text.vs", "../resources/shaders/text.fs");
-	shaders.emplace_back("../resources/shaders/blinn_phong.vs", "../resources/shaders/blinn_phong.fs");
-
+	//shaders.emplace_back("../resources/shaders/blinn_phong.vs", "../resources/shaders/blinn_phong.fs");
 }
 
 
