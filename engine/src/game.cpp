@@ -87,5 +87,5 @@ void Game::update(std::chrono::milliseconds delta)
 	}*/
 
 	renderer->update(delta, player_input);
-	luaLoad.processInput(player_input);
+	luaLoad.process_input(player_input);
 }

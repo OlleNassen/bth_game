@@ -1,6 +1,7 @@
 #ifndef LUA_LOAD_HPP
 #define LUA_LOAD_HPP
 
+#include <array>
 #include "lua_script.hpp"
 #include "../../engine/include/input.hpp"
 
@@ -12,13 +13,12 @@ public:
 	~LuaLoad();
 
 	static int jump(lua_State* luaState);
-	static int leftRun(lua_State* luaState);
-	static int rightRun(lua_State* luaState);
-	void addLuaFunctins(lua_State* luaState);
-	void processInput(const input& i);
+
+	void add_lua_functions(lua_State* luaState);
+	void process_input(const input& i);
 private:
 	
-	LuaScript myLuaScript[2];
+	std::array<LuaScript, 2> my_lua_script;
 };
 
 #endif

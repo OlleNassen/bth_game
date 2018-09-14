@@ -5,8 +5,8 @@
 
 LuaLoad::LuaLoad()
 {
-	myLuaScript[0] = LuaScript("../resources/scripts/inputController.lua");
-	myLuaScript[1] = LuaScript("../resources/scripts/jump.lua");
+	my_lua_script[0] = LuaScript("../resources/scripts/input_controller.lua");
+	my_lua_script[1] = LuaScript("../resources/scripts/jump.lua");
 }
 
 LuaLoad::~LuaLoad()
@@ -20,42 +20,24 @@ int LuaLoad::jump(lua_State* luaState)
 	return 0;
 }
 
-int LuaLoad::leftRun(lua_State* luaState)
-{
-	//script stuff
-	return 0;
-}
-
-int LuaLoad::rightRun(lua_State* luaState)
-{
-	//script stuff
-	return 0;
-}
-
-void LuaLoad::addLuaFunctins(lua_State* luaState)
+void LuaLoad::add_lua_functions(lua_State* luaState)
 {
 	lua_pushlightuserdata(luaState, this);
-	lua_setglobal(luaState, "Movement");
+	lua_setglobal(luaState, "movement");
 
 	lua_pushcfunction(luaState, jump);
-	lua_setglobal(luaState, "jumpPlayer");
-
-	lua_pushcfunction(luaState, leftRun);
-	lua_setglobal(luaState, "leftRunPlayer");
-
-	lua_pushcfunction(luaState, rightRun);
-	lua_setglobal(luaState, "rightRunPlayer");
+	lua_setglobal(luaState, "player_jump");
 
 }
 
-void LuaLoad::processInput(const input& i)
+void LuaLoad::process_input(const input& i)
 {
 	//Skicka i till lua
 	//läs av i lua
 	//bestäm utefter det vad som ska hända
 	//
 
-	myLuaScript[0];
+	my_lua_script[0];
 
 
 	/*if(i[button::left] == button_state::held)
