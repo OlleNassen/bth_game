@@ -19,6 +19,7 @@ Client::Client(const std::string& ip_address)
 		if (enet_host_service(enet_host, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
 		{
 			cout << "Connection succeeded." << nl;
+			connect(event);
 		}
 		else
 		{
