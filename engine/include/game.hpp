@@ -8,12 +8,21 @@
 
 #include <renderer.hpp>
 #include <host.hpp>
+#include "ecs.hpp"
 #include "window.hpp"
 #include "input.hpp"
 
 //::.. authors ..:://
 // Edvard
 // Olle
+
+template <int N>
+struct input_array
+{
+	int player_index;
+	std::array<ecs::entity, N> entities;
+	std::array<input, N> components;
+};
 
 class Game
 {
@@ -32,7 +41,7 @@ private:
 	Window window;
 	input player_input;
 	Renderer renderer;
-
+	input_array<8> player_inputs;
 	
 };
 

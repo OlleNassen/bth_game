@@ -11,12 +11,12 @@ namespace ecs
 {
 using entity = int;
 
-int find(entity* begin, entity* end, entity e)
+inline int find(entity* begin, entity* end, entity e)
 {
 	return end - std::find(begin, end, e);
 }
 
-int find_empty(entity* begin, entity* end)
+inline int find_empty(entity* begin, entity* end)
 {
 	return find(begin, end, 0);
 }
