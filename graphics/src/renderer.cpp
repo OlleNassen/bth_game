@@ -71,7 +71,7 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i, int index
 		offset += vec2{ speed, 0 } * dt;
 	}
 
-	models.front().move(offset);
+	models[index].move(offset);
 	v[index] += offset;
 
 	s_cam.update(delta, v, v+4);
