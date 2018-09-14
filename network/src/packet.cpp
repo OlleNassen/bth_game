@@ -17,5 +17,5 @@ const input* packet::data() const
 
 int packet::size() const
 {
-	return sizeof(input);
+	return sizeof(input) * 8;
 }

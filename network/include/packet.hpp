@@ -1,6 +1,7 @@
 #ifndef PACKET_HPP
 #define PACKET_HPP
 
+#include <array>
 #include <string>
 #include "../../engine/include/input.hpp"
 

@@ -35,6 +35,7 @@ class host
 public:
 	virtual ~host() = default;
 	virtual void update(const packet& p, input* begin, input* end) = 0;
+	virtual int id() const = 0;
 };
 
 
@@ -45,12 +46,14 @@ public:
 	~client();
 
 	void update(const packet& p, input* begin, input* end) override;
+	int id() const override { return client_id; }
+	
 
 private:
 	void recieve(const ENetEvent& event, input* begin, input* end);
 	void connect(const ENetEvent& event);
-	void disconnect(const ENetEvent& event);
-
+	void disconnect(const ENetEvent& event);	
+	
 	int client_id = 0;
 
 	ENetAddress address;
@@ -65,13 +68,14 @@ public:
 	~server();
 
 	void update(const packet& p, input* begin, input* end) override;
+	int id() const override { return server_id; }
 
 private:
 	void recieve(const ENetEvent& event, input* begin, input* end);
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);
 	
-	int server_id = 0;
+	int server_id = 3;
 
 	ENetAddress address;
 	ENetHost* enet_host;

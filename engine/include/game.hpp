@@ -21,7 +21,7 @@ struct input_array
 {
 	int player_index;
 	std::array<ecs::entity, N> entities;
-	std::array<input, N> components;
+	input components[N];
 };
 
 class Game

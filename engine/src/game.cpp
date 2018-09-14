@@ -14,7 +14,7 @@ Game::Game()
 
 	net_init();
 
-	/*std::cin >> s;
+	std::cin >> s;
 
 	if (s == "server")
 	{
@@ -23,7 +23,7 @@ Game::Game()
 	else
 	{
 		host = std::make_unique<client>(s);
-	}*/
+	}
 	
 }
 
@@ -39,7 +39,7 @@ void Game::run()
 	auto delta_time = 0ns;
 	
 	while (window.is_open() && 
-		player_input[button::quit] != button_state::pressed)
+		player_inputs.components[host->id()][button::quit] != button_state::pressed)
 	{
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();
@@ -47,7 +47,7 @@ void Game::run()
 		if (delta_time > timestep)
 		{
 			delta_time = 0ns;
-			window.update_input(player_input);
+			window.update_input(player_inputs.components[host->id()]);
 			update(timestep);
 		}
 
@@ -68,22 +68,11 @@ void Game::update(std::chrono::milliseconds delta)
 	constexpr char nl = '\n';
 
 	packet p;
-	p.i = &player_input;
-	/*host->update(p);
+	p.i = player_inputs.components;
 
-	if (host->i && s == "server")
-	{
-		input& inp = *host->i;
-		player_input.cursor = inp.cursor;
-		for (int i = 0; i < 5; ++i)
-		{		
-			player_input[static_cast<button>(i)] = inp[static_cast<button>(i)];			
-		}
-		host->i = nullptr;
-	}*/
+	host->update(p, 
+		std::begin(player_inputs.components), 
+		std::end(player_inputs.components));
 
-	if (player_input[button::up] == button_state::pressed)
-		cout << "funkar";
-
-	renderer.update(delta, player_input);
+	renderer.update(delta, player_inputs.components[host->id()], host->id());
 }
