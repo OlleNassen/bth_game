@@ -34,7 +34,7 @@ class Host
 {
 public:
 	virtual ~Host() = default;
-	virtual void update(const packet& p, input* begin, input* end) = 0;
+	virtual void update(const Packet& p, input* begin, input* end) = 0;
 	virtual int id() const = 0;
 };
 
@@ -45,7 +45,7 @@ public:
 	Client(const std::string& ip_address);
 	~Client();
 
-	void update(const packet& p, input* begin, input* end) override;
+	void update(const Packet& p, input* begin, input* end) override;
 	int id() const override { return client_id; }
 	
 
@@ -67,7 +67,7 @@ public:
 	Server();
 	~Server();
 
-	void update(const packet& p, input* begin, input* end) override;
+	void update(const Packet& p, input* begin, input* end) override;
 	int id() const override { return server_id; }
 
 private:

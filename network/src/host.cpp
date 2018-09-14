@@ -33,7 +33,7 @@ Client::~Client()
 	enet_host_destroy(enet_host);
 }
 
-void Client::update(const packet& p, input* begin, input* end)
+void Client::update(const Packet& p, input* begin, input* end)
 {
 	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
@@ -86,7 +86,7 @@ Server::~Server()
 	enet_host_destroy(enet_host);
 }
 
-void Server::update(const packet& p, input* begin, input* end)
+void Server::update(const Packet& p, input* begin, input* end)
 {
 	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);

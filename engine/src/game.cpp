@@ -69,7 +69,7 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	packet p;
+	Packet p;
 	p.i = player_inputs.components;
 	/*
 	host->update(p, 
