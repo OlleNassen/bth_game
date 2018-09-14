@@ -44,10 +44,10 @@ void Renderer::render()const
 	}
 }
 
-void Renderer::update(std::chrono::milliseconds delta, const input& i)
+void Renderer::update(std::chrono::milliseconds delta, const input& i, int index)
 {
-	camera.fps_update(delta, i);
-	camera.mouse_movement(i.cursor);
+	//camera.fps_update(delta, i);
+	//camera.mouse_movement(i.cursor);
 
 	using glm::vec2;
 	float speed{ 10.f };
@@ -71,8 +71,8 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i)
 		offset += vec2{ speed, 0 } * dt;
 	}
 
-	models.front().move(offset);
-	v[0] += offset;
+	models[index].move(offset);
+	v[index] += offset;
 
 	s_cam.update(delta, v, v+4);
 }

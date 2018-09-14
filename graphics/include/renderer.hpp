@@ -14,7 +14,7 @@ public:
 	Renderer();
 
 	void render()const;
-	void update(std::chrono::milliseconds delta, const input& i);
+	void update(std::chrono::milliseconds delta, const input& i, int index);
 private:
 	Camera camera;
 	SpectatorCamera s_cam;

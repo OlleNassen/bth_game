@@ -20,19 +20,18 @@ SpectatorCamera::SpectatorCamera(float fovy, float width,
 
 void SpectatorCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
 {
-	using namespace std;
-
 	auto pos_x = [](const auto& l, const auto& r) { return l.x < r.x; };
 	auto pos_y = [](const auto& l, const auto& r) { return l.y < r.y; };
 
+	using std::minmax_element;
 	auto minmax_x = minmax_element(begin, end, pos_x);
 	auto minmax_y = minmax_element(begin, end, pos_y);
-
-	using glm::vec2;
+	
+	using namespace glm;
 	auto size = vec2{ minmax_x.second->x - minmax_x.first->x, minmax_y.second->y - minmax_y.first->y };
 	auto new_xy = vec2{ vec2{ minmax_x.first->x, minmax_y.first->y } + (size / 2.0f) };
 	
-	auto distance = glm::vec3{ new_xy + (size / 2.0f), 0.0f};
+	auto distance = vec3{ new_xy + (size / 2.0f), 0.0f};
 	
 	auto new_z = position.z;
 	if (aspect_ratio > (size.x / size.y)) //check height
@@ -49,7 +48,8 @@ void SpectatorCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, 
 
 glm::mat4 SpectatorCamera::view_matrix() const
 {
-	return glm::lookAt(position, position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	using namespace glm;
+	return lookAt(position, position + vec3{0.0f, 0.0f, -1.0f}, vec3{ 0.0f, 1.0f, 0.0f });
 }
 
 
@@ -69,7 +69,7 @@ Camera::Camera(float fovy, float width,
 {
 	yaw = -80.0f;
 	pitch = 0.0f;
-	position = glm::vec3(0.0f, 0.0f, 1.0f);
+	position = glm::vec3(0.0f, 0.0f, 20.0f);
 	forward = glm::vec3(0.0f, 0.0f, -1.0f);
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
 }

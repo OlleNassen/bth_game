@@ -1,14 +1,15 @@
 #ifndef PACKET_HPP
 #define PACKET_HPP
 
+#include <array>
 #include <string>
 #include "../../engine/include/input.hpp"
 
-class packet
+class Packet
 {
 public:
-	packet();
-	~packet();
+	Packet();
+	~Packet();
 
 	const input* data() const;
 	int size() const;
