@@ -42,9 +42,7 @@ private:
 	Window window;
 	input player_input;
 	Renderer renderer;
-	input_array<8> player_inputs;
-	GraphicalUserInterface gui;
-	
+	input_array<8> player_inputs;	
 };
 
 

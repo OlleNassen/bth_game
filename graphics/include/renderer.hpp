@@ -13,14 +13,14 @@ class Renderer
 public:
 	Renderer();
 
-	void render()const;
+	void render(const std::string& text_buffer)const;
 	void update(std::chrono::milliseconds delta, const input& i, int index);
-	void render_text(const std::string& text);
+
 private:
 	Camera camera;
 	SpectatorCamera s_cam;
 	std::vector<Model> models;
-	Text texts;
+	Text text;
 	std::vector<Shader> shaders;
 	std::vector<Mesh> meshes;
 
