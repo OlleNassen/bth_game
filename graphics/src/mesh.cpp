@@ -3,11 +3,12 @@
 
 Mesh::Mesh()
 {
-	constexpr float vertices[16] = {
-		1,  1, 1.0f, 1.0f,
-		1, -1, 1.0f, 0.0f ,
-		-1, -1, 0.0f, 0.0f,
-		-1,  1, 0.0f, 1.0f,
+	//REMOVE THIS bad CODE PLEASE, THANKSSS
+	constexpr float vertices[9] =
+	{
+		-0.5, -0.5, 0.0,
+		0.0, 0.5, 0.0,
+		0.5, -0.5, 0.0
 	};
 	glGenVertexArrays(1, &vao_id);
 	glBindVertexArray(vao_id);
@@ -26,5 +27,5 @@ Mesh::~Mesh()
 void Mesh::render()const
 {
 	glBindVertexArray(vao_id);
-	glDrawArrays(GL_TRIANGLES, 0, 16);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 }

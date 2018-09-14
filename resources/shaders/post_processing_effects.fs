@@ -8,4 +8,5 @@ uniform sampler2D scene_texture;
 void main()
 {
     color = vec4(texture(scene_texture, tex_coord).xyz,  1);
+	color = vec4(0.5, 0.5, 0,  1);
 } 
