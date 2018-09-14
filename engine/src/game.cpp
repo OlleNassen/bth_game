@@ -61,7 +61,12 @@ void Game::run()
 
 void Game::render()
 {
-	renderer.render();			
+	renderer.render();
+	static std::string temp = "";
+	if (std::string s = gui.chat_update(window); s != "")
+		temp = s;
+
+	renderer.render_text(temp);
 }
 
 void Game::update(std::chrono::milliseconds delta)

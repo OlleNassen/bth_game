@@ -11,6 +11,7 @@
 #include "ecs.hpp"
 #include "window.hpp"
 #include "input.hpp"
+#include "gui.hpp"
 
 //::.. authors ..:://
 // Edvard
@@ -42,6 +43,7 @@ private:
 	input player_input;
 	Renderer renderer;
 	input_array<8> player_inputs;
+	GraphicalUserInterface gui;
 	
 };
 

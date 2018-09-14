@@ -26,8 +26,8 @@ public:
 	void update_input(input& input);
 	void assign_key(button name, int keybind) { keybinds.insert(std::make_pair(keybind, name)); }
 
-private:
 	GLFWwindow* glfw_window;
+private:
 	std::map<int, button> keybinds;
 };
 
