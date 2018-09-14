@@ -30,20 +30,20 @@ void host_service(std::chrono::milliseconds time, ENetHost* h,
 	}
 }
 
-class host
+class Host
 {
 public:
-	virtual ~host() = default;
+	virtual ~Host() = default;
 	virtual void update(const packet& p, input* begin, input* end) = 0;
 	virtual int id() const = 0;
 };
 
 
-class client : public host
+class Client : public Host
 {
 public:
-	client(const std::string& ip_address);
-	~client();
+	Client(const std::string& ip_address);
+	~Client();
 
 	void update(const packet& p, input* begin, input* end) override;
 	int id() const override { return client_id; }
@@ -61,11 +61,11 @@ private:
 	ENetPeer* peer;
 };
 
-class server : public host
+class Server : public Host
 {
 public:
-	server();
-	~server();
+	Server();
+	~Server();
 
 	void update(const packet& p, input* begin, input* end) override;
 	int id() const override { return server_id; }

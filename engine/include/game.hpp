@@ -36,7 +36,7 @@ private:
 
 	std::string s;
 	
-	std::unique_ptr<host> host;
+	std::unique_ptr<Host> host;
 	std::chrono::milliseconds timestep{16};
 	Window window;
 	input player_input;

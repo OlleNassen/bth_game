@@ -1,21 +1,21 @@
-#include "packet.hpp"
+#include "Packet.hpp"
 
-packet::packet()
+Packet::Packet()
 {
 
 }
 
-packet::~packet()
+Packet::~Packet()
 {
 
 }
 
-const input* packet::data() const
+const input* Packet::data() const
 {
 	return i;
 }
 
-int packet::size() const
+int Packet::size() const
 {
 	return sizeof(input) * 8;
 }

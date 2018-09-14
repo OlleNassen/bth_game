@@ -14,17 +14,18 @@ Game::Game()
 
 	net_init();
 
+	/*
 	std::cin >> s;
 
 	if (s == "server")
 	{
-		host = std::make_unique<server>();
+		host = std::make_unique<Server>();
 	}
 	else
 	{
-		host = std::make_unique<client>(s);
+		host = std::make_unique<Client>(s);
 	}
-	
+	*/
 }
 
 Game::~Game()
@@ -39,7 +40,7 @@ void Game::run()
 	auto delta_time = 0ns;
 	
 	while (window.is_open() && 
-		player_inputs.components[host->id()][button::quit] != button_state::pressed)
+		player_inputs.components[0][button::quit] != button_state::pressed)
 	{
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();
@@ -47,7 +48,8 @@ void Game::run()
 		if (delta_time > timestep)
 		{
 			delta_time = 0ns;
-			window.update_input(player_inputs.components[host->id()]);
+			//window.update_input(player_inputs.components[host->id()]);
+			window.update_input(player_inputs.components[0]);
 			update(timestep);
 		}
 
@@ -69,11 +71,11 @@ void Game::update(std::chrono::milliseconds delta)
 
 	packet p;
 	p.i = player_inputs.components;
-
+	/*
 	host->update(p, 
 		std::begin(player_inputs.components), 
 		std::end(player_inputs.components));
-
+		*/
 	renderer.update(delta, player_inputs.components[0], 0);
 	renderer.update(delta, player_inputs.components[1], 1);
 	renderer.update(delta, player_inputs.components[2], 2);

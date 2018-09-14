@@ -6,7 +6,7 @@ using std::cin;
 using std::string;
 constexpr char nl = '\n';
 
-client::client(const std::string& ip_address)
+Client::Client(const std::string& ip_address)
 {
 	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
 	enet_address_set_host(&address, ip_address.c_str());
@@ -28,12 +28,12 @@ client::client(const std::string& ip_address)
 	}
 }
 
-client::~client()
+Client::~Client()
 {
 	enet_host_destroy(enet_host);
 }
 
-void client::update(const packet& p, input* begin, input* end)
+void Client::update(const packet& p, input* begin, input* end)
 {
 	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
@@ -48,7 +48,7 @@ void client::update(const packet& p, input* begin, input* end)
 		[this](const ENetEvent& event) { disconnect(event); });
 }
 
-void client::recieve(const ENetEvent& event, input* begin, input* end)
+void Client::recieve(const ENetEvent& event, input* begin, input* end)
 {
 	const input* data = reinterpret_cast<input*>(event.packet->data);
 	const auto* index = &data[client_id];
@@ -62,18 +62,18 @@ void client::recieve(const ENetEvent& event, input* begin, input* end)
 	}
 }
 
-void client::connect(const ENetEvent& event)
+void Client::connect(const ENetEvent& event)
 {
 	peer = event.peer;
 	client_id = event.peer->connectID;
 }
 
-void client::disconnect(const ENetEvent& event)
+void Client::disconnect(const ENetEvent& event)
 {
 
 }
 
-server::server()
+Server::Server()
 {
 	address.host = ENET_HOST_ANY;
 	address.port = 1234;
@@ -81,12 +81,12 @@ server::server()
 	enet_host = enet_host_create(&address, 32, 2, 0, 0);
 }
 
-server::~server()
+Server::~Server()
 {
 	enet_host_destroy(enet_host);
 }
 
-void server::update(const packet& p, input* begin, input* end)
+void Server::update(const packet& p, input* begin, input* end)
 {
 	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
@@ -104,7 +104,7 @@ void server::update(const packet& p, input* begin, input* end)
 		[this, &p](const ENetEvent& event) { disconnect(event); });
 }
 
-void server::recieve(const ENetEvent& event, input* begin, input* end)
+void Server::recieve(const ENetEvent& event, input* begin, input* end)
 {
 	const input* data = reinterpret_cast<input*>(event.packet->data);
 	const auto* index = &data[server_id];
@@ -118,12 +118,12 @@ void server::recieve(const ENetEvent& event, input* begin, input* end)
 	}
 }
 
-void server::connect(const ENetEvent& event)
+void Server::connect(const ENetEvent& event)
 {
 	peers[num_peers++] = event.peer;
 }
 
-void server::disconnect(const ENetEvent& event)
+void Server::disconnect(const ENetEvent& event)
 {
 
 }
