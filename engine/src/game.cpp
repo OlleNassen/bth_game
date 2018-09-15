@@ -61,7 +61,7 @@ void Game::run()
 
 void Game::render()
 {
-	renderer.render(gui::text_buffer());
+	renderer.render(chat[0]);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -80,4 +80,5 @@ void Game::update(std::chrono::milliseconds delta)
 	renderer.update(delta, player_inputs.components[1], 1);
 	renderer.update(delta, player_inputs.components[2], 2);
 	renderer.update(delta, player_inputs.components[3], 3);
+	chat.update(delta);
 }

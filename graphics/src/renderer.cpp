@@ -35,7 +35,7 @@ void Renderer::render(const std::string& text_buffer)const
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	shaders[1].uniform("projection", projection);
 	shaders[1].uniform("text_color", glm::vec3(0.3f, 0.3f, 0.9f));
-	text.render_text(text_buffer.c_str(), 0, 0, 1);
+	text.render_text(text_buffer.c_str(), 10, 10, 1);
 }
 
 void Renderer::update(std::chrono::milliseconds delta, const input& i, int index)

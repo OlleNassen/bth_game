@@ -3,6 +3,8 @@
 namespace gui
 {
 
+using namespace std::chrono_literals;
+
 std::string string_buffer;
 
 const std::string& text_buffer()
@@ -25,6 +27,24 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		string_buffer.clear();
 	}	
+}
+
+void chat::update(std::chrono::milliseconds delta)
+{
+	constexpr auto underscore = '_';
+	
+	if (has_underscore)
+		chat_log[0] = string_buffer + underscore;
+	else
+		chat_log[0] = string_buffer;
+	
+	time += delta;
+
+	if (time > 500ms)
+	{
+		has_underscore = !has_underscore;
+		time = 0ms;
+	}
 }
 
 }

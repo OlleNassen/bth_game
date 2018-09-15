@@ -42,7 +42,8 @@ private:
 	Window window;
 	input player_input;
 	Renderer renderer;
-	input_array<8> player_inputs;	
+	input_array<8> player_inputs;
+	gui::chat chat;
 };
 
 
