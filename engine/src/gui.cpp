@@ -1,4 +1,5 @@
 #include "gui.hpp"
+#include <iostream>
 
 namespace gui
 {
@@ -32,6 +33,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void chat::update(std::chrono::milliseconds delta)
 {
 	constexpr auto underscore = '_';
+
+	if (chat_log[0].size() > 1 && string_buffer.empty())
+	{
+		if (has_underscore)
+		{
+			chat_log[0].pop_back();
+			chat_log[1] = chat_log[0];
+		}	
+		else
+		{
+			chat_log[1] = chat_log[0];
+		}		
+	}
 	
 	if (has_underscore)
 		chat_log[0] = string_buffer + underscore;

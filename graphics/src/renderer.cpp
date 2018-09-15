@@ -17,9 +17,10 @@ Renderer::Renderer()
 	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }));
 	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }));
 
-	shaders.reserve(sizeof(Shader) * 2);
+	shaders.reserve(sizeof(Shader) * 5);
 	shaders.emplace_back("../resources/shaders/template.vs", "../resources/shaders/template.fs");
 	shaders.emplace_back("../resources/shaders/text.vs", "../resources/shaders/text.fs");
+	shaders.emplace_back("../resources/shaders/gui.vs", "../resources/shaders/gui.fs");
 	//shaders.emplace_back("../resources/shaders/blinn_phong.vs", "../resources/shaders/blinn_phong.fs");
 }
 
@@ -34,7 +35,7 @@ void Renderer::render(const std::string& text_buffer)const
 	shaders[1].use();
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	shaders[1].uniform("projection", projection);
-	shaders[1].uniform("text_color", glm::vec3(0.3f, 0.3f, 0.9f));
+	shaders[1].uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
 	text.render_text(text_buffer.c_str(), 10, 10, 1);
 }
 

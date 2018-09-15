@@ -67,7 +67,21 @@ void Game::update(std::chrono::milliseconds delta)
 {
 	using std::cout;
 	constexpr char nl = '\n';
-	if (host)
+
+	if (!host && !chat[1].empty())
+	{
+		if (chat[1] == "server")
+		{
+			host = std::make_unique<Server>();
+			
+		}
+		else
+		{
+			host = std::make_unique<Client>(s);
+		}
+		local_input = &player_inputs.components[host->id()];
+	}
+	else if (host)
 	{
 		Packet p;
 		p.i = player_inputs.components;
