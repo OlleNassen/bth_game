@@ -43,6 +43,7 @@ private:
 	input player_input;
 	Renderer renderer;
 	input_array<8> player_inputs;
+	input* local_input{ &player_inputs.components[0] };
 	gui::chat chat;
 };
 
