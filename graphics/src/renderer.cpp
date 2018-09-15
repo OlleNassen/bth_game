@@ -32,6 +32,10 @@ void Renderer::render(const std::string& text_buffer)const
 
 	render_type(shaders[0], camera, models);
 
+	shaders[2].use();
+	//ui.render();
+
+
 	shaders[1].use();
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	shaders[1].uniform("projection", projection);
@@ -70,4 +74,5 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i, int index
 	v[index] += offset;
 
 	s_cam.update(delta, v, v+4);
+	ui.update();
 }

@@ -4,6 +4,7 @@
 #include "model.hpp"
 #include "camera.hpp"
 #include "text.hpp"
+#include "user_interface.hpp"
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -21,6 +22,7 @@ private:
 	SpectatorCamera s_cam;
 	std::vector<Model> models;
 	Text text;
+	UserInterface ui;
 	std::vector<Shader> shaders;
 	std::vector<Mesh> meshes;
 
