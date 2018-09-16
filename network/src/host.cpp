@@ -11,21 +11,6 @@ Client::Client(const std::string& ip_address)
 	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
 	enet_address_set_host(&address, ip_address.c_str());
 	address.port = 1234;
-	peer = enet_host_connect(enet_host, &address, 2, 0);
-
-	if (peer)
-	{
-		ENetEvent event;
-		if (enet_host_service(enet_host, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
-		{
-			cout << "Connection succeeded." << nl;
-		}
-		else
-		{
-			enet_peer_reset(peer);
-			cout << "Connection failed." << nl;
-		}
-	}
 }
 
 Client::~Client()
@@ -38,8 +23,14 @@ void Client::update(const Packet& p, input* begin, input* end)
 	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 
-	/* Send the packet to the peer over channel id 0. */
-	enet_peer_send(peer, 0, enet_packet);
+	if (!peer)
+	{
+		peer = enet_host_connect(enet_host, &address, 2, 0);
+	}
+	else if (connected)
+	{
+		enet_peer_send(peer, 0, enet_packet);
+	}
 
 	using namespace std::chrono_literals;
 	host_service(0ms, enet_host,
@@ -50,6 +41,7 @@ void Client::update(const Packet& p, input* begin, input* end)
 
 void Client::recieve(const ENetEvent& event, input* begin, input* end)
 {
+	//peer = event.peer;
 	const input* data = reinterpret_cast<input*>(event.packet->data);
 	const auto* index = &data[client_id];
 	
@@ -60,12 +52,16 @@ void Client::recieve(const ENetEvent& event, input* begin, input* end)
 			begin[i] = data[i];
 		}
 	}
+
+	cout << peer->incomingPeerID << nl;
+	cout << peer->outgoingPeerID << nl;
 }
 
 void Client::connect(const ENetEvent& event)
 {
+	cout << "Connection succeeded." << nl;
 	peer = event.peer;
-	client_id = event.peer->connectID;
+	connected = true;
 }
 
 void Client::disconnect(const ENetEvent& event)
@@ -93,7 +89,7 @@ void Server::update(const Packet& p, input* begin, input* end)
 
 	/* Send the packet to the peer over channel id 0. */
 	for (auto* peer : peers)
-	{
+	{		
 		if (peer) enet_peer_send(peer, 0, enet_packet);	
 	}
 
@@ -107,7 +103,7 @@ void Server::update(const Packet& p, input* begin, input* end)
 void Server::recieve(const ENetEvent& event, input* begin, input* end)
 {
 	const input* data = reinterpret_cast<input*>(event.packet->data);
-	const auto* index = &data[server_id];
+	const auto* index = &data[0];
 
 	for (int i = 0; i < (end - begin); ++i)
 	{

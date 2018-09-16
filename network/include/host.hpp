@@ -23,7 +23,7 @@ void host_service(std::chrono::milliseconds time, ENetHost* h,
 	{
 		switch (event.type)
 		{
-		case ENET_EVENT_TYPE_RECEIVE: recieve(event); break;
+		case ENET_EVENT_TYPE_RECEIVE: recieve(event); enet_packet_destroy(event.packet); break;
 		case ENET_EVENT_TYPE_CONNECT: connect(event); break;
 		case ENET_EVENT_TYPE_DISCONNECT: disconnect(event); break;
 		}
@@ -54,11 +54,12 @@ private:
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);	
 	
-	int client_id = 0;
+	int client_id = 3;
+	bool connected = false;
 
 	ENetAddress address;
 	ENetHost* enet_host;
-	ENetPeer* peer;
+	ENetPeer* peer = nullptr;
 };
 
 class Server : public Host
@@ -68,14 +69,12 @@ public:
 	~Server();
 
 	void update(const Packet& p, input* begin, input* end) override;
-	int id() const override { return server_id; }
+	int id() const override { return 0; }
 
-private:
+private:	
 	void recieve(const ENetEvent& event, input* begin, input* end);
 	void connect(const ENetEvent& event);
-	void disconnect(const ENetEvent& event);
-	
-	int server_id = 3;
+	void disconnect(const ENetEvent& event);	
 
 	ENetAddress address;
 	ENetHost* enet_host;
