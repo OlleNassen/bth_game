@@ -1,11 +1,12 @@
 #include "renderer.hpp"
 
+#include <iostream>
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
 
 Renderer::Renderer()
-	: camera(90, 1280.f, 720.f, 0.1f, 100.f)
-	, s_cam(90, 1280.f, 720.f, 0.1f, 100.f)
+	: camera(glm::radians(60.0f), 1280.f, 720.f, 0.1f, 100.f)
+	, s_cam(glm::radians(60.0f), 1280.f, 720.f, 0.1f, 100.f)
 {
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
@@ -36,8 +37,8 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	render_type(shaders[0], camera, models);
 
 	shaders[2].use();
-	if (is_chat_visible)
-		ui.render();
+	//if (is_chat_visible)
+		//ui.render();
 
 
 	shaders[1].use();
@@ -47,20 +48,22 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 
 	auto offset = 0;
 	
-	std::for_each(begin, end,
+	/*std::for_each(begin, end,
 		[this, &offset, begin](const auto& s)
 		{
 			if(&s == begin || is_chat_visible)
 				text.render_text(s.c_str(), 10, (offset += 50), 1);
-		});
+		});*/
 }
 
 void Renderer::update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on)
 {
 	using namespace std::chrono_literals;
 	time += delta;
-	//camera.fps_update(delta, i);
-	//camera.mouse_movement(i.cursor);
+	camera.fps_update(delta, i);
+	camera.mouse_movement(i.cursor);
+
+	std::cout << i.cursor.x << std::endl;
 
 	if (chat_on)
 	{
@@ -92,9 +95,9 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i, int index
 		offset += vec2{ speed, 0 } * dt;
 	}
 
-	models[index].move(offset);
-	v[index] += offset;
+	//models[index].move(offset);
+	//v[index] += offset;
 
-	s_cam.update(delta, v, v+4);
-	ui.update();
+	//s_cam.update(delta, v, v+4);
+	//ui.update();
 }
