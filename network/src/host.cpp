@@ -52,9 +52,6 @@ void Client::recieve(const ENetEvent& event, input* begin, input* end)
 			begin[i] = data[i];
 		}
 	}
-
-	cout << peer->incomingPeerID << nl;
-	cout << peer->outgoingPeerID << nl;
 }
 
 void Client::connect(const ENetEvent& event)
