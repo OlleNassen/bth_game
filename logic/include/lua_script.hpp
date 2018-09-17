@@ -15,6 +15,8 @@ public:
 	LuaScript(const std::string& filename);
 	~LuaScript();
 
+	lua_State* getLuaState();
+
 	void print_error(const std::string& variable_name, const std::string& reason);
 	template<typename T>
 	T lua_get(const std::string& variable_name)

@@ -17,5 +17,7 @@
   <ItemGroup>
     <None Include="shaders\text.vs" />
     <None Include="shaders\text.fs" />
+    <None Include="scripts\input.lua" />
+    <None Include="scripts\bindkey.lua" />
   </ItemGroup>
 </Project>
