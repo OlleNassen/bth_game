@@ -17,7 +17,7 @@ public:
 	Renderer();
 
 	void render(const std::string* begin, const std::string* end) const;
-	void update(std::chrono::milliseconds delta, const input& i, int index);
+	void update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on);
 
 private:
 	Camera camera;
@@ -27,8 +27,11 @@ private:
 	UserInterface ui;
 	std::vector<Shader> shaders;
 	std::vector<Mesh> meshes;
+	std::chrono::milliseconds time{0};
 
 	glm::vec2 v[4];
+	bool is_chat_visible{ false };
+
 };
 
 template <typename T>

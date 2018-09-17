@@ -77,9 +77,9 @@ void Game::update(std::chrono::milliseconds delta)
 			std::end(player_inputs.components));
 	}
 
-	renderer.update(delta, player_inputs.components[0], 0);
-	renderer.update(delta, player_inputs.components[1], 1);
-	renderer.update(delta, player_inputs.components[2], 2);
-	renderer.update(delta, player_inputs.components[3], 3);
+	renderer.update(delta, player_inputs.components[0], 0, true);
+	renderer.update(delta, player_inputs.components[1], 1, true);
+	renderer.update(delta, player_inputs.components[2], 2, true);
+	renderer.update(delta, player_inputs.components[3], 3, true);
 	chat.update(delta);
 }

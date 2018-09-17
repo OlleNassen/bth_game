@@ -9,5 +9,5 @@ out vec2 vs_color;
 void main()
 {
     vs_color = color;
-	gl_Position = vec4(vertex_position, 0.0, 1.0);
+	gl_Position = vec4(vertex_position + position, 0.0, 1.0);
 }

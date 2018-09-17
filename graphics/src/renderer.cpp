@@ -36,7 +36,8 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	render_type(shaders[0], camera, models);
 
 	shaders[2].use();
-	//ui.render();
+	if (is_chat_visible)
+		ui.render();
 
 
 	shaders[1].use();
@@ -47,16 +48,27 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	auto offset = 0;
 	
 	std::for_each(begin, end,
-		[this, &offset](const auto& s)
+		[this, &offset, begin](const auto& s)
 		{
-			text.render_text(s.c_str(), 10, (offset += 50), 1);
+			if(&s == begin || is_chat_visible)
+				text.render_text(s.c_str(), 10, (offset += 50), 1);
 		});
 }
 
-void Renderer::update(std::chrono::milliseconds delta, const input& i, int index)
+void Renderer::update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on)
 {
+	using namespace std::chrono_literals;
+	time += delta;
 	//camera.fps_update(delta, i);
 	//camera.mouse_movement(i.cursor);
+
+	if (chat_on)
+	{
+		time = 0ms;
+		is_chat_visible = true;
+	}
+
+	is_chat_visible = !(time > 5s);
 
 	using glm::vec2;
 	float speed{ 10.f };
