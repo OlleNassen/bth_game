@@ -51,7 +51,7 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 		[this, &offset, begin](const auto& s)
 		{
 			if(&s == begin || is_chat_visible)
-				text.render_text(s.c_str(), 10, (offset += 50), 1);
+				text.render_text(s.c_str(), 10, (offset += 25), 0.5f);
 		});
 }
 
