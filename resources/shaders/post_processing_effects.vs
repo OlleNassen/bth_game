@@ -1,4 +1,4 @@
-##version 430
+#version 430
 layout (location = 0) in vec4 position; // <vec2 pos and vec2 tex>
 
 out vec2 tex_coord;

@@ -35,8 +35,19 @@ void Renderer::render()const
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	scene_texture.bind_framebuffer();
+	glClear(GL_COLOR_BUFFER_BIT);
 	render_type(shaders[0], camera, models);
 
+	// Post Processing Effects
+	shaders[3].use();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	shaders[3].uniform("scene_texture", 0);
+	glActiveTexture(GL_TEXTURE0);
+	shaders[3].uniform("pulse", post_processing_effects.glow_value);
+	glBindTexture(GL_TEXTURE_2D, scene_texture.fbo_texture);
+	post_processing_effects.render();
+
+	// Text
 	shaders[1].use();
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	shaders[1].uniform("projection", projection);
@@ -46,20 +57,17 @@ void Renderer::render()const
 		text.render_text("HELLO, IS IT ME YOU'RE LOOKING FOR", 0, 0, 1);
 	}
 
-	shaders[3].use();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	shaders[3].uniform("scene_texture", 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, scene_texture.fbo_texture);
-	
-	post_processing_effects.render();
-
 }
 
 void Renderer::update(std::chrono::milliseconds delta, const input& i)
 {
 	camera.fps_update(delta, i);
 	camera.mouse_movement(i.cursor);
+
+	if (i[button::up] >= button_state::pressed)
+	{
+		post_processing_effects.update();
+	}
 
 	using glm::vec2;
 	float speed{ 10.f };
