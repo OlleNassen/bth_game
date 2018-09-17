@@ -82,4 +82,7 @@ void Game::update(std::chrono::milliseconds delta)
 	renderer.update(delta, player_inputs.components[2], 2, true);
 	renderer.update(delta, player_inputs.components[3], 3, true);
 	chat.update(delta);
+
+
+	luaLoad.processInput(*local_input);
 }
