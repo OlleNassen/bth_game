@@ -2,7 +2,6 @@
 #define POST_PROCESSING_EFFECTS_HPP
 #include <GL/glew.h>
 #include <iostream>
-#define BUFFER_OFFSET(i) ((char *)NULL + (i)) 
 
 class PostProcessingEffects
 {
