@@ -4,6 +4,9 @@
 #include "model.hpp"
 #include "camera.hpp"
 #include "text.hpp"
+#include "user_interface.hpp"
+
+
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -12,15 +15,33 @@ class Renderer
 {
 public:
 	Renderer();
-	~Renderer();
 
-	void render()const;
-	void update(std::chrono::milliseconds delta, const input& i);
+	void render(const std::string* begin, const std::string* end) const;
+	void update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on);
+
 private:
-	Text test_text;
-	Camera cam;
-	std::vector<Model*>models;
+	Camera camera;
+	SpectatorCamera s_cam;
+	std::vector<Model> models;
+	Text text;
+	UserInterface ui;
 	std::vector<Shader> shaders;
+	std::vector<Mesh> meshes;
+	std::chrono::milliseconds time{0};
+
+	glm::vec2 v[4];
+	bool is_chat_visible{ false };
+
 };
+
+template <typename T>
+void render_type(const Shader& shader, const Camera& camera, const T& data)
+{
+	shader.use();
+	for (auto& renderable : data)
+	{
+		renderable.render(shader, camera);
+	}
+}
 
 #endif

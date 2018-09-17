@@ -120,8 +120,13 @@
   <ItemGroup>
     <None Include="scripts\bindkey.lua" />
     <None Include="scripts\input.lua" />
+    <None Include="shaders\blinn_phong.vs" />
+    <None Include="shaders\gui.fs" />
+    <None Include="shaders\gui.vs" />
     <None Include="shaders\text.fs" />
     <None Include="shaders\text.vs" />
+    <None Include="shaders\uber.fs" />
+    <None Include="shaders\uber.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -8,7 +8,7 @@ public:
 	Mesh();
 	~Mesh();
 
-	void render();
+	void render()const;
 private:
 	unsigned int vao_id;
 	unsigned int vbo_id;

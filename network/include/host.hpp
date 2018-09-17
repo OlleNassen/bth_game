@@ -1,6 +1,7 @@
 #ifndef HOST_HPP
 #define HOST_HPP
 
+#include <array>
 #include <functional>
 #include <iostream>
 #include <chrono>
@@ -22,53 +23,58 @@ void host_service(std::chrono::milliseconds time, ENetHost* h,
 	{
 		switch (event.type)
 		{
-		case ENET_EVENT_TYPE_RECEIVE: recieve(event); break;
+		case ENET_EVENT_TYPE_RECEIVE: recieve(event); enet_packet_destroy(event.packet); break;
 		case ENET_EVENT_TYPE_CONNECT: connect(event); break;
 		case ENET_EVENT_TYPE_DISCONNECT: disconnect(event); break;
 		}
 	}
 }
 
-class host
+class Host
 {
 public:
-	virtual ~host() = default;
-	virtual void update(const packet& p) = 0;
-
-	input* i = nullptr;
+	virtual ~Host() = default;
+	virtual void update(const Packet& p, input* begin, input* end) = 0;
+	virtual int id() const = 0;
 };
 
 
-class client : public host
+class Client : public Host
 {
 public:
-	client(const std::string& ip_address);
-	~client();
+	Client(const std::string& ip_address);
+	~Client();
 
-	void update(const packet& p) override;
+	void update(const Packet& p, input* begin, input* end) override;
+	int id() const override { return client_id; }
+	
 
 private:
+	void recieve(const ENetEvent& event, input* begin, input* end);
 	void connect(const ENetEvent& event);
-	void recieve(const ENetEvent& event);
-	void disconnect(const ENetEvent& event);
+	void disconnect(const ENetEvent& event);	
+	
+	int client_id = 3;
+	bool connected = false;
 
 	ENetAddress address;
 	ENetHost* enet_host;
-	ENetPeer* peer;
+	ENetPeer* peer = nullptr;
 };
 
-class server : public host
+class Server : public Host
 {
 public:
-	server();
-	~server();
+	Server();
+	~Server();
 
-	void update(const packet& p) override;
+	void update(const Packet& p, input* begin, input* end) override;
+	int id() const override { return 0; }
 
-private:
+private:	
+	void recieve(const ENetEvent& event, input* begin, input* end);
 	void connect(const ENetEvent& event);
-	void recieve(const ENetEvent& event);
-	void disconnect(const ENetEvent& event);
+	void disconnect(const ENetEvent& event);	
 
 	ENetAddress address;
 	ENetHost* enet_host;

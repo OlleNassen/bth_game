@@ -1,23 +1,63 @@
 #include "camera.hpp"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
-Camera::Camera()
+#include <algorithm>
+#include <glm/gtc/matrix_transform.hpp>
+
+SpectatorCamera::SpectatorCamera(float fovy, float width,
+	float height, float near, float far)
+	: projection{glm::perspective(fovy, width / height, near, far)}
+	, view{1.0f}
+	, aspect_ratio{width / height}
+	, view_angle{ 
+		glm::tan(fovy / 4.0f), 
+		glm::tan((2 * glm::atan(aspect_ratio * glm::tan(fovy / 2.0f))) / 4.0f) , 
+		0}
+	
 {
+
 }
+
+void SpectatorCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
+{
+	auto pos_x = [](const auto& l, const auto& r) { return l.x < r.x; };
+	auto pos_y = [](const auto& l, const auto& r) { return l.y < r.y; };
+
+	using std::minmax_element;
+	auto minmax_x = minmax_element(begin, end, pos_x);
+	auto minmax_y = minmax_element(begin, end, pos_y);
+	
+	using namespace glm;
+	auto size = vec2{ minmax_x.second->x - minmax_x.first->x, minmax_y.second->y - minmax_y.first->y };
+	auto new_xy = vec2{ vec2{ minmax_x.first->x, minmax_y.first->y } + (size / 2.0f) };
+	
+	auto distance = vec3{ new_xy + (size / 2.0f), 0.0f};
+	
+	auto new_z = position.z;
+	if (aspect_ratio > (size.x / size.y)) //check height
+	{
+		new_z = distance.y / view_angle.y;
+	}
+	else
+	{
+		new_z = distance.x / view_angle.x;
+	}
+
+	position = { new_xy, new_z };
+}
+
+glm::mat4 SpectatorCamera::view_matrix() const
+{
+	using namespace glm;
+	return lookAt(position, position + vec3{0.0f, 0.0f, -1.0f}, vec3{ 0.0f, 1.0f, 0.0f });
+}
+
+
+
+
 
 Camera::Camera(float fovy, float width,
 	float height, float near, float far)
 	: projection(glm::perspective(fovy, width / height, near, far))
-{
-	yaw = -80.0f;
-	pitch = 0.0f;
-	position = glm::vec3(0.0f, 0.0f, 1.0f);
-	forward = glm::vec3(0.0f, 0.0f, -1.0f);
-	up = glm::vec3(0.0f, 1.0f, 0.0f);
-}
-
-Camera::~Camera()
 {
 }
 
@@ -74,11 +114,6 @@ glm::mat4 Camera::projection_matrix() const
 glm::mat4 Camera::view_matrix() const
 {
 	return glm::lookAt(position, position + forward, up);
-}
-
-void Camera::set_projection(const glm::mat4& projection)
-{
-	this->projection = projection;
 }
 
 void Camera::mouse_movement(const glm::vec2& mouse_pos)

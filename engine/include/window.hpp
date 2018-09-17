@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "input.hpp"
+#include "gui.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -26,8 +27,10 @@ public:
 	void update_input(input& input);
 	void assign_key(button name, int keybind) { keybinds.insert(std::make_pair(keybind, name)); }
 
+	
 private:
 	GLFWwindow* glfw_window;
+
 	std::map<int, button> keybinds;
 };
 

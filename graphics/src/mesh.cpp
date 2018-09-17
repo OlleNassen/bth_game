@@ -24,7 +24,7 @@ Mesh::~Mesh()
 
 }
 
-void Mesh::render()
+void Mesh::render()const
 {
 	glBindVertexArray(vao_id);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
