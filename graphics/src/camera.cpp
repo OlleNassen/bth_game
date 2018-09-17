@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
 
-
 SpectatorCamera::SpectatorCamera(float fovy, float width,
 	float height, float near, float far)
 	: projection{glm::perspective(fovy, width / height, near, far)}
@@ -56,25 +55,9 @@ glm::mat4 SpectatorCamera::view_matrix() const
 
 
 
-
-
-
-Camera::Camera()
-{
-}
-
 Camera::Camera(float fovy, float width,
 	float height, float near, float far)
 	: projection(glm::perspective(fovy, width / height, near, far))
-{
-	yaw = -80.0f;
-	pitch = 0.0f;
-	position = glm::vec3(0.0f, 0.0f, 20.0f);
-	forward = glm::vec3(0.0f, 0.0f, -1.0f);
-	up = glm::vec3(0.0f, 1.0f, 0.0f);
-}
-
-Camera::~Camera()
 {
 }
 
@@ -131,11 +114,6 @@ glm::mat4 Camera::projection_matrix() const
 glm::mat4 Camera::view_matrix() const
 {
 	return glm::lookAt(position, position + forward, up);
-}
-
-void Camera::set_projection(const glm::mat4& projection)
-{
-	this->projection = projection;
 }
 
 void Camera::mouse_movement(const glm::vec2& mouse_pos)
