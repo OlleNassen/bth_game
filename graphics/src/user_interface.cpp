@@ -4,8 +4,8 @@
 
 UserInterface::UserInterface()
 {
-	elements.fill({ {-0.5, -0.5}, {1.0, 1.0}, { 1.0, 1.0 } });
-	elements.back() = { { -0.5, -1.0 },{ 0.8, 0.3 },{ 1.0, 0.25 } };
+	elements.fill({ {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f } });
+	elements.back() = { { -0.5f, -1.0f },{ 0.8f, 0.3f },{ 1.0f, 0.25f } };
 	
 	glBindVertexArray(vao);
 
