@@ -4,6 +4,7 @@
 #include <array>
 #include <glm/glm.hpp>
 #include "shader.hpp"
+#include "helpers.hpp"
 
 
 struct gui_element
@@ -16,7 +17,6 @@ class UserInterface
 {
 public:
 	UserInterface();
-	~UserInterface();
 
 	void update();
 
@@ -25,9 +25,9 @@ private:
 
 	void rebind_buffers();
 
-	unsigned int vao;
-	unsigned int vertex_buffer;
-	unsigned int gui_buffer;
+	VertexArray vao;
+	Buffer vertex_buffer;
+	Buffer gui_buffer;
 
 	std::array<gui_element, 100> elements;
 };

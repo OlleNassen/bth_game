@@ -163,6 +163,7 @@
     <ClCompile Include="src\user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\helpers.hpp" />
     <ClInclude Include="include\camera.hpp" />
     <ClInclude Include="include\lights.hpp" />
     <ClInclude Include="include\mesh.hpp" />

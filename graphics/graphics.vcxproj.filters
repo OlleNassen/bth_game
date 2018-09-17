@@ -68,5 +68,8 @@
     <ClInclude Include="include\user_interface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\helpers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

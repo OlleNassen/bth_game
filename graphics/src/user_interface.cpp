@@ -6,26 +6,14 @@ UserInterface::UserInterface()
 {
 	elements.fill({ {0.0, 0.0}, {1.0, 1.0} });
 	
-	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	glGenBuffers(1, &vertex_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-	glBufferData(GL_ARRAY_BUFFER, 
-		sizeof(glm::vec2) * primitives::quad.size(), 
-		primitives::quad.data(), GL_STATIC_DRAW);
+	gl_buffer_data(GL_ARRAY_BUFFER, primitives::quad, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
 
-	glGenBuffers(1, &gui_buffer);
 	rebind_buffers();
-}
-
-UserInterface::~UserInterface()
-{
-	glDeleteBuffers(1, &vertex_buffer);
-	glDeleteBuffers(1, &gui_buffer);
-	glDeleteVertexArrays(1, &vao);
 }
 
 void UserInterface::update()
@@ -64,7 +52,7 @@ void UserInterface::render()const
 void UserInterface::rebind_buffers()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, gui_buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * elements.size(), elements.data(), GL_STREAM_DRAW);
+	gl_buffer_data(GL_ARRAY_BUFFER, elements, GL_STREAM_DRAW);
 
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
