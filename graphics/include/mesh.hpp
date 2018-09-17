@@ -1,9 +1,9 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 #include "shader.hpp"
-#include <string.h>
+#include <string>
 #include <GL/glew.h>
-#include "../../external/include/LeapImporter/LeapImporter/CustomImporter.h"
+#include "CustomImporter.h"
 
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 
@@ -20,7 +20,7 @@ private:
 	unsigned int vao_id;
 	unsigned int vbo_id;
 
-	CustomMesh* custom_mesh;
+	CustomMesh custom_mesh;
 };
 
 #endif

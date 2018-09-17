@@ -26,7 +26,6 @@ Mesh::Mesh()
 
 Mesh::Mesh(const std::string meshfile)
 {
-	custom_mesh = new CustomMesh(meshfile.c_str());
 
 	//glGenVertexArrays(1, &vao_id);
 	//glBindVertexArray(vao_id);
