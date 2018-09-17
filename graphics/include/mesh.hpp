@@ -7,8 +7,6 @@
 
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 
-//using namespace std;
-
 class Mesh
 {
 public:
@@ -17,11 +15,12 @@ public:
 	~Mesh();
 
 	void render()const;
+
 private:
 	unsigned int vao_id;
 	unsigned int vbo_id;
 
-	//CustomMesh* custom_mesh;
+	CustomMesh* custom_mesh;
 };
 
 #endif
