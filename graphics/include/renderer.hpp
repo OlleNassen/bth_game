@@ -5,6 +5,8 @@
 #include "camera.hpp"
 #include "text.hpp"
 #include "user_interface.hpp"
+
+
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -14,7 +16,7 @@ class Renderer
 public:
 	Renderer();
 
-	void render(const std::string& text_buffer)const;
+	void render(const std::string* begin, const std::string* end) const;
 	void update(std::chrono::milliseconds delta, const input& i, int index);
 
 private:

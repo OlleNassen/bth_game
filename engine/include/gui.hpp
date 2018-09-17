@@ -20,6 +20,9 @@ public:
 	const std::string* begin() const { return &chat_log[0]; }
 	const std::string* end() const { return &chat_log[10]; }
 
+	std::string* begin() { return &chat_log[0]; }
+	std::string* end() { return &chat_log[10]; }
+
 private:	
 	std::string chat_log[10];	
 	std::chrono::milliseconds time{0};

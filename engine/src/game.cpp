@@ -13,19 +13,6 @@ Game::Game()
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 	net_init();
-
-	/*
-	std::cin >> s;
-
-	if (s == "server")
-	{
-		host = std::make_unique<Server>();
-	}
-	else
-	{
-		host = std::make_unique<Client>(s);
-	}
-	*/
 }
 
 Game::~Game()
@@ -60,7 +47,7 @@ void Game::run()
 
 void Game::render()
 {
-	renderer.render(chat[0]);
+	renderer.render(chat.begin(), chat.end());
 }
 
 void Game::update(std::chrono::milliseconds delta)

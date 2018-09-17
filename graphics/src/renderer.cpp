@@ -1,5 +1,8 @@
 #include "renderer.hpp"
+
+#include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
+
 Renderer::Renderer()
 	: camera(90, 1280.f, 720.f, 0.1f, 100.f)
 	, s_cam(90, 1280.f, 720.f, 0.1f, 100.f)
@@ -25,7 +28,7 @@ Renderer::Renderer()
 }
 
 
-void Renderer::render(const std::string& text_buffer)const
+void Renderer::render(const std::string* begin, const std::string* end)const
 {
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -40,7 +43,14 @@ void Renderer::render(const std::string& text_buffer)const
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	shaders[1].uniform("projection", projection);
 	shaders[1].uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
-	text.render_text(text_buffer.c_str(), 10, 10, 1);
+
+	auto offset = 0;
+	
+	std::for_each(begin, end,
+		[this, &offset](const auto& s)
+		{
+			text.render_text(s.c_str(), 10, (offset += 50), 1);
+		});
 }
 
 void Renderer::update(std::chrono::milliseconds delta, const input& i, int index)
