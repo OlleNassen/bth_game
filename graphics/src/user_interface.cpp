@@ -31,9 +31,9 @@ void UserInterface::render()const
 
 	glBindBuffer(GL_ARRAY_BUFFER, gui_buffer);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(gui_element), nullptr);
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)(sizeof(gui_element)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(gui_element), (void*)(sizeof(glm::vec2)));
 	
 	glVertexAttribDivisor(0, 0);
 	glVertexAttribDivisor(1, 1);
