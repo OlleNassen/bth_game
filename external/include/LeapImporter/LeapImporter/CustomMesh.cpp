@@ -1,9 +1,6 @@
 #include "CustomMesh.h"
 
-CustomMesh::CustomMesh()
-{
-}
-/*
+
 CustomMesh::CustomMesh(const char* fileName)
 {
 	loader(fileName);
@@ -69,4 +66,3 @@ void CustomMesh::loader(const char* fileName)
 
 	return;
 }
-*/
