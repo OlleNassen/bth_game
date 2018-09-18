@@ -1,4 +1,5 @@
 #include "mesh.hpp"
+#include <iostream>
 
 using namespace std;
 
@@ -25,6 +26,7 @@ Mesh::Mesh()
 }
 
 Mesh::Mesh(const std::string meshfile)
+	:custom_mesh(meshfile.c_str())
 {
 
 	//glGenVertexArrays(1, &vao_id);
