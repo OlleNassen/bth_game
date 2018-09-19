@@ -102,7 +102,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)external/lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib;ws2_32.lib;enet.lib;glew32.lib;glew32s.lib;glu32.lib;glfw3.lib;opengl32.lib;network.lib;graphics.lib;logic.lib;physics.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glew32s.lib;glu32.lib;glfw3.lib;opengl32.lib;network.lib;graphics.lib;logic.lib;physics.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
