@@ -32,7 +32,7 @@ Renderer::Renderer()
 void Renderer::render(const std::string* begin, const std::string* end)const
 {
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	render_type(shaders[0], camera, models);
 
@@ -62,8 +62,6 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i, int index
 	time += delta;
 	camera.fps_update(delta, i);
 	camera.mouse_movement(i.cursor);
-
-	std::cout << i.cursor.x << std::endl;
 
 	if (chat_on)
 	{
