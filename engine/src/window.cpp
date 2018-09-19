@@ -22,7 +22,7 @@ Window::Window(const glm::ivec2& window_size, const std::string& title)
 	}
 
 	glfwMakeContextCurrent(glfw_window);
-	glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCharCallback(glfw_window, gui::character_callback);
 	glfwSetKeyCallback(glfw_window, gui::key_callback);
 
@@ -88,9 +88,14 @@ void Window::update_input(input& input)
 		}				
 	}
 
+	glm::ivec2 window_size;
+	glfwGetWindowSize(glfw_window, &window_size.x, &window_size.y);
+
 	double x = 0.0;
 	double y = 0.0;
 	glfwGetCursorPos(glfw_window, &x, &y);
+
+	input.index = (y / window_size.y) * input::indices;
 	input.cursor = { x, y };
 }
 
