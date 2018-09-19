@@ -11,9 +11,12 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform vec3 light_pos;
+uniform vec3 view_pos;
+
 out VS_OUT{
 	vec4 temp_normal;
-	vec4 frag_pos;
+	vec3 frag_pos;
 	vec2 tex_coord;
 	vec3 tangent_light_pos;
 	vec3 tangent_view_pos;
@@ -22,7 +25,7 @@ out VS_OUT{
 
 void main()
 {
-	vs_out.frag_pos = model * vec4(position, 1);
+	vs_out.frag_pos = vec3(model * vec4(position, 1)).xyz;
 	vs_out.tex_coord = uv;
 
 	mat3 normal_matrix = transpose(inverse(mat3(model)));
@@ -32,10 +35,13 @@ void main()
     local_tangent = normalize(tangent - dot(local_tangent, normal) * normal);
 	vec3 bitangent = cross(normal, tangent);
 
+	mat3 tbn_matrix = transpose(mat3(tangent, bitangent, normal));
+    vs_out.tangent_light_pos = tbn_matrix * light_pos;
+    vs_out.tangent_view_pos  = tbn_matrix * view_pos;
+	vs_out.tangent_fragment_pos = tbn_matrix * vs_out.frag_pos;
+
+	//TEMP NORMAL
 	vs_out.temp_normal = model * normalize(vec4(normal, 0));
-
-
-
 
 	gl_Position = projection * view * model * vec4(position, 1);
 }

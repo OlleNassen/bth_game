@@ -4,7 +4,7 @@ out vec4 frag_color;
 
 in VS_OUT{
 	vec4 temp_normal;
-	vec4 frag_pos;
+	vec3 frag_pos;
 	vec2 tex_coord;
 	vec3 tangent_light_pos;
 	vec3 tangent_view_pos;
