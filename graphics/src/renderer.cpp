@@ -37,8 +37,8 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	render_type(shaders[0], camera, models);
 
 	shaders[2].use();
-	//if (is_chat_visible)
-		//ui.render();
+	if (is_chat_visible)
+		ui.render();
 
 
 	shaders[1].use();
@@ -48,12 +48,12 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 
 	auto offset = 0;
 	
-	/*std::for_each(begin, end,
+	std::for_each(begin, end,
 		[this, &offset, begin](const auto& s)
 		{
 			if(&s == begin || is_chat_visible)
-				text.render_text(s.c_str(), 10, (offset += 50), 1);
-		});*/
+				text.render_text(s.c_str(), 10, (offset += 25), 0.5f);
+		});
 }
 
 void Renderer::update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on)

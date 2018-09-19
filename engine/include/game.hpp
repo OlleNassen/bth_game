@@ -34,8 +34,6 @@ public:
 private:
 	void render();
 	void update(std::chrono::milliseconds delta);
-
-	std::string s;
 	
 	std::unique_ptr<Host> host;
 	std::chrono::milliseconds timestep{16};

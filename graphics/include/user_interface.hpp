@@ -11,6 +11,7 @@ struct gui_element
 {
 	glm::vec2 position;
 	glm::vec2 color;
+	glm::vec2 scale;
 };
 
 class UserInterface
