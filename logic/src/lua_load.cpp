@@ -3,18 +3,18 @@
 
 //	
 LuaLoad::LuaLoad() 
-	:luaInput("../resources/scripts/inputController.lua")
+	:luaInput("../resources/scripts/input_controller.lua")
 {
-	//myLuaScript[0] = LuaScript("../resources/scripts/inputController.lua");
-	//myLuaScript[1] = LuaScript("../resources/scripts/jump.lua");
+	/*myLuaScript[0] = LuaScript("../resources/scripts/inputController.lua");
+	myLuaScript[1] = LuaScript("../resources/scripts/jump.lua");
 	
-	//L = luaL_newstate();
-	//luaL_openlibs(L);
-	//std::string filename = "../resources/scripts/inputController.lua";
-	//loadScript("../resources/scripts/inputController.lua");
-
+	L = luaL_newstate();
+	luaL_openlibs(L);
+	std::string filename = "../resources/scripts/inputController.lua";
+	loadScript("../resources/scripts/inputController.lua");
+*/
 	
-	addLuaFunctins(luaInput.getLuaState());
+	//addLuaFunctins(luaInput.getLuaState());
 }
 
 LuaLoad::~LuaLoad()
