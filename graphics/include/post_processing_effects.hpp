@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <primitives.hpp>
-#include <stb_image.h>
 
 
 class PostProcessingEffects
@@ -22,7 +21,7 @@ public:
 
 	//Texture data
 	int width = 0, height = 0, nrOfChannels = 0;
-	unsigned char* data;
+	unsigned char* data = nullptr;
 
 	//Textures
 	unsigned int screen_warning;

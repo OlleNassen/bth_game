@@ -1,6 +1,6 @@
 #include "post_processing_effects.hpp"
-
 #define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 PostProcessingEffects::PostProcessingEffects()
 {
@@ -32,7 +32,8 @@ void PostProcessingEffects::update()
 
 void PostProcessingEffects::initialize_textures()
 {
-	data = stbi_load("screen_warning.png", &width, &height, &nrOfChannels, 0);
+	data = stbi_load("../resources/textures/screen_warning.png", &width, &height, &nrOfChannels, 0);
+	
 	glGenTextures(1, &screen_warning);
 	glBindTexture(GL_TEXTURE_2D, screen_warning);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
