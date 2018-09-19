@@ -43,6 +43,8 @@ void Renderer::render()const
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	shaders[3].uniform("scene_texture", 0);
 	glActiveTexture(GL_TEXTURE0);
+	shaders[3].uniform("screen_warning", 0);
+	glActiveTexture(GL_TEXTURE1);
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	glBindTexture(GL_TEXTURE_2D, scene_texture.fbo_texture);
 	post_processing_effects.render();
@@ -64,10 +66,7 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i)
 	camera.fps_update(delta, i);
 	camera.mouse_movement(i.cursor);
 
-	if (i[button::up] >= button_state::pressed)
-	{
-		post_processing_effects.update();
-	}
+	post_processing_effects.update();
 
 	using glm::vec2;
 	float speed{ 10.f };

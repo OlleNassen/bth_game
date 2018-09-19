@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <primitives.hpp>
+#include <stb_image.h>
+
 
 class PostProcessingEffects
 {
@@ -14,7 +16,16 @@ public:
 	void render()const;
 	void update();
 
+	void initialize_textures();
+
 	float glow_value = 1;
+
+	//Texture data
+	int width = 0, height = 0, nrOfChannels = 0;
+	unsigned char* data;
+
+	//Textures
+	unsigned int screen_warning;
 
 private:
 
