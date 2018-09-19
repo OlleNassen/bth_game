@@ -27,7 +27,7 @@ private:
 	UserInterface ui;
 	std::vector<Shader> shaders;
 	std::vector<Mesh> meshes;
-	std::chrono::milliseconds time{0};
+	std::chrono::milliseconds time{10000};
 
 	std::string log;
 
