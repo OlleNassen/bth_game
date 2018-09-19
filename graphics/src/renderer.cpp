@@ -55,45 +55,44 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 		});
 }
 
-void Renderer::update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on)
+void Renderer::update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data)
 {
 	using namespace std::chrono_literals;
-	time += delta;
 	//camera.fps_update(delta, i);
 	//camera.mouse_movement(i.cursor);
+	time = data != log ?  0ms : time + delta;
+	log = data;	
+	is_chat_visible = time < 3s;
 
-	if (chat_on)
-	{
-		time = 0ms;
-		is_chat_visible = true;
-	}
+	auto index = 0;
+	std::for_each(begin, end, [this, &index, delta](auto& i)
+		{
+			using glm::vec2;
+			float speed{ 10.f };
+			vec2 offset{ 0.0f, 0.0f };
+			float dt = delta.count() / 1000.0f;
+		
+			if (i[button::up] >= button_state::pressed)
+			{
+				offset += vec2{ 0, speed } *dt;
+			}
+			if (i[button::left] >= button_state::pressed)
+			{
+				offset += vec2{ -speed, 0 } *dt;
+			}
+			if (i[button::down] >= button_state::pressed)
+			{
+				offset += vec2{ 0, -speed } *dt;
+			}
+			if (i[button::right] >= button_state::pressed)
+			{
+				offset += vec2{ speed, 0 } *dt;
+			}
 
-	is_chat_visible = !(time > 5s);
-
-	using glm::vec2;
-	float speed{ 10.f };
-	vec2 offset{ 0.0f, 0.0f };
-	float dt = delta.count() / 1000.0f;
-
-	if (i[button::up] >= button_state::pressed)
-	{
-		offset += vec2{ 0, speed } * dt;
-	}
-	if (i[button::left] >= button_state::pressed)
-	{
-		offset += vec2{ -speed, 0 } * dt;
-	}
-	if (i[button::down] >= button_state::pressed)
-	{
-		offset += vec2{ 0, -speed } * dt;
-	}
-	if (i[button::right] >= button_state::pressed)
-	{
-		offset += vec2{ speed, 0 } * dt;
-	}
-
-	models[index].move(offset);
-	v[index] += offset;
+			models[index].move(offset);
+			v[index] += offset;
+			++index;
+		});
 
 	s_cam.update(delta, v, v+4);
 	ui.update();
