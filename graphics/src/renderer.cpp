@@ -67,44 +67,45 @@ void Renderer::update(std::chrono::milliseconds delta,
 	bool is_on)
 {
 	using namespace std::chrono_literals;
-	camera.fps_update(delta, begin[0]);
-	camera.mouse_movement(begin[0].cursor);
-
 	time = data != log ? 0ms : time + delta;
 	log = data;
 	is_chat_visible = is_on || time < 3s;
 
-
-	auto index = 0;
-	std::for_each(begin, end, [this, &index, delta](auto& i)
-	{
-		using glm::vec2;
-		float speed{ 10.f };
-		vec2 offset{ 0.0f, 0.0f };
-		float dt = delta.count() / 1000.0f;
-
-		if (i[button::up] >= button_state::pressed)
+	if (!is_on)
+	{		
+		auto index = 0;
+		std::for_each(begin, end, [this, &index, delta](auto& i)
 		{
-			offset += vec2{ 0, speed } *dt;
-		}
-		if (i[button::left] >= button_state::pressed)
-		{
-			offset += vec2{ -speed, 0 } *dt;
-		}
-		if (i[button::down] >= button_state::pressed)
-		{
-			offset += vec2{ 0, -speed } *dt;
-		}
-		if (i[button::right] >= button_state::pressed)
-		{
-			offset += vec2{ speed, 0 } *dt;
-		}
+			using glm::vec2;
+			float speed{ 10.f };
+			vec2 offset{ 0.0f, 0.0f };
+			float dt = delta.count() / 1000.0f;
 
-		models[index].move(offset);
-		v[index] += offset;
-		++index;
-	});
+			if (i[button::up] >= button_state::pressed)
+			{
+				offset += vec2{ 0, speed } *dt;
+			}
+			if (i[button::left] >= button_state::pressed)
+			{
+				offset += vec2{ -speed, 0 } *dt;
+			}
+			if (i[button::down] >= button_state::pressed)
+			{
+				offset += vec2{ 0, -speed } *dt;
+			}
+			if (i[button::right] >= button_state::pressed)
+			{
+				offset += vec2{ speed, 0 } *dt;
+			}
 
-	s_cam.update(delta, v, v+4);
-	ui.update();
+			models[index].move(offset);
+			v[index] += offset;
+			++index;
+		});
+
+		camera.fps_update(delta, begin[0]);
+		camera.mouse_movement(begin[0].cursor);
+		s_cam.update(delta, v, v+4);
+		ui.update();
+	}
 }
