@@ -1,5 +1,7 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
+
+#include <chrono>
 #include <vector>
 #include "model.hpp"
 #include "camera.hpp"

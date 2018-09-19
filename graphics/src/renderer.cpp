@@ -5,8 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Renderer::Renderer()
-	: camera(glm::radians(60.0f), 1280.f, 720.f, 0.1f, 100.f)
-	, s_cam(glm::radians(60.0f), 1280.f, 720.f, 0.1f, 100.f)
+	: camera(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
+	, s_cam(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
 {
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
@@ -56,46 +56,46 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 		});
 }
 
-void Renderer::update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on)
+void Renderer::update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data)
 {
 	using namespace std::chrono_literals;
-	time += delta;
-	camera.fps_update(delta, i);
-	camera.mouse_movement(i.cursor);
+	camera.fps_update(delta, begin[0]);
+	camera.mouse_movement(begin[0].cursor);
 
-	if (chat_on)
+	time = data != log ? 0ms : time + delta;
+	log = data;
+	is_chat_visible = time < 3s;
+
+	auto index = 0;
+	std::for_each(begin, end, [this, &index, delta](auto& i)
 	{
-		time = 0ms;
-		is_chat_visible = true;
-	}
+		using glm::vec2;
+		float speed{ 10.f };
+		vec2 offset{ 0.0f, 0.0f };
+		float dt = delta.count() / 1000.0f;
 
-	is_chat_visible = !(time > 5s);
+		if (i[button::up] >= button_state::pressed)
+		{
+			offset += vec2{ 0, speed } *dt;
+		}
+		if (i[button::left] >= button_state::pressed)
+		{
+			offset += vec2{ -speed, 0 } *dt;
+		}
+		if (i[button::down] >= button_state::pressed)
+		{
+			offset += vec2{ 0, -speed } *dt;
+		}
+		if (i[button::right] >= button_state::pressed)
+		{
+			offset += vec2{ speed, 0 } *dt;
+		}
 
-	using glm::vec2;
-	float speed{ 10.f };
-	vec2 offset{ 0.0f, 0.0f };
-	float dt = delta.count() / 1000.0f;
+		models[index].move(offset);
+		v[index] += offset;
+		++index;
+	});
 
-	if (i[button::up] >= button_state::pressed)
-	{
-		offset += vec2{ 0, speed } * dt;
-	}
-	if (i[button::left] >= button_state::pressed)
-	{
-		offset += vec2{ -speed, 0 } * dt;
-	}
-	if (i[button::down] >= button_state::pressed)
-	{
-		offset += vec2{ 0, -speed } * dt;
-	}
-	if (i[button::right] >= button_state::pressed)
-	{
-		offset += vec2{ speed, 0 } * dt;
-	}
-
-	//models[index].move(offset);
-	//v[index] += offset;
-
-	//s_cam.update(delta, v, v+4);
-	//ui.update();
+	s_cam.update(delta, v, v+4);
+	ui.update();
 }
