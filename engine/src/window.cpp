@@ -35,7 +35,6 @@ Window::Window(const glm::ivec2& window_size, const std::string& title)
 		cout << "Error glew init failed" << '\n';
 	}
 
-	//glFrontFace(GL_CCW);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);

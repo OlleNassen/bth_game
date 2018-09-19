@@ -47,6 +47,8 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	shaders[1].uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
 
 	auto offset = 0;
+
+	glDisable(GL_DEPTH_TEST);
 	
 	std::for_each(begin, end,
 		[this, &offset, begin](const auto& s)
@@ -54,9 +56,15 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 			if(&s == begin || is_chat_visible)
 				text.render_text(s.c_str(), 10, (offset += 25), 0.5f);
 		});
+
+	glEnable(GL_DEPTH_TEST);
 }
 
-void Renderer::update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data)
+void Renderer::update(std::chrono::milliseconds delta, 
+	const input* begin, 
+	const input* end, 
+	const std::string& data, 
+	bool is_on)
 {
 	using namespace std::chrono_literals;
 	camera.fps_update(delta, begin[0]);
@@ -64,7 +72,8 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 
 	time = data != log ? 0ms : time + delta;
 	log = data;
-	is_chat_visible = time < 3s;
+	is_chat_visible = is_on || time < 3s;
+
 
 	auto index = 0;
 	std::for_each(begin, end, [this, &index, delta](auto& i)

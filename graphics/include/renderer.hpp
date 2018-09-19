@@ -19,7 +19,11 @@ public:
 	Renderer();
 
 	void render(const std::string* begin, const std::string* end) const;
-	void update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data);
+	void update(std::chrono::milliseconds delta, 
+		const input* begin, 
+		const input* end, 
+		const std::string& data,
+		bool is_on);
 
 private:
 	Camera camera;
