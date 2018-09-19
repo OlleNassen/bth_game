@@ -13,17 +13,6 @@ Game::Game()
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 	net_init();
-
-	std::cin >> s;
-
-	if (s == "server")
-	{
-		host = std::make_unique<Server>();
-	}
-	else
-	{
-		host = std::make_unique<Client>(s);
-	}
 }
 
 Game::~Game()
@@ -38,7 +27,7 @@ void Game::run()
 	auto delta_time = 0ns;
 	
 	while (window.is_open() && 
-		player_inputs.components[host->id()][button::quit] != button_state::pressed)
+		(*local_input)[button::quit] != button_state::pressed)
 	{
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();
@@ -46,7 +35,7 @@ void Game::run()
 		if (delta_time > timestep)
 		{
 			delta_time = 0ns;
-			window.update_input(player_inputs.components[host->id()]);
+			window.update_input(*local_input);
 			update(timestep);
 		}
 
@@ -58,7 +47,7 @@ void Game::run()
 
 void Game::render()
 {
-	renderer.render();			
+	renderer.render(chat.begin(), chat.end());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -66,15 +55,31 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	Packet p;
-	p.i = player_inputs.components;
-	
-	host->update(p, 
-		std::begin(player_inputs.components), 
-		std::end(player_inputs.components));
-	
-	renderer.update(delta, player_inputs.components[0], 0);
-	renderer.update(delta, player_inputs.components[1], 1);
-	renderer.update(delta, player_inputs.components[2], 2);
-	renderer.update(delta, player_inputs.components[3], 3);
+	if (!host && !chat[1].empty())
+	{
+		if (chat[1] == "server")
+		{
+			host = std::make_unique<Server>();
+			
+		}
+		else
+		{
+			host = std::make_unique<Client>(s);
+		}
+		local_input = &player_inputs.components[host->id()];
+	}
+	else if (host)
+	{
+		Packet p;
+		p.i = player_inputs.components;
+		host->update(p, 
+			std::begin(player_inputs.components), 
+			std::end(player_inputs.components));
+	}
+
+	renderer.update(delta, player_inputs.components[0], 0, true);
+	renderer.update(delta, player_inputs.components[1], 1, true);
+	renderer.update(delta, player_inputs.components[2], 2, true);
+	renderer.update(delta, player_inputs.components[3], 3, true);
+	chat.update(delta);
 }
