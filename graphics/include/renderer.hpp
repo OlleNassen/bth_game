@@ -17,7 +17,7 @@ public:
 	Renderer();
 
 	void render(const std::string* begin, const std::string* end) const;
-	void update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on);
+	void update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data);
 
 private:
 	Camera camera;
@@ -28,6 +28,8 @@ private:
 	std::vector<Shader> shaders;
 	std::vector<Mesh> meshes;
 	std::chrono::milliseconds time{0};
+
+	std::string log;
 
 	glm::vec2 v[4];
 	bool is_chat_visible{ false };
