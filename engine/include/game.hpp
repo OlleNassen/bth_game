@@ -34,15 +34,13 @@ public:
 private:
 	void render();
 	void update(std::chrono::milliseconds delta);
-
-	std::string s;
 	
 	std::unique_ptr<Host> host;
 	std::chrono::milliseconds timestep{16};
 	Window window;
 	input player_input;
 	Renderer renderer;
-	input_array<8> player_inputs;
+	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
 	gui::chat chat;
 };

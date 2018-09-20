@@ -64,7 +64,7 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 		else
 		{
-			host = std::make_unique<Client>(s);
+			host = std::make_unique<Client>(chat[1]);
 		}
 		local_input = &player_inputs.components[host->id()];
 	}
@@ -76,10 +76,10 @@ void Game::update(std::chrono::milliseconds delta)
 			std::begin(player_inputs.components), 
 			std::end(player_inputs.components));
 	}
-
-	renderer.update(delta, player_inputs.components[0], 0, true);
-	renderer.update(delta, player_inputs.components[1], 1, true);
-	renderer.update(delta, player_inputs.components[2], 2, true);
-	renderer.update(delta, player_inputs.components[3], 3, true);
 	chat.update(delta);
+
+	renderer.update(delta, 
+		std::begin(player_inputs.components),
+		std::end(player_inputs.components), chat[1], chat.is_on());
+
 }
