@@ -43,15 +43,9 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 {
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glEnable(GL_DEPTH_TEST);
-	/*
+	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	scene_texture.bind_framebuffer();
-	
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-	*/
 	render_type(shaders[0], camera, models);
 			
 	// Text
@@ -80,7 +74,7 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	glEnable(GL_DEPTH_TEST);
 	
 	// Post Processing Effects
-	/*shaders[3].use();
+	shaders[3].use();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	shaders[3].uniform("scene_texture", 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -90,7 +84,7 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	glBindTexture(GL_TEXTURE_2D, post_processing_effects.screen_warning);
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
-	post_processing_effects.render();*/
+	post_processing_effects.render();
 }
 
 void Renderer::update(std::chrono::milliseconds delta, 
