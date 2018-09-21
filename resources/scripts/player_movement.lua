@@ -1,6 +1,6 @@
---[[local M = {}
+local M = {}
 
-function start()
+local function start()
 	--[[player = {}
 	player.in_air = false
 	player.is_moving = false
@@ -9,10 +9,11 @@ function start()
 	player.position.x = 0
 	player.position.y = 0
 	
-
+	]]
 	print("Kaffe")
 end
-
+M.start = start
+--[[
 function walk(dt)
 	player.position.x = player.position.x + (dt * 5)
 	return player.position.x
@@ -25,7 +26,7 @@ function jump()
 	end
 end
 
---[[function update(dt)
+function update(dt)
 	if player.in_air == true then
 		--player.force_up =-3
 	end
@@ -34,5 +35,5 @@ end
 
 function quit()
 end
-
---return M]]
+]]
+return M

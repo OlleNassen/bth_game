@@ -1,11 +1,13 @@
 local t = require("resources/scripts/player_movement")
 --loadfile("player_movement")
 
---f = assert (loadfile("test.lua"))
-t.start()
+
+--f = assert (loadfile("resources/scripts/player_movement"))
+
 function start()
-	
-	--test.start()
+	print(t)
+	print(H)
+	t.start()
 	--f = dofile("test.lua")	
 	--player_movement.start()
 end
