@@ -124,6 +124,8 @@
     <None Include="shaders\template.fs" />
     <None Include="shaders\template.gs" />
     <None Include="shaders\template.vs" />
+    <None Include="shaders\post_processing_effects.fs" />
+    <None Include="shaders\post_processing_effects.vs" />
     <None Include="shaders\text.fs" />
     <None Include="shaders\text.vs" />
     <None Include="shaders\uber.fs" />

@@ -6,6 +6,8 @@
 #include "model.hpp"
 #include "camera.hpp"
 #include "text.hpp"
+#include "framebuffer.hpp"
+#include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 
 
@@ -40,6 +42,11 @@ private:
 	glm::vec2 v[4];
 	bool is_chat_visible{ false };
 
+
+	Framebuffer scene_texture;
+	PostProcessingEffects post_processing_effects;
+
+	bool want_glow = false;
 };
 
 template <typename T>
