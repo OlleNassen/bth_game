@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <primitives.hpp>
-
+#include <chrono>
 
 class PostProcessingEffects
 {
@@ -13,7 +13,7 @@ public:
 	~PostProcessingEffects();
 
 	void render()const;
-	void update();
+	void update(std::chrono::milliseconds delta);
 
 	void initialize_textures();
 
@@ -27,7 +27,7 @@ public:
 	unsigned int screen_warning;
 
 private:
-
+	std::chrono::duration<float> duration{0};
 	unsigned int vao_id;
 	unsigned int vbo_id;
 };

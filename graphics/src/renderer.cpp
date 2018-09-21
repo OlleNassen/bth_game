@@ -100,7 +100,7 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i)
 	
 	if (want_glow)
 	{
-		post_processing_effects.update();
+		post_processing_effects.update(delta);
 	}
 	else
 	{
