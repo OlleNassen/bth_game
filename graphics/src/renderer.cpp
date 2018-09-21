@@ -21,14 +21,21 @@ Renderer::Renderer()
 	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }));
 	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }));
 
-	shaders.reserve(sizeof(Shader) * 5);
-	shaders.emplace_back("../resources/shaders/template.vs", "../resources/shaders/template.fs");
-	shaders.emplace_back("../resources/shaders/text.vs", "../resources/shaders/text.fs");
-	shaders.emplace_back("../resources/shaders/gui.vs", "../resources/shaders/gui.fs");
-	//shaders.emplace_back("../resources/shaders/blinn_phong.vs", "../resources/shaders/blinn_phong.fs");
-	shaders.emplace_back("../resources/shaders/blinn_phong.vs", "../resources/shaders/blinn_phong.fs");
-	shaders.emplace_back("../resources/shaders/post_processing_effects.vs", "../resources/shaders/post_processing_effects.fs"); //3
-
+	shaders.reserve(sizeof(Shader) * 10);
+	shaders.emplace_back(
+		"../resources/shaders/template.vs", 
+		"../resources/shaders/template.fs");
+	shaders.emplace_back(
+		"../resources/shaders/text.vs", 
+		"../resources/shaders/text.fs");
+	shaders.emplace_back(
+		"../resources/shaders/gui.vs", 
+		"../resources/shaders/gui.fs");
+	shaders.emplace_back(
+		"../resources/shaders/post_processing_effects.vs", 
+		"../resources/shaders/post_processing_effects.fs"); 
+	
+	
 }
 
 
@@ -36,29 +43,23 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 {
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glEnable(GL_DEPTH_TEST);
+	/*
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	scene_texture.bind_framebuffer();
-	glClear(GL_COLOR_BUFFER_BIT);
+	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	*/
 	render_type(shaders[0], camera, models);
-
-	// Post Processing Effects
-	shaders[3].use();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	shaders[3].uniform("scene_texture", 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, scene_texture.fbo_texture);
-	shaders[3].uniform("screen_warning", 1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, post_processing_effects.screen_warning);
-
-	shaders[3].uniform("pulse", post_processing_effects.glow_value);
-	post_processing_effects.render();
-
+			
 	// Text
 	shaders[2].use();
 	if (is_chat_visible)
+	{
 		ui.render();
-
+	}
 
 	shaders[1].use();
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
@@ -77,6 +78,19 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 		});
 
 	glEnable(GL_DEPTH_TEST);
+	
+	// Post Processing Effects
+	/*shaders[3].use();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	shaders[3].uniform("scene_texture", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, scene_texture.fbo_texture);
+	shaders[3].uniform("screen_warning", 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, post_processing_effects.screen_warning);
+
+	shaders[3].uniform("pulse", post_processing_effects.glow_value);
+	post_processing_effects.render();*/
 }
 
 void Renderer::update(std::chrono::milliseconds delta, 
@@ -91,7 +105,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	is_chat_visible = is_on || time < 3s;
 
 	if (!is_on)
-	{		
+	{
 		auto index = 0;
 		std::for_each(begin, end, [this, &index, delta](auto& i)
 		{
@@ -116,44 +130,30 @@ void Renderer::update(std::chrono::milliseconds delta,
 			{
 				offset += vec2{ speed, 0 } *dt;
 			}
-	if (i[button::up] >= button_state::pressed)
-	{
-		offset += vec2{ 0, speed } * dt;
-	}
-	if (i[button::left] >= button_state::pressed)
-	{
-		offset += vec2{ -speed, 0 } * dt;
-	}
-	if (i[button::down] >= button_state::pressed)
-	{
-		offset += vec2{ 0, -speed } * dt;
-	}
-	if (i[button::right] >= button_state::pressed)
-	{
-		offset += vec2{ speed, 0 } * dt;
-	}
-	if (i[button::glow] == button_state::pressed)
-	{
-		want_glow = !want_glow;
-	}
-	
-	if (want_glow)
-	{
-		post_processing_effects.update(delta);
-	}
-	else
-	{
-		post_processing_effects.glow_value = 0;
-	}
+
+			if (i[button::glow] == button_state::pressed)
+			{
+				want_glow = !want_glow;
+			}
 
 			models[index].move(offset);
 			v[index] += offset;
 			++index;
 		});
 
+		if (want_glow)
+		{
+			post_processing_effects.update(delta);
+		}
+		else
+		{
+			post_processing_effects.glow_value = 0;
+		}
+
 		camera.fps_update(delta, begin[0]);
 		camera.mouse_movement(begin[0].cursor);
-		s_cam.update(delta, v, v+4);
-		ui.update();
+		s_cam.update(delta, v, v + 4);
+
 	}
+	ui.update();
 }
