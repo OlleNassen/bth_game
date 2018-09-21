@@ -17,7 +17,7 @@ public:
 
 	void initialize_textures();
 
-	float glow_value = 1;
+	float glow_value = 0;
 
 	//Texture data
 	int width = 0, height = 0, nrOfChannels = 0;

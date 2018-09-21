@@ -27,7 +27,7 @@ void PostProcessingEffects::render() const
 
 void PostProcessingEffects::update()
 {
-		glow_value = sin(glfwGetTime()) / 2.0f + 0.5f;
+		glow_value = cos(2 * glfwGetTime());
 }
 
 void PostProcessingEffects::initialize_textures()

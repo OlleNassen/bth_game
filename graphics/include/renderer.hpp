@@ -30,6 +30,8 @@ private:
 
 	Framebuffer scene_texture;
 	PostProcessingEffects post_processing_effects;
+
+	bool want_glow = false;
 };
 
 template <typename T>

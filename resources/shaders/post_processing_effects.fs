@@ -10,9 +10,16 @@ uniform float pulse;
 
 void main()
 {
-	//Screen Warning Glow
-	color.xyz = texture(scene_texture, tex_coord).xyz * abs((texture(screen_warning, tex_coord).w * pulse) - 1);
-	color.xyz += texture(screen_warning, tex_coord).xyz  * texture(screen_warning, tex_coord).w * pulse;
+	if (pulse > 0.0)
+	{
+		//Screen Warning Glow
+		color.xyz = texture(scene_texture, tex_coord).xyz * abs((texture(screen_warning, tex_coord).w * pulse) - 1);
+		color.xyz += texture(screen_warning, tex_coord).xyz  * texture(screen_warning, tex_coord).w * pulse;
 
-	color = vec4(color.xyz, 1);
+		color = vec4(color.xyz, 1);
+	}
+	else
+	{
+		color = vec4(texture(scene_texture, tex_coord).xyz, 1);
+	}
 } 

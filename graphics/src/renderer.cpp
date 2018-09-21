@@ -68,8 +68,6 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i)
 	camera.fps_update(delta, i);
 	camera.mouse_movement(i.cursor);
 
-	post_processing_effects.update();
-
 	using glm::vec2;
 	float speed{ 10.f };
 	vec2 offset{ 0.0f, 0.0f };
@@ -90,6 +88,19 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i)
 	if (i[button::right] >= button_state::pressed)
 	{
 		offset += vec2{ speed, 0 } * dt;
+	}
+	if (i[button::glow] == button_state::pressed)
+	{
+		want_glow = !want_glow;
+	}
+	
+	if (want_glow)
+	{
+		post_processing_effects.update();
+	}
+	else
+	{
+		post_processing_effects.glow_value = 0;
 	}
 
 	models.front().move(offset);
