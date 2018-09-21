@@ -10,6 +10,7 @@ Game::Game()
 	window.assign_key(button::left, GLFW_KEY_A);
 	window.assign_key(button::down, GLFW_KEY_S);
 	window.assign_key(button::right, GLFW_KEY_D);
+	window.assign_key(button::jump, GLFW_KEY_SPACE);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 	net_init();

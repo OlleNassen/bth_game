@@ -24,5 +24,6 @@
     <None Include="shaders\uber.vs" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
+    <None Include="scripts\test.lua" />
   </ItemGroup>
 </Project>

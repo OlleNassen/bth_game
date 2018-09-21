@@ -19,8 +19,9 @@ public:
 	void pushToLuaTable();
 	void processInput(const input& i);
 private:
-
-	LuaScript luaInput;
+	void start_lua();
+	LuaScript lua_input;
+	//LuaScript lua_input2;
 };
 
 #endif

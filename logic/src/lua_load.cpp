@@ -1,29 +1,35 @@
 #include "lua_load.hpp"
 #include <list>
 
-//	
-LuaLoad::LuaLoad() 
-	:luaInput("../resources/scripts/input_controller.lua")
+//	:luaInput2("../resources/scripts/test.lua")
+LuaLoad::LuaLoad()
+	:lua_input("../resources/scripts/input_controller.lua")
 {
-	/*myLuaScript[0] = LuaScript("../resources/scripts/inputController.lua");
-	myLuaScript[1] = LuaScript("../resources/scripts/jump.lua");
-	
-	L = luaL_newstate();
-	luaL_openlibs(L);
-	std::string filename = "../resources/scripts/inputController.lua";
-	loadScript("../resources/scripts/inputController.lua");
-*/
-	
+	start_lua();
+
 	//addLuaFunctins(luaInput.getLuaState());
 }
 
 LuaLoad::~LuaLoad()
 {
+	
+}
+//
+void LuaLoad::start_lua()
+{
+	lua_getglobal(lua_input.getLuaState(), "start");
+	//lua_pushinteger(lua_input.getLuaState(), J);
+	int error = lua_pcall(lua_input.getLuaState(), 0, 0, 0);
+	//int test = lua_tonumber(lua_input.getLuaState(), -1);
+	//lua_pop(lua_input.getLuaState(), 0);
+
+	std::cout << error << std::endl;
 }
 
 //void LuaLoad::loadScript(std::string filename)
 //{
 //	if (luaL_loadfile(L, filename.c_str()) || lua_pcall(L, 0, 0, 0))
+
 //	{
 //		std::cout << "Error: script not loaded (" << filename << ")" << std::endl;
 //		L = nullptr;
@@ -51,11 +57,11 @@ LuaLoad::~LuaLoad()
 
 void LuaLoad::addLuaFunctins(lua_State* luaState)
 {
-	lua_pushlightuserdata(luaState, this);
+	/*lua_pushlightuserdata(luaState, this);
 	lua_setglobal(luaState, "Movement");
-
+	
 	lua_pushcfunction(luaState, test);
-	lua_setglobal(luaState, "test");
+	lua_setglobal(luaState, "test");*/
 
 /*	lua_pushcfunction(luaState, leftRun);
 	lua_setglobal(luaState, "leftRunPlayer");
@@ -88,14 +94,15 @@ void LuaLoad::processInput(const input& i)
 	for (int J = 0; J < 5; ++J)
 	{
 		//Button state
-		//std::cout << static_cast<int>(i[static_cast<button>(J)]) << std::endl;
 		if (i[static_cast<button>(J)] == static_cast<button_state>(2))
 		{
-			lua_getglobal(luaInput.getLuaState(), "checkInput");
-			lua_pushinteger(luaInput.getLuaState(), J);
-			int error = lua_pcall(luaInput.getLuaState(), 1, 1, 0);
-			int test = lua_tonumber(luaInput.getLuaState(), -1);
-			lua_pop(luaInput.getLuaState(), 1);
+			lua_getglobal(lua_input.getLuaState(), "update");
+			lua_pushinteger(lua_input.getLuaState(), J);
+			int error = lua_pcall(lua_input.getLuaState(), 1, 1, 0);
+			int test = lua_tonumber(lua_input.getLuaState(), -1);
+			lua_pop(lua_input.getLuaState(), 1);
+
+			//std::cout << error << std::endl;
 		}
 
 		//lua_pushinteger(luaInput.getLuaState(), 5);
