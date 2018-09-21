@@ -1,6 +1,7 @@
 #include "post_processing_effects.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#include <cmath>
 
 PostProcessingEffects::PostProcessingEffects()
 {
@@ -25,9 +26,10 @@ void PostProcessingEffects::render() const
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void PostProcessingEffects::update()
+void PostProcessingEffects::update(std::chrono::milliseconds delta)
 {
-		glow_value = cos(2 * glfwGetTime());
+	duration += delta;
+	glow_value = std::cos(2 * duration.count());
 }
 
 void PostProcessingEffects::initialize_textures()
