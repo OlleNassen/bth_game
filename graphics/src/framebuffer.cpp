@@ -4,6 +4,7 @@ Framebuffer::Framebuffer()
 {
 	glGenFramebuffers(1, &fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
 	glGenTextures(1, &fbo_texture);
 	glBindTexture(GL_TEXTURE_2D, fbo_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 1280, 720, 0, GL_RGB, GL_FLOAT, NULL);
@@ -14,6 +15,12 @@ Framebuffer::Framebuffer()
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_texture, 0);
 
+	glGenRenderbuffers(1, &fbo_depth);
+	glBindRenderbuffer(GL_RENDERBUFFER, fbo_depth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1280, 720);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, fbo_depth);
+
+	// finally check if framebuffer is complete
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Framebuffer not complete!" << std::endl;
 

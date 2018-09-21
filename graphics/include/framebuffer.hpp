@@ -13,6 +13,7 @@ public:
 	void bind_texture() const;
 
 	unsigned int fbo_texture;
+	unsigned int fbo_depth;
 
 private:
 	unsigned int fbo;

@@ -35,10 +35,14 @@ void Renderer::render()const
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	scene_texture.bind_framebuffer();
-	glClear(GL_COLOR_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glDepthMask(GL_TRUE);
+
 	render_type(shaders[0], camera, models);
 
 	// Post Processing Effects
+	glDisable(GL_DEPTH_TEST);
 	shaders[3].use();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	shaders[3].uniform("scene_texture", 0);
