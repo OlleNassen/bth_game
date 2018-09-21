@@ -1,8 +1,8 @@
-require("../resources/scripts/test")
+local t = require("resources/scripts/player_movement")
 --loadfile("player_movement")
 
 --f = assert (loadfile("test.lua"))
---t.start()
+t.start()
 function start()
 	
 	--test.start()

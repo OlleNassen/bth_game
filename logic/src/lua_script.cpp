@@ -11,8 +11,7 @@ LuaScript::LuaScript(const std::string& filename)
 	luaL_openlibs(L);
 	if (luaL_loadfile(L, filename.c_str()) || lua_pcall(L, 0, 0, 0))
 	{
-		std::cout << "Error: script not loaded (" << filename << ")" << std::endl;
-		L = nullptr;
+		fprintf(stderr, "Couldn't load file: %s\n", lua_tostring(L, -1));
 	}
 
 }
