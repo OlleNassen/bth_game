@@ -10,6 +10,7 @@ enum class button
 	left,
 	down,
 	right,
+	glow,
 	quit
 };
 
