@@ -31,7 +31,7 @@ Renderer::Renderer()
 void Renderer::render()const
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
+	glClearColor(0.6f, 0.6f, 0.6f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	scene_texture.bind_framebuffer();
@@ -43,10 +43,12 @@ void Renderer::render()const
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	shaders[3].uniform("scene_texture", 0);
 	glActiveTexture(GL_TEXTURE0);
-	shaders[3].uniform("screen_warning", 0);
-	glActiveTexture(GL_TEXTURE1);
-	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	glBindTexture(GL_TEXTURE_2D, scene_texture.fbo_texture);
+	shaders[3].uniform("screen_warning", 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, post_processing_effects.screen_warning);
+
+	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
 
 	// Text
