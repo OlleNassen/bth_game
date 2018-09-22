@@ -46,7 +46,7 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	render_type(shaders[0], camera, models);
+	render_type(shaders[0], s_cam, models);
 			
 	// Text
 	shaders[2].use();
@@ -144,10 +144,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		camera.fps_update(delta, begin[0]);
-		camera.mouse_movement(begin[0].cursor);
-		s_cam.update(delta, v, v + 4);
-
+		//camera.fps_update(delta, begin[0]);
+		//camera.mouse_movement(begin[0].cursor);
 	}
+	s_cam.update(delta, v, v + 4);
 	ui.update();
 }

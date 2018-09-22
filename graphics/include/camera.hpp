@@ -19,9 +19,9 @@ private:
 	glm::mat4 view;
 
 	float aspect_ratio;
+	float fovy;
 	
-	glm::vec3 position;
-	glm::vec3 view_angle;	
+	glm::vec3 position;	
 };
 
 class Camera // Game/Debug camera

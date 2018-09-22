@@ -1,5 +1,6 @@
 #include "camera.hpp"
 
+#include <iostream>
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -8,11 +9,8 @@ SpectatorCamera::SpectatorCamera(float fovy, float width,
 	: projection{glm::perspective(fovy, width / height, near, far)}
 	, view{1.0f}
 	, aspect_ratio{width / height}
-	, view_angle{ 
-		glm::tan(fovy / 4.0f), 
-		glm::tan((2 * glm::atan(aspect_ratio * glm::tan(fovy / 2.0f))) / 4.0f) , 
-		0}
-	
+	, fovy{fovy}
+	, position{0.0f, 0.0f, 20.f}
 {
 
 }
@@ -28,21 +26,17 @@ void SpectatorCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, 
 	
 	using namespace glm;
 	auto size = vec2{ minmax_x.second->x - minmax_x.first->x, minmax_y.second->y - minmax_y.first->y };
-	auto new_xy = vec2{ vec2{ minmax_x.first->x, minmax_y.first->y } + (size / 2.0f) };
+	auto desired_position = vec2{ vec2{ minmax_x.first->x, minmax_y.first->y } + (size / 2.0f) };
 	
-	auto distance = vec3{ new_xy + (size / 2.0f), 0.0f};
+	auto desired_distance = 0.0f;
+	auto distanceH = size.y / glm::tan(fovy / 2.0f);
+	auto distanceW = (size.x / aspect_ratio) / glm::tan(fovy / 2.0f);
 	
-	auto new_z = position.z;
-	if (aspect_ratio > (size.x / size.y)) //check height
-	{
-		new_z = distance.y / view_angle.y;
-	}
-	else
-	{
-		new_z = distance.x / view_angle.x;
-	}
+	desired_distance = distanceH > distanceW ? distanceH : distanceW;
+	if (desired_distance < 20.0f) desired_distance = 20.0f;
 
-	position = { new_xy, new_z };
+	std::chrono::duration<float> delta_seconds = delta;
+	position = glm::mix(position, { desired_position, desired_distance }, delta_seconds.count());
 }
 
 glm::mat4 SpectatorCamera::view_matrix() const

@@ -50,7 +50,7 @@ private:
 };
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const T& data)
+void render_type(const Shader& shader, const SpectatorCamera& camera, const T& data)
 {
 	shader.use();
 	for (auto& renderable : data)

@@ -18,7 +18,7 @@ public:
 		model = glm::translate(model, glm::vec3{ offset, 0.0f });
 	}
 
-	void render(const Shader & shader, const Camera& camera)const;
+	void render(const Shader & shader, const SpectatorCamera& camera)const;
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
 

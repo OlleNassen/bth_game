@@ -11,7 +11,7 @@ Model::~Model()
 	delete mesh;
 }
 
-void Model::render(const Shader & shader, const Camera& camera)const
+void Model::render(const Shader & shader, const SpectatorCamera& camera)const
 {
 	shader.uniform("model", model);
 	shader.uniform("view", camera.view_matrix());
