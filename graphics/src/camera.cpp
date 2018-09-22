@@ -4,18 +4,18 @@
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
 
-SpectatorCamera::SpectatorCamera(float fovy, float width,
+Camera::Camera(float fovy, float width,
 	float height, float near, float far)
 	: projection{glm::perspective(fovy, width / height, near, far)}
 	, view{1.0f}
 	, aspect_ratio{width / height}
 	, fovy{fovy}
-	, position{0.0f, 0.0f, 20.f}
+	, position{0.0f, 0.0f, 20.0f}
 {
 
 }
 
-void SpectatorCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
+void Camera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
 {
 	auto pos_x = [](const auto& l, const auto& r) { return l.x < r.x; };
 	auto pos_y = [](const auto& l, const auto& r) { return l.y < r.y; };
@@ -29,17 +29,17 @@ void SpectatorCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, 
 	auto desired_position = vec2{ vec2{ minmax_x.first->x, minmax_y.first->y } + (size / 2.0f) };
 	
 	auto desired_distance = 0.0f;
-	auto distanceH = size.y / glm::tan(fovy / 2.0f);
-	auto distanceW = (size.x / aspect_ratio) / glm::tan(fovy / 2.0f);
+	auto distance_height = size.y / glm::tan(fovy / 2.0f);
+	auto distance_width = (size.x / aspect_ratio) / glm::tan(fovy / 2.0f);
 	
-	desired_distance = distanceH > distanceW ? distanceH : distanceW;
+	desired_distance = distance_height > distance_width ? distance_height : distance_width;
 	if (desired_distance < 20.0f) desired_distance = 20.0f;
 
 	std::chrono::duration<float> delta_seconds = delta;
 	position = glm::mix(position, { desired_position, desired_distance }, delta_seconds.count());
 }
 
-glm::mat4 SpectatorCamera::view_matrix() const
+glm::mat4 Camera::view_matrix() const
 {
 	using namespace glm;
 	return lookAt(position, position + vec3{0.0f, 0.0f, -1.0f}, vec3{ 0.0f, 1.0f, 0.0f });
@@ -49,13 +49,13 @@ glm::mat4 SpectatorCamera::view_matrix() const
 
 
 
-Camera::Camera(float fovy, float width,
+DebugCamera::DebugCamera(float fovy, float width,
 	float height, float near, float far)
 	: projection(glm::perspective(fovy, width / height, near, far))
 {
 }
 
-void Camera::fps_update(std::chrono::milliseconds delta, const input & i)
+void DebugCamera::update(std::chrono::milliseconds delta, const input & i)
 {
 	using namespace std::chrono;
 	using float_seconds = duration<float>;
@@ -73,44 +73,17 @@ void Camera::fps_update(std::chrono::milliseconds delta, const input & i)
 		position += glm::normalize(glm::cross(forward, up)) * velocity;
 }
 
-void Camera::update(std::chrono::milliseconds delta, const input & i)
-{
-	using namespace glm;
-
-	float speed{ 10.f };
-	vec3 offset{ 0.0f, 0.0f, 0.0f };
-	float dt = delta.count() / 1000.0f;
-
-	if (i[button::up] >= button_state::pressed)
-	{
-		offset += vec3{ 0, speed, 0 } *dt;
-	}
-	if (i[button::left] >= button_state::pressed)
-	{
-		offset += vec3{ -speed, 0, 0 } *dt;
-	}
-	if (i[button::down] >= button_state::pressed)
-	{
-		offset += vec3{ 0, -speed, 0 } *dt;
-	}
-	if (i[button::right] >= button_state::pressed)
-	{
-		offset += vec3{ speed, 0, 0 } *dt;
-	}
-	position += offset;
-}
-
-glm::mat4 Camera::projection_matrix() const
+glm::mat4 DebugCamera::projection_matrix() const
 {
 	return projection;
 }
 
-glm::mat4 Camera::view_matrix() const
+glm::mat4 DebugCamera::view_matrix() const
 {
 	return glm::lookAt(position, position + forward, up);
 }
 
-void Camera::mouse_movement(const glm::vec2& mouse_pos)
+void DebugCamera::mouse_movement(const glm::vec2& mouse_pos)
 {
 	if (!initialized)
 	{

@@ -28,8 +28,8 @@ public:
 		bool is_on);
 
 private:
-	Camera camera;
-	SpectatorCamera s_cam;
+	DebugCamera db_cam;
+	Camera game_camera;
 	std::vector<Model> models;
 	Text text;
 	UserInterface ui;
@@ -50,7 +50,7 @@ private:
 };
 
 template <typename T>
-void render_type(const Shader& shader, const SpectatorCamera& camera, const T& data)
+void render_type(const Shader& shader, const Camera& camera, const T& data)
 {
 	shader.use();
 	for (auto& renderable : data)

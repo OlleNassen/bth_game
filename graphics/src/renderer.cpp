@@ -5,8 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Renderer::Renderer()
-	: camera(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
-	, s_cam(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
+	: db_cam(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
+	, game_camera(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
 {
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
@@ -46,7 +46,7 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	render_type(shaders[0], s_cam, models);
+	render_type(shaders[0], game_camera, models);
 			
 	// Text
 	shaders[2].use();
@@ -144,9 +144,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		//camera.fps_update(delta, begin[0]);
+		//camera.update(delta, begin[0]);
 		//camera.mouse_movement(begin[0].cursor);
 	}
-	s_cam.update(delta, v, v + 4);
+	game_camera.update(delta, v, v + 4);
 	ui.update();
 }
