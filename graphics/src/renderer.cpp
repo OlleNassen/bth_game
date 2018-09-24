@@ -16,10 +16,16 @@ Renderer::Renderer()
 	v[2] = { 14, 2 };
 	v[3] = { -4, -20 };
 	models.reserve(sizeof(Model) * 4);
-	models.emplace_back(glm::translate(model, vec3{ v[0], 0 }));
+
+	physics.add_dynamic_body(glm::vec2(0.0, 0.0), 15, 30, v[0]);
+	models.emplace_back(glm::translate(model, vec3{ physics.dynamic_positions[0], 0 }));
+
 	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }));
 	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }));
 	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }));
+
+	//Static
+	physics.add_static_body(50, 2, glm::vec2(10, -10));
 
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
@@ -85,6 +91,37 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
+
+	if (debug_active)
+	{
+		auto& s = shaders[3];
+
+		s.use();
+		s.uniform("projection", game_camera.projection_matrix());
+		s.uniform("view", game_camera.view_matrix());
+
+		auto cam_pos = glm::vec3{ game_camera.view_matrix()[3] };
+		glm::vec2 cam_vec2{ cam_pos.x, cam_pos.y };
+
+		int i = 0;
+		for (auto& box : physics.dynamic_box_colliders)
+		{
+			std::array<glm::vec2, 8> line_array = box.get_vertices_in_series();
+			glm::vec2 position = physics.dynamic_positions[i++];
+			for (auto& data : line_array)
+				data += position;
+			line_debug(line_array);
+		}
+		i = 0;
+		for (auto& box : physics.static_box_colliders)
+		{
+			std::array<glm::vec2, 8> line_array = box.get_vertices_in_series();
+			glm::vec2 position = physics.static_positions[i++];
+			for (auto& data : line_array)
+				data += position;
+			line_debug(line_array);
+		}
+	}
 }
 
 void Renderer::update(std::chrono::milliseconds delta, 
@@ -98,12 +135,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_on || time < 3s;
 
+	physics.update(delta);
+
 	if (!is_on)
 	{
 		auto index = 0;
 		std::for_each(begin, end, [this, &index, delta](auto& i)
 		{
-			using glm::vec2;
+			/*using glm::vec2;
 			float speed{ 10.f };
 			vec2 offset{ 0.0f, 0.0f };
 			float dt = delta.count() / 1000.0f;
@@ -123,16 +162,22 @@ void Renderer::update(std::chrono::milliseconds delta,
 			if (i[button::right] >= button_state::pressed)
 			{
 				offset += vec2{ speed, 0 } *dt;
-			}
+			}*/
 
 			if (i[button::glow] == button_state::pressed)
 			{
 				want_glow = !want_glow;
 			}
 
-			models[index].move(offset);
-			v[index] += offset;
-			++index;
+			//models[index].move(offset);
+			/*v[index] += offset;
+			++index;*/
+
+			if (index == 0)
+			{
+				std::vector<glm::vec2> position = physics.dynamic_positions;
+				models[index].set_position(position[0]);
+			}
 		});
 
 		if (want_glow)
@@ -147,6 +192,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//camera.update(delta, begin[0]);
 		//camera.mouse_movement(begin[0].cursor);
 	}
-	game_camera.update(delta, v, v + 4);
+	game_camera.update(delta, v, v + 1);
 	ui.update();
 }
