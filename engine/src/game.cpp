@@ -38,12 +38,7 @@ void Game::run()
 		{
 			delta_time -= timestep;
 			window.update_input(*local_input);
-			if ((*local_input)[button::refresh] == button_state::pressed)
-			{
-				cfg = config{ "../resources/test.ini" };
-				renderer.refresh(cfg);
-			}
-
+			
 			update(timestep);
 		}
 
@@ -62,6 +57,12 @@ void Game::update(std::chrono::milliseconds delta)
 {
 	using std::cout;
 	constexpr char nl = '\n';
+	
+	if ((*local_input)[button::refresh] == button_state::pressed)
+	{
+		cfg = config{ "../resources/test.ini" };
+		renderer.refresh(cfg);
+	}
 
 	if (!host && !chat[1].empty())
 	{
