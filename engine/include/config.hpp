@@ -19,12 +19,22 @@ class config
 public:
 	config(const std::string& path) : reader{path} {}
 
+	std::set<std::string>::const_iterator begin() const
+	{ 
+		return reader.Sections().begin(); 
+	}
+	std::set<std::string>::const_iterator end() const
+	{ 
+		return reader.Sections().end(); 
+	}
+
 	std::string at(
 		const std::string& section,
 		const std::string& name,
 		const char* default_value) const
 	{
 		return reader.Get(section, name, default_value);
+		
 	}
 
 	std::string at(
