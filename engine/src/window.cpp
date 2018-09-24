@@ -3,6 +3,35 @@
 
 using std::cout;
 
+enum class controller_buttons
+{
+	a,
+	b,
+	x,
+	y,
+	lb,
+	rb,
+	select,
+	start,
+	ls,
+	rs,
+	up,
+	right,
+	down,
+	left
+
+};
+
+enum class controller_axis
+{
+	ls_right,
+	ls_up,
+	rs_right,
+	rs_up,
+	lt,
+	rt,
+};
+
 Window::Window(const glm::ivec2& window_size, const std::string& title)
 {
 	if (!glfwInit())
@@ -22,7 +51,7 @@ Window::Window(const glm::ivec2& window_size, const std::string& title)
 	}
 
 	glfwMakeContextCurrent(glfw_window);
-	//glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCharCallback(glfw_window, gui::character_callback);
 	glfwSetKeyCallback(glfw_window, gui::key_callback);
 
@@ -97,5 +126,15 @@ void Window::update_input(input& input)
 
 	input.index = (y / window_size.y) * input::indices;
 	input.cursor = { x, y };
+
+	int count = 0;
+	//const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+
+	for (int i = 0; i < count; ++i)
+	{
+		if (axes[i] == GLFW_PRESS)
+			std::cout << "Button " << i << " pressed!" << '\n';
+	}
 }
 
