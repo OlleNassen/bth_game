@@ -147,6 +147,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//camera.update(delta, begin[0]);
 		//camera.mouse_movement(begin[0].cursor);
 	}
-	game_camera.update(delta, v, v + 4);
+	game_camera.update(delta, v, v + 1);
 	ui.update();
 }
