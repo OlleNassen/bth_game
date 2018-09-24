@@ -2,9 +2,11 @@
 #define MODEL_HPP
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <vector>
 #include "mesh.hpp"
 #include "shader.hpp"
 #include "camera.hpp"
+#include "texture.hpp"
 //TEMP MODEL CLASS, TECHNICAL ARTISTS FEEL FREE TO CHANGE THIS
 
 class Model
@@ -21,7 +23,7 @@ public:
 	void render(const Shader & shader, const Camera& camera)const;
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
-
+	std::vector<Texture>textures;
 	glm::mat4 model;
 };
 

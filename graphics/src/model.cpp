@@ -4,6 +4,7 @@ Model::Model(const glm::mat4& model)
 	: model{model}
 {
 	mesh = new Mesh("RobotTest.ssp");
+	textures.emplace_back("../resources/assets/normal.tga");
 }
 
 Model::~Model()
