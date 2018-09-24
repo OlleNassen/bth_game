@@ -33,9 +33,9 @@ void Game::run()
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();
 
-		if (delta_time > timestep)
+		while (delta_time > timestep)
 		{
-			delta_time = 0ns;
+			delta_time -= timestep;
 			window.update_input(*local_input);
 			update(timestep);
 		}

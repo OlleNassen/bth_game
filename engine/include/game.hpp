@@ -12,6 +12,7 @@
 #include "window.hpp"
 #include "input.hpp"
 #include "gui.hpp"
+#include "timer.hpp"
 
 //::.. authors ..:://
 // Edvard
