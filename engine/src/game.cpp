@@ -26,8 +26,11 @@ void Game::run()
 	using clock = std::chrono::steady_clock;
 	auto last_time = clock::now();
 	auto delta_time = 0ns;
+
+	Timer t{5s};
+	bool crash = false;
 	
-	while (window.is_open() && 
+	while (!crash && window.is_open() && 
 		(*local_input)[button::quit] != button_state::pressed)
 	{
 		delta_time += clock::now() - last_time;
@@ -38,6 +41,7 @@ void Game::run()
 			delta_time -= timestep;
 			window.update_input(*local_input);
 			update(timestep);
+			crash = t.is_up(timestep);
 		}
 
 		render();
