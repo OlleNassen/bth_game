@@ -22,6 +22,8 @@ void Texture::bind(unsigned int index)const
 
 void Texture::load_texture(const std::string & path)
 {
+	stbi_set_flip_vertically_on_load(true);
+
 	unsigned char* imageData = stbi_load(path.c_str(), &width, &height, &num_components, 4);
 
 	/* Error handling. */

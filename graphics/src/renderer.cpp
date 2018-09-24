@@ -46,7 +46,8 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	render_type(shaders[0], game_camera, models);
+	//render_type(shaders[0], game_camera, models);
+	render_type(shaders[0], db_cam, models);
 			
 	// Text
 	shaders[2].use();
@@ -142,8 +143,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		//camera.update(delta, begin[0]);
-		//camera.mouse_movement(begin[0].cursor);
+		db_cam.update(delta, begin[0]);
+		db_cam.mouse_movement(begin[0].cursor);
 	}
 	game_camera.update(delta, v, v + 1);
 	ui.update();

@@ -21,6 +21,7 @@ public:
 	}
 
 	void render(const Shader & shader, const Camera& camera)const;
+	void render(const Shader & shader, const DebugCamera& camera)const;
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
 	std::vector<Texture>textures;
