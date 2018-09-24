@@ -19,10 +19,12 @@ public:
 	}
 
 	void render(const Shader & shader, const Camera& camera)const;
+	glm::mat4 model;
+
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
 
-	glm::mat4 model;
+	
 };
 
 #endif

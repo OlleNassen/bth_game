@@ -4,17 +4,23 @@
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
 
-Renderer::Renderer()
+Renderer::Renderer(const config& cfg)
 	: db_cam(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
 {
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
+
+	v[0] = { cfg.at("player1", "x", 0.0f), cfg.at("player1", "y", 0.0f) };
+	v[1] = { cfg.at("player2", "x", 0.0f), cfg.at("player2", "y", 0.0f) };
+	v[2] = { cfg.at("player3", "x", 0.0f), cfg.at("player3", "y", 0.0f) };
+	v[3] = { cfg.at("player4", "x", 0.0f), cfg.at("player4", "y", 0.0f) };
 	
-	v[0] = { 10, 10 };
+	/*v[0] = { 10, 10 };
 	v[1] = { -5, -5 };
 	v[2] = { 14, 2 };
-	v[3] = { -4, -20 };
+	v[3] = { -4, -20 };*/
+
 	models.reserve(sizeof(Model) * 4);
 	models.emplace_back(glm::translate(model, vec3{ v[0], 0 }));
 	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }));
@@ -36,6 +42,22 @@ Renderer::Renderer()
 		"../resources/shaders/post_processing_effects.fs"); 
 	
 	
+}
+
+void Renderer::refresh(const config& cfg)
+{
+	using glm::vec3;
+	glm::mat4 model{ 1.0f };
+	
+	v[0] = { cfg.at("player1", "x", 0.0f), cfg.at("player1", "y", 0.0f) };
+	v[1] = { cfg.at("player2", "x", 0.0f), cfg.at("player2", "y", 0.0f) };
+	v[2] = { cfg.at("player3", "x", 0.0f), cfg.at("player3", "y", 0.0f) };
+	v[3] = { cfg.at("player4", "x", 0.0f), cfg.at("player4", "y", 0.0f) };
+
+	models[0].model = glm::translate(model, vec3{ v[0], 0 });
+	models[1].model = glm::translate(model, vec3{ v[1], 0 });
+	models[2].model = glm::translate(model, vec3{ v[2], 0 });
+	models[3].model = glm::translate(model, vec3{ v[3], 0 });
 }
 
 

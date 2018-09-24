@@ -9,7 +9,7 @@
 #include "framebuffer.hpp"
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
-
+#include "../../engine/include/config.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -18,7 +18,9 @@
 class Renderer
 {
 public:
-	Renderer();
+	Renderer(const config& cfg);
+
+	void refresh(const config& cfg);
 
 	void render(const std::string* begin, const std::string* end) const;
 	void update(std::chrono::milliseconds delta, 

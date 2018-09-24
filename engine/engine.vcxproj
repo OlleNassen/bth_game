@@ -156,6 +156,7 @@
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\config.hpp" />
     <ClInclude Include="include\ecs.hpp" />
     <ClInclude Include="include\game.hpp" />
     <ClInclude Include="include\gui.hpp" />

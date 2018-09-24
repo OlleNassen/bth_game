@@ -11,6 +11,7 @@ Game::Game()
 	window.assign_key(button::down, GLFW_KEY_S);
 	window.assign_key(button::right, GLFW_KEY_D);
 	window.assign_key(button::glow, GLFW_KEY_G);
+	window.assign_key(button::refresh, GLFW_KEY_F5);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 	net_init();
@@ -27,10 +28,7 @@ void Game::run()
 	auto last_time = clock::now();
 	auto delta_time = 0ns;
 
-	Timer t{5s};
-	bool crash = false;
-	
-	while (!crash && window.is_open() && 
+	while (window.is_open() && 
 		(*local_input)[button::quit] != button_state::pressed)
 	{
 		delta_time += clock::now() - last_time;
@@ -40,8 +38,13 @@ void Game::run()
 		{
 			delta_time -= timestep;
 			window.update_input(*local_input);
+			if ((*local_input)[button::refresh] == button_state::pressed)
+			{
+				cfg = config{ "../resources/test.ini" };
+				renderer.refresh(cfg);
+			}
+
 			update(timestep);
-			crash = t.is_up(timestep);
 		}
 
 		render();
