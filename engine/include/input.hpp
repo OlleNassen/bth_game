@@ -11,6 +11,7 @@ enum class button
 	down,
 	right,
 	glow,
+	debug,
 	quit
 };
 

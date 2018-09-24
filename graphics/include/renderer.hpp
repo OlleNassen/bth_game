@@ -20,8 +20,8 @@
 template <int N>
 static void line_debug(const std::array<glm::vec2, N>& lines)
 {
-	static VertexArray vao;
-	static Buffer vertex_buffer;
+	VertexArray vao;
+	Buffer vertex_buffer;
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
@@ -70,6 +70,7 @@ private:
 	//Vincent and Lucas
 	physics::World physics;
 	bool debug_active;
+	void collider_debug(const input& i);
 };
 
 template <typename T>

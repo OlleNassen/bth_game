@@ -17,7 +17,7 @@ Renderer::Renderer()
 	v[3] = { -4, -20 };
 	models.reserve(sizeof(Model) * 4);
 
-	physics.add_dynamic_body(glm::vec2(0.0, 0.0), 15, 30, v[0]);
+	physics.add_dynamic_body(glm::vec2(0.0, 0.0), 1, 2, v[0]);
 	models.emplace_back(glm::translate(model, vec3{ physics.dynamic_positions[0], 0 }));
 
 	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }));
@@ -39,9 +39,12 @@ Renderer::Renderer()
 		"../resources/shaders/gui.fs");
 	shaders.emplace_back(
 		"../resources/shaders/post_processing_effects.vs", 
-		"../resources/shaders/post_processing_effects.fs"); 
+		"../resources/shaders/post_processing_effects.fs");
+	shaders.emplace_back(
+		"../resources/shaders/lines.vs",
+		"../resources/shaders/lines.fs");
 	
-	
+	debug_active = true;
 }
 
 
@@ -94,7 +97,8 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 
 	if (debug_active)
 	{
-		auto& s = shaders[3];
+		glDisable(GL_DEPTH_TEST);
+		auto& s = shaders[4];
 
 		s.use();
 		s.uniform("projection", game_camera.projection_matrix());
@@ -121,6 +125,7 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 				data += position;
 			line_debug(line_array);
 		}
+		glEnable(GL_DEPTH_TEST);
 	}
 }
 
@@ -175,8 +180,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 			if (index == 0)
 			{
-				std::vector<glm::vec2> position = physics.dynamic_positions;
-				models[index].set_position(position[0]);
+				collider_debug(i);
+				models[index].set_position(physics.dynamic_positions[0]);
 			}
 		});
 
@@ -194,4 +199,17 @@ void Renderer::update(std::chrono::milliseconds delta,
 	}
 	game_camera.update(delta, v, v + 1);
 	ui.update();
+}
+
+void Renderer::collider_debug(const input& i)
+{
+	if (i[button::debug] == button_state::pressed)
+	{
+		debug_active = !debug_active;
+
+		if (debug_active)
+			std::cout << "Debug activated." << std::endl;
+		else
+			std::cout << "Debug deactivated." << std::endl;
+	}
 }

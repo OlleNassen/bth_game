@@ -27,5 +27,7 @@
     <None Include="shaders\template.vs" />
     <None Include="shaders\post_processing_effects.fs" />
     <None Include="shaders\post_processing_effects.vs" />
+    <None Include="shaders\lines.fs" />
+    <None Include="shaders\lines.vs" />
   </ItemGroup>
 </Project>
