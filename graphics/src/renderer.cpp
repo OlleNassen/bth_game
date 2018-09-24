@@ -78,10 +78,12 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	shaders[3].uniform("scene_texture", 0);
 	glActiveTexture(GL_TEXTURE0);
+	//post_processing_effects.texture.bind(0);
 	glBindTexture(GL_TEXTURE_2D, scene_texture.fbo_texture);
 	shaders[3].uniform("screen_warning", 1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, post_processing_effects.screen_warning);
+	//glActiveTexture(GL_TEXTURE1);
+	post_processing_effects.texture.bind(1);
+	//glBindTexture(GL_TEXTURE_2D, post_processing_effects.screen_warning);
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
