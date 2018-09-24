@@ -44,5 +44,11 @@
     <ClInclude Include="include\gui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\timer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\config.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
