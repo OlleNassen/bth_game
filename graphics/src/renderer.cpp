@@ -8,22 +8,6 @@ Renderer::Renderer(const config& cfg)
 	: db_cam(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
 {
-	using glm::vec3;
-	glm::mat4 model{ 1.0f };
-	
-	auto i = 0;
-	models.reserve(sizeof(Model) * 4);
-	for (const auto& entity : cfg)
-	{
-		if (entity.compare("player" + std::to_string(i+1)) == 0)
-		{
-			v[i] = { cfg.at(entity, "x", 0.0f), cfg.at(entity, "y", 0.0f) };
-			models.emplace_back(glm::translate(model, vec3{ v[i], 0 }));
-			++i;
-		}
-		
-	}
-
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
 		"../resources/shaders/template.vs", 
@@ -38,20 +22,26 @@ Renderer::Renderer(const config& cfg)
 		"../resources/shaders/post_processing_effects.vs", 
 		"../resources/shaders/post_processing_effects.fs"); 
 	
+	models.reserve(sizeof(Model) * 4);
+	for (auto i = 0; i < 4; ++i)
+		models.emplace_back(glm::mat4{1.0f});
 	
+	refresh(cfg);
 }
 
 void Renderer::refresh(const config& cfg)
 {
+	using glm::vec2;
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
 
 	auto i = 0;
 	for (const auto& entity : cfg)
 	{
-		if (entity.compare("player" + std::to_string(i + 1)) == 0)
+		vec2 vec{cfg.at(entity, "x", 0.0f), cfg.at(entity, "y", 0.0f)};
+		if (vec != vec2{0.0f, 0.0f})
 		{
-			v[i] = { cfg.at(entity, "x", 0.0f), cfg.at(entity, "y", 0.0f) };
+			v[i] = vec;
 			models[i].model = glm::translate(model, vec3{ v[i], 0 });
 			++i;
 		}
