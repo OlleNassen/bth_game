@@ -11,6 +11,8 @@ enum class button
 	down,
 	right,
 	glow,
+	refresh,
+	menu,
 	quit
 };
 
