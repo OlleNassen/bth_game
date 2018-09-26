@@ -1,4 +1,5 @@
 #include "model.hpp"
+#include <GLFW/glfw3.h>
 
 Model::Model(const glm::mat4& model)
 	: model{model}
@@ -42,7 +43,13 @@ void Model::render(const Shader & shader, const DebugCamera& camera)const
 	shader.uniform("projection", camera.projection_matrix());
 
 	shader.uniform("view_pos", glm::vec3{ camera.view_position() });
-	shader.uniform("light_pos", glm::vec3{ camera.view_position() });
+
+	//Temp light
+	static glm::vec3 light_pos = glm::vec3(-15, -2, 6);
+	light_pos.x += glm::sin(glfwGetTime() * 2.0f);
+	light_pos.y += glm::sin(glfwGetTime() * 0.7f);
+
+	shader.uniform("light_pos", glm::vec3{ light_pos });
 
 	shader.uniform("normal_map", 0);
 	shader.uniform("diffuse_map", 1);

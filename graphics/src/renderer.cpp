@@ -38,7 +38,6 @@ Renderer::Renderer()
 		"../resources/shaders/temp.vs",
 		"../resources/shaders/temp.fs");
 	
-	
 }
 
 
@@ -52,8 +51,6 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	//render_type(shaders[0], game_camera, models);
 	render_type(shaders[0], db_cam, models);
 
-	shaders[4].use();
-	temp_quad.render(shaders[4], db_cam);
 	// Text
 	shaders[2].use();
 	if (is_chat_visible)
