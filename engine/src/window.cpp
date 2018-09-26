@@ -130,7 +130,6 @@ void Window::update_input(input& input)
 	if (input.index >= input::indices) input.index = input::indices - 1;
 	
 	input.cursor = { x, y };
-	std::cout << input.index << std::endl;
 	int count = 0;
 	//const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
 	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
