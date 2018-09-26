@@ -1,7 +1,7 @@
 #include "lua_load.hpp"
 #include <list>
 
-//	:luaInput2("../resources/scripts/test.lua")
+//	:luaInput2("../resources/scripts/test.lua"), "../resources/scripts/input_controller.lua"
 LuaLoad::LuaLoad()
 	:lua_input("../resources/scripts/input_controller.lua")
 {
@@ -88,8 +88,16 @@ void LuaLoad::pushToLuaTable()
 
 }
 
-void LuaLoad::processInput(const input& i)
+glm::vec2 LuaLoad::processInput(const input& i, std::chrono::milliseconds delta)
 {
+	
+	 //update delta_time för lua
+	 //.....
+	
+	position = { 0,0 };
+
+	lua_pushnumber(lua_input.getLuaState(), delta.count());
+	lua_setglobal(lua_input.getLuaState(), "dt");
 
 	for (int J = 0; J < 5; ++J)
 	{
@@ -98,35 +106,19 @@ void LuaLoad::processInput(const input& i)
 		{
 			lua_getglobal(lua_input.getLuaState(), "update");
 			lua_pushinteger(lua_input.getLuaState(), J);
-			int error = lua_pcall(lua_input.getLuaState(), 1, 1, 0);
-			int test = lua_tonumber(lua_input.getLuaState(), -1);
-			lua_pop(lua_input.getLuaState(), 1);
+			int error = lua_pcall(lua_input.getLuaState(), 1, 3, 0);
+			int test = lua_tonumber(lua_input.getLuaState(), -3);
+			position.x = lua_tonumber(lua_input.getLuaState(), -2);
+			position.y = lua_tonumber(lua_input.getLuaState(), -1);
+			lua_pop(lua_input.getLuaState(), 3);
 
+			std::cout << "pos.x = " << position.x << "\t pos.y = " << position.y << std::endl;
 			//std::cout << error << std::endl;
 		}
 
 		//lua_pushinteger(luaInput.getLuaState(), 5);
 	}
-
-	//lua_getglobal(luaInput.getLuaState(), "Lisa");
-	//lua_pushinteger(luaInput.getLuaState(), 6);
-	//int error = lua_pcall(luaInput.getLuaState(), 1, 1, 0);
-	//int test = lua_tonumber(luaInput.getLuaState(), -1);
-	//lua_pop(luaInput.getLuaState(), 1);
-	//std::cout << test << std::endl;
-
-
-	/*if(i[button::left] == button_state::held)
-		std::cout << "Left!!!" << std::endl;
-	else if (i[button::right] == button_state::held)
-		std::cout << "Right!!!" << std::endl;
-	
-	if (i[button::jump] == button_state::pressed)
-		std::cout << "jump!!!" << std::endl;*/
-	//hämta knapp id
-	//tyda knapp
-	//utför script
-
+	return position;
 }
 
 //

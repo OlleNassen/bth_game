@@ -17,7 +17,7 @@ public:
 	Renderer();
 
 	void render(const std::string* begin, const std::string* end) const;
-	void update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on);
+	void update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on, glm::vec2 position);
 
 private:
 	Camera camera;

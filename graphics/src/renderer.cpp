@@ -55,7 +55,7 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 		});
 }
 
-void Renderer::update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on)
+void Renderer::update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on, glm::vec2 position)
 {
 	using namespace std::chrono_literals;
 	time += delta;
@@ -70,12 +70,12 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i, int index
 
 	is_chat_visible = !(time > 5s);
 
-	using glm::vec2;
+	/*using glm::vec2;
 	float speed{ 10.f };
 	vec2 offset{ 0.0f, 0.0f };
 	float dt = delta.count() / 1000.0f;
-
-	if (i[button::up] >= button_state::pressed)
+	//
+	/*if (i[button::up] >= button_state::pressed)
 	{
 		offset += vec2{ 0, speed } * dt;
 	}
@@ -91,9 +91,14 @@ void Renderer::update(std::chrono::milliseconds delta, const input& i, int index
 	{
 		offset += vec2{ speed, 0 } * dt;
 	}
-
-	models[index].move(offset);
+	//
+	/*models[index].move(offset);
 	v[index] += offset;
+
+*/
+	
+	models[index].move(position);
+	v[index] += position;
 
 	s_cam.update(delta, v, v+4);
 	ui.update();

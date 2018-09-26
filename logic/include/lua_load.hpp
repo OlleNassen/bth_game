@@ -3,6 +3,7 @@
 
 #include "lua_script.hpp"
 #include "../../engine/include/input.hpp"
+#include <chrono>
 
 
 class LuaLoad
@@ -17,10 +18,11 @@ public:
 	static int test(lua_State* luaState);
 	void addLuaFunctins(lua_State* luaState);
 	void pushToLuaTable();
-	void processInput(const input& i);
+	glm::vec2 processInput(const input& i, std::chrono::milliseconds delta);
 private:
 	void start_lua();
 	LuaScript lua_input;
+	glm::vec2 position = { 0,0 };
 	//LuaScript lua_input2;
 };
 

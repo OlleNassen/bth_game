@@ -1,42 +1,54 @@
-local t = require("resources/scripts/player_movement")
---loadfile("player_movement")
-
-
---f = assert (loadfile("resources/scripts/player_movement"))
-
 function start()
-	print(t)
-	print(H)
-	t.start()
-	--f = dofile("test.lua")	
-	--player_movement.start()
+	dt = 0
+	player = {}
+	player.x = 0
+	player.y = 0
+	player.is_in_air = false
+	player.is_dead = false
+	WALK_SPEED = 15
+	JUMP_FORCE = 0.1	
+
 end
+
+
+function quit()
+end
+
 
 function update(a)
 	--print("Wazooo")
-
+	
 	if(a == 0)then
 		print("Up")
+		
 		end
 	if(a == 1)then
 		print("Left")
-		--player_movement.walk(-delta_time)
+		walk(-dt)
 		end
 	if(a == 2)then
 		print("Down")
 		end
 	if(a == 3)then
 		print("Right")
-		--player_movement.walk(delta_time)
+		walk(dt)
 		end
 	if(a == 4)then
+		jump()
 		print("Jump")
+		
 		end
 
-
-	return a
+	return a, player.x, player.y
 
 end
 
-function quit()
+function walk(dt)
+	--print(player.x)
+	player.x = (dt/1000) * WALK_SPEED -- + fysik
+end
+
+function jump()
+	player.y = JUMP_FORCE 	
+	--player.x = (dt/1000) * WALK_SPEED -- + fysik
 end
