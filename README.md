@@ -12,6 +12,7 @@ Lucas Persson
 Emma Henriksson
 Lucas Stridbar
 Adam Brodd
+Leon Viio
 Emil Hallin
 Fu Keung Tu
 
