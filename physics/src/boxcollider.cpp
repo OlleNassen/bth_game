@@ -2,19 +2,10 @@
 
 Box::Box()
 {
-	width = 1.0f / 2.0f;
-	height = 1.0f / 2.0f;
 
-	top_left = glm::vec2(-width, height);
-	top_right = glm::vec2(width, height);
-
-	bottom_left = glm::vec2(-width, -height);
-	bottom_right = glm::vec2(width, -height);
-
-	offset = glm::vec2(0.0f, 0.0f);
 }
 
-Box::Box(float _width, float _height)
+Box::Box(float _width = 1.0f, float _height = 1.0f, glm::vec2 _offset = glm::vec2(0.0, 0.0))
 {
 	width = _width / 2.0f;
 	height = _height / 2.0f;
@@ -28,7 +19,7 @@ Box::Box(float _width, float _height)
 	width = _width;
 	height = _height;
 
-	offset = glm::vec2(0.0f, 0.0f);
+	offset = _offset;
 }
 
 void Box::set_height(float to_height)
@@ -83,20 +74,15 @@ std::array<glm::vec2, 8> Box::get_vertices_in_series()const
 {
 	std::array<glm::vec2, 8> vertices =
 	{
-		top_left,
-		top_right,
-		top_right,
-		bottom_right,
-		bottom_right,
-		bottom_left,
-		bottom_left,
-		top_left
+		top_left + offset,
+		top_right + offset,
+		top_right + offset,
+		bottom_right + offset,
+		bottom_right + offset,
+		bottom_left + offset,
+		bottom_left + offset,
+		top_left + offset
 	};
 
 	return vertices;
-}
-
-bool Box::intersects(Box target_body)const
-{
-	return false;
 }

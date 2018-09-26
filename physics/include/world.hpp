@@ -8,6 +8,7 @@
 #include <chrono>
 #include <array>
 #include <vector>
+#include <math.h>
 
 #include "rigidbody.hpp"
 #include "boxcollider.hpp"
@@ -22,8 +23,8 @@ public:
 	World();
 	~World();
 
-	void add_dynamic_body(glm::vec2 start_force, float width, float height, glm::vec2 start_position);
-	void add_static_body(float width, float height, glm::vec2 start_position);
+	void add_dynamic_body(glm::vec2 start_force, float width, float height, glm::vec2 offset, glm::vec2 start_position);
+	void add_static_body(float width, float height, glm::vec2 offset, glm::vec2 start_position);
 
 	//Dynamic
 	std::vector<Rigidbody> dynamic_rigidbodies;

@@ -8,7 +8,7 @@ class Box
 {
 public:
 	Box();
-	Box(float _width, float _height);
+	Box(float _width, float _height, glm::vec2 _offset);
 
 	void set_height(float to_height);
 	void set_width(float to_width);
@@ -21,8 +21,6 @@ public:
 	float get_width() const;
 	std::array<glm::vec2, 4> get_vertices()const;
 	std::array<glm::vec2, 8> get_vertices_in_series()const;
-	bool intersects(Box target_body)const;
-
 
 private:
 	glm::vec2 top_left;

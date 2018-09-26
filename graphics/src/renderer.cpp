@@ -11,13 +11,13 @@ Renderer::Renderer()
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
 	
-	v[0] = { 10, 10 };
+	v[0] = { 0, 0 };
 	v[1] = { -5, -5 };
 	v[2] = { 14, 2 };
 	v[3] = { -4, -20 };
 	models.reserve(sizeof(Model) * 4);
 
-	physics.add_dynamic_body(glm::vec2(0.0, 0.0), 1, 2, v[0]);
+	physics.add_dynamic_body(glm::vec2(0.0, 0.0), 1, 3.5, glm::vec2(0.0, 2.25), v[0]);
 	models.emplace_back(glm::translate(model, vec3{ physics.dynamic_positions[0], 0 }));
 
 	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }));
@@ -25,7 +25,11 @@ Renderer::Renderer()
 	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }));
 
 	//Static
-	physics.add_static_body(50, 2, glm::vec2(10, -10));
+	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(0, -10));
+	physics.add_static_body(10, 2, glm::vec2(0.0, 0.0), glm::vec2(25, -10));
+	physics.add_static_body(15, 2, glm::vec2(0.0, 0.0), glm::vec2(50, -15));
+	physics.add_static_body(18.25, 2, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
+	physics.add_static_body(2, 20, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
 
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
@@ -180,10 +184,40 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 			if (index == 0)
 			{
+				//physics.dynamic_rigidbodies[index].cancel_force_x();
+				glm::vec2 move_force = glm::vec2();
+				if (i[button::up] == button_state::pressed &&
+					physics.dynamic_rigidbodies[index].can_jump == true)
+				{
+					move_force.y += 50.0f;
+					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(0.0, 50.0));
+					physics.dynamic_rigidbodies[index].can_jump = false;
+				}
+				if (i[button::right] == button_state::held)
+				{
+					move_force.x += 3.5f;
+					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(3.5, 0.0));
+				}
+				if (i[button::left] == button_state::held)
+				{
+					move_force.x += -3.5f;
+					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(-3.5, 0.0));
+				}
+
+				if (i[button::reset] == button_state::pressed)
+				{
+					physics.dynamic_rigidbodies[0].cancel_forces();
+					physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
+				}
+
+				physics.dynamic_rigidbodies[index].add_force(move_force);
 				collider_debug(i);
+				v[0] = physics.dynamic_positions[0];
 				models[index].set_position(physics.dynamic_positions[0]);
 			}
 		});
+
+
 
 		if (want_glow)
 		{

@@ -12,6 +12,7 @@ Game::Game()
 	window.assign_key(button::right, GLFW_KEY_D);
 	window.assign_key(button::glow, GLFW_KEY_G);
 	window.assign_key(button::debug, GLFW_KEY_F3);
+	window.assign_key(button::reset, GLFW_KEY_R);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 	net_init();
