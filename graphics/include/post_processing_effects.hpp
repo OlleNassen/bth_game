@@ -5,6 +5,7 @@
 #include <iostream>
 #include <primitives.hpp>
 #include <chrono>
+#include <texture.hpp>
 
 class PostProcessingEffects
 {
@@ -18,6 +19,8 @@ public:
 	void initialize_textures();
 
 	float glow_value = 0;
+
+	Texture texture;
 
 	//Texture data
 	int width = 0, height = 0, nrOfChannels = 0;

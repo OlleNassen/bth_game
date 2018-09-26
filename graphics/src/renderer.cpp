@@ -34,7 +34,9 @@ Renderer::Renderer()
 	shaders.emplace_back(
 		"../resources/shaders/post_processing_effects.vs", 
 		"../resources/shaders/post_processing_effects.fs"); 
-	
+	shaders.emplace_back(
+		"../resources/shaders/temp.vs",
+		"../resources/shaders/temp.fs");
 	
 }
 
@@ -46,8 +48,9 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	render_type(shaders[0], game_camera, models);
-			
+	//render_type(shaders[0], game_camera, models);
+	render_type(shaders[0], db_cam, models);
+
 	// Text
 	shaders[2].use();
 	if (is_chat_visible)
@@ -77,11 +80,9 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	shaders[3].use();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	shaders[3].uniform("scene_texture", 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, scene_texture.fbo_texture);
+	scene_texture.bind_texture();
 	shaders[3].uniform("screen_warning", 1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, post_processing_effects.screen_warning);
+	post_processing_effects.texture.bind(1);
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
@@ -144,9 +145,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		//camera.update(delta, begin[0]);
-		//camera.mouse_movement(begin[0].cursor);
+		db_cam.update(delta, begin[0]);
+		db_cam.mouse_movement(begin[0].cursor);
 	}
-	game_camera.update(delta, v, v + 4);
+	game_camera.update(delta, v, v + 1);
 	ui.update();
 }

@@ -14,7 +14,10 @@ public:
 	glm::mat4 projection_matrix() const { return projection; }
 	glm::mat4 view_matrix() const;
 
-
+	glm::vec3 view_position()const
+	{
+		return position;
+	}
 private:
 	glm::mat4 projection;
 	glm::mat4 view;
@@ -36,6 +39,11 @@ public:
 	glm::mat4 view_matrix() const;
 
 	void mouse_movement(const glm::vec2& mouse_pos);
+
+	glm::vec3 view_position()const
+	{
+		return position;
+	}
 
 private:
 	glm::mat4 projection;

@@ -10,7 +10,6 @@
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 
-
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -51,6 +50,16 @@ private:
 
 template <typename T>
 void render_type(const Shader& shader, const Camera& camera, const T& data)
+{
+	shader.use();
+	for (auto& renderable : data)
+	{
+		renderable.render(shader, camera);
+	}
+}
+
+template <typename T>
+void render_type(const Shader& shader, const DebugCamera& camera, const T& data)
 {
 	shader.use();
 	for (auto& renderable : data)
