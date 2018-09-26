@@ -6,6 +6,7 @@ using namespace std::chrono_literals;
 Game::Game()
 	:window(glm::ivec2(1280, 720), "Scrap Escape")
 {
+	window.assign_key(button::select, GLFW_KEY_Y);
 	window.assign_key(button::up, GLFW_KEY_W);
 	window.assign_key(button::left, GLFW_KEY_A);
 	window.assign_key(button::down, GLFW_KEY_S);
@@ -51,7 +52,7 @@ void Game::run()
 
 void Game::render()
 {
-	renderer.render(chat.begin(), chat.end());
+	renderer.render(chat.begin(), chat.end(), menu.button_data());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -86,6 +87,7 @@ void Game::update(std::chrono::milliseconds delta)
 			std::end(player_inputs.components));
 	}
 	chat.update(delta);
+	menu.update(delta, *local_input);
 
 	renderer.update(delta, 
 		std::begin(player_inputs.components),

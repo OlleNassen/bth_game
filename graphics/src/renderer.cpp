@@ -46,7 +46,10 @@ Renderer::Renderer()
 }
 
 
-void Renderer::render(const std::string* begin, const std::string* end)const
+void Renderer::render(
+	const std::string* begin, 
+	const std::string* end, 
+	const gui::button_array& buttons)const
 {
 
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
@@ -82,16 +85,23 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 
 	constexpr auto size_y = 720 / 12;
 
-	if (show_start)
+	for (auto i = 0; i < buttons.size(); ++i)
 	{
-		text.render_text("start", 10.0f, size_y * 8, 1.0f);
-	}
-	else
-	{
-		text.render_text("start", 0.0f, size_y * 8, 1.0f);
-	}
-		
-	
+		auto& button = buttons[i];
+		if(button.text != "none")	
+			if (button.state == gui::button_state::selected)
+			{
+				text.render_text("[" + button.text + "]", 20.0f, i * size_y, 1.0f);
+			}
+			else if (button.state == gui::button_state::hover)
+			{
+				text.render_text(button.text, 20.0f, i * size_y, 1.0f);
+			}
+			else 
+			{
+				text.render_text(button.text, 10.0f, i * size_y, 1.0f);
+			}		
+	}			
 
 	if (game_over)
 	{
