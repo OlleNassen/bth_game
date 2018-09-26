@@ -12,6 +12,8 @@ enum class button
 	right,
 	jump,
 	glow,
+	debug,
+	reset,
 	quit
 };
 

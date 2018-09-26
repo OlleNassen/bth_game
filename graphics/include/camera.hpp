@@ -1,13 +1,14 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
-#include <glm/glm.hpp>
+
 #include <chrono>
+#include <glm/glm.hpp>
 #include "../../engine/include/input.hpp"
 
-class SpectatorCamera
+class Camera
 {
 public:
-	SpectatorCamera(float fovy, float width, float height, float near, float far);
+	Camera(float fovy, float width, float height, float near, float far);
 	void update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end);
 
 	glm::mat4 projection_matrix() const { return projection; }
@@ -19,17 +20,16 @@ private:
 	glm::mat4 view;
 
 	float aspect_ratio;
+	float fovy;
 	
-	glm::vec3 position;
-	glm::vec3 view_angle;	
+	glm::vec3 position;	
 };
 
-class Camera // Game/Debug camera
+class DebugCamera // Game/Debug camera
 {
 public:
-	Camera(float fovy, float width, float height, float near, float far);
+	DebugCamera(float fovy, float width, float height, float near, float far);
 
-	void fps_update(std::chrono::milliseconds delta, const input& i);
 	void update(std::chrono::milliseconds delta, const input& i);
 
 	glm::mat4 projection_matrix() const;
