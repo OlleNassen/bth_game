@@ -15,20 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\text.vs" />
-    <None Include="shaders\text.fs" />
-    <None Include="scripts\input.lua" />
-    <None Include="scripts\bindkey.lua" />
-    <None Include="shaders\blinn_phong.vs" />
-    <None Include="shaders\uber.fs" />
-    <None Include="shaders\uber.vs" />
-    <None Include="shaders\gui.fs" />
-    <None Include="shaders\gui.vs" />
-    <None Include="shaders\template.fs" />
-    <None Include="shaders\template.gs" />
-    <None Include="shaders\template.vs" />
-    <None Include="shaders\post_processing_effects.fs" />
-    <None Include="shaders\post_processing_effects.vs" />
-    <None Include="scripts\test.lua" />
+    <ClInclude Include="MeshStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CustomMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

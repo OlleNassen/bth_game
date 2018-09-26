@@ -11,6 +11,7 @@ Game::Game()
 	window.assign_key(button::down, GLFW_KEY_S);
 	window.assign_key(button::right, GLFW_KEY_D);
 	window.assign_key(button::jump, GLFW_KEY_SPACE);
+	window.assign_key(button::glow, GLFW_KEY_G);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 	net_init();
@@ -65,7 +66,7 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 		else
 		{
-			host = std::make_unique<Client>(s);
+			host = std::make_unique<Client>(chat[1]);
 		}
 		local_input = &player_inputs.components[host->id()];
 	}
@@ -77,14 +78,20 @@ void Game::update(std::chrono::milliseconds delta)
 			std::begin(player_inputs.components), 
 			std::end(player_inputs.components));
 	}
+	chat.update(delta);
+
+	renderer.update(delta, 
+		std::begin(player_inputs.components),
+		std::end(player_inputs.components), chat[1], chat.is_on());
+
 
 	//Player control-input
-	glm::vec2 updated_player_pos = luaLoad.processInput(*local_input, delta);
+	//glm::vec2 updated_player_pos = luaLoad.processInput(*local_input, delta);
 
 
-	renderer.update(delta, player_inputs.components[0], 0, true, updated_player_pos);
-	//renderer.update(delta, player_inputs.components[1], 1, true);
-	//renderer.update(delta, player_inputs.components[2], 2, true);
-	//renderer.update(delta, player_inputs.components[3], 3, true);
-	chat.update(delta);
+	//renderer.update(delta, player_inputs.components[0], 0, true, updated_player_pos);
+	////renderer.update(delta, player_inputs.components[1], 1, true);
+	////renderer.update(delta, player_inputs.components[2], 2, true);
+	////renderer.update(delta, player_inputs.components[3], 3, true);
+	//chat.update(delta);
 	}

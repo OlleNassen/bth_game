@@ -1,9 +1,13 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
+
+#include <chrono>
 #include <vector>
 #include "model.hpp"
 #include "camera.hpp"
 #include "text.hpp"
+#include "framebuffer.hpp"
+#include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 
 
@@ -17,7 +21,12 @@ public:
 	Renderer();
 
 	void render(const std::string* begin, const std::string* end) const;
-	void update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on, glm::vec2 position);
+	void update(std::chrono::milliseconds delta, 
+		const input* begin, 
+		const input* end, 
+		const std::string& data,
+		bool is_on);
+	//void update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on, glm::vec2 position);
 
 private:
 	Camera camera;
@@ -27,11 +36,18 @@ private:
 	UserInterface ui;
 	std::vector<Shader> shaders;
 	std::vector<Mesh> meshes;
-	std::chrono::milliseconds time{0};
+	std::chrono::milliseconds time{10000};
+
+	std::string log;
 
 	glm::vec2 v[4];
-	bool is_chat_visible{ false };
+	bool is_chat_visible{false};
 
+
+	Framebuffer scene_texture;
+	PostProcessingEffects post_processing_effects;
+
+	bool want_glow{false};
 };
 
 template <typename T>

@@ -20,9 +20,10 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{CF7F7B0A-754E-428D-8DA8-EBBEEB76B85E}</ProjectGuid>
-    <RootNamespace>resources</RootNamespace>
+    <ProjectGuid>{122F12C7-F598-48F1-BD8F-17C3DE2E274A}</ProjectGuid>
+    <RootNamespace>LeapImporter</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>CustomImporter</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -39,7 +40,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -69,9 +70,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)game\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>LeapImporter\LeapImporter;$(IncludePath)</IncludePath>
+    <LibraryPath>LeapImporter\LeapImporter\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -79,6 +80,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>LeapImporter\LeapImporter;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -87,7 +89,17 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>LeapImporter\LeapImporter;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>LeapImporter\LeapImporter\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -118,21 +130,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="scripts\bindkey.lua" />
-    <None Include="scripts\input.lua" />
-    <None Include="scripts\test.lua" />
-    <None Include="shaders\blinn_phong.vs" />
-    <None Include="shaders\gui.fs" />
-    <None Include="shaders\gui.vs" />
-    <None Include="shaders\template.fs" />
-    <None Include="shaders\template.gs" />
-    <None Include="shaders\template.vs" />
-    <None Include="shaders\post_processing_effects.fs" />
-    <None Include="shaders\post_processing_effects.vs" />
-    <None Include="shaders\text.fs" />
-    <None Include="shaders\text.vs" />
-    <None Include="shaders\uber.fs" />
-    <None Include="shaders\uber.vs" />
+    <ClInclude Include="CustomImporter.h" />
+    <ClInclude Include="CustomMesh.h" />
+    <ClInclude Include="MeshStructs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CustomImporter.cpp" />
+    <ClCompile Include="CustomMesh.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

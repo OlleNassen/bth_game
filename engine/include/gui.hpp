@@ -14,6 +14,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 class chat
 {
 public:	
+	bool is_on() const;
+	
 	void update(std::chrono::milliseconds delta);
 	
 	const std::string& operator[](int i) const { return chat_log[i]; }

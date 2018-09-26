@@ -11,6 +11,7 @@ enum class button
 	down,
 	right,
 	jump,
+	glow
 	quit
 };
 
@@ -25,6 +26,8 @@ enum class button_state
 class input
 {
 public:	
+	static constexpr int indices = 12;
+	int index = 0;
 	glm::vec2 cursor;
 
 	const button_state& operator[](button b)const

@@ -35,7 +35,7 @@ Window::Window(const glm::ivec2& window_size, const std::string& title)
 		cout << "Error glew init failed" << '\n';
 	}
 
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 
@@ -88,9 +88,14 @@ void Window::update_input(input& input)
 		}				
 	}
 
+	glm::ivec2 window_size;
+	glfwGetWindowSize(glfw_window, &window_size.x, &window_size.y);
+
 	double x = 0.0;
 	double y = 0.0;
 	glfwGetCursorPos(glfw_window, &x, &y);
+
+	input.index = (y / window_size.y) * input::indices;
 	input.cursor = { x, y };
 }
 
