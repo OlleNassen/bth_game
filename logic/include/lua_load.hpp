@@ -15,6 +15,7 @@ public:
 /*	static void processInput(lua_State* luaState);
 	static int leftRun(lua_State* luaState);
 	static int rightRun(lua_State* luaState);*/
+
 	static int test(lua_State* luaState);
 	void addLuaFunctins(lua_State* luaState);
 	void pushToLuaTable();

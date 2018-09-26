@@ -141,18 +141,9 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 		}
 
 		camera.fps_update(delta, begin[0]);
-		camera.mouse_movement(begin[0].cursor);
+		//camera.mouse_movement(begin[0].cursor);
 		s_cam.update(delta, v, v + 4);
 	}
-		
-		/*if (chat_on)
-	{
-		time = 0ms;
-		is_chat_visible = true;
-	}
-
-	is_chat_visible = !(time > 5s);*/
-
 	
 	ui.update();
 }

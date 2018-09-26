@@ -29,13 +29,13 @@ void LuaLoad::start_lua()
 //void LuaLoad::loadScript(std::string filename)
 //{
 //	if (luaL_loadfile(L, filename.c_str()) || lua_pcall(L, 0, 0, 0))
-
+//
 //	{
 //		std::cout << "Error: script not loaded (" << filename << ")" << std::endl;
 //		L = nullptr;
 //	}
 //}
-
+//
 //Flytta till lua
 //int LuaLoad::jump(lua_State* luaState)
 //{
@@ -61,9 +61,9 @@ void LuaLoad::addLuaFunctins(lua_State* luaState)
 	lua_setglobal(luaState, "Movement");
 	
 	lua_pushcfunction(luaState, test);
-	lua_setglobal(luaState, "test");*/
+	lua_setglobal(luaState, "test");
 
-/*	lua_pushcfunction(luaState, leftRun);
+	lua_pushcfunction(luaState, leftRun);
 	lua_setglobal(luaState, "leftRunPlayer");
 
 	lua_pushcfunction(luaState, rightRun);
