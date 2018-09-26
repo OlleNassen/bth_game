@@ -3,10 +3,14 @@
 #include <iostream>
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
+#include "../../engine/include/timer.hpp"
+
+using namespace std::chrono_literals;
 
 Renderer::Renderer(const config& cfg)
 	: db_cam(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
+	, t{ 300s }
 {
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
@@ -26,6 +30,8 @@ Renderer::Renderer(const config& cfg)
 	for (auto i = 0; i < 4; ++i)
 		models.emplace_back(glm::mat4{1.0f});
 	
+	t = Timer{100s};
+
 	refresh(cfg);
 }
 
@@ -81,6 +87,29 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 				text.render_text(s.c_str(), 10, (offset += 25), 0.5f);
 		});
 
+	constexpr auto size_y = 720 / 12;
+
+	if (show_start)
+	{
+		text.render_text("start", 10.0f, size_y * 8, 1.0f);
+	}
+	else
+	{
+		text.render_text("start", 0.0f, size_y * 8, 1.0f);
+	}
+		
+	
+
+	if (game_over)
+	{
+		text.render_text("GAME OVER!", 1280/2.f, 720/2.f, 2.0f);
+	}
+	else
+	{
+		text.render_text(t.to_string(), 0, 700, 0.5f);
+	}
+		
+
 	glEnable(GL_DEPTH_TEST);
 	
 	// Post Processing Effects
@@ -108,8 +137,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_on || time < 3s;
 
+	game_over = t.is_up(delta);
+
 	if (!is_on)
 	{
+		show_start = begin->index == 3;
+		
 		auto index = 0;
 		std::for_each(begin, end, [this, &index, delta](auto& i)
 		{

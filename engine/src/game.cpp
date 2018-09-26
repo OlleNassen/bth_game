@@ -12,6 +12,7 @@ Game::Game()
 	window.assign_key(button::right, GLFW_KEY_D);
 	window.assign_key(button::glow, GLFW_KEY_G);
 	window.assign_key(button::refresh, GLFW_KEY_F5);
+	window.assign_key(button::menu, GLFW_KEY_F1);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 	net_init();
@@ -57,6 +58,11 @@ void Game::update(std::chrono::milliseconds delta)
 {
 	using std::cout;
 	constexpr char nl = '\n';
+
+	if ((*local_input)[button::menu] == button_state::pressed)
+	{
+		window.show_cursor();
+	}
 	
 	if ((*local_input)[button::refresh] == button_state::pressed)
 	{

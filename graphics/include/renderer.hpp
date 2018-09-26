@@ -10,6 +10,7 @@
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 #include "../../engine/include/config.hpp"
+#include "../../engine/include/timer.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -40,9 +41,14 @@ private:
 	std::chrono::milliseconds time{10000};
 
 	std::string log;
+	Timer t;
 
 	glm::vec2 v[4];
 	bool is_chat_visible{false};
+
+	bool game_over = false;
+
+	bool show_start = false;
 
 
 	Framebuffer scene_texture;
