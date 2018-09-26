@@ -182,38 +182,43 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 			{
 				//physics.dynamic_rigidbodies[index].cancel_force_x();
 				glm::vec2 move_force = glm::vec2();
-				if (i[button::up] == button_state::pressed &&
-					physics.dynamic_rigidbodies[index].can_jump == true)
-				{
-					move_force.y += 50.0f;
-					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(0.0, 50.0));
-					physics.dynamic_rigidbodies[index].can_jump = false;
-				}
-				if (i[button::right] == button_state::held)
-				{
-					move_force.x += 3.5f;
-					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(3.5, 0.0));
-				}
-				if (i[button::left] == button_state::held)
-				{
-					move_force.x += -3.5f;
-					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(-3.5, 0.0));
-				}
+				//if (i[button::up] == button_state::pressed &&
+				//	physics.dynamic_rigidbodies[index].can_jump == true)
+				//{
+				//	move_force.y += 50.0f;
+				//	//physics.dynamic_rigidbodies[index].add_force(glm::vec2(0.0, 50.0));
+					//physics.dynamic_rigidbodies[index].can_jump = false;
+				//}
+				//if (i[button::right] == button_state::held)
+				//{
+				//	//move_force.x += 3.5f;
+				//	//physics.dynamic_rigidbodies[index].add_force(glm::vec2(3.5, 0.0));
+				//}
+				//if (i[button::left] == button_state::held)
+				//{
+				//	//move_force.x += -3.5f;
+				//	//physics.dynamic_rigidbodies[index].add_force(glm::vec2(-3.5, 0.0));
+				//}
 
-				if (i[button::reset] == button_state::pressed)
-				{
-					physics.dynamic_rigidbodies[0].cancel_forces();
-					physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
-				}
+				//if (i[button::reset] == button_state::pressed)
+				//{
+				//	//physics.dynamic_rigidbodies[0].cancel_forces();
+				//	//physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
+				//}
 
-				physics.dynamic_rigidbodies[index].add_force(move_force);
+				/*physics.dynamic_rigidbodies[index].add_force(move_force);
+				collider_debug(i);
+				v[0] = physics.dynamic_positions[0];
+				models[index].set_position(physics.dynamic_positions[0]);*/
+
+				physics.dynamic_rigidbodies[index].add_force(position);
 				collider_debug(i);
 				v[0] = physics.dynamic_positions[0];
 				models[index].set_position(physics.dynamic_positions[0]);
 			}
 			
-			models[index].move(position);
-			v[index] += position;
+			/*models[index].move(position); 
+			v[index] += position;*/
 			++index;
 		});
 

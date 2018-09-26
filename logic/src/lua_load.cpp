@@ -94,7 +94,7 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 	 //update delta_time för lua
 	 //.....
 	
-	position.x = 0.0f;
+	position = { 0, 0 };
 
 	lua_pushnumber(lua_input.getLuaState(), delta.count());
 	lua_setglobal(lua_input.getLuaState(), "dt");

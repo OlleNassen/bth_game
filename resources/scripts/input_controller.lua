@@ -5,8 +5,8 @@ function start()
 	player.y = 0
 	player.is_in_air = false
 	player.is_dead = false
-	WALK_SPEED = 15
-	JUMP_FORCE = 1	
+	WALK_SPEED = 75
+	JUMP_FORCE = 3	
 
 end
 

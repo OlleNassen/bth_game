@@ -89,12 +89,4 @@ void Game::update(std::chrono::milliseconds delta)
 
 
 	renderer.update(delta, std::begin(player_inputs.components), std::end(player_inputs.components), chat[1], chat.is_on(), updated_player_pos);
-
-
-
-	//renderer.update(delta, player_inputs.components[0], 0, true, updated_player_pos);
-	////renderer.update(delta, player_inputs.components[1], 1, true);
-	////renderer.update(delta, player_inputs.components[2], 2, true);
-	////renderer.update(delta, player_inputs.components[3], 3, true);
-	//chat.update(delta);
 	}
