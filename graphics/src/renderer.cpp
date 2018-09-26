@@ -89,9 +89,6 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 
 void Renderer::update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data, bool is_on, glm::vec2 position)
 {
-
-	//void Renderer::update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on, glm::vec2 position)
-
 	using namespace std::chrono_literals;
 	time = data != log ? 0ms : time + delta;
 	log = data;
@@ -156,36 +153,6 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 
 	is_chat_visible = !(time > 5s);*/
 
-	/*using glm::vec2;
-	float speed{ 10.f };
-	vec2 offset{ 0.0f, 0.0f };
-	float dt = delta.count() / 1000.0f;
-	//
-	/*if (i[button::up] >= button_state::pressed)
-	{
-		offset += vec2{ 0, speed } * dt;
-	}
-	if (i[button::left] >= button_state::pressed)
-	{
-		offset += vec2{ -speed, 0 } * dt;
-	}
-	if (i[button::down] >= button_state::pressed)
-	{
-		offset += vec2{ 0, -speed } * dt;
-	}
-	if (i[button::right] >= button_state::pressed)
-	{
-		offset += vec2{ speed, 0 } * dt;
-	}
-	//
-	/*models[index].move(offset);
-	v[index] += offset;
-
-*/
-	/*
-	models[0].move(position);
-	v[0] += position;
-*/
 	
 	ui.update();
 }

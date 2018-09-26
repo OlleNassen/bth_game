@@ -6,7 +6,7 @@ function start()
 	player.is_in_air = false
 	player.is_dead = false
 	WALK_SPEED = 15
-	JUMP_FORCE = 0.1	
+	JUMP_FORCE = 1	
 
 end
 
@@ -17,7 +17,7 @@ end
 
 function update(a)
 	--print("Wazooo")
-	
+
 	if(a == 0)then
 		print("Up")
 		
@@ -49,6 +49,9 @@ function walk(dt)
 end
 
 function jump()
-	player.y = JUMP_FORCE 	
-	--player.x = (dt/1000) * WALK_SPEED -- + fysik
+	if  player.is_in_air == false then
+		print("Lisa was here")
+		player.y = JUMP_FORCE 	
+		player.is_in_air = true
+	end
 end
