@@ -179,6 +179,7 @@
     <ClInclude Include="include\text.hpp" />
     <ClInclude Include="include\texture.hpp" />
     <ClInclude Include="include\user_interface.hpp" />
+    <ClInclude Include="include\stupid_file.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

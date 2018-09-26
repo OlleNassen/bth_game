@@ -9,7 +9,7 @@
 #include "framebuffer.hpp"
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
-
+#include "stupid_file.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -36,6 +36,8 @@ private:
 	std::vector<Shader> shaders;
 	std::vector<Mesh> meshes;
 	std::chrono::milliseconds time{10000};
+
+	Temp temp_quad;
 
 	std::string log;
 
