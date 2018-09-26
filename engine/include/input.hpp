@@ -6,6 +6,8 @@
 
 enum class button
 {
+	select,
+	cancel,
 	up,
 	left,
 	down,

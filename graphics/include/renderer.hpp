@@ -11,7 +11,7 @@
 #include "user_interface.hpp"
 #include "../../engine/include/config.hpp"
 #include "../../engine/include/timer.hpp"
-
+#include "../../engine/include/gui.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -22,7 +22,11 @@ class Renderer
 public:
 	Renderer();
 
-	void render(const std::string* begin, const std::string* end) const;
+	void render(
+		const std::string* begin, 
+		const std::string* end, 
+		const gui::button_array& buttons) const;
+
 	void update(std::chrono::milliseconds delta, 
 		const input* begin, 
 		const input* end, 
