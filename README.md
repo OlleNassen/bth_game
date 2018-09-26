@@ -1,19 +1,42 @@
-# bth_game
+Scrap Escape
+================
 
-PROJECT NAMING CONVENTION GUIDELINES:
+Game project @Blekinge Tekniska Högskola, made by
 
-class: PascalCase. ex: GameEngine, EdvardIsStupid
+Olle Nässén
+Edvard Leiborn
+Petter Flood
+Elin Karlsson
+Vincent Månsson
+Lucas Persson
+Emma Henriksson
+Lucas Stridbar
+Adam Brodd
+Emil Hallin
+Fu Keung Tu
 
-function: snake_case. ex: handle_input(), edvard_is_stupid()
 
-all variables: snake_case. ex: total_furthest_sprites, edvard_is_stupid
+Movement
+----------------
 
-everything else: snake_case
+W - move forward
 
-access specifier order:
+S - move backward
 
-public:
 
-protected:
+How it works
+----------------
 
-private:
+Explain!
+
+
+Third Party Libs
+----------------
+
+GLEW, GLFW, GLM, ENET, FREETYPE, LUAJIT, STB_IMAGE 
+
+
+Future work
+----------------
+
+Everything
