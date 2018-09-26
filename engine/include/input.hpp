@@ -11,7 +11,7 @@ enum class button
 	down,
 	right,
 	jump,
-	glow
+	glow,
 	quit
 };
 

@@ -87,13 +87,11 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	post_processing_effects.render();
 }
 
-void Renderer::update(std::chrono::milliseconds delta, 
-	const input* begin, 
-	const input* end, 
-	const std::string& data, 
-	bool is_on)
-//void Renderer::update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on, glm::vec2 position)
+void Renderer::update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data, bool is_on, glm::vec2 position)
 {
+
+	//void Renderer::update(std::chrono::milliseconds delta, const input& i, int index, bool chat_on, glm::vec2 position)
+
 	using namespace std::chrono_literals;
 	time = data != log ? 0ms : time + delta;
 	log = data;
@@ -104,7 +102,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		auto index = 0;
 		std::for_each(begin, end, [this, &index, delta](auto& i)
 		{
-			using glm::vec2;
+			/*using glm::vec2;
 			float speed{ 10.f };
 			vec2 offset{ 0.0f, 0.0f };
 			float dt = delta.count() / 1000.0f;
@@ -130,9 +128,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 			{
 				want_glow = !want_glow;
 			}
-
-			models[index].move(offset);
-			v[index] += offset;
+			*/
+			models[index].move(position);
+			v[index] += position;
 			++index;
 		});
 
@@ -148,13 +146,15 @@ void Renderer::update(std::chrono::milliseconds delta,
 		camera.fps_update(delta, begin[0]);
 		camera.mouse_movement(begin[0].cursor);
 		s_cam.update(delta, v, v + 4);
-	if (chat_on)
+	}
+		
+		/*if (chat_on)
 	{
 		time = 0ms;
 		is_chat_visible = true;
 	}
 
-	is_chat_visible = !(time > 5s);
+	is_chat_visible = !(time > 5s);*/
 
 	/*using glm::vec2;
 	float speed{ 10.f };
@@ -183,9 +183,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 */
 	
-	models[index].move(position);
-	v[index] += position;
+	/*models[index].move(position);
+	v[index] += position;*/
 
-	}
+	
 	ui.update();
 }
