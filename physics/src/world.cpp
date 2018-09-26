@@ -43,45 +43,49 @@ void World::update(std::chrono::milliseconds delta)
 			{
 				glm::vec2 direction = (dynamic_positions[i] + dynamic_box_colliders[i].get_offset()) - 
 					(static_positions[j] + static_box_colliders[j].get_offset());
-				
-				direction.x = direction.x / (static_box_colliders[j].get_width() + (dynamic_box_colliders[i].get_width()));
-				direction.y = direction.y / (static_box_colliders[j].get_height() + (dynamic_box_colliders[i].get_height()));
 
-				/*glm::vec2 dynamic_direction = dynamic_positions[i] + dynamic_box_colliders[i].get_offset();
-				dynamic_direction.x = glm::normalize(dynamic_direction.x) * (dynamic_box_colliders[i].get_width() / 2);
-				dynamic_direction.y = glm::normalize(dynamic_direction.y) * (dynamic_box_colliders[i].get_height() / 2);
+				float total_width = (dynamic_box_colliders[i].get_width() + static_box_colliders[j].get_width()) / 2;
+				float total_height = (dynamic_box_colliders[i].get_height() + static_box_colliders[j].get_height()) / 2;
 
-				glm::vec2 static_direction = dynamic_positions[i] + dynamic_box_colliders[i].get_offset();
-				static_direction.x = glm::normalize(static_direction.x) * (static_box_colliders[j].get_width() / 2);
-				static_direction.y = glm::normalize(static_direction.y) * (static_box_colliders[j].get_height() / 2);
+				direction.x = direction.x / total_width;
+				direction.y = direction.y / total_height;
 
-				direction = dynamic_direction - static_direction;*/
+				//direction = glm::normalize(direction);
+
+				/*direction.x = direction.x * (dynamic_box_colliders[i].get_width() + static_box_colliders[j].get_width());
+				direction.y = direction.y * (dynamic_box_colliders[i].get_height() + static_box_colliders[j].get_height());*/
 
 				std::cout << direction.x << " : " << direction.y << std::endl;
 				if (abs(direction.x) > abs(direction.y))
 				{
-					if (direction.x < 0)
+					if (direction.x < 0)	//Walking left
 					{
 						//std::cout << "Collision is to the right" << std::endl;
+
 						dynamic_positions[i].x = (-static_body.get_width() / 2) + -static_body.get_offset().x + static_positions[j].x +
 							(dynamic_box_colliders[i].get_offset().x) + (-dynamic_box_colliders[i].get_width() / 2);
 						dynamic_rigidbodies[i].cancel_force_x();
+
+						//dynamic_rigidbodies[i].add_force(glm::vec2(-dynamic_rigidbodies[i].get_force().x, 0.0));
 					}
-					else
+					else if (direction.x > 0)	//Walking right
 					{
 						//std::cout << "Collision is to the left" << std::endl;
+
 						dynamic_positions[i].x = (static_body.get_width() / 2) + static_body.get_offset().x + static_positions[j].x +
 							(-dynamic_box_colliders[i].get_offset().x) + (dynamic_box_colliders[i].get_width() / 2);
 						dynamic_rigidbodies[i].cancel_force_x();
+
+						//dynamic_rigidbodies[i].add_force(glm::vec2(-dynamic_rigidbodies[i].get_force().x, 0.0));
 					}
 				}
-				else 
+				else if (abs(direction.x) < abs(direction.y))
 				{
 					if (direction.y < 0)
 					{ 
 						//std::cout << "Collision is to the top" << std::endl;
 					}
-					else
+					else if (direction.y > 0)
 					{
 						//std::cout << "Collision is to the bottom" << std::endl;
 						dynamic_positions[i].y = (static_body.get_height() / 2) + static_body.get_offset().y + static_positions[j].y +

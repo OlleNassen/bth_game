@@ -11,7 +11,7 @@ Renderer::Renderer()
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
 	
-	v[0] = { 0, 0 };
+	v[0] = { 0, -9.5 };
 	v[1] = { -5, -5 };
 	v[2] = { 14, 2 };
 	v[3] = { -4, -20 };
@@ -144,7 +144,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_on || time < 3s;
 
-	physics.update(delta);
+	
 
 	if (!is_on)
 	{
@@ -195,12 +195,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 				}
 				if (i[button::right] == button_state::held)
 				{
-					move_force.x += 3.5f;
+					move_force.x += 1.5f;
 					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(3.5, 0.0));
 				}
 				if (i[button::left] == button_state::held)
 				{
-					move_force.x += -3.5f;
+					move_force.x += -1.5f;
 					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(-3.5, 0.0));
 				}
 
@@ -217,7 +217,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			}
 		});
 
-
+		physics.update(delta);
 
 		if (want_glow)
 		{
