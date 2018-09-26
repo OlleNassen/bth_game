@@ -100,7 +100,7 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 	if (!is_on)
 	{
 		auto index = 0;
-		std::for_each(begin, end, [this, &index, delta](auto& i)
+		std::for_each(begin, end, [this, &index, &position, delta](auto& i)
 		{
 			/*using glm::vec2;
 			float speed{ 10.f };
@@ -122,13 +122,13 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 			if (i[button::right] >= button_state::pressed)
 			{
 				offset += vec2{ speed, 0 } *dt;
-			}
+			}*/
 
 			if (i[button::glow] == button_state::pressed)
 			{
 				want_glow = !want_glow;
 			}
-			*/
+			
 			models[index].move(position);
 			v[index] += position;
 			++index;
@@ -182,10 +182,10 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 	v[index] += offset;
 
 */
-	
-	/*models[index].move(position);
-	v[index] += position;*/
-
+	/*
+	models[0].move(position);
+	v[0] += position;
+*/
 	
 	ui.update();
 }

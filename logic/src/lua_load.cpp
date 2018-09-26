@@ -88,13 +88,13 @@ void LuaLoad::pushToLuaTable()
 
 }
 
-glm::vec2 LuaLoad::processInput(const input& i, std::chrono::milliseconds delta)
+glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta)
 {
 	
 	 //update delta_time för lua
 	 //.....
 	
-	position = { 0,0 };
+	position = { 0.f, 0.f };
 
 	lua_pushnumber(lua_input.getLuaState(), delta.count());
 	lua_setglobal(lua_input.getLuaState(), "dt");

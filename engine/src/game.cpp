@@ -57,6 +57,7 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
+	
 	if (!host && !chat[1].empty())
 	{
 		if (chat[1] == "server")
@@ -80,13 +81,13 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	chat.update(delta);
 
-	renderer.update(delta, 
-		std::begin(player_inputs.components),
-		std::end(player_inputs.components), chat[1], chat.is_on());
-
 
 	//Player control-input
-	//glm::vec2 updated_player_pos = luaLoad.processInput(*local_input, delta);
+	glm::vec2 updated_player_pos = luaLoad.process_input(*local_input, delta);
+
+
+	renderer.update(delta, std::begin(player_inputs.components), std::end(player_inputs.components), chat[1], chat.is_on(), updated_player_pos);
+
 
 
 	//renderer.update(delta, player_inputs.components[0], 0, true, updated_player_pos);
