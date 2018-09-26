@@ -1,6 +1,6 @@
 #include "model.hpp"
 
-Model::Model(const glm::mat4& model)
+Model::Model(const glm::mat4& model, const int id)
 	: model{model}
 {
 	mesh = new Mesh("RobotTest.ssp");

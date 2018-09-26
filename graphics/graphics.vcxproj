@@ -153,7 +153,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="mesh_lib.cpp" />
+    <ClCompile Include="src\game_scene.cpp" />
+    <ClCompile Include="src\mesh_lib.cpp" />
     <ClCompile Include="src\post_processing_effects.cpp" />
     <ClCompile Include="src\framebuffer.cpp" />
     <ClCompile Include="src\camera.cpp" />
@@ -166,11 +167,13 @@
     <ClCompile Include="src\user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\game_scene.hpp" />
     <ClInclude Include="include\helpers.hpp" />
     <ClInclude Include="include\camera.hpp" />
     <ClInclude Include="include\framebuffer.hpp" />
     <ClInclude Include="include\lights.hpp" />
     <ClInclude Include="include\mesh.hpp" />
+    <ClInclude Include="include\mesh_lib.hpp" />
     <ClInclude Include="include\model.hpp" />
     <ClInclude Include="include\post_processing_effects.hpp" />
     <ClInclude Include="include\primitives.hpp" />
@@ -178,7 +181,6 @@
     <ClInclude Include="include\shader.hpp" />
     <ClInclude Include="include\text.hpp" />
     <ClInclude Include="include\user_interface.hpp" />
-    <ClInclude Include="mesh_lib.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

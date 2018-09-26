@@ -3,6 +3,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "mesh.hpp"
+#include "mesh_lib.hpp"
 #include "shader.hpp"
 #include "camera.hpp"
 //TEMP MODEL CLASS, TECHNICAL ARTISTS FEEL FREE TO CHANGE THIS
@@ -10,7 +11,7 @@
 class Model
 {
 public:
-	Model(const glm::mat4& model);
+	Model(const glm::mat4& model, const int id);
 	~Model();
 
 	void move(glm::vec2 offset)

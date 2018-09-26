@@ -13,6 +13,8 @@ Game::Game()
 	window.assign_key(button::glow, GLFW_KEY_G);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
+	mesh_lib = new MeshLib();
+
 	net_init();
 }
 

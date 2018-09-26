@@ -9,6 +9,7 @@
 #include <renderer.hpp>
 #include <host.hpp>
 #include "ecs.hpp"
+#include "mesh_lib.hpp"
 #include "window.hpp"
 #include "input.hpp"
 #include "gui.hpp"
@@ -37,6 +38,7 @@ private:
 	
 	std::unique_ptr<Host> host;
 	std::chrono::milliseconds timestep{16};
+	MeshLib* mesh_lib;
 	Window window;
 	input player_input;
 	Renderer renderer;

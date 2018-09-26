@@ -45,7 +45,10 @@
     <ClCompile Include="src\user_interface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mesh_lib.cpp">
+    <ClCompile Include="src\mesh_lib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,7 +89,10 @@
     <ClInclude Include="include\post_processing_effects.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mesh_lib.hpp">
+    <ClInclude Include="include\mesh_lib.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game_scene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
