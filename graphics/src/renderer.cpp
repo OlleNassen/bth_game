@@ -246,10 +246,10 @@ void Renderer::collider_debug(const input& i)
 		else
 			std::cout << "Debug deactivated." << std::endl;
 	}
-		camera.fps_update(delta, begin[0]);
+		//camera.fps_update(delta, begin[0]);
 		//camera.mouse_movement(begin[0].cursor);
-		s_cam.update(delta, v, v + 4);
-	}
+		//s_cam.update(delta, v, v + 4);
 	
-	ui.update();
+	
+	//ui.update();
 }
