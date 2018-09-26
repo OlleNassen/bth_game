@@ -42,8 +42,7 @@ private:
 	Window window;
 	input player_input;
 	
-	config cfg{"../resources/test.ini"};
-	Renderer renderer{cfg};
+	Renderer renderer;
 	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };

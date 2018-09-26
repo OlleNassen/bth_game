@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "../../engine/include/timer.hpp"
 
+using namespace std::chrono_literals;
+
 Renderer::Renderer()
 	: db_cam(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
@@ -46,6 +48,7 @@ Renderer::Renderer()
 
 void Renderer::render(const std::string* begin, const std::string* end)const
 {
+
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	scene_texture.bind_framebuffer();

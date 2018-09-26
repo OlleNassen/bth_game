@@ -63,12 +63,6 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		window.show_cursor();
 	}
-	
-	if ((*local_input)[button::refresh] == button_state::pressed)
-	{
-		cfg = config{ "../resources/test.ini" };
-		renderer.refresh(cfg);
-	}
 
 	if (!host && !chat[1].empty())
 	{
