@@ -4,18 +4,23 @@
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(float fovy, float width,
-	float height, float near, float far)
-	: projection{glm::perspective(fovy, width / height, near, far)}
-	, view{1.0f}
-	, aspect_ratio{width / height}
+Camera::Camera(float fovy, float aspect, float near, float far)
+	: projection{glm::perspective(fovy, aspect, near, far)}
+	, aspect{aspect}
 	, fovy{fovy}
-	, position{0.0f, 0.0f, 20.0f}
+	, near{near}
+	, far{far}
 {
 
 }
 
-void Camera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
+glm::mat4 Camera::view() const
+{
+	return glm::lookAt(position, position + forward, up);
+}
+
+
+void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
 {
 	auto pos_x = [](const auto& l, const auto& r) { return l.x < r.x; };
 	auto pos_y = [](const auto& l, const auto& r) { return l.y < r.y; };
@@ -30,7 +35,7 @@ void Camera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2
 	
 	auto desired_distance = 0.0f;
 	auto distance_height = size.y / glm::tan(fovy / 2.0f);
-	auto distance_width = (size.x / aspect_ratio) / glm::tan(fovy / 2.0f);
+	auto distance_width = (size.x / aspect) / glm::tan(fovy / 2.0f);
 	
 	desired_distance = distance_height > distance_width ? distance_height : distance_width;
 	if (desired_distance < 20.0f) desired_distance = 20.0f;
@@ -39,21 +44,7 @@ void Camera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2
 	position = glm::mix(position, { desired_position, desired_distance }, delta_seconds.count());
 }
 
-glm::mat4 Camera::view_matrix() const
-{
-	using namespace glm;
-	return lookAt(position, position + vec3{0.0f, 0.0f, -1.0f}, vec3{ 0.0f, 1.0f, 0.0f });
-}
 
-
-
-
-
-DebugCamera::DebugCamera(float fovy, float width,
-	float height, float near, float far)
-	: projection(glm::perspective(fovy, width / height, near, far))
-{
-}
 
 void DebugCamera::update(std::chrono::milliseconds delta, const input & i)
 {
