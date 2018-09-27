@@ -57,8 +57,8 @@ public:
 	const button_array& button_data() const;
 
 private:
-	button_array buttons;
-	button_array* current_buttons{&buttons};
+	button_array buttons[2];
+	button_array* current_buttons{&buttons[0]};
 };
 
 }
