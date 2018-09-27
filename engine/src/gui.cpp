@@ -79,7 +79,7 @@ Menu::Menu()
 {
 	for (auto& button : buttons)
 	{
-		button = { "none", button_state::none };
+		button = { "", button_state::inactive };
 	}
 
 	buttons[8] = { "Start", button_state::none };
@@ -89,7 +89,7 @@ Menu::Menu()
 
 const gui::button_array& Menu::button_data() const
 {
-	return buttons;
+	return *current_buttons;
 }
 
 void Menu::update(std::chrono::milliseconds delta, const input& i)

@@ -42,7 +42,7 @@ Renderer::Renderer()
 		"../resources/shaders/temp.vs",
 		"../resources/shaders/temp.fs");
 	
-	
+	db_cam.position.z = 20.0f;
 }
 
 
@@ -88,7 +88,7 @@ void Renderer::render(
 	for (auto i = 0; i < buttons.size(); ++i)
 	{
 		auto& button = buttons[i];
-		if(button.text != "none")	
+		if(button.state != gui::button_state::inactive)
 			if (button.state == gui::button_state::selected)
 			{
 				text.render_text("[" + button.text + "]", 20.0f, i * size_y, 1.0f);
@@ -191,6 +191,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		db_cam.update(delta, begin[0]);
 		db_cam.mouse_movement(begin[0].cursor);
 	}
-	game_camera.update(delta, v, v + 1);
+	game_camera.update(delta, v, v + 4);
 	ui.update();
 }

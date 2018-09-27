@@ -35,6 +35,7 @@ private:
 
 enum class button_state
 {
+	inactive,
 	none,
 	hover,
 	selected
@@ -58,6 +59,7 @@ public:
 
 private:
 	button_array buttons;
+	button_array* current_buttons{&buttons};
 };
 
 }
