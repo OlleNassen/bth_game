@@ -17,59 +17,35 @@ y = 15.0
 class config
 {
 public:
-	config(const std::string& path) : reader{path} {}
+	config(const std::string& path);
 
-	std::set<std::string>::const_iterator begin() const
-	{ 
-		return reader.Sections().begin(); 
-	}
-	std::set<std::string>::const_iterator end() const
-	{ 
-		return reader.Sections().end(); 
-	}
+	std::set<std::string>::const_iterator begin() const;
+	std::set<std::string>::const_iterator end() const;
+	
+	std::string at(
+		const std::string& section,
+		const std::string& name,
+		const char* default_value) const;
 
 	std::string at(
 		const std::string& section,
 		const std::string& name,
-		const char* default_value) const
-	{
-		return reader.Get(section, name, default_value);
-		
-	}
-
-	std::string at(
-		const std::string& section,
-		const std::string& name, 
-		const std::string& default_value) const
-	{
-		return reader.Get(section, name, default_value);
-	}
+		const std::string& default_value) const;
 
 	bool at(
-		const std::string& section, 
-		const std::string& name, 
-		bool default_value) const
-	{
-		return reader.GetBoolean(section, name, default_value);
-	}
+		const std::string& section,
+		const std::string& name,
+		bool default_value) const;
 
 	int at(
-		const std::string& section, 
-		const std::string& name, 
-		int default_value) const
-	{
-		return static_cast<int>(
-			reader.GetInteger(section, name, default_value));
-	}
+		const std::string& section,
+		const std::string& name,
+		int default_value) const;
 
 	float at(
-		const std::string& section, 
-		const std::string& name, 
-		float default_value) const
-	{
-		return static_cast<float>(
-			reader.GetReal(section, name, default_value));
-	}
+		const std::string& section,
+		const std::string& name,
+		float default_value) const;
 
 private:
 	INIReader reader;

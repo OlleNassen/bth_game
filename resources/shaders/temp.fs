@@ -10,8 +10,9 @@ in VS_OUT{
 	vec3 tangent_fragment_pos;
 } fs_in;
 
-uniform sampler2D diffuse_map;
 uniform sampler2D normal_map;
+uniform sampler2D diffuse_map;
+//uniform sampler2D mr_lambert;
 
 void main()
 {
@@ -20,6 +21,8 @@ void main()
     normal = normalize(normal * 2.0 - 1.0);  // this normal is in tangent space
 
     vec3 color = texture(diffuse_map, fs_in.tex_coord).rgb;
+    //color = texture(mr_lambert, fs_in.tex_coord).r;
+
 
     vec3 ambient = 0.1 * color;
 

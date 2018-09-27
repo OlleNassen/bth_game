@@ -10,6 +10,8 @@
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 #include "../../engine/include/config.hpp"
+#include "../../engine/include/timer.hpp"
+#include "../../engine/include/gui.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -18,11 +20,13 @@
 class Renderer
 {
 public:
-	Renderer(const config& cfg);
+	Renderer();
 
-	void refresh(const config& cfg);
+	void render(
+		const std::string* begin, 
+		const std::string* end, 
+		const gui::button_array& buttons) const;
 
-	void render(const std::string* begin, const std::string* end) const;
 	void update(std::chrono::milliseconds delta, 
 		const input* begin, 
 		const input* end, 
@@ -40,9 +44,14 @@ private:
 	std::chrono::milliseconds time{10000};
 
 	std::string log;
+	Timer t;
 
 	glm::vec2 v[4];
 	bool is_chat_visible{false};
+
+	bool game_over = false;
+
+	bool show_start = false;
 
 
 	Framebuffer scene_texture;
@@ -53,6 +62,16 @@ private:
 
 template <typename T>
 void render_type(const Shader& shader, const Camera& camera, const T& data)
+{
+	shader.use();
+	for (auto& renderable : data)
+	{
+		renderable.render(shader, camera);
+	}
+}
+
+template <typename T>
+void render_type(const Shader& shader, const DebugCamera& camera, const T& data)
 {
 	shader.use();
 	for (auto& renderable : data)

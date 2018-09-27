@@ -1,18 +1,15 @@
 #version 440
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 normal;
-layout(location = 2) in vec3 bi_normal;
+layout(location = 2) in vec2 uv;
 layout(location = 3) in vec3 tangent;
-layout(location = 4) in vec2 uv;
-layout(location = 5) in vec4 weights;
-layout(location = 6) in vec4 weights_id;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-uniform vec3 light_pos;
-uniform vec3 view_pos;
+uniform vec3 light_position;
+uniform vec3 view_position;
 
 out VS_OUT{
 	vec3 frag_pos;
@@ -34,8 +31,8 @@ void main()
 	vec3 bitangent = cross(temp_normal, temp_tangent);
 
     mat3 tbn_matrix = transpose(mat3(temp_tangent, bitangent, temp_normal));
-    vs_out.tangent_light_pos = tbn_matrix * light_pos;
-    vs_out.tangent_view_pos  = tbn_matrix * view_pos;
+    vs_out.tangent_light_pos = tbn_matrix * light_position;
+    vs_out.tangent_view_pos  = tbn_matrix * view_position;
     vs_out.tangent_fragment_pos  = tbn_matrix * vs_out.frag_pos;
 
 	gl_Position = projection * view * model * vec4(position, 1.0);

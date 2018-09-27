@@ -6,12 +6,14 @@ using namespace std::chrono_literals;
 Game::Game()
 	:window(glm::ivec2(1280, 720), "Scrap Escape")
 {
+	window.assign_key(button::select, GLFW_KEY_Y);
 	window.assign_key(button::up, GLFW_KEY_W);
 	window.assign_key(button::left, GLFW_KEY_A);
 	window.assign_key(button::down, GLFW_KEY_S);
 	window.assign_key(button::right, GLFW_KEY_D);
 	window.assign_key(button::glow, GLFW_KEY_G);
 	window.assign_key(button::refresh, GLFW_KEY_F5);
+	window.assign_key(button::menu, GLFW_KEY_F1);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 	net_init();
@@ -50,18 +52,17 @@ void Game::run()
 
 void Game::render()
 {
-	renderer.render(chat.begin(), chat.end());
+	renderer.render(chat.begin(), chat.end(), menu.button_data());
 }
 
 void Game::update(std::chrono::milliseconds delta)
 {
 	using std::cout;
 	constexpr char nl = '\n';
-	
-	if ((*local_input)[button::refresh] == button_state::pressed)
+
+	if ((*local_input)[button::menu] == button_state::pressed)
 	{
-		cfg = config{ "../resources/test.ini" };
-		renderer.refresh(cfg);
+		window.show_cursor();
 	}
 
 	if (!host && !chat[1].empty())
@@ -86,6 +87,7 @@ void Game::update(std::chrono::milliseconds delta)
 			std::end(player_inputs.components));
 	}
 	chat.update(delta);
+	menu.update(delta, *local_input);
 
 	renderer.update(delta, 
 		std::begin(player_inputs.components),

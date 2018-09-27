@@ -3,26 +3,27 @@
 #include <iostream>
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
+#include "../../engine/include/timer.hpp"
 
-Renderer::Renderer(const config& cfg)
+using namespace std::chrono_literals;
+
+Renderer::Renderer()
 	: db_cam(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
+	, t{ 300s }
 {
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
 	
-	auto i = 0;
+	v[0] = { 10, 10 };
+	v[1] = { -5, -5 };
+	v[2] = { 14, 2 };
+	v[3] = { -4, -20 };
 	models.reserve(sizeof(Model) * 4);
-	for (const auto& entity : cfg)
-	{
-		if (entity.compare("player" + std::to_string(i+1)) == 0)
-		{
-			v[i] = { cfg.at(entity, "x", 0.0f), cfg.at(entity, "y", 0.0f) };
-			models.emplace_back(glm::translate(model, vec3{ v[i], 0 }));
-			++i;
-		}
-		
-	}
+	models.emplace_back(glm::translate(model, vec3{ v[0], 0 }));
+	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }));
+	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }));
+	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }));
 
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
@@ -37,37 +38,28 @@ Renderer::Renderer(const config& cfg)
 	shaders.emplace_back(
 		"../resources/shaders/post_processing_effects.vs", 
 		"../resources/shaders/post_processing_effects.fs"); 
+	shaders.emplace_back(
+		"../resources/shaders/temp.vs",
+		"../resources/shaders/temp.fs");
 	
 	
 }
 
-void Renderer::refresh(const config& cfg)
+
+void Renderer::render(
+	const std::string* begin, 
+	const std::string* end, 
+	const gui::button_array& buttons)const
 {
-	using glm::vec3;
-	glm::mat4 model{ 1.0f };
 
-	auto i = 0;
-	for (const auto& entity : cfg)
-	{
-		if (entity.compare("player" + std::to_string(i + 1)) == 0)
-		{
-			v[i] = { cfg.at(entity, "x", 0.0f), cfg.at(entity, "y", 0.0f) };
-			models[i].model = glm::translate(model, vec3{ v[i], 0 });
-			++i;
-		}
-	}
-}
-
-
-void Renderer::render(const std::string* begin, const std::string* end)const
-{
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	render_type(shaders[0], game_camera, models);
-			
+	//render_type(shaders[0], game_camera, models);
+	render_type(shaders[0], db_cam, models);
+
 	// Text
 	shaders[2].use();
 	if (is_chat_visible)
@@ -91,17 +83,45 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 				text.render_text(s.c_str(), 10, (offset += 25), 0.5f);
 		});
 
+	constexpr auto size_y = 720 / 12;
+
+	for (auto i = 0; i < buttons.size(); ++i)
+	{
+		auto& button = buttons[i];
+		if(button.text != "none")	
+			if (button.state == gui::button_state::selected)
+			{
+				text.render_text("[" + button.text + "]", 20.0f, i * size_y, 1.0f);
+			}
+			else if (button.state == gui::button_state::hover)
+			{
+				text.render_text(button.text, 20.0f, i * size_y, 1.0f);
+			}
+			else 
+			{
+				text.render_text(button.text, 10.0f, i * size_y, 1.0f);
+			}		
+	}			
+
+	if (game_over)
+	{
+		text.render_text("GAME OVER!", 1280/2.f, 720/2.f, 2.0f);
+	}
+	else
+	{
+		text.render_text(t.to_string(), 0, 700, 0.5f);
+	}
+		
+
 	glEnable(GL_DEPTH_TEST);
 	
 	// Post Processing Effects
 	shaders[3].use();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	shaders[3].uniform("scene_texture", 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, scene_texture.fbo_texture);
+	scene_texture.bind_texture();
 	shaders[3].uniform("screen_warning", 1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, post_processing_effects.screen_warning);
+	post_processing_effects.texture.bind(1);
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
@@ -118,8 +138,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_on || time < 3s;
 
+	game_over = t.is_up(delta);
+
 	if (!is_on)
 	{
+		show_start = begin->index == 3;
+		
 		auto index = 0;
 		std::for_each(begin, end, [this, &index, delta](auto& i)
 		{
@@ -164,9 +188,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		//camera.update(delta, begin[0]);
-		//camera.mouse_movement(begin[0].cursor);
+		db_cam.update(delta, begin[0]);
+		db_cam.mouse_movement(begin[0].cursor);
 	}
-	game_camera.update(delta, v, v + 4);
+	game_camera.update(delta, v, v + 1);
 	ui.update();
 }

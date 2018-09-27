@@ -30,7 +30,6 @@ Mesh::Mesh(const std::string meshfile)
 	custom_mesh->vertices->ty;
 	custom_mesh->vertices->tz;
 
-
 	glGenVertexArrays(1, &vao_id);
 	glBindVertexArray(vao_id);
 	glEnableVertexAttribArray(0);
@@ -80,21 +79,21 @@ Mesh::Mesh(const std::string meshfile)
 		4, 2,
 		GL_FLOAT, GL_FALSE, 
 		sizeof(VertexInformation),
-		BUFFER_OFFSET(sizeof(float) * 11));
+		BUFFER_OFFSET(sizeof(float) * 12));
 
 	//weights
 	glVertexAttribPointer(
 		5, 4,
 		GL_FLOAT, GL_FALSE, 
 		sizeof(VertexInformation),
-		BUFFER_OFFSET(sizeof(float) * 15));
+		BUFFER_OFFSET(sizeof(float) * 14));
 
 	//weight's id
 	glVertexAttribPointer(
 		6, 4,
 		GL_FLOAT, GL_FALSE, 
 		sizeof(VertexInformation),
-		BUFFER_OFFSET(sizeof(float) * 19));
+		BUFFER_OFFSET(sizeof(float) * 18));
 }
 
 Mesh::~Mesh()

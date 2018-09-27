@@ -2,6 +2,7 @@
 #define FRAMEBUFFER_HPP
 #include <GL/glew.h>
 #include <iostream>
+#include "texture.hpp"
 
 class Framebuffer
 {
