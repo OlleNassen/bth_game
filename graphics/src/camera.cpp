@@ -67,27 +67,25 @@ void DebugCamera::mouse_movement(const glm::vec2& mouse_pos)
 {
 	if (!initialized)
 	{
-		last_mouse_position.x = mouse_pos.x;
-		last_mouse_position.y = mouse_pos.y;
+		last_mouse_position = mouse_pos;
 		initialized = true;
 	}
 
-	auto xoffset = mouse_pos.x - last_mouse_position.x;
-	auto yoffset = last_mouse_position.y - mouse_pos.y;
-	last_mouse_position.x = mouse_pos.x;
-	last_mouse_position.y = mouse_pos.y;
+	glm::vec2 offset
+	{
+		mouse_pos.x - last_mouse_position.x,
+		last_mouse_position.y - mouse_pos.y
+	};
+	last_mouse_position = mouse_pos;
 
 	auto sensitivity = 0.05f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
+	offset *= sensitivity;
 
-	yaw += xoffset;
-	pitch += yoffset;
+	yaw += offset.x;
+	pitch += offset.y;
 
-	if (pitch > 89.0f)
-		pitch = 89.0f;
-	if (pitch < -89.0f)
-		pitch = -89.0f;
+	if (pitch > 89.0f) pitch = 89.0f;
+	if (pitch < -89.0f) pitch = -89.0f;
 
 	glm::vec3 front;
 	front.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
