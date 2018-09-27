@@ -8,8 +8,8 @@
 using namespace std::chrono_literals;
 
 Renderer::Renderer()
-	: db_cam(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
-	, game_camera(glm::radians(90.0f), 1280.f, 720.f, 0.1f, 100.f)
+	: db_cam(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
+	, game_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, t{ 300s }
 {
 	using glm::vec3;

@@ -19,7 +19,6 @@ glm::mat4 Camera::view() const
 	return glm::lookAt(position, position + forward, up);
 }
 
-
 void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
 {
 	auto pos_x = [](const auto& l, const auto& r) { return l.x < r.x; };
@@ -62,16 +61,6 @@ void DebugCamera::update(std::chrono::milliseconds delta, const input & i)
 		position -= forward * velocity;
 	if (i[button::right] >= button_state::pressed)
 		position += glm::normalize(glm::cross(forward, up)) * velocity;
-}
-
-glm::mat4 DebugCamera::projection_matrix() const
-{
-	return projection;
-}
-
-glm::mat4 DebugCamera::view_matrix() const
-{
-	return glm::lookAt(position, position + forward, up);
 }
 
 void DebugCamera::mouse_movement(const glm::vec2& mouse_pos)

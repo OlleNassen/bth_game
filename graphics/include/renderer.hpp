@@ -35,7 +35,7 @@ public:
 
 private:
 	DebugCamera db_cam;
-	Camera game_camera;
+	GameCamera game_camera;
 	std::vector<Model> models;
 	Text text;
 	UserInterface ui;

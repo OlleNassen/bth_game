@@ -34,7 +34,6 @@ class DebugCamera : public Camera // Game/Debug camera
 {
 public:
 	using Camera::Camera;
-
 	void update(std::chrono::milliseconds delta, const input& i);
 	void mouse_movement(const glm::vec2& mouse_pos);
 
