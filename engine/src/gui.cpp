@@ -101,11 +101,9 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 			button.state = button_state::none;
 
 	button.state = button_state::hover;
-
-	if (i[::button::select] >= ::button_state::pressed)
+	
+	if (i[::button::select] == ::button_state::released)
 	{
-		button.state = button_state::selected;
-
 		if (current_buttons == &buttons[0] && index == 8)
 		{
 			current_buttons = &buttons[1];
@@ -115,7 +113,10 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 			current_buttons = &buttons[0];
 		}
 	}
-		
+	else if (i[::button::select] >= ::button_state::pressed)
+	{
+		button.state = button_state::selected;		
+	}	
 }
 
 }
