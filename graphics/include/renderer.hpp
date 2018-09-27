@@ -70,14 +70,4 @@ void render_type(const Shader& shader, const Camera& camera, const T& data)
 	}
 }
 
-template <typename T>
-void render_type(const Shader& shader, const DebugCamera& camera, const T& data)
-{
-	shader.use();
-	for (auto& renderable : data)
-	{
-		renderable.render(shader, camera);
-	}
-}
-
 #endif
