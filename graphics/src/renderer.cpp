@@ -88,20 +88,19 @@ void Renderer::render(
 	for (auto i = 0; i < buttons.size(); ++i)
 	{
 		auto& button = buttons[i];
-		if(button.state != gui::button_state::inactive)
-			if (button.state == gui::button_state::selected)
-			{
-				text.render_text("[" + button.text + "]", 20.0f, i * size_y, 1.0f);
-			}
-			else if (button.state == gui::button_state::hover)
-			{
-				text.render_text(button.text, 20.0f, i * size_y, 1.0f);
-			}
-			else 
-			{
-				text.render_text(button.text, 10.0f, i * size_y, 1.0f);
-			}		
-	}			
+		if (button.state == gui::button_state::selected)
+		{
+			text.render_text("[" + button.text + "]", 20.0f, i * size_y, 1.0f);
+		}
+		else if (button.state == gui::button_state::hover)
+		{
+			text.render_text(button.text, 20.0f, i * size_y, 1.0f);
+		}
+		else 
+		{
+			text.render_text(button.text, 10.0f, i * size_y, 1.0f);
+		}		
+	}		
 
 	if (game_over)
 	{

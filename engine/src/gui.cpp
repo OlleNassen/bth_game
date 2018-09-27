@@ -77,11 +77,6 @@ void chat::update(std::chrono::milliseconds delta)
 
 Menu::Menu() 
 {
-	for (auto& button : buttons)
-	{
-		button = { "", button_state::inactive };
-	}
-
 	buttons[8] = { "Start", button_state::none };
 	buttons[7] = { "Options", button_state::none };
 	buttons[6] = { "Exit", button_state::none };

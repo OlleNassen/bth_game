@@ -35,7 +35,6 @@ private:
 
 enum class button_state
 {
-	inactive,
 	none,
 	hover,
 	selected
@@ -43,8 +42,8 @@ enum class button_state
 
 struct Button
 {
-	std::string text;
-	button_state state;
+	std::string text = "";
+	button_state state = button_state::none;
 };
 
 using button_array = std::array<gui::Button, input::indices>;
