@@ -41,11 +41,18 @@ void World::update(std::chrono::milliseconds delta)
 		{
 			if (intersects(i, j))
 			{
-				glm::vec2 direction = (dynamic_positions[i] + dynamic_box_colliders[i].get_offset()) - 
-					(static_positions[j] + static_box_colliders[j].get_offset());
+				glm::vec2 dynamic_world_pos = dynamic_positions[i] + dynamic_box_colliders[i].get_offset();
+				glm::vec2 static_world_pos = static_positions[j] + static_box_colliders[j].get_offset();
 
-				float total_width = (dynamic_box_colliders[i].get_width() + static_box_colliders[j].get_width()) / 2;
-				float total_height = (dynamic_box_colliders[i].get_height() + static_box_colliders[j].get_height()) / 2;
+				glm::vec2 direction = (dynamic_world_pos) - (static_world_pos);
+
+				if (direction.x > 0)
+					direction = (dynamic_world_pos + dynamic_box_colliders[i].get_bottom_left()) - (static_world_pos);
+				else if (direction.x < 0)
+					direction = (dynamic_world_pos + dynamic_box_colliders[i].get_bottom_right()) - (static_world_pos);
+
+				float total_width = static_box_colliders[j].get_width() + (dynamic_box_colliders[i].get_width() / 2);
+				float total_height = static_box_colliders[j].get_height();
 
 				direction.x = direction.x / total_width;
 				direction.y = direction.y / total_height;
@@ -90,9 +97,9 @@ void World::update(std::chrono::milliseconds delta)
 						//std::cout << "Collision is to the bottom" << std::endl;
 						dynamic_positions[i].y = (static_body.get_height() / 2) + static_body.get_offset().y + static_positions[j].y +
 							(-dynamic_box_colliders[i].get_offset().y) + (dynamic_box_colliders[i].get_height() / 2);
-						dynamic_rigidbodies[i].gravity_active = false;
-						dynamic_rigidbodies[i].can_jump = true;
 						dynamic_rigidbodies[i].cancel_force_y();
+						/*dynamic_rigidbodies[i].gravity_active = false;*/
+						dynamic_rigidbodies[i].can_jump = true;
 					}
 				}
 
