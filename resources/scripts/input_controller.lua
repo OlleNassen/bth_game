@@ -1,12 +1,12 @@
 function start()
 	dt = 0
+	can_jump = 1
 	player = {}
 	player.x = 0
 	player.y = 0
-	player.is_in_air = false
 	player.is_dead = false
-	WALK_SPEED = 75
-	JUMP_FORCE = 3	
+	WALK_SPEED = 100
+	JUMP_FORCE = 60
 
 end
 
@@ -18,8 +18,14 @@ end
 function update(a)
 	--print("Wazooo")
 
+	--print("Lua can_jump: ")
+	--print(player.can_jump)
+
+	player.x = 0
+	player.y = 0
+
 	if(a == 0)then
-		print("Up")
+		--print("Up")
 		
 		end
 	if(a == 1)then
@@ -34,13 +40,11 @@ function update(a)
 		walk(dt)
 		end
 	if(a == 4)then
-		jump()
-		print("Jump")
-		
-		end
-
+		jump(can_jump)
+		--print("Jump")
+	end
+	
 	return a, player.x, player.y
-
 end
 
 function walk(dt)
@@ -48,10 +52,10 @@ function walk(dt)
 	player.x = (dt/1000) * WALK_SPEED -- + fysik
 end
 
-function jump()
-	if  player.is_in_air == false then
-		print("Lisa was here")
-		player.y = JUMP_FORCE 	
-		player.is_in_air = true
+function jump(can_jump)
+
+	if can_jump == 1 then
+		--player.can_jump = 0
+		player.y = JUMP_FORCE 
 	end
 end

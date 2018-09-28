@@ -57,7 +57,7 @@ void World::update(std::chrono::milliseconds delta)
 
 				direction = dynamic_direction - static_direction;*/
 
-				std::cout << direction.x << " : " << direction.y << std::endl;
+				//std::cout << direction.x << " : " << direction.y << std::endl;
 				if (abs(direction.x) > abs(direction.y))
 				{
 					if (direction.x < 0)

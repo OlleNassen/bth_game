@@ -133,7 +133,7 @@ void Renderer::render(const std::string* begin, const std::string* end)const
 	}
 }
 
-void Renderer::update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data, bool is_on, glm::vec2 position)
+void Renderer::update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data, bool is_on, glm::vec2 position, bool &lua_jump)
 {
 	using namespace std::chrono_literals;
 	time = data != log ? 0ms : time + delta;
@@ -145,29 +145,8 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 	if (!is_on)
 	{
 		auto index = 0;
-		std::for_each(begin, end, [this, &index, &position, delta](auto& i)
+		std::for_each(begin, end, [this, &index, &position, delta, &lua_jump](auto& i)
 		{
-			/*using glm::vec2;
-			float speed{ 10.f };
-			vec2 offset{ 0.0f, 0.0f };
-			float dt = delta.count() / 1000.0f;
-
-			if (i[button::up] >= button_state::pressed)
-			{
-				offset += vec2{ 0, speed } *dt;
-			}
-			if (i[button::left] >= button_state::pressed)
-			{
-				offset += vec2{ -speed, 0 } *dt;
-			}
-			if (i[button::down] >= button_state::pressed)
-			{
-				offset += vec2{ 0, -speed } *dt;
-			}
-			if (i[button::right] >= button_state::pressed)
-			{
-				offset += vec2{ speed, 0 } *dt;
-			}*/
 
 			if (i[button::glow] == button_state::pressed)
 			{
@@ -199,19 +178,36 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 				//	//move_force.x += -3.5f;
 				//	//physics.dynamic_rigidbodies[index].add_force(glm::vec2(-3.5, 0.0));
 				//}
-
-				//if (i[button::reset] == button_state::pressed)
-				//{
-				//	//physics.dynamic_rigidbodies[0].cancel_forces();
-				//	//physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
-				//}
+				if (i[button::reset] == button_state::pressed)
+				{
+					physics.dynamic_rigidbodies[0].cancel_forces();
+					physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
+				}
 
 				/*physics.dynamic_rigidbodies[index].add_force(move_force);
 				collider_debug(i);
 				v[0] = physics.dynamic_positions[0];
 				models[index].set_position(physics.dynamic_positions[0]);*/
 
-				physics.dynamic_rigidbodies[index].add_force(position);
+				//std::cout << physics.dynamic_rigidbodies[index].can_jump << std::endl;
+
+
+				if (position.y > 0 && physics.dynamic_rigidbodies[index].can_jump == true)
+				{
+					physics.dynamic_rigidbodies[index].add_force(position);
+					physics.dynamic_rigidbodies[index].can_jump = false;
+					lua_jump = false;
+				}
+				else
+				{
+					physics.dynamic_rigidbodies[index].add_force(position);
+				}
+				if (physics.dynamic_rigidbodies[index].can_jump == true)
+					lua_jump = true;
+
+
+
+				
 				collider_debug(i);
 				v[0] = physics.dynamic_positions[0];
 				models[index].set_position(physics.dynamic_positions[0]);

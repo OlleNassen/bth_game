@@ -26,68 +26,6 @@ void LuaLoad::start_lua()
 	std::cout << error << std::endl;
 }
 
-//void LuaLoad::loadScript(std::string filename)
-//{
-//	if (luaL_loadfile(L, filename.c_str()) || lua_pcall(L, 0, 0, 0))
-//
-//	{
-//		std::cout << "Error: script not loaded (" << filename << ")" << std::endl;
-//		L = nullptr;
-//	}
-//}
-//
-//Flytta till lua
-//int LuaLoad::jump(lua_State* luaState)
-//{
-//	//script stuff
-//	return 0;
-//}
-//
-//int LuaLoad::leftRun(lua_State* luaState)
-//{
-//	//script stuff
-//	return 0;
-//}
-//
-//int LuaLoad::rightRun(lua_State* luaState)
-//{
-//	//script stuff
-//	return 0;
-//}
-
-void LuaLoad::addLuaFunctins(lua_State* luaState)
-{
-	/*lua_pushlightuserdata(luaState, this);
-	lua_setglobal(luaState, "Movement");
-	
-	lua_pushcfunction(luaState, test);
-	lua_setglobal(luaState, "test");
-
-	lua_pushcfunction(luaState, leftRun);
-	lua_setglobal(luaState, "leftRunPlayer");
-
-	lua_pushcfunction(luaState, rightRun);
-	lua_setglobal(luaState, "rightRunPlayer");*/
-
-}
-
-int LuaLoad::test(lua_State* luaState)
-{
-	std::cout << "checkInput sjflsajfi" << std::endl;
-	return 0;
-}
-
-void LuaLoad::pushToLuaTable()
-{
-	//int lua_input(lua_state* L)
-	//{
-	//	lua_pushinteger(input);
-	//
-	//	return 1;
-	//}
-
-}
-
 glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta)
 {
 	
@@ -96,8 +34,12 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 	
 	position = { 0, 0 };
 
+	std::cout << can_lua_jump << std::endl;
+
 	lua_pushnumber(lua_input.getLuaState(), delta.count());
 	lua_setglobal(lua_input.getLuaState(), "dt");
+	lua_pushnumber(lua_input.getLuaState(), can_lua_jump);
+	lua_setglobal(lua_input.getLuaState(), "can_jump");
 
 	for (int J = 0; J < 5; ++J)
 	{
@@ -108,8 +50,8 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 			lua_pushinteger(lua_input.getLuaState(), J);
 			int error = lua_pcall(lua_input.getLuaState(), 1, 3, 0);
 			int test = lua_tonumber(lua_input.getLuaState(), -3);
-			position.x = lua_tonumber(lua_input.getLuaState(), -2);
-			position.y = lua_tonumber(lua_input.getLuaState(), -1);
+			position.x = position.x + lua_tonumber(lua_input.getLuaState(), -2);
+			position.y = position.y + lua_tonumber(lua_input.getLuaState(), -1);
 			lua_pop(lua_input.getLuaState(), 3);
 
 			std::cout << "pos.x = " << position.x << "\t pos.y = " << position.y << std::endl;
