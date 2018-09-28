@@ -75,4 +75,48 @@ void chat::update(std::chrono::milliseconds delta)
 	}
 }
 
+Menu::Menu() 
+{
+	buttons[0][8] = { "Start", button_state::none };
+	buttons[0][7] = { "Options", button_state::none };
+	buttons[0][6] = { "Exit", button_state::none };
+
+	buttons[1][8] = { "Host", button_state::none };
+	buttons[1][7] = { "Join", button_state::none };
+	buttons[1][6] = { "Back", button_state::none };
+}
+
+const gui::button_array& Menu::button_data() const
+{
+	return *current_buttons;
+}
+
+void Menu::update(std::chrono::milliseconds delta, const input& i)
+{
+	auto index = input::indices - i.index - 1;
+	auto& button = (*current_buttons)[index];
+	
+	for (auto& arrays : buttons)
+		for (auto& button : arrays)
+			button.state = button_state::none;
+
+	button.state = button_state::hover;
+	
+	if (i[::button::select] == ::button_state::released)
+	{
+		if (current_buttons == &buttons[0] && index == 8)
+		{
+			current_buttons = &buttons[1];
+		}
+		if (current_buttons == &buttons[1] && index == 6)
+		{
+			current_buttons = &buttons[0];
+		}
+	}
+	else if (i[::button::select] >= ::button_state::pressed)
+	{
+		button.state = button_state::selected;		
+	}	
+}
+
 }

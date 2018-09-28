@@ -93,7 +93,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\include\LeapImporter\LeapImporter;$(SolutionDir)external/include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external/include/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -102,10 +102,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)external/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Lib>
-      <AdditionalDependencies>freetype.lib;CustomImporter.lib</AdditionalDependencies>
+      <AdditionalDependencies>freetype.lib;LeapImporter.lib</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)external/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)external/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -164,6 +164,7 @@
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\text.cpp" />
+    <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -180,7 +181,9 @@
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\shader.hpp" />
     <ClInclude Include="include\text.hpp" />
+    <ClInclude Include="include\texture.hpp" />
     <ClInclude Include="include\user_interface.hpp" />
+    <ClInclude Include="include\stupid_file.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

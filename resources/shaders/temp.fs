@@ -10,11 +10,9 @@ in VS_OUT{
 	vec3 tangent_fragment_pos;
 } fs_in;
 
-uniform sampler2D diffuse_map;
 uniform sampler2D normal_map;
-uniform sampler2D emissive_map;
-uniform vec3 player_color;
-
+uniform sampler2D diffuse_map;
+//uniform sampler2D mr_lambert;
 
 void main()
 {
@@ -23,8 +21,8 @@ void main()
     normal = normalize(normal * 2.0 - 1.0);  // this normal is in tangent space
 
     vec3 color = texture(diffuse_map, fs_in.tex_coord).rgb;
+    //color = texture(mr_lambert, fs_in.tex_coord).r;
 
-    vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
 
     vec3 ambient = 0.1 * color;
 
@@ -41,5 +39,6 @@ void main()
     float spec = pow(max(dot(normal, halfway_direction), 0.0), 32.0);
     vec3 specular = vec3(0.2) * spec;
 
-	frag_color = vec4(ambient + diffuse + specular + emission, 1.0);
+	frag_color = vec4(ambient + diffuse + specular, 1.0);
+
 }

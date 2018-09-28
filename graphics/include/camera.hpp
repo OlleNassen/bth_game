@@ -3,49 +3,44 @@
 
 #include <chrono>
 #include <glm/glm.hpp>
-#include "../../engine/include/input.hpp"
 
 class Camera
 {
-public:
-	Camera(float fovy, float width, float height, float near, float far);
-	void update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end);
+public:	
+	Camera(float fovy, float aspect, float near, float far);
 
-	glm::mat4 projection_matrix() const { return projection; }
-	glm::mat4 view_matrix() const;
-
-
-private:
+	glm::mat4 view() const;
 	glm::mat4 projection;
-	glm::mat4 view;
-
-	float aspect_ratio;
-	float fovy;
 	
-	glm::vec3 position;	
+	glm::vec3 position{0.0f, 0.0f, 0.0f};
+	glm::vec3 forward{0.0f, 0.0f, -1.0f};
+	glm::vec3 up{0.0f, 1.0f, 0.0f};
+	
+	float fovy;
+	float aspect;
+	float near;
+	float far;
 };
 
-class DebugCamera // Game/Debug camera
+class GameCamera : public Camera
 {
 public:
-	DebugCamera(float fovy, float width, float height, float near, float far);
+	using Camera::Camera;
+	void update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end);
+};
 
-	void update(std::chrono::milliseconds delta, const input& i);
-
-	glm::mat4 projection_matrix() const;
-	glm::mat4 view_matrix() const;
-
-	void mouse_movement(const glm::vec2& mouse_pos);
+class DebugCamera : public Camera // Game/Debug camera
+{
+public:
+	using Camera::Camera;
+	void update(std::chrono::milliseconds delta, const glm::vec3& direction, const glm::vec2& mouse_pos);
 
 private:
-	glm::mat4 projection;
+	void change_position(std::chrono::milliseconds delta, const glm::vec3& direction);
+	void change_rotation(const glm::vec2& mouse_pos);
 
 	float yaw{-80.f};
 	float pitch{0.0f};
-
-	glm::vec3 position{0.0f, 0.0f, 20.0f};
-	glm::vec3 forward{0.0f, 0.0f, -1.0f};
-	glm::vec3 up{0.0f, 1.0f, 0.0f};
 
 	//Mouse
 	bool initialized{false};

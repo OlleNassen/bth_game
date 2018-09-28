@@ -23,7 +23,6 @@
     <ProjectGuid>{122F12C7-F598-48F1-BD8F-17C3DE2E274A}</ProjectGuid>
     <RootNamespace>LeapImporter</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
-    <ProjectName>CustomImporter</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -130,13 +129,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CustomImporter.h" />
-    <ClInclude Include="CustomMesh.h" />
+    <ClInclude Include="CustomLevel.h" />
+    <ClInclude Include="LeapImporter.h" />
+    <ClInclude Include="LeapMesh.h" />
     <ClInclude Include="MeshStructs.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CustomImporter.cpp" />
-    <ClCompile Include="CustomMesh.cpp" />
+    <ClCompile Include="CustomLevel.cpp" />
+    <ClCompile Include="LeapImporter.cpp" />
+    <ClCompile Include="LeapMesh.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
