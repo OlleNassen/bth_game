@@ -20,10 +20,10 @@ Renderer::Renderer()
 	v[2] = { 14, 2 };
 	v[3] = { -4, -20 };
 	models.reserve(sizeof(Model) * 4);
-	models.emplace_back(glm::translate(model, vec3{ v[0], 0 }));
-	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }));
-	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }));
-	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }));
+	models.emplace_back(glm::translate(model, vec3{ v[0], 0 }), vec3{0.9f, 0.2f, 0.1f});
+	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }), vec3{ 0.2f, 0.9f, 0.1f });
+	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }), vec3{ 0.1f, 0.1f, 0.9f });
+	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }), vec3{ 0.9f, 0.8f, 0.1f });
 
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(

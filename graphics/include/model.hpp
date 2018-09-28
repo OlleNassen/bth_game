@@ -12,7 +12,7 @@
 class Model
 {
 public:
-	Model(const glm::mat4& model);
+	Model(const glm::mat4& model, const glm::vec3& emissive_color);
 	~Model();
 
 	void move(glm::vec2 offset)
@@ -25,6 +25,7 @@ private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
 	std::vector<Texture>textures;
 	glm::mat4 model;
+	glm::vec3 emissive_color;
 };
 
 #endif
