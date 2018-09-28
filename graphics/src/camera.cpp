@@ -45,28 +45,19 @@ void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::
 
 
 
-void DebugCamera::update(std::chrono::milliseconds delta, const input & i, const glm::vec2& mouse_pos)
+void DebugCamera::update(std::chrono::milliseconds delta, const glm::vec3& direction, const glm::vec2& mouse_pos)
 {
-	change_position(delta, i);
+	change_position(delta, direction);
 	change_rotation(mouse_pos);
 }
 
-void DebugCamera::change_position(std::chrono::milliseconds delta, const input & i)
+void DebugCamera::change_position(std::chrono::milliseconds delta, const glm::vec3& direction)
 {
-	using namespace std::chrono;
-	using float_seconds = duration<float>;
-	auto velocity = 10.0f;
+	std::chrono::duration<float> float_seconds = delta;
+	auto velocity = 10.0f * float_seconds.count();
 
-	velocity *= duration_cast<float_seconds>(delta).count();
-
-	if (i[button::up] >= button_state::pressed)
-		position += forward * velocity;
-	if (i[button::left] >= button_state::pressed)
-		position -= glm::normalize(glm::cross(forward, up)) * velocity;
-	if (i[button::down] >= button_state::pressed)
-		position -= forward * velocity;
-	if (i[button::right] >= button_state::pressed)
-		position += glm::normalize(glm::cross(forward, up)) * velocity;
+	position += forward * velocity * direction.z;
+	position += glm::normalize(glm::cross(forward, up)) * velocity * direction.x;
 }
 
 void DebugCamera::change_rotation(const glm::vec2& mouse_pos)

@@ -142,30 +142,36 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (!is_on)
 	{
 		show_start = begin->index == 3;
+		glm::vec3 direction{ 0.0f, 0.0f, 0.0f };
 		
 		auto index = 0;
-		std::for_each(begin, end, [this, &index, delta](auto& i)
+		std::for_each(begin, end, [this, &index, &direction, delta](auto& i)
 		{
 			using glm::vec2;
 			float speed{ 10.f };
 			vec2 offset{ 0.0f, 0.0f };
 			float dt = delta.count() / 1000.0f;
+			
 
 			if (i[button::up] >= button_state::pressed)
 			{
 				offset += vec2{ 0, speed } *dt;
+				direction.z += 1.0f;
 			}
 			if (i[button::left] >= button_state::pressed)
 			{
 				offset += vec2{ -speed, 0 } *dt;
+				direction.x -= 1.0f;
 			}
 			if (i[button::down] >= button_state::pressed)
 			{
 				offset += vec2{ 0, -speed } *dt;
+				direction.z -= 1.0f;
 			}
 			if (i[button::right] >= button_state::pressed)
 			{
 				offset += vec2{ speed, 0 } *dt;
+				direction.x += 1.0f;
 			}
 
 			if (i[button::glow] == button_state::pressed)
@@ -187,7 +193,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		db_cam.update(delta, begin[0], begin[0].cursor);
+		db_cam.update(delta, direction, begin[0].cursor);
 	}
 	game_camera.update(delta, v, v + 4);
 	ui.update();
