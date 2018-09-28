@@ -3,7 +3,7 @@
 Model::Model(const glm::mat4& model)
 	: model{model}
 {
-	mesh = new Mesh("RobotTest.ssp");
+	mesh = new Mesh("Robot_1.0.ssp");
 }
 
 Model::~Model()

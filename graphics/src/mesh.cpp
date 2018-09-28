@@ -24,7 +24,12 @@ Mesh::Mesh()
 Mesh::Mesh(const std::string meshfile)
 {
 	string filepath = "../resources/assets/" + meshfile;
-	custom_mesh = new CustomMesh(filepath.c_str());
+
+	LeapImporter importer;
+
+	custom_mesh = importer.getMesh(filepath.c_str());
+
+	//custom_mesh = new LeapMesh(filepath.c_str());
 
 	custom_mesh->vertices->tx;
 	custom_mesh->vertices->ty;

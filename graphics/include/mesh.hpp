@@ -3,7 +3,7 @@
 #include "shader.hpp"
 #include <string>
 #include <GL/glew.h>
-#include <LeapImporter\LeapImporter\CustomMesh.h>
+#include <LeapImporter/LeapImporter/LeapImporter.h>
 
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 
@@ -20,7 +20,7 @@ private:
 	unsigned int vao_id;
 	unsigned int vbo_id;
 
-	CustomMesh* custom_mesh;
+	LeapMesh* custom_mesh;
 };
 
 #endif
