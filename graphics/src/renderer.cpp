@@ -15,7 +15,7 @@ Renderer::Renderer()
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
 	
-	v[0] = { 0, 0 };
+	v[0] = { 0, -9.5 };
 	v[1] = { -5, -5 };
 	v[2] = { 14, 2 };
 	v[3] = { -4, -20 };
@@ -234,13 +234,14 @@ void Renderer::update(
 					want_glow = !want_glow;
 				}
 
+		
 				++index;
 			}
 
 			game_camera.update(delta, v, v + 1);
 			ui.update();
 		});
-
+		physics.update(delta);
 		if (want_glow)
 		{
 			post_processing_effects.update(delta);

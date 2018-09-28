@@ -86,3 +86,23 @@ std::array<glm::vec2, 8> Box::get_vertices_in_series()const
 
 	return vertices;
 }
+
+glm::vec2 Box::get_top_left() const
+{
+	return top_left;
+}
+
+glm::vec2 Box::get_top_right() const
+{
+	return top_right;
+}
+
+glm::vec2 Box::get_bottom_left() const
+{
+	return bottom_left;
+}
+
+glm::vec2 Box::get_bottom_right() const
+{
+	return bottom_right;
+}
