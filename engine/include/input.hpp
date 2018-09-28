@@ -6,12 +6,16 @@
 
 enum class button
 {
+	select,
+	cancel,
 	up,
 	left,
 	down,
 	right,
 	jump,
 	glow,
+	refresh,
+	menu,
 	debug,
 	reset,
 	quit

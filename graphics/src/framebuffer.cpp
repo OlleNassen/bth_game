@@ -40,4 +40,6 @@ void Framebuffer::bind_framebuffer() const
 
 void Framebuffer::bind_texture() const
 {
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, fbo_texture);
 }
