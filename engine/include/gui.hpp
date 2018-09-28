@@ -56,7 +56,10 @@ public:
 
 	const button_array& button_data() const;
 
+	bool exit() const;
+
 private:
+	bool want_exit = false;
 	button_array buttons[2];
 	button_array* current_buttons{&buttons[0]};
 };
