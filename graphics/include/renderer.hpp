@@ -42,18 +42,11 @@ class Renderer
 public:
 	Renderer();
 
-	void render(
-		const std::string* begin, 
-		const std::string* end, 
-		const gui::button_array& buttons) const;
+	void render( const std::string* begin, const std::string* end, const gui::button_array& buttons) const;
 
-	void update(std::chrono::milliseconds delta, 
-		const input* begin, 
-		const input* end, 
-		const std::string& data,
-		bool is_on);
-	void render(const std::string* begin, const std::string* end) const;
-	void update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data, bool is_on, glm::vec2 position, bool &lua_jump);
+	void update(std::chrono::milliseconds delta, const input* begin, const input* end,	const std::string& data, bool is_on, glm::vec2 position, bool &lua_jump);
+	//void render(const std::string* begin, const std::string* end) const;
+	//void update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data, bool is_on, glm::vec2 position, bool &lua_jump);
 
 private:
 	DebugCamera db_camera;
@@ -84,7 +77,7 @@ private:
 	//Vincent and Lucas
 	physics::World physics;
 	bool debug_active;
-	void collider_debug(const input& i);
+	//void collider_debug(const input& i);
 };
 
 template <typename T>

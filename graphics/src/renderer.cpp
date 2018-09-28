@@ -55,7 +55,7 @@ Renderer::Renderer()
 	shaders.emplace_back(
 		"../resources/shaders/lines.vs",
 		"../resources/shaders/lines.fs");
-		"../resources/shaders/post_processing_effects.fs"); 
+		//"../resources/shaders/post_processing_effects.fs"); 
 	shaders.emplace_back(
 		"../resources/shaders/temp.vs",
 		"../resources/shaders/temp.fs");
@@ -65,10 +65,7 @@ Renderer::Renderer()
 }
 
 
-void Renderer::render(
-	const std::string* begin, 
-	const std::string* end, 
-	const gui::button_array& buttons)const
+void Renderer::render( const std::string* begin, const std::string* end, const gui::button_array& buttons)const
 {
 
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
@@ -144,7 +141,7 @@ void Renderer::render(
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
 
-	if (debug_active)
+	/*if (debug_active)
 	{
 		glDisable(GL_DEPTH_TEST);
 		auto& s = shaders[4];
@@ -175,7 +172,7 @@ void Renderer::render(
 			line_debug(line_array);
 		}
 		glEnable(GL_DEPTH_TEST);
-	}
+	}*/
 }
 
 void Renderer::update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data, bool is_on, glm::vec2 position, bool &lua_jump)
@@ -193,34 +190,33 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 	{
 		show_start = begin->index == 3;
 		glm::vec3 direction{ 0.0f, 0.0f, 0.0f };
-		
+		//	std::for_each(begin, end, [this, &index, &direction, delta](auto& i)
 		auto index = 0;
 		std::for_each(begin, end, [this, &index, &position, delta, &lua_jump](auto& i)
-		std::for_each(begin, end, [this, &index, &direction, delta](auto& i)
 		{
-			using glm::vec2;
+			/*using glm::vec2;
 			float speed{ 10.f };
 			vec2 offset{ 0.0f, 0.0f };
-			float dt = delta.count() / 1000.0f;
-			
+			float dt = delta.count() / 1000.0f;*/
 
-			if (i[button::up] >= button_state::pressed)
 
-			if (i[button::glow] == button_state::pressed)
-			{
-				offset += vec2{ 0, speed } *dt;
-				direction.z += 1.0f;
-				want_glow = !want_glow;
-			}
+			/*if (i[button::up] >= button_state::pressed)
 
-			//models[index].move(offset);
-			/*v[index] += offset;
-			++index;*/
+				if (i[button::glow] == button_state::pressed)
+				{
+					offset += vec2{ 0, speed } *dt;
+					direction.z += 1.0f;
+					want_glow = !want_glow;
+				}*/
+
+				//models[index].move(offset);
+				/*v[index] += offset;
+				++index;*/
 
 			if (index == 0)
 			{
 				//physics.dynamic_rigidbodies[index].cancel_force_x();
-				glm::vec2 move_force = glm::vec2();
+				//glm::vec2 move_force = glm::vec2();
 				//if (i[button::up] == button_state::pressed &&
 				//	physics.dynamic_rigidbodies[index].can_jump == true)
 				//{
@@ -262,73 +258,78 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 				{
 					physics.dynamic_rigidbodies[index].add_force(position);
 				}
+
 				if (physics.dynamic_rigidbodies[index].can_jump == true)
 					lua_jump = true;
 
 
 
-				
+
 				collider_debug(i);
 				v[0] = physics.dynamic_positions[0];
 				models[index].set_position(physics.dynamic_positions[0]);
-			if (i[button::left] >= button_state::pressed)
-			{
-				offset += vec2{ -speed, 0 } *dt;
-				direction.x -= 1.0f;
-			}
-			if (i[button::down] >= button_state::pressed)
-			{
-				offset += vec2{ 0, -speed } *dt;
-				direction.z -= 1.0f;
-			}
-			if (i[button::right] >= button_state::pressed)
-			{
-				offset += vec2{ speed, 0 } *dt;
-				direction.x += 1.0f;
+				/*if (i[button::left] >= button_state::pressed)
+				{
+					offset += vec2{ -speed, 0 } *dt;
+					direction.x -= 1.0f;
+				}
+				if (i[button::down] >= button_state::pressed)
+				{
+					offset += vec2{ 0, -speed } *dt;
+					direction.z -= 1.0f;
+				}
+				if (i[button::right] >= button_state::pressed)
+				{
+					offset += vec2{ speed, 0 } *dt;
+					direction.x += 1.0f;
+				}
+
+				if (i[button::glow] == button_state::pressed)
+				{
+					want_glow = !want_glow;
+				}*/
+
+				/*models[index].move(position);
+				v[index] += position;*/
+				++index;
 			}
 
-			if (i[button::glow] == button_state::pressed)
+
+
+			if (want_glow)
 			{
-				want_glow = !want_glow;
+				post_processing_effects.update(delta);
 			}
-			
-			/*models[index].move(position); 
-			v[index] += position;*/
-			++index;
-		});
+			else
+			{
+				post_processing_effects.glow_value = 0;
+			}
 
+			db_camera.update(delta, direction, begin[0].cursor);
 
-
-		if (want_glow)
-		{
-			post_processing_effects.update(delta);
+			//game_camera.update(delta, v, v + 1);
+			//ui.update();
 		}
-		else
-		{
-			post_processing_effects.glow_value = 0;
-		}
 
-		db_camera.update(delta, direction, begin[0].cursor);
+
 	}
-	game_camera.update(delta, v, v + 1);
-	ui.update();
 }
 
-void Renderer::collider_debug(const input& i)
-{
-	if (i[button::debug] == button_state::pressed)
-	{
-		debug_active = !debug_active;
-
-		if (debug_active)
-			std::cout << "Debug activated." << std::endl;
-		else
-			std::cout << "Debug deactivated." << std::endl;
-	}
-		//camera.fps_update(delta, begin[0]);
-		//camera.mouse_movement(begin[0].cursor);
-		//s_cam.update(delta, v, v + 4);
-	
-	
-	//ui.update();
-}
+//void Renderer::collider_debug(const input& i)
+//{
+//	if (i[button::debug] == button_state::pressed)
+//	{
+//		debug_active = !debug_active;
+//
+//		if (debug_active)
+//			std::cout << "Debug activated." << std::endl;
+//		else
+//			std::cout << "Debug deactivated." << std::endl;
+//	}
+//		//camera.fps_update(delta, begin[0]);
+//		//camera.mouse_movement(begin[0].cursor);
+//		//s_cam.update(delta, v, v + 4);
+//	
+//	
+//	//ui.update();
+//}
