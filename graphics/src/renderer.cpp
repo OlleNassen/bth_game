@@ -8,7 +8,7 @@
 using namespace std::chrono_literals;
 
 Renderer::Renderer()
-	: db_cam(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
+	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, t{ 300s }
 {
@@ -42,7 +42,7 @@ Renderer::Renderer()
 		"../resources/shaders/temp.vs",
 		"../resources/shaders/temp.fs");
 	
-	db_cam.position.z = 20.0f;
+	db_camera.position.z = 20.0f;
 }
 
 
@@ -58,7 +58,7 @@ void Renderer::render(
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//render_type(shaders[0], game_camera, models);
-	render_type(shaders[0], db_cam, models);
+	render_type(shaders[0], db_camera, models);
 
 	// Text
 	shaders[2].use();
@@ -193,7 +193,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		db_cam.update(delta, direction, begin[0].cursor);
+		db_camera.update(delta, direction, begin[0].cursor);
 	}
 	game_camera.update(delta, v, v + 4);
 	ui.update();

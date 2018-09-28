@@ -34,7 +34,7 @@ public:
 		bool is_on);
 
 private:
-	DebugCamera db_cam;
+	DebugCamera db_camera;
 	GameCamera game_camera;
 	std::vector<Model> models;
 	Text text;
