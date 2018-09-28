@@ -32,12 +32,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}	
 }
 
-bool chat::is_on() const
+bool Chat::is_on() const
 {
 	return chat_on;
 }
 
-void chat::update(std::chrono::milliseconds delta)
+void Chat::update(std::chrono::milliseconds delta)
 {
 	constexpr auto underscore = '_';
 	
