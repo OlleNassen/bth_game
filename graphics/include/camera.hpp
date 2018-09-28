@@ -3,7 +3,6 @@
 
 #include <chrono>
 #include <glm/glm.hpp>
-#include "../../engine/include/input.hpp"
 
 class Camera
 {
