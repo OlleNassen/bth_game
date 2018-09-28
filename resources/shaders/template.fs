@@ -31,7 +31,7 @@ void main()
     vec3 light_direction =
         normalize(fs_in.tangent_light_pos - fs_in.tangent_fragment_pos);
 
-    float diff_value = max(dot(light_direction, normal), 0.0);
+    float diff_value = max(dot(light_direction, normal), 0.5);
     vec3 diffuse = diff_value * color;
 
     vec3 view_direction =

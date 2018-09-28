@@ -13,7 +13,7 @@
 class Model
 {
 public:
-	Model(const glm::mat4& model, const glm::vec3& emissive_color);
+	Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh);
 	~Model();
 
 	void move(glm::vec2 offset)

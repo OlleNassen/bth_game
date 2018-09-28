@@ -18,7 +18,9 @@ Game::Game()
 
 	mesh_lib = new MeshLib();
 
-	create_scene("scene1.leap");
+	create_scene("../resources/assets/test_level.ssp");
+
+	renderer = new Renderer(level);
 
 	net_init();
 }
@@ -56,7 +58,7 @@ void Game::run()
 
 void Game::render()
 {
-	renderer.render(chat.begin(), chat.end(), menu.button_data());
+	renderer->render(chat.begin(), chat.end(), menu.button_data());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -93,13 +95,13 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
-	renderer.update(delta, 
+	renderer->update(delta, 
 		std::begin(player_inputs.components),
 		std::end(player_inputs.components), chat[1], chat.is_on());
 
 }
 
-void Game::create_scene(const std::string file_name)
+void Game::create_scene(const char* file_name)
 {
-	level = new GameScene(file_name)
+	level = new GameScene(file_name, mesh_lib);
 }

@@ -38,7 +38,7 @@ public:
 private:
 	void render();
 	void update(std::chrono::milliseconds delta);
-	void create_scene(const std::string file_name);
+	void create_scene(const char* file_name);
 	
 	std::unique_ptr<Host> host;
 	std::chrono::milliseconds timestep{16};
@@ -49,7 +49,7 @@ private:
 	Window window;
 	input player_input;
 	
-	Renderer renderer;
+	Renderer* renderer;
 	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };

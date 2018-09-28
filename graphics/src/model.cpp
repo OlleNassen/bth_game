@@ -1,12 +1,12 @@
 #include "model.hpp"
 #include <GLFW/glfw3.h>
 
-Model::Model(const glm::mat4& model, const glm::vec3& emissive_color)
+Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh)
 :
 	model{model},
 	emissive_color{emissive_color}
 {
-	mesh = new Mesh("Robot_1.0.ssp");
+	this->mesh = mesh;
 	textures.reserve(sizeof(Texture) * 3);
 	textures.emplace_back("../resources/assets/normal.tga");
 	textures.emplace_back("../resources/assets/not_diffuse.tga");

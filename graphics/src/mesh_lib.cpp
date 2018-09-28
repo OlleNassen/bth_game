@@ -16,17 +16,28 @@ MeshLib::~MeshLib()
 void MeshLib::create_mesh_list()
 {
 	std::string meshLoader[] = {
-		"Player_temp.leap",				//0
-		"Bucket_Empty.leap",			//1
-		"Stone_1.leap",					//2
-		"Campfire.leap",				//3
-		"Cliffside_1.leap",				//4
-		"Cliffside_2.leap",				//5
-		"Cliffside_3.leap",				//6
-		"Cliffside_4.leap",				//7
-		"Campfire_NoSnow.leap",			//8
-		"WoodenSign.leap",				//9
-		"PineTree.leap",				//10
+		"Robot_1.0.ssp",				//0
+		"door.ssp",				//1
+		"wooden_box.ssp",				//2
+		"Robot_1.0.ssp",				//0
+		"door.ssp",				//1
+		"wooden_box.ssp",				//2
+		"Robot_1.0.ssp",				//0
+		"door.ssp",				//1
+		"wooden_box.ssp",				//2
+		"Robot_1.0.ssp",				//0
+		"door.ssp",				//1
+		"wooden_box.ssp",				//2
+		"Robot_1.0.ssp",				//0
+		"door.ssp",				//1
+		"wooden_box.ssp",				//2
+		"Robot_1.0.ssp",				//0
+		"door.ssp",				//1
+		"wooden_box.ssp",				//2
+		"Robot_1.0.ssp",				//0
+		"door.ssp",				//1
+		"door.ssp",				//1
+		"wooden_box.ssp"				//2
 	};
 
 	for (int i = 0; i < sizeof(meshLoader) / sizeof(meshLoader[0]); i++)
@@ -46,7 +57,7 @@ void MeshLib::add_mesh(const std::string file_path)
 	meshes.push_back(new_mesh);
 }
 
-Mesh * MeshLib::get_mesh(int key)
+Mesh* MeshLib::get_mesh(int key)
 {
 	return meshes.at(key);
 }
