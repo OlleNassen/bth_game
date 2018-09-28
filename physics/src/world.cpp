@@ -56,7 +56,7 @@ void World::update(std::chrono::milliseconds delta)
 				//std::cout << direction.x << " : " << direction.y << std::endl;
 				if (abs(direction.x) > abs(direction.y))
 				{
-					if (direction.x < -0.001 && direction.x >=-1)	//Walking left
+					if (direction.x < -0.001 && direction.x > -1)	//Walking left
 					{
 						//std::cout << "Collision is to the right" << std::endl;
 
@@ -66,7 +66,7 @@ void World::update(std::chrono::milliseconds delta)
 
 						//dynamic_rigidbodies[i].add_force(glm::vec2(-dynamic_rigidbodies[i].get_force().x, 0.0));
 					}
-					else if (direction.x > 0.001 && direction.x <= 1)	//Walking right
+					else if (direction.x > 0.001 && direction.x < 1)	//Walking right
 					{
 						//std::cout << "Collision is to the left" << std::endl;
 

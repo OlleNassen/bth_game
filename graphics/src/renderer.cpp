@@ -26,7 +26,10 @@ Renderer::Renderer()
 
 	//Static
 	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(0, -10));
-	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(0, -2));
+	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(10, -10));
+	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(4, -2));
+	physics.add_static_body(2, 20, glm::vec2(0.0, 0.0), glm::vec2(-7, 7));
+	physics.add_static_body(2, 20, glm::vec2(0.0, 0.0), glm::vec2(15, 7));
 	physics.add_static_body(10, 2, glm::vec2(0.0, 0.0), glm::vec2(25, -10));
 	physics.add_static_body(15, 2, glm::vec2(0.0, 0.0), glm::vec2(50, -15));
 	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(-20, -10));
