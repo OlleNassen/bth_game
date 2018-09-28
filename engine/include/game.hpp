@@ -10,6 +10,7 @@
 #include <host.hpp>
 #include "ecs.hpp"
 #include "mesh_lib.hpp"
+#include "game_scene.hpp"
 #include "window.hpp"
 #include "input.hpp"
 #include "gui.hpp"
@@ -35,10 +36,14 @@ public:
 private:
 	void render();
 	void update(std::chrono::milliseconds delta);
+	void create_scene(const std::string file_name);
 	
 	std::unique_ptr<Host> host;
 	std::chrono::milliseconds timestep{16};
+
 	MeshLib* mesh_lib;
+	GameScene* level;
+
 	Window window;
 	input player_input;
 	Renderer renderer;

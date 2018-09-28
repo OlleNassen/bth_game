@@ -15,6 +15,8 @@ Game::Game()
 
 	mesh_lib = new MeshLib();
 
+	create_scene("scene1.leap");
+
 	net_init();
 }
 
@@ -85,4 +87,9 @@ void Game::update(std::chrono::milliseconds delta)
 		std::begin(player_inputs.components),
 		std::end(player_inputs.components), chat[1], chat.is_on());
 
+}
+
+void Game::create_scene(const std::string file_name)
+{
+	level = new GameScene(file_name)
 }

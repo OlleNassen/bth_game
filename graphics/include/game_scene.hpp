@@ -1,6 +1,7 @@
 #pragma once
-#include "level.h"
-#include "LeapLevel.h"
+#include "model.hpp"
+#include <vector>
+#include <string>
 
 class GameScene
 {
@@ -8,8 +9,8 @@ private:
 
 public:
 	GameScene();
-	GameScene(const char* fileName);
+	GameScene(const std::string fileName);
 	~GameScene();
-	LeapLevel heeloo;
 
+	std::vector<Model> models;
 };
