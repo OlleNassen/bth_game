@@ -39,6 +39,7 @@ void Rigidbody::update()
 		force.x += -this->force.x * this->floor_drag;
 	}
 
+	std::cout << "F.x " << force.x << " F.y " << force.y << std::endl;
 	this->force = (this->force * this->mass);
 }
 

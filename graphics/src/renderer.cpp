@@ -26,10 +26,11 @@ Renderer::Renderer()
 
 	//Static
 	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(0, -10));
+	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(0, -2));
 	physics.add_static_body(10, 2, glm::vec2(0.0, 0.0), glm::vec2(25, -10));
 	physics.add_static_body(15, 2, glm::vec2(0.0, 0.0), glm::vec2(50, -15));
-	physics.add_static_body(18.25, 2, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
-	physics.add_static_body(2, 20, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
+	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(-20, -10));
+	physics.add_static_body(2, 20, glm::vec2(0.0, 0.0), glm::vec2(-25, -14.5));
 
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
