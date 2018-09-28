@@ -34,10 +34,12 @@ class DebugCamera : public Camera // Game/Debug camera
 {
 public:
 	using Camera::Camera;
-	void update(std::chrono::milliseconds delta, const input& i);
-	void mouse_movement(const glm::vec2& mouse_pos);
+	void update(std::chrono::milliseconds delta, const input& i, const glm::vec2& mouse_pos);
 
 private:
+	void change_position(std::chrono::milliseconds delta, const input& i);
+	void change_rotation(const glm::vec2& mouse_pos);
+
 	float yaw{-80.f};
 	float pitch{0.0f};
 

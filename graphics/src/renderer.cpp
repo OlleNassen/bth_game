@@ -187,8 +187,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		db_cam.update(delta, begin[0]);
-		db_cam.mouse_movement(begin[0].cursor);
+		db_cam.update(delta, begin[0], begin[0].cursor);
 	}
 	game_camera.update(delta, v, v + 4);
 	ui.update();

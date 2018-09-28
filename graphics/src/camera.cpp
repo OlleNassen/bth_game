@@ -45,7 +45,13 @@ void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::
 
 
 
-void DebugCamera::update(std::chrono::milliseconds delta, const input & i)
+void DebugCamera::update(std::chrono::milliseconds delta, const input & i, const glm::vec2& mouse_pos)
+{
+	change_position(delta, i);
+	change_rotation(mouse_pos);
+}
+
+void DebugCamera::change_position(std::chrono::milliseconds delta, const input & i)
 {
 	using namespace std::chrono;
 	using float_seconds = duration<float>;
@@ -63,7 +69,7 @@ void DebugCamera::update(std::chrono::milliseconds delta, const input & i)
 		position += glm::normalize(glm::cross(forward, up)) * velocity;
 }
 
-void DebugCamera::mouse_movement(const glm::vec2& mouse_pos)
+void DebugCamera::change_rotation(const glm::vec2& mouse_pos)
 {
 	if (!initialized)
 	{
