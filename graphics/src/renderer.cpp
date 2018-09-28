@@ -237,11 +237,14 @@ void Renderer::update(
 		
 				++index;
 			}
-
+			
 			game_camera.update(delta, v, v + 1);
 			ui.update();
 		});
+		
+		
 		physics.update(delta);
+
 		if (want_glow)
 		{
 			post_processing_effects.update(delta);
