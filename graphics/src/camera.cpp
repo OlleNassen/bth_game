@@ -75,14 +75,9 @@ void DebugCamera::change_rotation(const glm::vec2& mouse_pos)
 	};
 	last_mouse_position = mouse_pos;
 
-	auto sensitivity = 0.05f;
-	offset *= sensitivity;
-
-	yaw += offset.x;
-	pitch += offset.y;
-
-	if (pitch > 89.0f) pitch = 89.0f;
-	if (pitch < -89.0f) pitch = -89.0f;
+	offset *= 0.05f;
+	yaw = yaw + offset.x;
+	pitch = glm::clamp(pitch += offset.y, -89.0f, 89.0f);
 
 	glm::vec3 front;
 	front.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
