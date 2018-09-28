@@ -26,11 +26,8 @@ Renderer::Renderer()
 	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }), vec3{ 0.9f, 0.8f, 0.1f });
 
 	physics.add_dynamic_body(glm::vec2(0.0, 0.0), 1, 3.5, glm::vec2(0.0, 2.25), v[0]);
-	models.emplace_back(glm::translate(model, vec3{ physics.dynamic_positions[0], 0 }));
+	//models.emplace_back(glm::translate(model, vec3{ physics.dynamic_positions[0], 0 }));
 
-	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }));
-	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }));
-	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }));
 
 	//Static
 	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(0, -10));
@@ -175,7 +172,14 @@ void Renderer::render( const std::string* begin, const std::string* end, const g
 	}*/
 }
 
-void Renderer::update(std::chrono::milliseconds delta, const input* begin, const input* end, const std::string& data, bool is_on, glm::vec2 position, bool &lua_jump)
+void Renderer::update(
+	std::chrono::milliseconds delta, 
+	const input* begin, 
+	const input* end, 
+	const std::string& data, 
+	bool is_on, 
+	glm::vec2 position, 
+	bool& lua_jump)
 {
 	using namespace std::chrono_literals;
 	time = data != log ? 0ms : time + delta;
@@ -265,7 +269,7 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 
 
 
-				collider_debug(i);
+				//collider_debug(i);
 				v[0] = physics.dynamic_positions[0];
 				models[index].set_position(physics.dynamic_positions[0]);
 				/*if (i[button::left] >= button_state::pressed)
@@ -294,22 +298,20 @@ void Renderer::update(std::chrono::milliseconds delta, const input* begin, const
 				++index;
 			}
 
-
-
-			if (want_glow)
-			{
-				post_processing_effects.update(delta);
-			}
-			else
-			{
-				post_processing_effects.glow_value = 0;
-			}
-
-			db_camera.update(delta, direction, begin[0].cursor);
-
 			//game_camera.update(delta, v, v + 1);
 			//ui.update();
+		});
+
+		if (want_glow)
+		{
+			post_processing_effects.update(delta);
 		}
+		else
+		{
+			post_processing_effects.glow_value = 0;
+		}
+
+		db_camera.update(delta, direction, begin[0].cursor);
 
 
 	}
