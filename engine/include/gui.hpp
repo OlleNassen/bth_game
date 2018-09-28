@@ -2,8 +2,10 @@
 #define GUI_HPP
 
 #include <chrono>
+#include <array>
 #include <string>
 #include <GLFW/glfw3.h>
+#include "input.hpp"
 
 namespace gui
 {
@@ -29,6 +31,34 @@ private:
 	std::string chat_log[10];	
 	std::chrono::milliseconds time{0};
 	bool has_underscore = false;
+};
+
+enum class button_state
+{
+	none,
+	hover,
+	selected
+};
+
+struct Button
+{
+	std::string text = "";
+	button_state state = button_state::none;
+};
+
+using button_array = std::array<gui::Button, input::indices>;
+
+class Menu
+{
+public:	
+	Menu();
+	void update(std::chrono::milliseconds delta, const input& i);
+
+	const button_array& button_data() const;
+
+private:
+	button_array buttons[2];
+	button_array* current_buttons{&buttons[0]};
 };
 
 }

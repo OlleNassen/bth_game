@@ -124,9 +124,12 @@ void Window::update_input(input& input)
 	double y = 0.0;
 	glfwGetCursorPos(glfw_window, &x, &y);
 
-	input.index = (y / window_size.y) * input::indices;
+	input.index = (y / window_size.y) * (input::indices - 1);
+	
+	if (input.index < 0) input.index = 0;
+	if (input.index >= input::indices) input.index = input::indices - 1;
+	
 	input.cursor = { x, y };
-
 	int count = 0;
 	//const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
 	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);

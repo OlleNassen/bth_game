@@ -12,6 +12,8 @@
 #include "window.hpp"
 #include "input.hpp"
 #include "gui.hpp"
+#include "timer.hpp"
+#include "config.hpp"
 
 //::.. authors ..:://
 // Edvard
@@ -39,10 +41,14 @@ private:
 	std::chrono::milliseconds timestep{16};
 	Window window;
 	input player_input;
+	
 	Renderer renderer;
+	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
 	gui::chat chat;
+	gui::Menu menu;
+	
 };
 
 
