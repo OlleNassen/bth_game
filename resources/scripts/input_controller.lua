@@ -41,7 +41,7 @@ function update(a)
 		end
 	if(a == 4)then
 		jump(can_jump)
-		--print("Jump")
+		print("Jump")
 	end
 	
 	return a, player.x, player.y

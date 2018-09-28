@@ -77,7 +77,7 @@ private:
 	//Vincent and Lucas
 	physics::World physics;
 	bool debug_active;
-	//void collider_debug(const input& i);
+	void collider_debug(const input& i);
 };
 
 template <typename T>
