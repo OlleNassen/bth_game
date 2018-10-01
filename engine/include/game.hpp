@@ -6,14 +6,15 @@
 #include <vector>
 #include <chrono>
 
+#include <gameplay.hpp>
 #include <renderer.hpp>
 #include <host.hpp>
 #include "ecs.hpp"
 #include "window.hpp"
 #include "input.hpp"
+#include <lua_load.hpp>
 #include "gui.hpp"
 #include "timer.hpp"
-#include "config.hpp"
 
 //::.. authors ..:://
 // Edvard
@@ -42,6 +43,7 @@ private:
 	Window window;
 	input player_input;
 	
+	logic::Gameplay gameplay;
 	Renderer renderer;
 	
 	input_array<4> player_inputs;
@@ -49,8 +51,12 @@ private:
 	gui::Chat chat;
 	gui::Menu menu;
 	
+	LuaLoad luaLoad; //Test
+	
+	
 };
 
 
 
 #endif
+

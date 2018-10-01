@@ -118,9 +118,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="scripts\bindkey.lua" />
+    <None Include="scripts\input.lua" />
+    <None Include="scripts\test.lua" />
     <None Include="shaders\blinn_phong.vs" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
+    <None Include="shaders\lines.fs" />
+    <None Include="shaders\lines.vs" />
     <None Include="shaders\template.fs" />
     <None Include="shaders\template.gs" />
     <None Include="shaders\template.vs" />
