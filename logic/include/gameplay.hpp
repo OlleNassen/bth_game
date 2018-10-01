@@ -9,7 +9,7 @@ namespace logic
 {
 
 template <typename T>
-using script_array = std::array<T, 50>;
+using script_array = std::array<T, 10>;
 
 class Gameplay
 {

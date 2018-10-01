@@ -15,7 +15,6 @@
 #include <lua_load.hpp>
 #include "gui.hpp"
 #include "timer.hpp"
-#include "config.hpp"
 
 //::.. authors ..:://
 // Edvard

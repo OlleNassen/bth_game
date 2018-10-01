@@ -30,10 +30,6 @@ public:
 	int tointeger(int index) const;
 	bool toboolean(int index) const;
 
-	glm::vec2 tovec2(int index) const;
-	glm::vec3 tovec3(int index) const;
-	glm::vec4 tovec4(int index) const;
-
 	void push(lua_CFunction value);
 	void push(const char* value);	
 	void push(float value);

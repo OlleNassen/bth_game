@@ -9,7 +9,6 @@
 #include "framebuffer.hpp"
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
-#include "../../engine/include/config.hpp"
 #include "../../engine/include/timer.hpp"
 #include "../../engine/include/gui.hpp"
 

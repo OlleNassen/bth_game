@@ -110,25 +110,6 @@ bool LuaStack::toboolean(int index) const
 	return lua_toboolean(lua_state, index);
 }
 
-glm::vec2 LuaStack::tovec2(int index) const
-{
-	
-	return { 0.0f, 0.0f };
-}
-
-glm::vec3 LuaStack::tovec3(int index) const
-{
-	
-	return { 0.0f, 0.0f, 0.0f };
-}
-
-glm::vec4 LuaStack::tovec4(int index) const
-{
-	
-	return { 0.0f, 0.0f, 0.0f, 0.0f };
-}
-
-
 void LuaStack::push(lua_CFunction value)
 {
 	lua_pushcfunction(lua_state, value);
