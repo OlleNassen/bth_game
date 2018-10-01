@@ -155,57 +155,27 @@ void Renderer::update(std::chrono::milliseconds delta,
 		auto index = 0;
 		std::for_each(begin, end, [this, &index, delta](auto& i)
 		{
-			/*using glm::vec2;
-			float speed{ 10.f };
-			vec2 offset{ 0.0f, 0.0f };
-			float dt = delta.count() / 1000.0f;
-
-			if (i[button::up] >= button_state::pressed)
-			{
-				offset += vec2{ 0, speed } *dt;
-			}
-			if (i[button::left] >= button_state::pressed)
-			{
-				offset += vec2{ -speed, 0 } *dt;
-			}
-			if (i[button::down] >= button_state::pressed)
-			{
-				offset += vec2{ 0, -speed } *dt;
-			}
-			if (i[button::right] >= button_state::pressed)
-			{
-				offset += vec2{ speed, 0 } *dt;
-			}*/
-
 			if (i[button::glow] == button_state::pressed)
 			{
 				want_glow = !want_glow;
 			}
 
-			//models[index].move(offset);
-			/*v[index] += offset;
-			++index;*/
-
 			if (index == 0)
 			{
-				//physics.dynamic_rigidbodies[index].cancel_force_x();
 				glm::vec2 move_force = glm::vec2();
 				if (i[button::up] == button_state::pressed &&
 					physics.dynamic_rigidbodies[index].can_jump == true)
 				{
 					move_force.y += 50.0f;
-					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(0.0, 50.0));
 					physics.dynamic_rigidbodies[index].can_jump = false;
 				}
 				if (i[button::right] == button_state::held)
 				{
-					move_force.x += 1.5f;
-					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(3.5, 0.0));
+					move_force.x += 3.5f;
 				}
 				if (i[button::left] == button_state::held)
 				{
-					move_force.x += -1.5f;
-					//physics.dynamic_rigidbodies[index].add_force(glm::vec2(-3.5, 0.0));
+					move_force.x += -3.5f;
 				}
 
 				if (i[button::reset] == button_state::pressed)
@@ -231,11 +201,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 		{
 			post_processing_effects.glow_value = 0;
 		}
-
-		//camera.update(delta, begin[0]);
-		//camera.mouse_movement(begin[0].cursor);
 	}
-	game_camera.update(delta, v, v + 1);
+	game_camera.update(delta, v, v + 4);
 	ui.update();
 }
 

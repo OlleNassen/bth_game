@@ -29,10 +29,10 @@ public:
 
 private:
 	glm::vec2 top_left;
-	glm::vec2 top_right;
+	/*glm::vec2 top_right;
 
 	glm::vec2 bottom_left;
-	glm::vec2 bottom_right;
+	glm::vec2 bottom_right;*/
 
 	glm::vec2 offset;
 

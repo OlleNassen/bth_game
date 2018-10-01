@@ -11,10 +11,10 @@ Box::Box(float _width = 1.0f, float _height = 1.0f, glm::vec2 _offset = glm::vec
 	height = _height / 2.0f;
 
 	top_left = glm::vec2(-width, height);
-	top_right = glm::vec2(width, height);
 
+	/*top_right = glm::vec2(width, height);
 	bottom_left = glm::vec2(-width, -height);
-	bottom_right = glm::vec2(width, -height);
+	bottom_right = glm::vec2(width, -height);*/
 
 	width = _width;
 	height = _height;
@@ -62,9 +62,9 @@ std::array<glm::vec2, 4> Box::get_vertices()const
 	std::array<glm::vec2, 4> vertices = 
 	{
 		top_left,
-		top_right,
-		bottom_left,
-		bottom_right
+		top_left + glm::vec2(width, 0.0) + offset,
+		top_left + glm::vec2(width, -height) + offset,
+		top_left + glm::vec2(0.0, -height) + offset
 	};
 
 	return vertices;
@@ -75,14 +75,21 @@ std::array<glm::vec2, 8> Box::get_vertices_in_series()const
 	std::array<glm::vec2, 8> vertices =
 	{
 		top_left + offset,
-		top_right + offset,
-		top_right + offset,
-		bottom_right + offset,
-		bottom_right + offset,
-		bottom_left + offset,
-		bottom_left + offset,
+		top_left + glm::vec2(width, 0.0) + offset,
+		top_left + glm::vec2(width, 0.0) + offset,
+		top_left + glm::vec2(width, -height) + offset,
+		top_left + glm::vec2(width, -height) + offset,
+		top_left + glm::vec2(0.0, -height) + offset,
+		top_left + glm::vec2(0.0, -height) + offset,
 		top_left + offset
 	};
+
+	/*top_right + offset,
+		top_right + offset,
+		bottom_right + offset,
+		bottom_right + offset,
+		bottom_left + offset,
+		bottom_left + offset,*/ //Old way
 
 	return vertices;
 }
@@ -94,15 +101,15 @@ glm::vec2 Box::get_top_left() const
 
 glm::vec2 Box::get_top_right() const
 {
-	return top_right;
+	return top_left + glm::vec2(width, 0.0) + offset;
 }
 
 glm::vec2 Box::get_bottom_left() const
 {
-	return bottom_left;
+	return top_left + glm::vec2(width, -height) + offset;
 }
 
 glm::vec2 Box::get_bottom_right() const
 {
-	return bottom_right;
+	return top_left + glm::vec2(0.0, -height) + offset;
 }

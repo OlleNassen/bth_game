@@ -40,7 +40,7 @@ public:
 	std::vector<glm::vec2> get_forces()const;
 	bool intersects(const int box_id, const int target_box_id);
 private:
-
+	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 };
 
 }

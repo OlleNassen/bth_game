@@ -37,79 +37,12 @@ void World::update(std::chrono::milliseconds delta)
 		dynamic_rigidbodies[i].update();
 		dynamic_positions[i] += dynamic_rigidbodies[i].get_force() * dt;
 		int j = 0;
-		for (auto& static_body : static_box_colliders)
+		for (int j = 0; j < static_box_colliders.size(); j++)
 		{
-			
 			if (intersects(i, j))
 			{
-				glm::vec2 dynamic_world_pos = previous_position + dynamic_box_colliders[i].get_offset();
-				glm::vec2 static_world_pos = static_positions[j] + static_box_colliders[j].get_offset();
-
-				glm::vec2 direction = (dynamic_world_pos) - (static_world_pos);
-				
-				float total_width = (dynamic_box_colliders[i].get_width() + static_box_colliders[j].get_width()) / 2;
-				float total_height = (dynamic_box_colliders[i].get_height() + static_box_colliders[j].get_height()) / 2;
-
-				direction.x = direction.x / total_width;
-				direction.y = direction.y / total_height;
-
-				//std::cout << direction.x << " : " << direction.y << std::endl;
-				if (abs(direction.x) > abs(direction.y))
-				{
-					if (direction.x < -0.001 && direction.x > -1)	//Walking left
-					{
-						//std::cout << "Collision is to the right" << std::endl;
-
-						dynamic_positions[i].x = (-static_body.get_width() / 2) + -static_body.get_offset().x + static_positions[j].x +
-							(dynamic_box_colliders[i].get_offset().x) + (-dynamic_box_colliders[i].get_width() / 2);
-						dynamic_rigidbodies[i].cancel_force_x();
-
-						//dynamic_rigidbodies[i].add_force(glm::vec2(-dynamic_rigidbodies[i].get_force().x, 0.0));
-					}
-					else if (direction.x > 0.001 && direction.x < 1)	//Walking right
-					{
-						//std::cout << "Collision is to the left" << std::endl;
-
-						dynamic_positions[i].x = (static_body.get_width() / 2) + static_body.get_offset().x + static_positions[j].x +
-							(-dynamic_box_colliders[i].get_offset().x) + (dynamic_box_colliders[i].get_width() / 2);
-						dynamic_rigidbodies[i].cancel_force_x();
-
-						//dynamic_rigidbodies[i].add_force(glm::vec2(-dynamic_rigidbodies[i].get_force().x, 0.0));
-					}
-				}
-				else if (abs(direction.x) < abs(direction.y))
-				{
-					if (direction.y < -0.001)
-					{ 
-						//std::cout << "Collision is to the top" << std::endl;
-						dynamic_positions[i].y = (-static_body.get_height() / 2) + -static_body.get_offset().y + static_positions[j].y +
-							(-dynamic_box_colliders[i].get_offset().y) + (-dynamic_box_colliders[i].get_height() / 2);
-						dynamic_rigidbodies[i].cancel_force_y();
-					}
-					else if (direction.y > 0.001)
-					{
-						//std::cout << "Collision is to the bottom" << std::endl;
-						dynamic_positions[i].y = (static_body.get_height() / 2) + static_body.get_offset().y + static_positions[j].y +
-							(-dynamic_box_colliders[i].get_offset().y) + (dynamic_box_colliders[i].get_height() / 2);
-						dynamic_rigidbodies[i].cancel_force_y();
-						/*dynamic_rigidbodies[i].gravity_active = false;*/
-						dynamic_rigidbodies[i].can_jump = true;
-					}
-				}
-
-				/*std::cout << "Intersection" << std::endl;
-				dynamic_positions[i].y = (static_body.get_height() / 2) + static_body.get_offset().y + static_positions[j].y +
-					(-dynamic_box_colliders[i].get_offset().y) + (dynamic_box_colliders[i].get_height() / 2);
-				dynamic_rigidbodies[i].gravity_active = false;
-				dynamic_rigidbodies[i].can_jump = true;
-				dynamic_rigidbodies[i].cancel_force_y();*/
+				collision_handling(previous_position, i, j);
 			}
-			else
-			{
-				dynamic_rigidbodies[i].gravity_active = true;
-			}
-
-			j++;
 		}
 	}
 }
@@ -199,4 +132,53 @@ bool World::intersects(const int box_id, const int target_box_id)
 	return intersection;
 }
 
+void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index)
+{
+	glm::vec2 dynamic_world_pos = prev_position + dynamic_box_colliders[dynamic_index].get_offset();
+	glm::vec2 static_world_pos = static_positions[static_index] + static_box_colliders[static_index].get_offset();
+
+	glm::vec2 direction = (dynamic_world_pos)-(static_world_pos);
+
+	float total_width = (dynamic_box_colliders[dynamic_index].get_width() + static_box_colliders[static_index].get_width()) / 2;
+	float total_height = (dynamic_box_colliders[dynamic_index].get_height() + static_box_colliders[static_index].get_height()) / 2;
+
+	direction.x = direction.x / total_width;
+	direction.y = direction.y / total_height;
+
+	if (abs(direction.x) > abs(direction.y))
+	{
+		if (direction.x < -0.001 && direction.x > -1)	//Walking left
+		{
+
+			dynamic_positions[dynamic_index].x = (-static_box_colliders[static_index].get_width() / 2) + -static_box_colliders[static_index].get_offset().x + static_positions[static_index].x +
+				(dynamic_box_colliders[dynamic_index].get_offset().x) + (-dynamic_box_colliders[dynamic_index].get_width() / 2);	//Moving the player right of the static object
+			dynamic_rigidbodies[dynamic_index].cancel_force_x();
+		}
+		else if (direction.x > 0.001 && direction.x < 1)	//Walking right
+		{
+
+			dynamic_positions[dynamic_index].x = (static_box_colliders[static_index].get_width() / 2) + static_box_colliders[static_index].get_offset().x + static_positions[static_index].x +
+				(-dynamic_box_colliders[dynamic_index].get_offset().x) + (dynamic_box_colliders[dynamic_index].get_width() / 2);	//Moving the player left of the static object
+			dynamic_rigidbodies[dynamic_index].cancel_force_x();
+		}
+	}
+	else if (abs(direction.x) < abs(direction.y))	//Hitting roof
+	{
+		if (direction.y < -0.001)
+		{
+			dynamic_positions[dynamic_index].y = (-static_box_colliders[static_index].get_height() / 2) + -static_box_colliders[static_index].get_offset().y + static_positions[static_index].y +
+				(-dynamic_box_colliders[dynamic_index].get_offset().y) + (-dynamic_box_colliders[dynamic_index].get_height() / 2); //Moving the player to the bottom of the static object
+			dynamic_rigidbodies[dynamic_index].cancel_force_y();
+		}
+		else if (direction.y > 0.001)	//Hitting floor
+		{
+			dynamic_positions[dynamic_index].y = (static_box_colliders[static_index].get_height() / 2) + static_box_colliders[static_index].get_offset().y + static_positions[static_index].y +
+				(-dynamic_box_colliders[dynamic_index].get_offset().y) + (dynamic_box_colliders[dynamic_index].get_height() / 2); //Moving the player to the floor of the static object
+			dynamic_rigidbodies[dynamic_index].cancel_force_y();
+			dynamic_rigidbodies[dynamic_index].can_jump = true;
+		}
+	}
 }
+
+}
+
