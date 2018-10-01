@@ -23,13 +23,13 @@ public:
 	Renderer();
 
 	void render(
-		const std::string* begin, 
-		const std::string* end, 
+		const std::string* begin,
+		const std::string* end,
 		const gui::button_array& buttons) const;
 
-	void update(std::chrono::milliseconds delta, 
-		const input* begin, 
-		const input* end, 
+	void update(std::chrono::milliseconds delta,
+		const input* begin,
+		const input* end,
 		const std::string& data,
 		bool is_on);
 
@@ -41,13 +41,13 @@ private:
 	UserInterface ui;
 	std::vector<Shader> shaders;
 	std::vector<Mesh> meshes;
-	std::chrono::milliseconds time{10000};
+	std::chrono::milliseconds time{ 10000 };
 
 	std::string log;
 	Timer t;
 
 	glm::vec2 v[4];
-	bool is_chat_visible{false};
+	bool is_chat_visible{ false };
 
 	bool game_over = false;
 
@@ -57,7 +57,7 @@ private:
 	Framebuffer scene_texture;
 	PostProcessingEffects post_processing_effects;
 
-	bool want_glow{false};
+	bool want_glow{ false };
 };
 
 template <typename T>
