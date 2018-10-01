@@ -28,10 +28,6 @@ void LuaLoad::start_lua()
 
 glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta)
 {
-	
-	 //update delta_time för lua
-	 //.....
-	
 	position = { 0, 0 };
 
 	//std::cout << can_lua_jump << std::endl;
@@ -49,11 +45,10 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 			lua_getglobal(lua_input.getLuaState(), "update");
 			lua_pushinteger(lua_input.getLuaState(), J);
 			int error = lua_pcall(lua_input.getLuaState(), 1, 2, 0);
-			position.x = (position.x + lua_tonumber(lua_input.getLuaState(), -2));
+			position.x = position.x + lua_tonumber(lua_input.getLuaState(), -2);
 			position.y = position.y + lua_tonumber(lua_input.getLuaState(), -1);
 			lua_pop(lua_input.getLuaState(), 2);
 
-			//std::cout << "pos.x = " << position.x << "\t pos.y = " << position.y << std::endl;
 			//std::cout << error << std::endl;
 		}
 
@@ -61,24 +56,3 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 	}
 	return position;
 }
-
-//
-//jump.lua
-//
-//fn start()
-//
-//end
-//
-//fn update(delta_seconds)
-//	
-//
-//	if(input(1))
-//		move_hen(up)
-//end
-//
-//int lua_input(lua_state* L)
-//{
-//	lua_pushinteger(input);
-//
-//	return 1;
-//}

@@ -40,6 +40,7 @@ Renderer::Renderer()
 	//Goal/trigger object på glm::vec2(55, -10)
 	physics.add_static_body(2,2, glm::vec2(0.0, 0.0), glm::vec2(25, -10));
 
+
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
 		"../resources/shaders/template.vs", 
@@ -230,14 +231,16 @@ void Renderer::update(
 			if (index == 0)
 			{
 				
-				if (i[button::reset] == button_state::pressed)
-				{
-					physics.dynamic_rigidbodies[0].cancel_forces();
-					physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
-				}
+				
 
 				if (game_reached_goal == false)
 				{
+					if (i[button::reset] == button_state::pressed)
+					{
+						physics.dynamic_rigidbodies[0].cancel_forces();
+						physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
+					}
+
 					if (position.y > 0 && physics.dynamic_rigidbodies[index].can_jump == true)
 					{
 						physics.dynamic_rigidbodies[index].add_force(position);
@@ -252,8 +255,9 @@ void Renderer::update(
 					if (physics.dynamic_rigidbodies[index].can_jump == true)
 						lua_jump = true;
 
-					const int b = 5;
-					if (physics.intersects(index, b) == true)
+
+					//Initiate game_win-state
+					if (physics.intersects(index, (const int)(physics.static_box_colliders.size()-1)) == true)
 					{
 						std::cout << "You win: and your name is KALLE" << std::endl;
 						game_reached_goal = true;
