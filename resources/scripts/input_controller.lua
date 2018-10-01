@@ -5,8 +5,8 @@ function start()
 	player.x = 0
 	player.y = 0
 	player.is_dead = false
-	WALK_SPEED = 100
-	JUMP_FORCE = 60
+	WALK_SPEED = 170
+	JUMP_FORCE = 65
 
 end
 
@@ -19,7 +19,7 @@ function update(a)
 	--print("Wazooo")
 
 	--print("Lua can_jump: ")
-	--print(player.can_jump)
+	print(dt)
 
 	player.x = 0
 	player.y = 0
