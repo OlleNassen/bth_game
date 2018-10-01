@@ -121,6 +121,8 @@
     <None Include="shaders\blinn_phong.vs" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
+    <None Include="shaders\pbr.fs" />
+    <None Include="shaders\pbr.vs" />
     <None Include="shaders\template.fs" />
     <None Include="shaders\template.gs" />
     <None Include="shaders\template.vs" />
