@@ -38,7 +38,7 @@ Renderer::Renderer()
 
 
 	//Goal/trigger object på glm::vec2(55, -10)
-	physics.add_static_body(5,2, glm::vec2(0.0, 0.0), glm::vec2(-5, -10));
+	physics.add_static_body(2,2, glm::vec2(0.0, 0.0), glm::vec2(25, -10));
 
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
@@ -123,10 +123,16 @@ void Renderer::render( const std::string* begin, const std::string* end, const g
 	{
 		text.render_text("GAME OVER!", 1280/2.f, 720/2.f, 2.0f);
 	}
+	else if (game_reached_goal)
+	{
+		text.render_text("GOOAAAAAALLLL!!!!!!!!", 1280 / 6.f, 720 / 2.f, 2.0f);
+	}
 	else
 	{
 		text.render_text(t.to_string(), 0, 700, 0.5f);
 	}
+
+
 		
 
 	glEnable(GL_DEPTH_TEST);
@@ -189,6 +195,24 @@ void Renderer::update(
 	time = data != log ? 0ms : time + delta;
 	log = data;
 	is_chat_visible = is_on || time < 3s;
+
+
+	//std::cout << delta.count() << std::endl;
+	//For win-state
+	if ((game_reached_goal == true || game_win == true))
+	{
+		w_time -= delta;
+		if (w_time <= 0s)
+		{
+			game_reached_goal = false;
+			game_win = false;
+			w_time = { 5000 };
+
+			physics.dynamic_rigidbodies[0].cancel_forces();
+			physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
+		
+		}
+	}
 
 	game_over = t.is_up(delta);
 

@@ -55,6 +55,9 @@ private:
 	std::vector<Mesh> meshes;
 	std::chrono::milliseconds time{10000};
 
+	//Win-clock
+	std::chrono::milliseconds w_time{ 5000 };
+
 	std::string log;
 	Timer t;
 
