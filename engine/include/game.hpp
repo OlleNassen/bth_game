@@ -7,6 +7,7 @@
 #include <chrono>
 
 #include <renderer.hpp>
+#include <world.hpp>
 #include <host.hpp>
 #include "ecs.hpp"
 #include "window.hpp"
@@ -43,6 +44,7 @@ private:
 	input player_input;
 	
 	Renderer renderer;
+	physics::World physics;
 	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
@@ -50,6 +52,7 @@ private:
 	gui::Menu menu;
 	
 };
+
 
 
 

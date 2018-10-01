@@ -5,21 +5,18 @@ Box::Box()
 
 }
 
-Box::Box(float _width = 1.0f, float _height = 1.0f, glm::vec2 _offset = glm::vec2(0.0, 0.0))
+Box::Box(float _width = 1.0f, float _height = 1.0f, glm::vec2 _offset = glm::vec2(0.0, 0.0), bool _is_trigger = false)
 {
 	width = _width / 2.0f;
 	height = _height / 2.0f;
 
 	top_left = glm::vec2(-width, height);
 
-	/*top_right = glm::vec2(width, height);
-	bottom_left = glm::vec2(-width, -height);
-	bottom_right = glm::vec2(width, -height);*/
-
 	width = _width;
 	height = _height;
 
 	offset = _offset;
+	is_trigger = _is_trigger;
 }
 
 void Box::set_height(float to_height)
@@ -84,13 +81,6 @@ std::array<glm::vec2, 8> Box::get_vertices_in_series()const
 		top_left + offset
 	};
 
-	/*top_right + offset,
-		top_right + offset,
-		bottom_right + offset,
-		bottom_right + offset,
-		bottom_left + offset,
-		bottom_left + offset,*/ //Old way
-
 	return vertices;
 }
 
@@ -112,4 +102,9 @@ glm::vec2 Box::get_bottom_left() const
 glm::vec2 Box::get_bottom_right() const
 {
 	return top_left + glm::vec2(0.0, -height) + offset;
+}
+
+bool Box::get_trigger() const
+{
+	return is_trigger;
 }
