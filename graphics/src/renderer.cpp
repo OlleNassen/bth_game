@@ -38,7 +38,7 @@ Renderer::Renderer()
 
 
 	//Goal/trigger object på glm::vec2(55, -10)
-	physics.add_static_body(5,5, glm::vec2(0.0, 0.0), glm::vec2(-5, -7));
+	physics.add_static_body(5,2, glm::vec2(0.0, 0.0), glm::vec2(-5, -10));
 
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
@@ -212,19 +212,31 @@ void Renderer::update(
 					physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
 				}
 
-				if (position.y > 0 && physics.dynamic_rigidbodies[index].can_jump == true)
+				if (game_reached_goal == false)
 				{
-					physics.dynamic_rigidbodies[index].add_force(position);
-					physics.dynamic_rigidbodies[index].can_jump = false;
-					lua_jump = false;
-				}
-				else
-				{
-					physics.dynamic_rigidbodies[index].add_force(position);
-				}
+					if (position.y > 0 && physics.dynamic_rigidbodies[index].can_jump == true)
+					{
+						physics.dynamic_rigidbodies[index].add_force(position);
+						physics.dynamic_rigidbodies[index].can_jump = false;
+						lua_jump = false;
+					}
+					else
+					{
+						physics.dynamic_rigidbodies[index].add_force(position);
+					}
 
-				if (physics.dynamic_rigidbodies[index].can_jump == true)
-					lua_jump = true;
+					if (physics.dynamic_rigidbodies[index].can_jump == true)
+						lua_jump = true;
+
+					const int b = 5;
+					if (physics.intersects(index, b) == true)
+					{
+						std::cout << "You win: and your name is KALLE" << std::endl;
+						game_reached_goal = true;
+						game_win = true;
+					}
+				}
+				
 
 				
 				collider_debug(i);
@@ -236,20 +248,11 @@ void Renderer::update(
 					want_glow = !want_glow;
 				}
 
-				const int b = 5;
-				if (physics.intersects(index, b) == true)
-				{
-					std::cout << "Lisa misses Kalle" << std::endl;
-				}
+			
 
 		
 				++index;
 			}
-			
-			//Goal point...
-			const int a = 0;
-			
-			//(const int)(physics.static_box_colliders.size()))
 		
 
 			game_camera.update(delta, v, v + 1);
