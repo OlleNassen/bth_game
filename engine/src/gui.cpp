@@ -32,12 +32,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}	
 }
 
-bool chat::is_on() const
+bool Chat::is_on() const
 {
 	return chat_on;
 }
 
-void chat::update(std::chrono::milliseconds delta)
+void Chat::update(std::chrono::milliseconds delta)
 {
 	constexpr auto underscore = '_';
 	
@@ -108,15 +108,25 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 		{
 			current_buttons = &buttons[1];
 		}
+		if (current_buttons == &buttons[0] && index == 6)
+		{
+			static constexpr auto true_dat = true;
+			want_exit = true_dat;
+		}
 		if (current_buttons == &buttons[1] && index == 6)
 		{
 			current_buttons = &buttons[0];
-		}
+		}	
 	}
 	else if (i[::button::select] >= ::button_state::pressed)
 	{
 		button.state = button_state::selected;		
 	}	
+}
+
+bool Menu::exit() const
+{
+	return want_exit;
 }
 
 }

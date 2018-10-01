@@ -47,7 +47,7 @@ private:
 	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
-	gui::chat chat;
+	gui::Chat chat;
 	gui::Menu menu;
 	
 	LuaLoad luaLoad; //Test

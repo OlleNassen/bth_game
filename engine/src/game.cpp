@@ -35,6 +35,7 @@ void Game::run()
 	auto delta_time = 0ns;
 
 	while (window.is_open() && 
+		!menu.exit() &&
 		(*local_input)[button::quit] != button_state::pressed)
 	{
 		delta_time += clock::now() - last_time;

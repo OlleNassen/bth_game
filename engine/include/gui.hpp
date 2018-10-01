@@ -13,7 +13,7 @@ namespace gui
 void character_callback(GLFWwindow* window, unsigned int codepoint);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-class chat
+class Chat
 {
 public:	
 	bool is_on() const;
@@ -56,7 +56,10 @@ public:
 
 	const button_array& button_data() const;
 
+	bool exit() const;
+
 private:
+	bool want_exit = false;
 	button_array buttons[2];
 	button_array* current_buttons{&buttons[0]};
 };
