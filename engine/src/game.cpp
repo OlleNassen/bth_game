@@ -94,6 +94,8 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
+	gameplay.update(delta);
+
 	//check if player/players reached goal
 
 	//Player control-input

@@ -6,6 +6,7 @@
 #include <vector>
 #include <chrono>
 
+#include <gameplay.hpp>
 #include <renderer.hpp>
 #include <host.hpp>
 #include "ecs.hpp"
@@ -43,6 +44,7 @@ private:
 	Window window;
 	input player_input;
 	
+	logic::Gameplay gameplay;
 	Renderer renderer;
 	
 	input_array<4> player_inputs;

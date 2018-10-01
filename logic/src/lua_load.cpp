@@ -17,13 +17,13 @@ LuaLoad::~LuaLoad()
 //
 void LuaLoad::start_lua()
 {
-	lua_getglobal(lua_input.getLuaState(), "start");
+	/*lua_getglobal(lua_input.getLuaState(), "start");
 	//lua_pushinteger(lua_input.getLuaState(), J);
 	int error = lua_pcall(lua_input.getLuaState(), 0, 0, 0);
 	//int test = lua_tonumber(lua_input.getLuaState(), -1);
 	//lua_pop(lua_input.getLuaState(), 0);
 
-	std::cout << error << std::endl;
+	std::cout << error << std::endl;*/
 }
 
 glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta)
@@ -34,7 +34,7 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 	
 	position = { 0, 0 };
 
-	std::cout << can_lua_jump << std::endl;
+	/*std::cout << can_lua_jump << std::endl;
 
 	lua_pushnumber(lua_input.getLuaState(), delta.count());
 	lua_setglobal(lua_input.getLuaState(), "dt");
@@ -59,7 +59,7 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 		}
 
 		//lua_pushinteger(luaInput.getLuaState(), 5);
-	}
+	}*/
 	return position;
 }
 
