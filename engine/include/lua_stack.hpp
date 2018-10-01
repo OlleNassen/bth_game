@@ -21,6 +21,7 @@ public:
 	void getglobal(const char* value);
 	void setglobal(const char* value);
 
+	int top() const;
 	lua_CFunction tofunction(int index) const;
 	const char* tostring(int index) const;
 	float tonumber(int index) const;

@@ -1,3 +1,4 @@
-function update(delta_seconds)
-	print (delta_seconds)
+function update(delta_seconds, position)
+	print (position.x)
+	print (position.y)
 end

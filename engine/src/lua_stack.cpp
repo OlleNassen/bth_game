@@ -80,6 +80,11 @@ void LuaStack::setglobal(const char* value)
 	lua_setglobal(lua_state, value);
 }
 
+int LuaStack::top() const
+{
+	return lua_gettop(lua_state);
+}
+
 lua_CFunction LuaStack::tofunction(int index) const
 {
 	return lua_tocfunction(lua_state, index);
