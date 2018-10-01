@@ -36,6 +36,10 @@ Renderer::Renderer()
 	physics.add_static_body(18.25, 2, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
 	physics.add_static_body(2, 20, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
 
+
+	//Goal/trigger object på glm::vec2(55, -10)
+	physics.add_static_body(5,5, glm::vec2(0.0, 0.0), glm::vec2(-5, -7));
+
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
 		"../resources/shaders/template.vs", 
@@ -222,9 +226,7 @@ void Renderer::update(
 				if (physics.dynamic_rigidbodies[index].can_jump == true)
 					lua_jump = true;
 
-
-
-
+				
 				collider_debug(i);
 				v[0] = physics.dynamic_positions[0];
 				models[index].set_position(physics.dynamic_positions[0]);
@@ -234,10 +236,22 @@ void Renderer::update(
 					want_glow = !want_glow;
 				}
 
+				const int b = 5;
+				if (physics.intersects(index, b) == true)
+				{
+					std::cout << "Lisa misses Kalle" << std::endl;
+				}
+
 		
 				++index;
 			}
 			
+			//Goal point...
+			const int a = 0;
+			
+			//(const int)(physics.static_box_colliders.size()))
+		
+
 			game_camera.update(delta, v, v + 1);
 			ui.update();
 		});
