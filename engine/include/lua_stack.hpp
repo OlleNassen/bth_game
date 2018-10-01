@@ -1,6 +1,8 @@
 #ifndef LUA_STACK_HPP
 #define LUA_STACK_HPP
 
+#include <glm/glm.hpp>
+
 struct lua_State;
 typedef int(*lua_CFunction)(lua_State *L);
 
@@ -28,11 +30,19 @@ public:
 	int tointeger(int index) const;
 	bool toboolean(int index) const;
 
+	glm::vec2 tovec2(int index) const;
+	glm::vec3 tovec3(int index) const;
+	glm::vec4 tovec4(int index) const;
+
 	void push(lua_CFunction value);
 	void push(const char* value);	
 	void push(float value);
 	void push(int value);
 	void push(bool value);
+
+	void push(const glm::vec2& value);
+	void push(const glm::vec3& value);
+	void push(const glm::vec4& value);
 
 	void pop();
 	void clear();

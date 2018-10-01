@@ -110,6 +110,24 @@ bool LuaStack::toboolean(int index) const
 	return lua_toboolean(lua_state, index);
 }
 
+glm::vec2 LuaStack::tovec2(int index) const
+{
+	
+	return { 0.0f, 0.0f };
+}
+
+glm::vec3 LuaStack::tovec3(int index) const
+{
+	
+	return { 0.0f, 0.0f, 0.0f };
+}
+
+glm::vec4 LuaStack::tovec4(int index) const
+{
+	
+	return { 0.0f, 0.0f, 0.0f, 0.0f };
+}
+
 
 void LuaStack::push(lua_CFunction value)
 {
@@ -134,6 +152,51 @@ void LuaStack::push(int value)
 void LuaStack::push(bool value)
 {
 	lua_pushboolean(lua_state, value);
+}
+
+void LuaStack::push(const glm::vec2& value)
+{
+	newtable();
+	int top = lua_gettop(lua_state);
+	const char* members[] = { "x", "y" };
+
+	int i = 0;
+	for (auto* member : members)
+	{
+		push(member);
+		push(value[i++]);
+		rawset(top);
+	}
+}
+
+void LuaStack::push(const glm::vec3& value)
+{
+	newtable();
+	int top = lua_gettop(lua_state);
+	const char* members[] = { "x", "y", "z" };
+
+	int i = 0;
+	for (auto* member : members)
+	{
+		push(member);
+		push(value[i++]);
+		rawset(top);
+	}
+}
+
+void LuaStack::push(const glm::vec4& value)
+{
+	newtable();
+	int top = lua_gettop(lua_state);
+	const char* members[] = { "x", "y", "z", "w" };
+
+	int i = 0;
+	for (auto* member : members)
+	{
+		push(member);
+		push(value[i++]);
+		rawset(top);
+	}
 }
 
 void LuaStack::pop()
