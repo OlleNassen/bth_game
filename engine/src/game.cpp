@@ -6,14 +6,18 @@ using namespace std::chrono_literals;
 Game::Game()
 	:window(glm::ivec2(1280, 720), "Scrap Escape")
 {
+
 	window.assign_key(button::select, GLFW_KEY_Y);
 	window.assign_key(button::up, GLFW_KEY_W);
 	window.assign_key(button::left, GLFW_KEY_A);
 	window.assign_key(button::down, GLFW_KEY_S);
 	window.assign_key(button::right, GLFW_KEY_D);
+	window.assign_key(button::jump, GLFW_KEY_SPACE);
 	window.assign_key(button::glow, GLFW_KEY_G);
 	window.assign_key(button::refresh, GLFW_KEY_F5);
 	window.assign_key(button::menu, GLFW_KEY_F1);
+	window.assign_key(button::debug, GLFW_KEY_F3);
+	window.assign_key(button::reset, GLFW_KEY_R);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 	net_init();
@@ -66,6 +70,7 @@ void Game::update(std::chrono::milliseconds delta)
 		window.show_cursor();
 	}
 
+	
 	if (!host && !chat[1].empty())
 	{
 		if (chat[1] == "server")
@@ -90,8 +95,15 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
-	renderer.update(delta, 
-		std::begin(player_inputs.components),
-		std::end(player_inputs.components), chat[1], chat.is_on());
+	//check if player/players reached goal
 
-}
+	//Player control-input
+	glm::vec2 updated_player_pos = luaLoad.process_input(*local_input, delta);
+	//std::cout << "lua_jump: " << luaLoad.can_lua_jump << std::endl;
+	renderer.update(delta,
+		std::begin(player_inputs.components),
+		std::end(player_inputs.components),
+		chat[1], chat.is_on(),
+		updated_player_pos,
+		luaLoad.can_lua_jump);
+	}

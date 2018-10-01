@@ -11,6 +11,7 @@
 #include "ecs.hpp"
 #include "window.hpp"
 #include "input.hpp"
+#include <lua_load.hpp>
 #include "gui.hpp"
 #include "timer.hpp"
 #include "config.hpp"
@@ -49,8 +50,12 @@ private:
 	gui::Chat chat;
 	gui::Menu menu;
 	
+	LuaLoad luaLoad; //Test
+	
+	
 };
 
 
 
 #endif
+
