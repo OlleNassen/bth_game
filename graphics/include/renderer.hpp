@@ -42,7 +42,7 @@ public:
 	Renderer();
 
 	void render( const std::string* begin, const std::string* end, const gui::button_array& buttons, std::vector<glm::vec2> debug_positions) const;
-	void update(std::chrono::milliseconds delta, const input* begin, const input* end,	const std::string& data, bool is_on, glm::vec2 position, bool &lua_jump, std::vector<glm::vec2> dynamic_pos));
+	void update(std::chrono::milliseconds delta, const input* begin, const input* end,	const std::string& data, bool is_on, glm::vec2 position, bool &lua_jump, std::vector<glm::vec2> dynamic_pos);
 	
 private:
 	DebugCamera db_camera;

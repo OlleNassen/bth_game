@@ -197,16 +197,12 @@ void Renderer::update(
 	{
 		show_start = begin->index == 3;
 		glm::vec3 direction{ 0.0f, 0.0f, 0.0f };
-		
+
 		auto index = 0;
 		std::for_each(begin, end, [this, &index, &position, delta, &lua_jump](auto& i)
 		{
-
 			if (index == 0)
 			{
-				
-				
-
 				/*if (game_reached_goal == false)
 				{
 					if (i[button::reset] == button_state::pressed)
@@ -238,36 +234,36 @@ void Renderer::update(
 						game_win = true;
 					}
 				}
-				
 
-				
+
+
 				collider_debug(i);
 				v[0] = physics.dynamic_positions[0];
 				models[index].set_position(physics.dynamic_positions[0]);
-				
+
 				if (i[button::glow] == button_state::pressed)
 				{
 					want_glow = !want_glow;
 				}
 
-			
 
-		
-				++index;
-			}*/
-			if (i[button::debug] == button_state::pressed)
-			{
-				debug_active = !debug_active;
-			}
-			
-			if (i[button::switch_camera] == button_state::pressed)
-			{
-				debug_camera_active = !debug_camera_active;
-			}
 
-			models[index].move(offset);
-			v[index] += offset;
-			++index;
+
+				++index;*/
+				if (i[button::debug] == button_state::pressed)
+				{
+					debug_active = !debug_active;
+				}
+
+				if (i[button::switch_camera] == button_state::pressed)
+				{
+					debug_camera_active = !debug_camera_active;
+				}
+
+				//models[index].move(offset);
+				//v[index] += offset;
+				//++index;
+			}
 		});
 
 		if (want_glow)
@@ -278,14 +274,8 @@ void Renderer::update(
 		{
 			post_processing_effects.glow_value = 0;
 		}
-
-		
 		db_camera.update(delta, direction, begin[0].cursor);
-
-
 	}
-
-	
 
 	for (int i = 0; i < dynamic_pos.size(); i++)
 	{
@@ -293,7 +283,6 @@ void Renderer::update(
 		models[i].set_position(dynamic_pos[i]);
 	}
 
-	
 	game_camera.update(delta, v, v + 4);
 	ui.update();
 }
