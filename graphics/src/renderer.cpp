@@ -34,6 +34,7 @@ Renderer::Renderer()
 	physics.add_static_body(10, 2, glm::vec2(0.0, 0.0), glm::vec2(25, -10));
 	physics.add_static_body(15, 2, glm::vec2(0.0, 0.0), glm::vec2(50, -15));
 	physics.add_static_body(18.25, 2, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
+	physics.add_static_body(2, 7, glm::vec2(0.0, 0.0), glm::vec2(-35, -7));
 	physics.add_static_body(2, 20, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
 
 
