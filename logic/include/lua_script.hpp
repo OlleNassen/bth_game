@@ -11,8 +11,11 @@
 class LuaScript
 {
 public:
+	LuaScript();
 	LuaScript(const std::string& filename);
 	~LuaScript();
+
+	lua_State* getLuaState();
 
 	void print_error(const std::string& variable_name, const std::string& reason);
 	template<typename T>
@@ -20,7 +23,8 @@ public:
 	{
 		// will be implemented later in tutorial
 	}
-	bool get_to_stack(const std::string& variable_name);
+
+	//bool get_to_stack(const std::string& variable_name);
 
 	// Generic get
 	template<typename T>
@@ -36,8 +40,10 @@ public:
 	}
 
 private:
-	lua_State* L;
+	lua_State* L = nullptr;
 };
+
+
 /*
 template<typename T>
 T get(const std::string& variableName)
@@ -63,51 +69,51 @@ T get(const std::string& variableName)
 }
 */
 
-bool LuaScript::get_to_stack(const std::string& variableName)
-{
-	auto level = 0;
-	std::string var = "";
-	for (unsigned int i = 0; i < variableName.size(); i++)
-	{
-		if (variableName.at(i) == '.')
-		{
-			if (level == 0) {
-				lua_getglobal(L, var.c_str());
-			}
-			else {
-				lua_getfield(L, -1, var.c_str());
-			}
-
-			if (lua_isnil(L, -1)) {
-				print_error(variableName, var + " is not defined");
-				return false;
-			}
-			else {
-				var = "";
-				level++;
-			}
-		}
-		else
-		{
-			var += variableName.at(i);
-		}
-	}
-	if (level == 0)
-	{
-		lua_getglobal(L, var.c_str());
-	}
-	else
-	{
-		lua_getfield(L, -1, var.c_str());
-	}
-	if (lua_isnil(L, -1))
-	{
-		print_error(variableName, var + " is not defined");
-		return false;
-	}
-
-	return true;
-}
+//bool LuaScript::get_to_stack(const std::string& variableName)
+//{
+//	auto level = 0;
+//	std::string var = "";
+//	for (unsigned int i = 0; i < variableName.size(); i++)
+//	{
+//		if (variableName.at(i) == '.')
+//		{
+//			if (level == 0) {
+//				lua_getglobal(L, var.c_str());
+//			}
+//			else {
+//				lua_getfield(L, -1, var.c_str());
+//			}
+//
+//			if (lua_isnil(L, -1)) {
+//				print_error(variableName, var + " is not defined");
+//				return false;
+//			}
+//			else {
+//				var = "";
+//				level++;
+//			}
+//		}
+//		else
+//		{
+//			var += variableName.at(i);
+//		}
+//	}
+//	if (level == 0)
+//	{
+//		lua_getglobal(L, var.c_str());
+//	}
+//	else
+//	{
+//		lua_getfield(L, -1, var.c_str());
+//	}
+//	if (lua_isnil(L, -1))
+//	{
+//		print_error(variableName, var + " is not defined");
+//		return false;
+//	}
+//
+//	return true;
+//}
 
 template <>
 inline bool LuaScript::lua_get(const std::string& variableName)

@@ -6,11 +6,13 @@ using namespace std::chrono_literals;
 Game::Game()
 	:window(glm::ivec2(1280, 720), "Scrap Escape")
 {
+
 	window.assign_key(button::select, GLFW_KEY_Y);
 	window.assign_key(button::up, GLFW_KEY_W);
 	window.assign_key(button::left, GLFW_KEY_A);
 	window.assign_key(button::down, GLFW_KEY_S);
 	window.assign_key(button::right, GLFW_KEY_D);
+	window.assign_key(button::jump, GLFW_KEY_SPACE);
 	window.assign_key(button::glow, GLFW_KEY_G);
 	window.assign_key(button::refresh, GLFW_KEY_F5);
 	window.assign_key(button::menu, GLFW_KEY_F1);
@@ -101,11 +103,19 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
+	//check if player/players reached goal
+
+	//Player control-input
+	glm::vec2 updated_player_pos = luaLoad.process_input(*local_input, delta);
+
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
 	
 	renderer.update(delta, 
 		std::begin(player_inputs.components),
-		std::end(player_inputs.components), chat[1], chat.is_on(),
+		std::end(player_inputs.components),
+		chat[1], chat.is_on(),
+		updated_player_pos,
+		luaLoad.can_lua_jump,
 		dynamic_pos);
 
 }

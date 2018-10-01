@@ -45,15 +45,12 @@ Renderer::Renderer()
 		"../resources/shaders/lines.vs",
 		"../resources/shaders/lines.fs");
 	
+	debug_active = true;
 	db_camera.position.z = 20.0f;
 }
 
 
-void Renderer::render(
-	const std::string* begin, 
-	const std::string* end, 
-	const gui::button_array& buttons,
-	std::vector<glm::vec2> debug_positions)const
+void Renderer::render( const std::string* begin, const std::string* end, const gui::button_array& buttons, std::vector<glm::vec2> debug_positions)const
 {
 
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
@@ -112,10 +109,16 @@ void Renderer::render(
 	{
 		text.render_text("GAME OVER!", 1280/2.f, 720/2.f, 2.0f);
 	}
+	else if (game_reached_goal)
+	{
+		text.render_text("GOOAAAAAALLLL!!!!!!!!", 1280 / 6.f, 720 / 2.f, 2.0f);
+	}
 	else
 	{
 		text.render_text(t.to_string(), 0, 700, 0.5f);
 	}
+
+
 		
 
 	glEnable(GL_DEPTH_TEST);
@@ -155,17 +158,38 @@ void Renderer::render(
 
 }
 
-void Renderer::update(std::chrono::milliseconds delta, 
+void Renderer::update(
+	std::chrono::milliseconds delta, 
 	const input* begin, 
 	const input* end, 
 	const std::string& data, 
 	bool is_on, 
+	glm::vec2 position, 
+	bool& lua_jump,
 	std::vector<glm::vec2> dynamic_pos)
 {
 	using namespace std::chrono_literals;
 	time = data != log ? 0ms : time + delta;
 	log = data;
 	is_chat_visible = is_on || time < 3s;
+
+
+	//std::cout << delta.count() << std::endl;
+	//For win-state
+	/*if ((game_reached_goal == true || game_win == true))
+	{
+		w_time -= delta;
+		if (w_time <= 0s)
+		{
+			game_reached_goal = false;
+			game_win = false;
+			w_time = { 5000 };
+
+			physics.dynamic_rigidbodies[0].cancel_forces();
+			physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
+		
+		}
+	}*/
 
 	game_over = t.is_up(delta);
 
@@ -175,40 +199,62 @@ void Renderer::update(std::chrono::milliseconds delta,
 		glm::vec3 direction{ 0.0f, 0.0f, 0.0f };
 		
 		auto index = 0;
-		std::for_each(begin, end, [this, &index, &direction, delta](auto& i)
+		std::for_each(begin, end, [this, &index, &position, delta, &lua_jump](auto& i)
 		{
-			using glm::vec2;
-			float speed{ 10.f };
-			vec2 offset{ 0.0f, 0.0f };
-			float dt = delta.count() / 1000.0f;
+
+			if (index == 0)
+			{
+				
+				
+
+				/*if (game_reached_goal == false)
+				{
+					if (i[button::reset] == button_state::pressed)
+					{
+						physics.dynamic_rigidbodies[0].cancel_forces();
+						physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
+					}
+
+					if (position.y > 0 && physics.dynamic_rigidbodies[index].can_jump == true)
+					{
+						physics.dynamic_rigidbodies[index].add_force(position);
+						physics.dynamic_rigidbodies[index].can_jump = false;
+						lua_jump = false;
+					}
+					else
+					{
+						physics.dynamic_rigidbodies[index].add_force(position);
+					}
+
+					if (physics.dynamic_rigidbodies[index].can_jump == true)
+						lua_jump = true;
+
+
+					//Initiate game_win-state
+					if (physics.intersects(index, (const int)(physics.static_box_colliders.size()-1)) == true)
+					{
+						std::cout << "You win: and your name is KALLE" << std::endl;
+						game_reached_goal = true;
+						game_win = true;
+					}
+				}
+				
+
+				
+				collider_debug(i);
+				v[0] = physics.dynamic_positions[0];
+				models[index].set_position(physics.dynamic_positions[0]);
+				
+				if (i[button::glow] == button_state::pressed)
+				{
+					want_glow = !want_glow;
+				}
+
 			
 
-			if (i[button::up] >= button_state::pressed)
-			{
-				offset += vec2{ 0, speed } *dt;
-				direction.z += 1.0f;
-			}
-			if (i[button::left] >= button_state::pressed)
-			{
-				offset += vec2{ -speed, 0 } *dt;
-				direction.x -= 1.0f;
-			}
-			if (i[button::down] >= button_state::pressed)
-			{
-				offset += vec2{ 0, -speed } *dt;
-				direction.z -= 1.0f;
-			}
-			if (i[button::right] >= button_state::pressed)
-			{
-				offset += vec2{ speed, 0 } *dt;
-				direction.x += 1.0f;
-			}
-
-			if (i[button::glow] == button_state::pressed)
-			{
-				want_glow = !want_glow;
-			}
-
+		
+				++index;
+			}*/
 			if (i[button::debug] == button_state::pressed)
 			{
 				debug_active = !debug_active;
@@ -235,6 +281,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		
 		db_camera.update(delta, direction, begin[0].cursor);
+
+
 	}
 
 	

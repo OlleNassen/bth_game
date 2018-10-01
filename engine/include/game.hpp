@@ -12,6 +12,7 @@
 #include "ecs.hpp"
 #include "window.hpp"
 #include "input.hpp"
+#include <lua_load.hpp>
 #include "gui.hpp"
 #include "timer.hpp"
 #include "config.hpp"
@@ -50,6 +51,9 @@ private:
 	input* local_input{ &player_inputs.components[0] };
 	gui::Chat chat;
 	gui::Menu menu;
+	
+	LuaLoad luaLoad; //Test
+	
 	
 };
 
