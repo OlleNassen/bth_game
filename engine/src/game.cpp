@@ -18,7 +18,7 @@ Game::Game()
 
 	mesh_lib = new MeshLib();
 
-	create_scene("../resources/assets/test_level.ssp");
+	create_scene("../resources/level/level.ssp");
 
 	renderer = new Renderer(level);
 
@@ -28,6 +28,9 @@ Game::Game()
 Game::~Game()
 {
 	net_deinit();
+	delete mesh_lib;
+	delete level;
+	delete renderer;
 }
 
 void Game::run()

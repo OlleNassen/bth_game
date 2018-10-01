@@ -11,7 +11,13 @@ LeapMesh::LeapMesh(const char* fileName)
 
 LeapMesh::~LeapMesh()
 {
-
+	delete transform;
+	delete vertices;
+	delete material;
+	delete joints;
+	delete animation;
+	delete keyFrame;
+	delete customMayaAttribute;
 }
 
 int LeapMesh::getVertexCount()

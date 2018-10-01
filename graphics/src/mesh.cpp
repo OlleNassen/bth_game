@@ -16,6 +16,10 @@ Mesh::Mesh(const std::string meshfile)
 	custom_mesh->vertices->ty;
 	custom_mesh->vertices->tz;
 
+	name = custom_mesh->transform->meshName;
+
+	center_pivot = glm::vec3(custom_mesh->customMayaAttribute->centerPivot[0], custom_mesh->customMayaAttribute->centerPivot[1], custom_mesh->customMayaAttribute->centerPivot[2]);
+
 	glGenVertexArrays(1, &vao_id);
 	glBindVertexArray(vao_id);
 	glEnableVertexAttribArray(0);
@@ -84,7 +88,7 @@ Mesh::Mesh(const std::string meshfile)
 
 Mesh::~Mesh()
 {
-
+	delete custom_mesh;
 }
 
 void Mesh::render()const

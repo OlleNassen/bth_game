@@ -12,6 +12,8 @@ in VS_OUT{
 
 uniform sampler2D diffuse_map;
 uniform sampler2D normal_map;
+uniform sampler2D metallic_map;
+uniform sampler2D roughness_map;
 uniform sampler2D emissive_map;
 uniform vec3 player_color;
 

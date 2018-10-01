@@ -29,7 +29,7 @@ void Texture::load_texture(const std::string & path)
 	/* Error handling. */
 	if (imageData == nullptr)
 	{
-		std::cout << ("Failed to load texture: " + path);
+		std::cout << ("Failed to load texture: " + path + "\n");
 	}
 
 	glGenTextures(1, &texture_id);
