@@ -27,7 +27,8 @@ void World::add_static_body(glm::vec2 start_position = glm::vec2(0.0, 0.0), glm:
 	static_box_colliders.push_back(Box(width, height, offset, _is_trigger));
 }
 
-void World::update(std::chrono::milliseconds delta)
+//void World::update(std::chrono::milliseconds delta)
+std::vector<glm::vec2> World::update(std::chrono::milliseconds delta)
 {
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(delta).count();
 	for (int i = 0; i < dynamic_positions.size(); i++)
@@ -49,6 +50,8 @@ void World::update(std::chrono::milliseconds delta)
 			}
 		}
 	}
+
+	return dynamic_positions;
 }
 
 void World::load_players(std::vector<glm::vec2> player_pos)
@@ -109,6 +112,33 @@ bool World::intersects(const int box_id, const int target_box_id)
 	}
 
 	return intersection;
+}
+
+std::vector<glm::vec2> World::get_all_debug() const
+{
+	std::vector<glm::vec2> out_position;
+
+	for (int i = 0; i < dynamic_positions.size(); i++)
+	{
+		std::array<glm::vec2, 8> corners = dynamic_box_colliders[i].get_vertices_in_series();
+
+		for (int j = 0; j < corners.size(); j++)
+		{
+			out_position.push_back(dynamic_positions[i] + corners[j]);
+		}
+	}
+
+	for (int i = 0; i < static_positions.size(); i++)
+	{
+		std::array<glm::vec2, 8> corners = static_box_colliders[i].get_vertices_in_series();
+
+		for (int j = 0; j < corners.size(); j++)
+		{
+			out_position.push_back(static_positions[i] + corners[j]);
+		}
+	}
+
+	return out_position;
 }
 
 void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index)

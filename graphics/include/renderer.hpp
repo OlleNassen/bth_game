@@ -25,13 +25,31 @@ public:
 	void render(
 		const std::string* begin, 
 		const std::string* end, 
-		const gui::button_array& buttons) const;
+		const gui::button_array& buttons,
+		std::vector<glm::vec2> debug_positions) const;
 
 	void update(std::chrono::milliseconds delta, 
 		const input* begin, 
 		const input* end, 
 		const std::string& data,
-		bool is_on);
+		bool is_on,
+		std::vector<glm::vec2> dynamic_pos);
+
+	static void line_debug(const std::vector<glm::vec2>& lines)
+	{
+		VertexArray vao;
+		Buffer vertex_buffer;
+
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+		gl_buffer_data(GL_ARRAY_BUFFER, lines, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
+
+		glLineWidth(1.0f);
+		glDrawArrays(GL_LINES, 0, lines.size());
+		glBindVertexArray(0);
+	}
 
 private:
 	DebugCamera db_camera;
@@ -58,6 +76,9 @@ private:
 	PostProcessingEffects post_processing_effects;
 
 	bool want_glow{false};
+	 
+	bool debug_active{ true };
+	bool debug_camera_active{ false };
 };
 
 template <typename T>

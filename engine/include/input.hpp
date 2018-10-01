@@ -16,6 +16,7 @@ enum class button
 	refresh,
 	menu,
 	debug,
+	switch_camera,
 	reset,
 	quit
 };

@@ -35,7 +35,7 @@ public:
 	~Game();
 	void run();
 private:
-	void render();
+	void render(std::vector<glm::vec2> debug_positions);
 	void update(std::chrono::milliseconds delta);
 	
 	std::unique_ptr<Host> host;

@@ -41,6 +41,9 @@ Renderer::Renderer()
 	shaders.emplace_back(
 		"../resources/shaders/temp.vs",
 		"../resources/shaders/temp.fs");
+	shaders.emplace_back(
+		"../resources/shaders/lines.vs",
+		"../resources/shaders/lines.fs");
 	
 	db_camera.position.z = 20.0f;
 }
@@ -49,7 +52,8 @@ Renderer::Renderer()
 void Renderer::render(
 	const std::string* begin, 
 	const std::string* end, 
-	const gui::button_array& buttons)const
+	const gui::button_array& buttons,
+	std::vector<glm::vec2> debug_positions)const
 {
 
 	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
@@ -57,8 +61,10 @@ void Renderer::render(
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//render_type(shaders[0], game_camera, models);
-	render_type(shaders[0], db_camera, models);
+	if (debug_camera_active)
+		render_type(shaders[0], db_camera, models);
+	else
+		render_type(shaders[0], game_camera, models);
 
 	// Text
 	shaders[2].use();
@@ -124,13 +130,37 @@ void Renderer::render(
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
+
+	if (debug_active)
+	{
+		glDisable(GL_DEPTH_TEST);
+		auto& s = shaders[5];
+
+		if (debug_camera_active)
+		{
+			s.use();
+			s.uniform("projection", db_camera.projection);
+			s.uniform("view", db_camera.view());
+		}
+		else
+		{
+			s.use();
+			s.uniform("projection", game_camera.projection);
+			s.uniform("view", game_camera.view());
+		}
+
+		line_debug(debug_positions);
+		glEnable(GL_DEPTH_TEST);
+	}
+
 }
 
 void Renderer::update(std::chrono::milliseconds delta, 
 	const input* begin, 
 	const input* end, 
 	const std::string& data, 
-	bool is_on)
+	bool is_on, 
+	std::vector<glm::vec2> dynamic_pos)
 {
 	using namespace std::chrono_literals;
 	time = data != log ? 0ms : time + delta;
@@ -179,6 +209,16 @@ void Renderer::update(std::chrono::milliseconds delta,
 				want_glow = !want_glow;
 			}
 
+			if (i[button::debug] == button_state::pressed)
+			{
+				debug_active = !debug_active;
+			}
+			
+			if (i[button::switch_camera] == button_state::pressed)
+			{
+				debug_camera_active = !debug_camera_active;
+			}
+
 			models[index].move(offset);
 			v[index] += offset;
 			++index;
@@ -193,8 +233,19 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
+		
 		db_camera.update(delta, direction, begin[0].cursor);
 	}
+
+	
+
+	for (int i = 0; i < dynamic_pos.size(); i++)
+	{
+		v[i] = dynamic_pos[i];
+		models[i].set_position(dynamic_pos[i]);
+	}
+
+	
 	game_camera.update(delta, v, v + 4);
 	ui.update();
 }

@@ -38,14 +38,16 @@ public:
 	std::vector<Box> static_box_colliders;
 	std::vector<glm::vec2> static_positions;
 
-	void update(std::chrono::milliseconds delta);
-	//std::vector<glm::vec2> _pos update(std::chrono::milliseconds delta);
+	//void update(std::chrono::milliseconds delta);
+	std::vector<glm::vec2> update(std::chrono::milliseconds delta);
 
 	void load_players(std::vector<glm::vec2> player_pos);
 	void load_static_bodies(std::vector<Static_collider> static_bodies);
 
 	std::vector<glm::vec2> get_forces()const;
 	bool intersects(const int box_id, const int target_box_id);
+
+	std::vector<glm::vec2> get_all_debug()const;
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 
