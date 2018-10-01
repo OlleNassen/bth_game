@@ -41,6 +41,9 @@ Renderer::Renderer()
 	shaders.emplace_back(
 		"../resources/shaders/temp.vs",
 		"../resources/shaders/temp.fs");
+	shaders.emplace_back(
+		"../resources/shaders/pbr.vs",
+		"../resources/shaders/pbr.fs");
 	
 	db_camera.position.z = 20.0f;
 }
@@ -58,7 +61,7 @@ void Renderer::render(
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//render_type(shaders[0], game_camera, models);
-	render_type(shaders[0], db_camera, models);
+	render_type(shaders[5], db_camera, models);
 
 	// Text
 	shaders[2].use();
