@@ -59,9 +59,9 @@ void Renderer::render(
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (!is_menu && connected)
-		render_type(shaders[0], game_camera, models);
+		render_type(shaders[0], game_camera, scene->models);
 	else if(!is_menu)
-		render_type(shaders[0], db_camera, models);
+		render_type(shaders[0], db_camera, scene->models);
 
 	// Text
 	shaders[2].use();
@@ -185,8 +185,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 			if (move_char)
 			{ 
-				models[index].move(offset);
-				v[index] += offset;
+				scene->models[index].move(offset);
+				scene->v[index] += offset;
 			}
 			++index;
 		});

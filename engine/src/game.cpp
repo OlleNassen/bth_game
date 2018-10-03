@@ -64,7 +64,8 @@ void Game::run()
 
 void Game::render()
 {
-	renderer.render(chat.begin(), chat.end(), menu.button_data(), menu.on(), static_cast<bool>(host));
+	renderer->render(chat.begin(), chat.end(), 
+		menu.button_data(), menu.on(), static_cast<bool>(host));
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -110,9 +111,10 @@ void Game::update(std::chrono::milliseconds delta)
 	//Player control-input
 	glm::vec2 updated_player_pos = luaLoad.process_input(*local_input, delta);
 
-	renderer.update(delta,
+	renderer->update(delta,
 		std::begin(player_inputs.components),
-		std::end(player_inputs.components), chat[1], chat.is_on());
+		std::end(player_inputs.components), chat[1], 
+		chat.is_on(), static_cast<bool>(host));
 
 }
 
