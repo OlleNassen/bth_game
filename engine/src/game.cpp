@@ -57,13 +57,15 @@ void Game::run()
 
 void Game::render()
 {
-	renderer.render(chat.begin(), chat.end(), menu.button_data());
+	renderer.render(chat.begin(), chat.end(), menu.button_data(), menu.on());
 }
 
 void Game::update(std::chrono::milliseconds delta)
 {
 	using std::cout;
 	constexpr char nl = '\n';
+
+	if (!menu.on()) window.hide_cursor();
 
 	if ((*local_input)[button::menu] == button_state::pressed)
 	{

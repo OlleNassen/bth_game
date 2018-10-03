@@ -24,7 +24,8 @@ public:
 	void render(
 		const std::string* begin,
 		const std::string* end,
-		const gui::button_array& buttons) const;
+		const gui::button_array& buttons,
+		bool is_menu) const;
 
 	void update(std::chrono::milliseconds delta,
 		const input* begin,

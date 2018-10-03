@@ -170,6 +170,7 @@ public:
 	void assign_key(button name, int keybind) { keybinds.insert(std::make_pair(keybind, name)); }
 
 	void show_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
+	void hide_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
 	
 private:
 	GLFWwindow* glfw_window;

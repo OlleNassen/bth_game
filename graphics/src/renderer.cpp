@@ -49,16 +49,21 @@ Renderer::Renderer()
 void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
-	const gui::button_array& buttons)const
+	const gui::button_array& buttons,
+	bool is_menu)const
 {
-
-	glClearColor(0.6f, 0.9f, 0.6f, 0.f);
+	if (is_menu)
+		glClearColor(1.0f, 0.8f, 0.0f, 0.f);
+	else
+		glClearColor(0.6f, 0.9f, 0.6f, 0.f);
+		
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//render_type(shaders[0], game_camera, models);
-	render_type(shaders[0], db_camera, models);
+	if(!is_menu)
+		render_type(shaders[0], db_camera, models);
 
 	// Text
 	shaders[2].use();

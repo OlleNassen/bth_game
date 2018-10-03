@@ -115,11 +115,15 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 		}
 		else if (current_buttons == &buttons[1] && index == 8)
 		{
+			current_buttons = &buttons[2];
+			is_on = false;
 			string_buffer = "server";
 			chat_on = true;
 		}
 		else if (current_buttons == &buttons[1] && index == 7)
 		{
+			current_buttons = &buttons[2];
+			is_on = false;
 			string_buffer = "";
 			chat_on = true;
 		}
@@ -132,6 +136,11 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 	{
 		button.state = button_state::selected;		
 	}	
+}
+
+bool Menu::on() const
+{
+	return is_on;
 }
 
 bool Menu::exit() const
