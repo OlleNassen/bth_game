@@ -108,12 +108,22 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 		{
 			current_buttons = &buttons[1];
 		}
-		if (current_buttons == &buttons[0] && index == 6)
+		else if (current_buttons == &buttons[0] && index == 6)
 		{
 			static constexpr auto true_dat = true;
 			want_exit = true_dat;
 		}
-		if (current_buttons == &buttons[1] && index == 6)
+		else if (current_buttons == &buttons[1] && index == 8)
+		{
+			string_buffer = "server";
+			chat_on = true;
+		}
+		else if (current_buttons == &buttons[1] && index == 7)
+		{
+			string_buffer = "";
+			chat_on = true;
+		}
+		else if (current_buttons == &buttons[1] && index == 6)
 		{
 			current_buttons = &buttons[0];
 		}	
