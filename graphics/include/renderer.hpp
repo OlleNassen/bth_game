@@ -27,12 +27,14 @@ public:
 		const std::string* end,
 		const gui::button_array& buttons,
 		bool is_menu,
-		bool connected) const;
+		bool connected,
+		bool debug) const;
 
 	void update(std::chrono::milliseconds delta,
 		const input* begin,
 		const input* end,
 		const std::string& data,
+		int new_player_count,
 		bool is_on,
 		bool move_char);
 
@@ -50,6 +52,9 @@ private:
 	std::string log;
 	Timer t;
 
+	int new_player_count{0};
+
+	glm::vec2 v[4];
 	bool is_chat_visible{false};
 
 	bool game_over{false};
@@ -63,12 +68,25 @@ private:
 	bool want_glow{false};
 };
 
+
 template <typename T>
 void render_type(const Shader& shader, const Camera& camera, const T& data)
 {
 	shader.use();
-	for (auto& renderable : data)
+	for (auto i = 4; i < data.size(); ++i)
 	{
+		const auto& renderable = data[i];
+		renderable.render(shader, camera);
+	}
+}
+
+template <typename T>
+void render_character(const Shader& shader, const Camera& camera, const T& data, int num_players)
+{
+	shader.use();
+	for (auto i = 0; i < num_players; ++i)
+	{
+		const auto& renderable = data[i];
 		renderable.render(shader, camera);
 	}
 }

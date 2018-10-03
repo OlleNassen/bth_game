@@ -72,6 +72,7 @@ Server::Server()
 	address.port = 1234;
 
 	enet_host = enet_host_create(&address, 32, 2, 0, 0);
+	connected = true;
 }
 
 Server::~Server()
@@ -83,6 +84,11 @@ void Server::update(const Packet& p, input* begin, input* end)
 {
 	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
+
+	std::for_each(begin, end, [this](auto& in) 
+	{
+		in.num_players = num_peers + 1;
+	});
 
 	/* Send the packet to the peer over channel id 0. */
 	for (auto* peer : peers)

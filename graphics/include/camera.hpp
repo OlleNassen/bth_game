@@ -27,6 +27,9 @@ class GameCamera : public Camera
 public:
 	using Camera::Camera;
 	void update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end);
+
+private:
+	glm::vec3 focus;
 };
 
 class DebugCamera : public Camera // Game/Debug camera

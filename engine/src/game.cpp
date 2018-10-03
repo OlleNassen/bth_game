@@ -4,7 +4,7 @@
 using namespace std::chrono_literals;
 
 Game::Game()
-	:window({1280, 720}, "Scrap Escape")
+	: window({1280, 720}, "Scrap Escape")
 {
 	window.assign_key(button::up, GLFW_KEY_W);
 	window.assign_key(button::left, GLFW_KEY_A);
@@ -20,7 +20,7 @@ Game::Game()
 
 	mesh_lib = new MeshLib();
 
-	create_scene("../resources/level/level.ssp");
+	level = new GameScene("../resources/level/level.ssp", mesh_lib);
 
 	renderer = new Renderer(level);
 
@@ -65,7 +65,9 @@ void Game::run()
 void Game::render()
 {
 	renderer->render(chat.begin(), chat.end(), 
-		menu.button_data(), menu.on(), static_cast<bool>(host));
+		menu.button_data(), 
+		menu.on(),
+		static_cast<bool>(host), menu.debug());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -113,12 +115,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 	renderer->update(delta,
 		std::begin(player_inputs.components),
-		std::end(player_inputs.components), chat[1], 
+		std::end(player_inputs.components), chat[1],
+		local_input->num_players,
 		chat.is_on(), static_cast<bool>(host));
 
-}
-
-void Game::create_scene(const char* file_name)
-{
-	level = new GameScene(file_name, mesh_lib);
 }

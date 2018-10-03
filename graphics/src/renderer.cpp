@@ -47,7 +47,8 @@ void Renderer::render(
 	const std::string* end,
 	const gui::button_array& buttons,
 	bool is_menu,
-	bool connected)const
+	bool connected,
+	bool debug)const
 {
 	if (is_menu)
 		glClearColor(1.0f, 0.8f, 0.0f, 0.f);
@@ -59,9 +60,19 @@ void Renderer::render(
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (!is_menu && connected)
+	{
+		render_character(shaders[0], 
+			game_camera, scene->models, new_player_count);
 		render_type(shaders[0], game_camera, scene->models);
-	else if(!is_menu)
+	}
+	else if (!is_menu)
+	{
+		if(debug)
+			render_character(shaders[0], 
+				db_camera, scene->models, 4);
 		render_type(shaders[0], db_camera, scene->models);
+	}
+		
 
 	// Text
 	shaders[2].use();
@@ -133,6 +144,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	const input* begin,
 	const input* end,
 	const std::string& data,
+	int num_players,
 	bool is_on,
 	bool move_char)
 {
@@ -142,6 +154,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	is_chat_visible = is_on || time < 3s;
 
 	game_over = t.is_up(delta);
+
+	new_player_count = num_players;
 
 	if (!is_on)
 	{

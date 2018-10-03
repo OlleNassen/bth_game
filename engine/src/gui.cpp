@@ -109,6 +109,7 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 		if (current_buttons == &buttons[0] && index == 10)
 		{
 			is_on = false;
+			is_debug = true;
 			current_buttons = &buttons[2];
 		}
 		else if (current_buttons == &buttons[0] && index == 8)
@@ -143,6 +144,11 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 	{
 		button.state = button_state::selected;		
 	}	
+}
+
+bool Menu::debug() const
+{
+	return is_debug;
 }
 
 bool Menu::on() const

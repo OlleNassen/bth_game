@@ -56,11 +56,14 @@ public:
 
 	const button_array& button_data() const;
 
+	bool debug() const;
+
 	bool on() const;
 
 	bool exit() const;
 
 private:
+	bool is_debug =false;
 	bool is_on = true;
 	bool want_exit = false;
 	button_array buttons[3];
