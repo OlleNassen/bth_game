@@ -63,9 +63,9 @@ void Renderer::render(
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (!is_menu && connected)
-		render_type(shaders[0], game_camera, models);
+		render_type(shaders[0], game_camera, models, new_player_count);
 	else if(!is_menu)
-		render_type(shaders[0], db_camera, models);
+		render_type(shaders[0], db_camera, models, new_player_count);
 
 	// Text
 	shaders[2].use();
@@ -137,6 +137,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	const input* begin,
 	const input* end,
 	const std::string& data,
+	int num_players,
 	bool is_on,
 	bool move_char)
 {
@@ -146,6 +147,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	is_chat_visible = is_on || time < 3s;
 
 	game_over = t.is_up(delta);
+
+	new_player_count = num_players;
 
 	if (!is_on)
 	{
@@ -206,6 +209,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		db_camera.update(delta, direction, begin[0].cursor);
 	}
-	game_camera.update(delta, v, v + 4);
+	game_camera.update(delta, v, v + new_player_count);
 	ui.update();
 }

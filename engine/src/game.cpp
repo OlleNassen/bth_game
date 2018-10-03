@@ -55,7 +55,9 @@ void Game::run()
 
 void Game::render()
 {
-	renderer.render(chat.begin(), chat.end(), menu.button_data(), menu.on(), static_cast<bool>(host));
+	renderer.render(chat.begin(), chat.end(), 
+		menu.button_data(), local_input->num_players, 
+		menu.on(), static_cast<bool>(host));
 }
 
 void Game::update(std::chrono::milliseconds delta)

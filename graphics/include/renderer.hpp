@@ -32,6 +32,7 @@ public:
 		const input* begin,
 		const input* end,
 		const std::string& data,
+		int new_player_count,
 		bool is_on,
 		bool move_char);
 
@@ -47,6 +48,8 @@ private:
 
 	std::string log;
 	Timer t;
+
+	int new_player_count{0};
 
 	glm::vec2 v[4];
 	bool is_chat_visible{false};
@@ -66,8 +69,19 @@ template <typename T>
 void render_type(const Shader& shader, const Camera& camera, const T& data)
 {
 	shader.use();
-	for (auto& renderable : data)
+	for (const auto& renderable : data)
 	{
+		renderable.render(shader, camera);
+	}
+}
+
+template <typename T>
+void render_type(const Shader& shader, const Camera& camera, const T& data, int num_players)
+{
+	shader.use();
+	for (auto i = 0; i < num_players; ++i)
+	{
+		const auto& renderable = data[i];
 		renderable.render(shader, camera);
 	}
 }
