@@ -3,7 +3,7 @@
 
 #include <chrono>
 #include <vector>
-#include "model.hpp"
+#include "game_scene.hpp"
 #include "camera.hpp"
 #include "text.hpp"
 #include "framebuffer.hpp"
@@ -20,6 +20,7 @@ class Renderer
 {
 public:
 	Renderer();
+	Renderer(GameScene* scene);
 
 	void render(
 		const std::string* begin,
@@ -36,19 +37,19 @@ public:
 		bool move_char);
 
 private:
+
+	GameScene* scene;
 	DebugCamera db_camera;
 	GameCamera game_camera;
 	std::vector<Model> models;
 	Text text;
 	UserInterface ui;
 	std::vector<Shader> shaders;
-	std::vector<Mesh> meshes;
 	std::chrono::milliseconds time{10000};
 
 	std::string log;
 	Timer t;
 
-	glm::vec2 v[4];
 	bool is_chat_visible{false};
 
 	bool game_over{false};

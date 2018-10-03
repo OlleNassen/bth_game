@@ -1,22 +1,31 @@
-#include "CustomMesh.h"
+#include "LeapMesh.h"
 
+LeapMesh::LeapMesh()
+{
+}
 
-CustomMesh::CustomMesh(const char* fileName)
+LeapMesh::LeapMesh(const char* fileName)
 {
 	loader(fileName);
 }
 
-CustomMesh::~CustomMesh()
+LeapMesh::~LeapMesh()
 {
-
+	delete transform;
+	delete vertices;
+	delete material;
+	delete joints;
+	delete animation;
+	delete keyFrame;
+	delete customMayaAttribute;
 }
 
-int CustomMesh::getVertexCount()
+int LeapMesh::getVertexCount()
 {
 	return this->counterReader.vertexCount;
 }
 
-void CustomMesh::loader(const char* fileName)
+void LeapMesh::loader(const char* fileName)
 {
 	
 	std::ifstream infile(fileName, std::ifstream::binary);

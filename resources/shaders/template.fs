@@ -12,6 +12,8 @@ in VS_OUT{
 
 uniform sampler2D diffuse_map;
 uniform sampler2D normal_map;
+uniform sampler2D metallic_map;
+uniform sampler2D roughness_map;
 uniform sampler2D emissive_map;
 uniform vec3 player_color;
 
@@ -24,14 +26,23 @@ void main()
 
     vec3 color = texture(diffuse_map, fs_in.tex_coord).rgb;
 
-    vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
+	vec3 emission = vec3(0, 0, 0);
+
+	if ( player_color != emission)
+	{
+		emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
+	}
+	else
+	{
+		emission = texture(emissive_map, fs_in.tex_coord).rgb;
+	}
 
     vec3 ambient = 0.1 * color;
 
     vec3 light_direction =
         normalize(fs_in.tangent_light_pos - fs_in.tangent_fragment_pos);
 
-    float diff_value = max(dot(light_direction, normal), 0.0);
+    float diff_value = max(dot(light_direction, normal), 0.5);
     vec3 diffuse = diff_value * color;
 
     vec3 view_direction =

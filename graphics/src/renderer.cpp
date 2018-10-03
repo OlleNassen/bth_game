@@ -12,18 +12,14 @@ Renderer::Renderer()
 	, game_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, t{ 300s }
 {
-	using glm::vec3;
-	glm::mat4 model{ 1.0f };
+}
 
-	v[0] = { 10, 10 };
-	v[1] = { -5, -5 };
-	v[2] = { 14, 2 };
-	v[3] = { -4, -20 };
-	models.reserve(sizeof(Model) * 4);
-	models.emplace_back(glm::translate(model, vec3{ v[0], 0 }), vec3{ 0.9f, 0.2f, 0.1f });
-	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }), vec3{ 0.2f, 0.9f, 0.1f });
-	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }), vec3{ 0.1f, 0.1f, 0.9f });
-	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }), vec3{ 0.9f, 0.8f, 0.1f });
+Renderer::Renderer(GameScene* scene)
+	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
+	, game_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
+	, t{ 300s }
+{
+	this->scene = scene;
 
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
@@ -206,6 +202,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		db_camera.update(delta, direction, begin[0].cursor);
 	}
-	game_camera.update(delta, v, v + 4);
+	game_camera.update(delta, scene->v, scene->v + 1);
 	ui.update();
 }
