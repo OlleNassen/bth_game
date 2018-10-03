@@ -50,7 +50,8 @@ void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
 	const gui::button_array& buttons,
-	bool is_menu)const
+	bool is_menu,
+	bool connected)const
 {
 	if (is_menu)
 		glClearColor(1.0f, 0.8f, 0.0f, 0.f);
@@ -61,8 +62,9 @@ void Renderer::render(
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//render_type(shaders[0], game_camera, models);
-	if(!is_menu)
+	if (!is_menu && connected)
+		render_type(shaders[0], game_camera, models);
+	else if(!is_menu)
 		render_type(shaders[0], db_camera, models);
 
 	// Text

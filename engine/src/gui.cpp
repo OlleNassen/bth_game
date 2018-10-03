@@ -77,6 +77,8 @@ void Chat::update(std::chrono::milliseconds delta)
 
 Menu::Menu() 
 {
+	buttons[0][10] = { "Debug", button_state::none };
+	
 	buttons[0][8] = { "Start", button_state::none };
 	buttons[0][7] = { "Options", button_state::none };
 	buttons[0][6] = { "Exit", button_state::none };
@@ -104,7 +106,12 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 	
 	if (i[::button::select] == ::button_state::released)
 	{
-		if (current_buttons == &buttons[0] && index == 8)
+		if (current_buttons == &buttons[0] && index == 10)
+		{
+			is_on = false;
+			current_buttons = &buttons[2];
+		}
+		else if (current_buttons == &buttons[0] && index == 8)
 		{
 			current_buttons = &buttons[1];
 		}

@@ -25,7 +25,8 @@ public:
 		const std::string* begin,
 		const std::string* end,
 		const gui::button_array& buttons,
-		bool is_menu) const;
+		bool is_menu,
+		bool connected) const;
 
 	void update(std::chrono::milliseconds delta,
 		const input* begin,
