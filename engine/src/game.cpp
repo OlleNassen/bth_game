@@ -4,7 +4,7 @@
 using namespace std::chrono_literals;
 
 Game::Game()
-	:window(glm::ivec2(1280, 720), "Scrap Escape")
+	:window({1280, 720}, "Scrap Escape")
 {
 	window.assign_key(button::up, GLFW_KEY_W);
 	window.assign_key(button::left, GLFW_KEY_A);

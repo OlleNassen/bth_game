@@ -42,23 +42,23 @@ private:
 	UserInterface ui;
 	std::vector<Shader> shaders;
 	std::vector<Mesh> meshes;
-	std::chrono::milliseconds time{ 10000 };
+	std::chrono::milliseconds time{10000};
 
 	std::string log;
 	Timer t;
 
 	glm::vec2 v[4];
-	bool is_chat_visible{ false };
+	bool is_chat_visible{false};
 
-	bool game_over = false;
+	bool game_over{false};
 
-	bool show_start = false;
+	bool show_start{false};
 
 
 	Framebuffer scene_texture;
 	PostProcessingEffects post_processing_effects;
 
-	bool want_glow{ false };
+	bool want_glow{false};
 };
 
 template <typename T>
