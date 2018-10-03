@@ -13,6 +13,7 @@ Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh
 	textures.emplace_back("../resources/textures/" + mesh->name + "_Normal.png");
 	textures.emplace_back("../resources/textures/" + mesh->name + "_Metallic.png");
 	textures.emplace_back("../resources/textures/" + mesh->name + "_Roughness.png");
+	textures.emplace_back("../resources/textures/" + mesh->name + "_AO.png");
 	textures.emplace_back("../resources/textures/" + mesh->name + "_Emissive.png");
 }
 
@@ -39,7 +40,8 @@ void Model::render(const Shader & shader, const Camera& camera)const
 	shader.uniform("normal_map", 1);
 	shader.uniform("metallic_map", 2);
 	shader.uniform("roughness_map", 3);
-	shader.uniform("emissive_map", 4);
+	shader.uniform("AO_map", 4);
+	shader.uniform("emissive_map", 5);
 	shader.uniform("player_color", emissive_color);
 
 	textures[0].bind(0);
@@ -47,6 +49,7 @@ void Model::render(const Shader & shader, const Camera& camera)const
 	textures[2].bind(2);
 	textures[3].bind(3);
 	textures[4].bind(4);
+	textures[5].bind(5);
 
 
 	mesh->render();
