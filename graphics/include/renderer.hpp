@@ -32,7 +32,8 @@ public:
 		const input* begin,
 		const input* end,
 		const std::string& data,
-		bool is_on);
+		bool is_on,
+		bool move_char);
 
 private:
 	DebugCamera db_camera;

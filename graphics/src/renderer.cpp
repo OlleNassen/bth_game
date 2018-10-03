@@ -137,7 +137,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	const input* begin,
 	const input* end,
 	const std::string& data,
-	bool is_on)
+	bool is_on,
+	bool move_char)
 {
 	using namespace std::chrono_literals;
 	time = data != log ? 0ms : time + delta;
@@ -152,7 +153,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		glm::vec3 direction{ 0.0f, 0.0f, 0.0f };
 
 		auto index = 0;
-		std::for_each(begin, end, [this, &index, &direction, delta](auto& i)
+		std::for_each(begin, end, [&](auto& i)
 		{
 			using glm::vec2;
 			float speed{ 10.f };
@@ -186,8 +187,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 				want_glow = !want_glow;
 			}
 
-			models[index].move(offset);
-			v[index] += offset;
+			if (move_char)
+			{ 
+				models[index].move(offset);
+				v[index] += offset;
+			}
 			++index;
 		});
 
