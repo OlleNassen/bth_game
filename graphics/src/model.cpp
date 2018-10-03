@@ -15,6 +15,9 @@ Model::Model(const glm::mat4& model, const glm::vec3& emissive_color)
 	textures.emplace_back("../resources/assets/roughness.tga");
 	textures.emplace_back("../resources/assets/ao.tga");
 
+	this->model[3][0] = -12.f;
+	this->model[3][1] = -2.f;
+	this->model[3][2] = 4.f;
 
 }
 
@@ -32,9 +35,7 @@ void Model::render(const Shader & shader, const Camera& camera)const
 	shader.uniform("view_pos", glm::vec3{camera.position});
 
 	//Temp light
-	static glm::vec3 light_pos = glm::vec3(-15, -2, 6);
-	light_pos.x += glm::sin(glfwGetTime() * 2.0f);
-	light_pos.y += glm::sin(glfwGetTime() * 0.7f);
+	static glm::vec3 light_pos = glm::vec3(-12, -2, 9);
 
 	shader.uniform("light_pos", glm::vec3{ light_pos });
 

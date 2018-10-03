@@ -20,9 +20,6 @@ uniform sampler2D roughness_map;
 uniform sampler2D ao_map;
 uniform vec3 player_color;
 
-uniform vec3 light_pos;
-uniform vec3 view_pos;
-
 const float PI = 3.14159265359;
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
@@ -67,19 +64,16 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 
 void main()
 {
-	vec3 WorldPos = fs_in.frag_pos;
+	vec3 WorldPos = fs_in.tangent_fragment_pos;
 	vec3 camPos = fs_in.tangent_view_pos;
 
 	vec3 lightPositions[4];
 	vec3 lightColors[4];
 
-	lightPositions[0] = light_pos;
-	lightColors[0] = vec3(1,1,1);
-
-	for(int i = 1; i < 4; i++)
+	for(int i = 0; i < 4; i++)
 	{
-		lightPositions[i] = view_pos;
-		lightColors[i] = vec3(1);
+		lightPositions[i] = fs_in.tangent_light_pos;
+		lightColors[i] = vec3(1.0, 1.0, 1.0);
 	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
@@ -88,18 +82,18 @@ void main()
     float ao        = texture(ao_map, fs_in.tex_coord).r;
 
 	vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
-	vec3 V = normalize(camPos - WorldPos);
     // transform normal vector to range [-1,1]
     N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
+	vec3 V = normalize(camPos - WorldPos);
 
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 	
-	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
+	//vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 4; ++i) 
+    for(int i = 0; i < 1; ++i) 
     {
         // calculate per-light radiance
         vec3 L = normalize(lightPositions[i] - WorldPos);
@@ -137,7 +131,7 @@ void main()
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.3) * albedo * ao;
     
     vec3 color = ambient + Lo;
 
