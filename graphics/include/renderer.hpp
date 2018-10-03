@@ -27,7 +27,8 @@ public:
 		const std::string* end,
 		const gui::button_array& buttons,
 		bool is_menu,
-		bool connected) const;
+		bool connected,
+		bool debug) const;
 
 	void update(std::chrono::milliseconds delta,
 		const input* begin,
@@ -67,18 +68,20 @@ private:
 	bool want_glow{false};
 };
 
+
 template <typename T>
 void render_type(const Shader& shader, const Camera& camera, const T& data)
 {
 	shader.use();
-	for (const auto& renderable : data)
+	for (auto i = 4; i < data.size(); ++i)
 	{
+		const auto& renderable = data[i];
 		renderable.render(shader, camera);
 	}
 }
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const T& data, int num_players)
+void render_character(const Shader& shader, const Camera& camera, const T& data, int num_players)
 {
 	shader.use();
 	for (auto i = 0; i < num_players; ++i)

@@ -36,6 +36,8 @@ public:
 	virtual ~Host() = default;
 	virtual void update(const Packet& p, input* begin, input* end) = 0;
 	virtual int id() const = 0;
+
+	bool connected = false;
 };
 
 
@@ -55,7 +57,6 @@ private:
 	void disconnect(const ENetEvent& event);	
 	
 	int client_id = 3;
-	bool connected = false;
 
 	ENetAddress address;
 	ENetHost* enet_host;

@@ -72,6 +72,7 @@ Server::Server()
 	address.port = 1234;
 
 	enet_host = enet_host_create(&address, 32, 2, 0, 0);
+	connected = true;
 }
 
 Server::~Server()

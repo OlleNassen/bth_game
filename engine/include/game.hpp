@@ -39,7 +39,6 @@ public:
 private:
 	void render();
 	void update(std::chrono::milliseconds delta);
-	void create_scene(const char* file_name);
 	
 	std::unique_ptr<Host> host;
 	std::chrono::milliseconds timestep{16};
