@@ -26,7 +26,16 @@ void main()
 
     vec3 color = texture(diffuse_map, fs_in.tex_coord).rgb;
 
-    vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
+	vec3 emission = vec3(0, 0, 0);
+
+	if ( player_color != emission)
+	{
+		emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
+	}
+	else
+	{
+		emission = texture(emissive_map, fs_in.tex_coord).rgb;
+	}
 
     vec3 ambient = 0.1 * color;
 

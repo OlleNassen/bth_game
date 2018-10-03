@@ -32,7 +32,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 		model = glm::rotate(model, glm::radians(level.levelObjects[i]->rotationX), glm::vec3{ 1,0,0 });
 		model = glm::rotate(model, glm::radians(level.levelObjects[i]->rotationZ), glm::vec3{ 0,0,1 });
 
-		models.emplace_back(model, glm::vec3(1, 0, 0) , mesh_lib->get_mesh(level.levelObjects[i]->id));
+		models.emplace_back(model, glm::vec3(0, 0, 0) , mesh_lib->get_mesh(level.levelObjects[i]->id));
 	}
 }
 

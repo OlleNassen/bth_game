@@ -53,8 +53,8 @@ void Renderer::render(
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//render_type(shaders[0], game_camera, models);
-	render_type(shaders[0], db_camera, scene->models);
+	render_type(shaders[0], game_camera, scene->models);
+	//render_type(shaders[0], db_camera, scene->models);
 
 	// Text
 	shaders[2].use();
