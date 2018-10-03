@@ -7,6 +7,7 @@ struct Counter
 	unsigned int meshCount;
 	unsigned int customMayaAttributeCount;
 	unsigned int matCount;
+	unsigned int levelObjectCount;
 };
 
 struct MeshInfo {
@@ -54,42 +55,12 @@ struct AnimationInformation {
 	std::vector<JointInformation> joints;
 };
 
-//struct BlendShapeVertex {
-//	float x, y, z;
-//	float nx, ny, nz;
-//};
-//
-//struct BlendShape
-//{
-//	int blendShapeVertexCount;
-//	vector <BlendShapeVertex> blendShapeVertices;
-//};
-//
-//struct BlendShapeKeyframe
-//{
-//	float time;
-//	float blendShapeInfluense;
-//};
-//
-//struct BlendShapes {
-//	float blendShapeCount;
-//	float keyFrameCount;
-//	vector <BlendShape> blendShape;
-//	vector <BlendShapeKeyframe> keyframes;
-//};
-//
-//struct GroupChild {
-//	char childName[100];
-//};
-//
-//struct Group {
-//	char groupName[100];
-//	int childCount;
-//	vector<GroupChild> children;
-//};
-
 struct CustomMayaAttributes {
 	float particlePivot[3];
+	float centerPivot[3];
+	float height;
+	float width;
+	int id;
 };
 
 struct LevelObject {
@@ -97,23 +68,3 @@ struct LevelObject {
 	float rotationX, rotationY, rotationZ;
 	int id;
 };
-
-//struct Light {
-//	char type;
-//	float color[3];
-//	float intensity;
-//	float innerCone;
-//	float outerCone;
-//};
-//
-//struct Camera {
-//	float position[3];
-//	float up[3];
-//	float forward[3];
-//	float roll;
-//	float aspectWidth;
-//	float aspectHeight;
-//	float fov;
-//	float nearPlane;
-//	float farPlane;
-//};

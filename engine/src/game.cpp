@@ -18,12 +18,21 @@ Game::Game()
 	window.assign_key(button::reset, GLFW_KEY_R);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
+	mesh_lib = new MeshLib();
+
+	create_scene("../resources/level/level.ssp");
+
+	renderer = new Renderer(level);
+
 	net_init();
 }
 
 Game::~Game()
 {
 	net_deinit();
+	delete mesh_lib;
+	delete level;
+	delete renderer;
 }
 
 void Game::run()
@@ -103,7 +112,14 @@ void Game::update(std::chrono::milliseconds delta)
 	//Player control-input
 	glm::vec2 updated_player_pos = luaLoad.process_input(*local_input, delta);
 
-	renderer.update(delta,
+	renderer->update(delta,
 		std::begin(player_inputs.components),
-		std::end(player_inputs.components), chat[1], chat.is_on(), static_cast<bool>(host));
-	}
+		std::end(player_inputs.components), chat[1], 
+		chat.is_on(), static_cast<bool>(host));
+
+}
+
+void Game::create_scene(const char* file_name)
+{
+	level = new GameScene(file_name, mesh_lib);
+}

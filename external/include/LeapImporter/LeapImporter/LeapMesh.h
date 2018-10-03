@@ -1,18 +1,18 @@
 #pragma once
-
-#include <fstream>
 #include "MeshStructs.h"
+#include <vector>
+#include <string>
+#include <fstream>
 
-
-class CustomMesh
+class LeapMesh
 {
 private:
 	void loader(const char* fileName);
 
 public:
-	CustomMesh() = default;
-	CustomMesh(const char* fileName);
-	~CustomMesh();
+	LeapMesh();
+	LeapMesh(const char* fileName);
+	~LeapMesh();
 
 	int getVertexCount();
 

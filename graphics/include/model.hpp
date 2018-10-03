@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include "mesh.hpp"
+#include "mesh_lib.hpp"
 #include "shader.hpp"
 #include "camera.hpp"
 #include "texture.hpp"
@@ -12,7 +13,7 @@
 class Model
 {
 public:
-	Model(const glm::mat4& model, const glm::vec3& emissive_color);
+	Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh);
 	~Model();
 
 	void move(glm::vec2 offset)

@@ -10,6 +10,8 @@
 #include <renderer.hpp>
 #include <host.hpp>
 #include "ecs.hpp"
+#include "mesh_lib.hpp"
+#include "game_scene.hpp"
 #include "window.hpp"
 #include "input.hpp"
 #include <lua_load.hpp>
@@ -37,14 +39,19 @@ public:
 private:
 	void render();
 	void update(std::chrono::milliseconds delta);
+	void create_scene(const char* file_name);
 	
 	std::unique_ptr<Host> host;
 	std::chrono::milliseconds timestep{16};
+
+	MeshLib* mesh_lib;
+	GameScene* level;
+
 	Window window;
 	input player_input;
 	
 	logic::Gameplay gameplay;
-	Renderer renderer;
+	Renderer* renderer;
 	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
