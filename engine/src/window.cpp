@@ -115,6 +115,25 @@ void Window::update_input(input& input)
 			button = button_state::none;
 		}				
 	}
+	auto button_state = glfwGetMouseButton(glfw_window, GLFW_MOUSE_BUTTON_LEFT);
+	auto& button = input[button::select];
+
+	if (button_state == GLFW_RELEASE && button == button_state::held)
+	{
+		button = button_state::released;
+	}
+	else if (button == button_state::pressed || button == button_state::held)
+	{
+		button = button_state::held;
+	}
+	else if (button_state == GLFW_PRESS && button == button_state::none)
+	{
+		button = button_state::pressed;
+	}
+	else
+	{
+		button = button_state::none;
+	}
 
 	glm::ivec2 window_size;
 	glfwGetWindowSize(glfw_window, &window_size.x, &window_size.y);
