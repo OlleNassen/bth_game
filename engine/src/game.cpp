@@ -30,7 +30,7 @@ Game::Game()
 Game::~Game()
 {
 	net_deinit();
-	delete mesh_lib;
+	//delete mesh_lib;
 	delete level;
 	delete renderer;
 }
@@ -75,6 +75,33 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
+	player_data net_data;
+
+	auto index = 0;
+	std::for_each(
+		std::begin(player_inputs.components), 
+		std::end(player_inputs.components), [&](auto& i) 
+	{
+		auto& direction = net_data.directions[index++];
+
+		if (i[button::up] >= button_state::pressed)
+		{
+			direction.z += 1.0f;
+		}
+		if (i[button::left] >= button_state::pressed)
+		{
+			direction.x -= 1.0f;
+		}
+		if (i[button::down] >= button_state::pressed)
+		{
+			direction.z -= 1.0f;
+		}
+		if (i[button::right] >= button_state::pressed)
+		{
+			direction.x += 1.0f;
+		}
+	});
+
 	if (!menu.on()) window.hide_cursor();
 
 	if ((*local_input)[button::menu] == button_state::pressed)
@@ -97,11 +124,7 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (host)
 	{
-		Packet p;
-		p.i = player_inputs.components;
-		host->update(p, 
-			std::begin(player_inputs.components), 
-			std::end(player_inputs.components));
+		host->update(&net_data);
 	}
 	chat.update(delta);
 	menu.update(delta, *local_input);
@@ -116,7 +139,7 @@ void Game::update(std::chrono::milliseconds delta)
 	renderer->update(delta,
 		std::begin(player_inputs.components),
 		std::end(player_inputs.components), chat[1],
-		local_input->num_players,
+		4,
 		chat.is_on(), static_cast<bool>(host));
 
 }
