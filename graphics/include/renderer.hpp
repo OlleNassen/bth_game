@@ -9,8 +9,10 @@
 #include "framebuffer.hpp"
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
+#include "lights.hpp"
 #include "../../engine/include/timer.hpp"
 #include "../../engine/include/gui.hpp"
+#include "primitive_factory.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -44,6 +46,9 @@ private:
 	DebugCamera db_camera;
 	GameCamera game_camera;
 	std::vector<Model> models;
+
+	Box light_box;
+
 	Text text;
 	UserInterface ui;
 	std::vector<Shader> shaders;
@@ -66,28 +71,29 @@ private:
 	PostProcessingEffects post_processing_effects;
 
 	bool want_glow{false};
+	PointLight light{ glm::vec3(0,2,4) };
 };
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const T& data)
+void render_type(const Shader& shader, const Camera& camera, const glm::vec3& light, const T& data)
 {
 	shader.use();
 	for (auto i = 4; i < data.size(); ++i)
 	{
 		const auto& renderable = data[i];
-		renderable.render(shader, camera);
+		renderable.render(shader, camera, light);
 	}
 }
 
 template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const T& data, int num_players)
+void render_character(const Shader& shader, const Camera& camera, const glm::vec3& light, const T& data, int num_players)
 {
 	shader.use();
 	for (auto i = 0; i < num_players; ++i)
 	{
 		const auto& renderable = data[i];
-		renderable.render(shader, camera);
+		renderable.render(shader, camera, light);
 	}
 }
 

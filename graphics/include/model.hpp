@@ -8,6 +8,8 @@
 #include "shader.hpp"
 #include "camera.hpp"
 #include "texture.hpp"
+#include <GLFW/glfw3.h>
+
 //TEMP MODEL CLASS, TECHNICAL ARTISTS FEEL FREE TO CHANGE THIS
 
 class Model
@@ -26,12 +28,14 @@ public:
 		model = glm::translate(glm::mat4(1.f), glm::vec3{ position, 0.0f });
 	}
 
-	void render(const Shader & shader, const Camera& camera)const;
+	void render(const Shader & shader, const Camera& camera, const glm::vec3& light)const;
+
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
 	std::vector<Texture>textures;
 	glm::mat4 model;
 	glm::vec3 emissive_color;
+	glm::vec3 light_pos{ 0, 3, 1 };
 };
 
 #endif
