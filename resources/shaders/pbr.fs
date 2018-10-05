@@ -90,7 +90,7 @@ void main()
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 	
-	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
+	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
@@ -141,5 +141,5 @@ void main()
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
-    frag_color = vec4(color, 1.0);
+    frag_color = vec4(color + emission, 1.0);
 }
