@@ -84,16 +84,17 @@ void main()
 	vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
     // transform normal vector to range [-1,1]
     N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
+
 	vec3 V = normalize(camPos - WorldPos);
 
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 	
-	//vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
+	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 1; ++i) 
+    for(int i = 0; i < 4; ++i) 
     {
         // calculate per-light radiance
         vec3 L = normalize(lightPositions[i] - WorldPos);
@@ -131,7 +132,7 @@ void main()
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.3) * albedo * ao;
+    vec3 ambient = vec3(0.03) * albedo * ao;
     
     vec3 color = ambient + Lo;
 

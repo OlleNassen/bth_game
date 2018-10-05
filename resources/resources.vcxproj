@@ -122,6 +122,8 @@
     <None Include="scripts\input.lua" />
     <None Include="scripts\test.lua" />
     <None Include="shaders\blinn_phong.vs" />
+    <None Include="shaders\box.fs" />
+    <None Include="shaders\box.vs" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
     <None Include="shaders\lines.fs" />

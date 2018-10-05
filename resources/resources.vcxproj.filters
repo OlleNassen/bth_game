@@ -34,5 +34,7 @@
     <None Include="scripts\test.lua" />
     <None Include="shaders\pbr.vs" />
     <None Include="shaders\pbr.fs" />
+    <None Include="shaders\box.vs" />
+    <None Include="shaders\box.fs" />
   </ItemGroup>
 </Project>

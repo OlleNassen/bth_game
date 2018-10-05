@@ -23,8 +23,8 @@ Renderer::Renderer(GameScene* scene)
 
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
-		"../resources/shaders/template.vs",
-		"../resources/shaders/template.fs");
+		"../resources/shaders/pbr.vs",
+		"../resources/shaders/pbr.fs");
 	shaders.emplace_back(
 		"../resources/shaders/text.vs",
 		"../resources/shaders/text.fs");
@@ -62,17 +62,18 @@ void Renderer::render(
 	if (!is_menu && connected)
 	{
 		render_character(shaders[0], 
-			game_camera, scene->models, new_player_count);
-		render_type(shaders[0], game_camera, scene->models);
+			game_camera, light.position, scene->models, new_player_count);
+		render_type(shaders[0], game_camera, light.position, scene->models);
 	}
 	else if (!is_menu)
 	{
 		if(debug)
 			render_character(shaders[0], 
-				db_camera, scene->models, 4);
-		render_type(shaders[0], db_camera, scene->models);
+				db_camera, light.position, scene->models, 4);
+		render_type(shaders[0], db_camera, light.position, scene->models);
+
+		light_box.render(db_camera);
 	}
-		
 
 	// Text
 	shaders[2].use();
@@ -218,4 +219,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	}
 	game_camera.update(delta, scene->v, scene->v + 1);
 	ui.update();
+
+	light.position = light.position + glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
+	light_box.set_position(light.position);
 }

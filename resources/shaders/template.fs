@@ -10,11 +10,11 @@ in VS_OUT{
 	vec3 tangent_fragment_pos;
 } fs_in;
 
-uniform sampler2D diffuse_map;
+uniform sampler2D albedo_map;
 uniform sampler2D normal_map;
 uniform sampler2D metallic_map;
 uniform sampler2D roughness_map;
-uniform sampler2D AO_map;
+uniform sampler2D ao_map;
 uniform sampler2D emissive_map;
 uniform vec3 player_color;
 
@@ -25,7 +25,7 @@ void main()
     // transform normal vector to range [-1,1]
     normal = normalize(normal * 2.0 - 1.0);  // this normal is in tangent space
 
-    vec3 color = texture(diffuse_map, fs_in.tex_coord).rgb;
+    vec3 color = texture(albedo_map, fs_in.tex_coord).rgb;
 
 	vec3 emission = vec3(0, 0, 0);
 

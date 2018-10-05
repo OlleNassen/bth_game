@@ -184,6 +184,7 @@
     <ClInclude Include="include\texture.hpp" />
     <ClInclude Include="include\user_interface.hpp" />
     <ClInclude Include="include\stupid_file.hpp" />
+    <ClInclude Include="include\primitive_factory.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
