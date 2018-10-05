@@ -137,7 +137,7 @@ void Game::update(std::chrono::milliseconds delta)
 		std::end(player_inputs.components),
 		std::begin(net_data.directions),
 		std::end(net_data.directions), 
-		chat[1], net_data.player_count, chat.is_on(), 
+		chat[1], 4/*net_data.player_count*/, chat.is_on(), 
 		static_cast<bool>(host));
 
 }
