@@ -138,8 +138,10 @@ void Game::update(std::chrono::milliseconds delta)
 
 	renderer->update(delta,
 		std::begin(player_inputs.components),
-		std::end(player_inputs.components), chat[1],
-		4,
-		chat.is_on(), static_cast<bool>(host));
+		std::end(player_inputs.components),
+		std::begin(net_data.directions),
+		std::end(net_data.directions), 
+		chat[1], 4, chat.is_on(), 
+		static_cast<bool>(host));
 
 }

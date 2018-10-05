@@ -143,6 +143,8 @@ void Renderer::render(
 void Renderer::update(std::chrono::milliseconds delta,
 	const input* begin,
 	const input* end,
+	const glm::vec3* begin_v,
+	const glm::vec3* end_v,
 	const std::string& data,
 	int num_players,
 	bool is_on,
@@ -163,46 +165,36 @@ void Renderer::update(std::chrono::milliseconds delta,
 		glm::vec3 direction{ 0.0f, 0.0f, 0.0f };
 
 		auto index = 0;
-		std::for_each(begin, end, [&](auto& i)
+		std::for_each(begin_v, end_v, [&](auto& direction)
 		{
 			using glm::vec2;
 			float speed{ 10.f };
 			vec2 offset{ 0.0f, 0.0f };
 			float dt = delta.count() / 1000.0f;
 
-
-			if (i[button::up] >= button_state::pressed)
-			{
-				offset += vec2{ 0, speed } *dt;
-				direction.z += 1.0f;
-			}
-			if (i[button::left] >= button_state::pressed)
-			{
-				offset += vec2{ -speed, 0 } *dt;
-				direction.x -= 1.0f;
-			}
-			if (i[button::down] >= button_state::pressed)
-			{
-				offset += vec2{ 0, -speed } *dt;
-				direction.z -= 1.0f;
-			}
-			if (i[button::right] >= button_state::pressed)
-			{
-				offset += vec2{ speed, 0 } *dt;
-				direction.x += 1.0f;
-			}
-
-			if (i[button::glow] == button_state::pressed)
-			{
-				want_glow = !want_glow;
-			}
+			if (direction.z > 0.5f)
+				offset += vec2{ 0, speed } * dt;
+			if (direction.x < -0.5f)
+				offset += vec2{ -speed, 0 } * dt;
+			if (direction.z < -0.5f)
+				offset += vec2{ 0, -speed } * dt;
+			if (direction.x > 0.5f)
+				offset += vec2{ speed, 0 } * dt;
 
 			if (move_char)
-			{ 
+			{
 				scene->models[index].move(offset);
 				scene->v[index] += offset;
 			}
 			++index;
+		});
+	
+		std::for_each(begin, end, [&](auto& i)
+		{
+			if (i[button::glow] == button_state::pressed)
+			{
+				want_glow = !want_glow;
+			}
 		});
 
 		if (want_glow)

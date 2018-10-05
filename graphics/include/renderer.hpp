@@ -33,6 +33,8 @@ public:
 	void update(std::chrono::milliseconds delta,
 		const input* begin,
 		const input* end,
+		const glm::vec3* begin_v,
+		const glm::vec3* end_v,
 		const std::string& data,
 		int new_player_count,
 		bool is_on,
