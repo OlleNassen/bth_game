@@ -89,21 +89,13 @@ void Game::update(std::chrono::milliseconds delta)
 		auto& direction = net_data.directions[index++];
 
 		if (i[button::up] >= button_state::pressed)
-		{
 			direction.z += 1.0f;
-		}
 		if (i[button::left] >= button_state::pressed)
-		{
 			direction.x -= 1.0f;
-		}
 		if (i[button::down] >= button_state::pressed)
-		{
 			direction.z -= 1.0f;
-		}
 		if (i[button::right] >= button_state::pressed)
-		{
 			direction.x += 1.0f;
-		}
 	});
 
 	if (!menu.on()) window.hide_cursor();
@@ -145,7 +137,7 @@ void Game::update(std::chrono::milliseconds delta)
 		std::end(player_inputs.components),
 		std::begin(net_data.directions),
 		std::end(net_data.directions), 
-		chat[1], 4, chat.is_on(), 
+		chat[1], net_data.player_count, chat.is_on(), 
 		static_cast<bool>(host));
 
 }
