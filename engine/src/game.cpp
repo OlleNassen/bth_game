@@ -75,10 +75,7 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	std::fill(
-		std::begin(net_data.directions),
-		std::end(net_data.directions),
-		glm::vec3{ 0.0f });
+	net_data.directions[net_data.player_id] = { 0.0f, 0.0f, 0.0f };
 
 	auto index = 0;
 	std::for_each(
