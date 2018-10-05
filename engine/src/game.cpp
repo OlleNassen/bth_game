@@ -75,24 +75,17 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	net_data.directions[net_data.player_id] = { 0.0f, 0.0f, 0.0f };
-
-	auto index = 0;
-	std::for_each(
-		std::begin(player_inputs.components), 
-		std::end(player_inputs.components), [&](auto& i) 
-	{
-		auto& direction = net_data.directions[index++];
-
-		if (i[button::up] >= button_state::pressed)
-			direction.z += 1.0f;
-		if (i[button::left] >= button_state::pressed)
-			direction.x -= 1.0f;
-		if (i[button::down] >= button_state::pressed)
-			direction.z -= 1.0f;
-		if (i[button::right] >= button_state::pressed)
-			direction.x += 1.0f;
-	});
+	auto& direction = net_data.directions[net_data.player_id];
+	direction = { 0.0f, 0.0f, 0.0f };
+	
+	if ((*local_input)[button::up] >= button_state::pressed)
+		direction.z += 1.0f;
+	if ((*local_input)[button::left] >= button_state::pressed)
+		direction.x -= 1.0f;
+	if ((*local_input)[button::down] >= button_state::pressed)
+		direction.z -= 1.0f;
+	if ((*local_input)[button::right] >= button_state::pressed)
+		direction.x += 1.0f;
 
 	if (!menu.on()) window.hide_cursor();
 
