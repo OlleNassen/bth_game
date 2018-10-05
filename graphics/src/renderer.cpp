@@ -187,13 +187,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 			++index;
 		});
 	
-		std::for_each(begin, end, [&](auto& i)
+		if (begin[0][button::glow] == button_state::pressed)
 		{
-			if (i[button::glow] == button_state::pressed)
-			{
-				want_glow = !want_glow;
-			}
-		});
+			want_glow = !want_glow;
+		}
 
 		if (want_glow)
 		{
