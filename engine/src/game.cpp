@@ -115,7 +115,7 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			host = std::make_unique<Client>(chat[1]);
 		}
-		local_input = &player_inputs.components[host->id()];
+		local_input = &player_inputs.components[net_data.player_id];
 	}
 	else if (host)
 	{

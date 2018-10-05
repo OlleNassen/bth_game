@@ -43,7 +43,6 @@ class Host
 public:
 	virtual ~Host() = default;
 	virtual void update(player_data* data) = 0;
-	virtual int id() const = 0;
 
 	bool connected = false;
 };
@@ -56,15 +55,12 @@ public:
 	~Client();
 
 	void update(player_data* data) override;
-	int id() const override { return client_id; }
 	
 
 private:
 	void recieve(const ENetEvent& event, player_data* data);
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);	
-	
-	int client_id = 3;
 
 	ENetAddress address;
 	ENetHost* enet_host;
@@ -78,7 +74,6 @@ public:
 	~Server();
 
 	void update(player_data* data) override;
-	int id() const override { return 0; }
 
 private:	
 	void recieve(const ENetEvent& event, player_data* data);
