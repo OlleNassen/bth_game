@@ -7,9 +7,6 @@ MeshLib::MeshLib()
 
 MeshLib::~MeshLib()
 {
-	for (Mesh* mesh_ptr : meshes)
-		delete mesh_ptr;
-	meshes.clear();
 }
 
 
