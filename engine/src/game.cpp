@@ -120,6 +120,7 @@ void Game::update(std::chrono::milliseconds delta)
 	else if (host)
 	{
 		host->update(&net_data);
+		cout << net_data.player_id << nl;
 	}
 	chat.update(delta);
 	menu.update(delta, *local_input);

@@ -45,10 +45,9 @@ void Client::recieve(const ENetEvent& event, player_data* data)
 	data->player_count = new_data->player_count;
 	data->player_id = new_data->player_id;
 	
-	const auto* index = &new_data->directions[new_data->player_id];
 	for (int i = 0; i < 4; ++i)
 	{
-		if (&new_data->directions[i] != index)
+		if (i != data->player_id)
 		{
 			data->directions[i] = new_data->directions[i];
 		}
