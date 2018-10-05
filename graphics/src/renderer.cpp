@@ -206,6 +206,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		db_camera.update(delta, begin_v[0], begin[0].cursor);
 	}
-	game_camera.update(delta, scene->v, scene->v + 1);
+	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
 }
