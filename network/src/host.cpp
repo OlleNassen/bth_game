@@ -18,9 +18,9 @@ Client::~Client()
 	enet_host_destroy(enet_host);
 }
 
-void Client::update(const Packet& p, input* begin, input* end)
+void Client::update(player_data* data)
 {
-	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
+	ENetPacket* enet_packet = enet_packet_create(data, sizeof(glm::vec3) * 4 + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 
 	if (!peer)
@@ -34,22 +34,22 @@ void Client::update(const Packet& p, input* begin, input* end)
 
 	using namespace std::chrono_literals;
 	host_service(0ms, enet_host,
-		[this, begin, end](const ENetEvent& event) { recieve(event, begin, end); },
+		[this, data](const ENetEvent& event) { recieve(event, data); },
 		[this](const ENetEvent& event) { connect(event); },
 		[this](const ENetEvent& event) { disconnect(event); });
 }
 
-void Client::recieve(const ENetEvent& event, input* begin, input* end)
+void Client::recieve(const ENetEvent& event, player_data* data)
 {
-	//peer = event.peer;
-	const input* data = reinterpret_cast<input*>(event.packet->data);
-	const auto* index = &data[client_id];
+	const auto* new_data = reinterpret_cast<player_data*>(event.packet->data);
+	data->player_count = new_data->player_count;
+	data->player_id = new_data->player_id;
 	
-	for (int i = 0; i < (end - begin); ++i)
+	for (int i = 0; i < 4; ++i)
 	{
-		if (&data[i] != index)
+		if (i != data->player_id)
 		{
-			begin[i] = data[i];
+			data->directions[i] = new_data->directions[i];
 		}
 	}
 }
@@ -80,39 +80,43 @@ Server::~Server()
 	enet_host_destroy(enet_host);
 }
 
-void Server::update(const Packet& p, input* begin, input* end)
-{
-	ENetPacket* enet_packet = enet_packet_create(p.data(), p.size() + 1,
-		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
-
-	std::for_each(begin, end, [this](auto& in) 
-	{
-		in.num_players = num_peers + 1;
-	});
+void Server::update(player_data* data)
+{	
+	data->player_count = num_peers + 1;
 
 	/* Send the packet to the peer over channel id 0. */
-	for (auto* peer : peers)
-	{		
-		if (peer) enet_peer_send(peer, 0, enet_packet);	
-	}
+	for (int i = 0; i < 4; ++i)
+	{
+		auto* peer = peers[i];
+		if (peer)
+		{
+			data->player_id = i + 1;
 
+			ENetPacket* enet_packet = enet_packet_create(data, sizeof(player_data) + 1,
+				ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
+			enet_peer_send(peer, 0, enet_packet);
+		}
+	}
+	
 	using namespace std::chrono_literals;
 	host_service(0ms, enet_host,
-		[this, &p, begin, end](const ENetEvent& event) { recieve(event, begin, end); },
-		[this, &p](const ENetEvent& event) { connect(event); },
-		[this, &p](const ENetEvent& event) { disconnect(event); });
+		[this, data](const ENetEvent& event) { recieve(event, data); },
+		[this](const ENetEvent& event) { connect(event); },
+		[this](const ENetEvent& event) { disconnect(event); });
+
+	data->player_id = 0;
 }
 
-void Server::recieve(const ENetEvent& event, input* begin, input* end)
+void Server::recieve(const ENetEvent& event, player_data* data)
 {
-	const input* data = reinterpret_cast<input*>(event.packet->data);
-	const auto* index = &data[0];
+	const auto* new_data = reinterpret_cast<player_data*>(event.packet->data);
+	const auto* index = &new_data->directions[0];
 
-	for (int i = 0; i < (end - begin); ++i)
+	for (int i = 0; i < 4; ++i)
 	{
-		if (&data[i] != index)
+		if (&new_data->directions[i] != index)
 		{
-			begin[i] = data[i];
+			data->directions[i] = new_data->directions[i];
 		}
 	}
 }

@@ -24,6 +24,11 @@ Game::Game()
 
 	renderer = new Renderer(level);
 
+	std::fill(
+		std::begin(net_data.directions),
+		std::end(net_data.directions), 
+		glm::vec3{ 0.0f });
+
 	net_init();
 }
 
@@ -75,6 +80,18 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
+	auto& direction = net_data.directions[net_data.player_id];
+	direction = { 0.0f, 0.0f, 0.0f };
+	
+	if ((*local_input)[button::up] >= button_state::pressed)
+		direction.z += 1.0f;
+	if ((*local_input)[button::left] >= button_state::pressed)
+		direction.x -= 1.0f;
+	if ((*local_input)[button::down] >= button_state::pressed)
+		direction.z -= 1.0f;
+	if ((*local_input)[button::right] >= button_state::pressed)
+		direction.x += 1.0f;
+
 	if (!menu.on()) window.hide_cursor();
 
 	if ((*local_input)[button::menu] == button_state::pressed)
@@ -93,15 +110,11 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			host = std::make_unique<Client>(chat[1]);
 		}
-		local_input = &player_inputs.components[host->id()];
+		local_input = &player_inputs.components[net_data.player_id];
 	}
 	else if (host)
 	{
-		Packet p;
-		p.i = player_inputs.components;
-		host->update(p, 
-			std::begin(player_inputs.components), 
-			std::end(player_inputs.components));
+		host->update(&net_data);
 	}
 	chat.update(delta);
 	menu.update(delta, *local_input);
@@ -115,8 +128,11 @@ void Game::update(std::chrono::milliseconds delta)
 
 	renderer->update(delta,
 		std::begin(player_inputs.components),
-		std::end(player_inputs.components), chat[1],
-		local_input->num_players,
-		chat.is_on(), static_cast<bool>(host));
+		std::end(player_inputs.components),
+		std::begin(net_data.directions),
+		std::end(net_data.directions), 
+		chat[1], net_data.player_count, 
+		net_data.player_id, chat.is_on(), 
+		static_cast<bool>(host));
 
 }

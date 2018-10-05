@@ -144,8 +144,11 @@ void Renderer::render(
 void Renderer::update(std::chrono::milliseconds delta,
 	const input* begin,
 	const input* end,
+	const glm::vec3* begin_v,
+	const glm::vec3* end_v,
 	const std::string& data,
 	int num_players,
+	int id,
 	bool is_on,
 	bool move_char)
 {
@@ -160,51 +163,35 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_on)
 	{
-		show_start = begin->index == 3;
-		glm::vec3 direction{ 0.0f, 0.0f, 0.0f };
-
 		auto index = 0;
-		std::for_each(begin, end, [&](auto& i)
+		std::for_each(begin_v, end_v, [&](auto& direction)
 		{
 			using glm::vec2;
 			float speed{ 10.f };
 			vec2 offset{ 0.0f, 0.0f };
 			float dt = delta.count() / 1000.0f;
 
-
-			if (i[button::up] >= button_state::pressed)
-			{
-				offset += vec2{ 0, speed } *dt;
-				direction.z += 1.0f;
-			}
-			if (i[button::left] >= button_state::pressed)
-			{
-				offset += vec2{ -speed, 0 } *dt;
-				direction.x -= 1.0f;
-			}
-			if (i[button::down] >= button_state::pressed)
-			{
-				offset += vec2{ 0, -speed } *dt;
-				direction.z -= 1.0f;
-			}
-			if (i[button::right] >= button_state::pressed)
-			{
-				offset += vec2{ speed, 0 } *dt;
-				direction.x += 1.0f;
-			}
-
-			if (i[button::glow] == button_state::pressed)
-			{
-				want_glow = !want_glow;
-			}
+			if (direction.z > 0.5f)
+				offset += vec2{ 0, speed } * dt;
+			if (direction.x < -0.5f)
+				offset += vec2{ -speed, 0 } * dt;
+			if (direction.z < -0.5f)
+				offset += vec2{ 0, -speed } * dt;
+			if (direction.x > 0.5f)
+				offset += vec2{ speed, 0 } * dt;
 
 			if (move_char)
-			{ 
+			{
 				scene->models[index].move(offset);
 				scene->v[index] += offset;
 			}
 			++index;
 		});
+	
+		if (begin[0][button::glow] == button_state::pressed)
+		{
+			want_glow = !want_glow;
+		}
 
 		if (want_glow)
 		{
@@ -215,9 +202,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		db_camera.update(delta, direction, begin[0].cursor);
+		db_camera.update(delta, begin_v[0], begin[0].cursor);
 	}
-	game_camera.update(delta, scene->v, scene->v + 1);
+	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
 
 	light.position = light.position + glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);

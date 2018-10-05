@@ -6,8 +6,16 @@
 #include <iostream>
 #include <chrono>
 #include <string>
+#include <glm/glm.hpp>
 #include <enet/enet.h>
 #include "packet.hpp"
+
+struct player_data
+{
+	int player_id = 0;
+	int player_count = 1;
+	glm::vec3 directions[4];
+};
 
 inline void net_init() { enet_initialize(); }
 inline void net_deinit() { enet_deinitialize(); }
@@ -34,8 +42,7 @@ class Host
 {
 public:
 	virtual ~Host() = default;
-	virtual void update(const Packet& p, input* begin, input* end) = 0;
-	virtual int id() const = 0;
+	virtual void update(player_data* data) = 0;
 
 	bool connected = false;
 };
@@ -47,16 +54,13 @@ public:
 	Client(const std::string& ip_address);
 	~Client();
 
-	void update(const Packet& p, input* begin, input* end) override;
-	int id() const override { return client_id; }
+	void update(player_data* data) override;
 	
 
 private:
-	void recieve(const ENetEvent& event, input* begin, input* end);
+	void recieve(const ENetEvent& event, player_data* data);
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);	
-	
-	int client_id = 3;
 
 	ENetAddress address;
 	ENetHost* enet_host;
@@ -69,11 +73,10 @@ public:
 	Server();
 	~Server();
 
-	void update(const Packet& p, input* begin, input* end) override;
-	int id() const override { return 0; }
+	void update(player_data* data) override;
 
 private:	
-	void recieve(const ENetEvent& event, input* begin, input* end);
+	void recieve(const ENetEvent& event, player_data* data);
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);	
 

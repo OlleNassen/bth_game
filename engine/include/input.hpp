@@ -34,7 +34,6 @@ class input
 {
 public:	
 	static constexpr int indices = 12;
-	int num_players = 0;
 	int index = 0;
 	glm::vec2 cursor;
 

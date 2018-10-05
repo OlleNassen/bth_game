@@ -51,6 +51,8 @@ private:
 	
 	logic::Gameplay gameplay;
 	Renderer* renderer;
+
+	player_data net_data;
 	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
