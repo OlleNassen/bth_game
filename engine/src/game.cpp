@@ -24,6 +24,11 @@ Game::Game()
 
 	renderer = new Renderer(level);
 
+	std::fill(
+		std::begin(net_data.directions),
+		std::end(net_data.directions), 
+		glm::vec3{ 0.0f });
+
 	net_init();
 }
 

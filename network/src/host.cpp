@@ -81,7 +81,7 @@ Server::~Server()
 }
 
 void Server::update(player_data* data)
-{
+{	
 	data->player_count = num_peers + 1;
 
 	/* Send the packet to the peer over channel id 0. */
