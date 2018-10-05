@@ -147,6 +147,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	const glm::vec3* end_v,
 	const std::string& data,
 	int num_players,
+	int id,
 	bool is_on,
 	bool move_char)
 {

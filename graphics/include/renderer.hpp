@@ -36,7 +36,8 @@ public:
 		const glm::vec3* begin_v,
 		const glm::vec3* end_v,
 		const std::string& data,
-		int new_player_count,
+		int num_players,
+		int id,
 		bool is_on,
 		bool move_char);
 
