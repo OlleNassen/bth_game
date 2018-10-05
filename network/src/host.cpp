@@ -41,7 +41,6 @@ void Client::update(player_data* data)
 
 void Client::recieve(const ENetEvent& event, player_data* data)
 {
-	//peer = event.peer;
 	const auto* new_data = reinterpret_cast<player_data*>(event.packet->data);
 	client_id = new_data->player_id;
 	data->player_count;
@@ -86,9 +85,6 @@ Server::~Server()
 void Server::update(player_data* data)
 {
 	data->player_count = num_peers + 1;
-	
-	ENetPacket* enet_packet = enet_packet_create(data, sizeof(player_data) + 1,
-		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 
 	/* Send the packet to the peer over channel id 0. */
 	for (int i = 0; i < 4; ++i)
