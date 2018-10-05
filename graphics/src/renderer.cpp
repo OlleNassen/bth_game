@@ -161,9 +161,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_on)
 	{
-		show_start = begin->index == 3;
-		glm::vec3 direction{ 0.0f, 0.0f, 0.0f };
-
 		auto index = 0;
 		std::for_each(begin_v, end_v, [&](auto& direction)
 		{
@@ -206,7 +203,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		db_camera.update(delta, direction, begin[0].cursor);
+		db_camera.update(delta, begin_v[0], begin[0].cursor);
 	}
 	game_camera.update(delta, scene->v, scene->v + 1);
 	ui.update();
