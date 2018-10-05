@@ -44,8 +44,6 @@ void Client::recieve(const ENetEvent& event, player_data* data)
 	const auto* new_data = reinterpret_cast<player_data*>(event.packet->data);
 	data->player_count = new_data->player_count;
 	data->player_id = new_data->player_id;
-
-	std::cout << new_data->player_id << '\n';
 	
 	for (int i = 0; i < 4; ++i)
 	{
@@ -93,6 +91,9 @@ void Server::update(player_data* data)
 		if (peer)
 		{
 			data->player_id = i + 1;
+
+			std::cout << data->player_id << '\n';
+
 			ENetPacket* enet_packet = enet_packet_create(data, sizeof(player_data) + 1,
 				ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 			enet_peer_send(peer, 0, enet_packet);
