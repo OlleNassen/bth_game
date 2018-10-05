@@ -44,6 +44,8 @@ void Client::recieve(const ENetEvent& event, player_data* data)
 	const auto* new_data = reinterpret_cast<player_data*>(event.packet->data);
 	data->player_count = new_data->player_count;
 	data->player_id = new_data->player_id;
+
+	std::cout << new_data->player_id << '\n';
 	
 	for (int i = 0; i < 4; ++i)
 	{
