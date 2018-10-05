@@ -24,7 +24,7 @@ Renderer::Renderer(GameScene* scene)
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
 		"../resources/shaders/pbr.vs",
-		"../resources/shaders/template.fs");
+		"../resources/shaders/pbr.fs");
 	shaders.emplace_back(
 		"../resources/shaders/text.vs",
 		"../resources/shaders/text.fs");

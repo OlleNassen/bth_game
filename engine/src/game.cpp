@@ -30,7 +30,7 @@ Game::Game()
 Game::~Game()
 {
 	net_deinit();
-	delete mesh_lib;
+	//delete mesh_lib;
 	delete level;
 	delete renderer;
 }
