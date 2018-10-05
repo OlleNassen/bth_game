@@ -44,13 +44,13 @@ void Client::recieve(const ENetEvent& event, player_data* data)
 	//peer = event.peer;
 	const auto* new_data = reinterpret_cast<player_data*>(event.packet->data);
 	client_id = new_data->player_id;
-	const auto* index = &data[client_id];
-	
+	const auto* index = &new_data->directions[client_id];
+
 	for (int i = 0; i < 4; ++i)
 	{
-		if (&new_data[i] != index)
+		if (&new_data->directions[i] != index)
 		{
-			data[i] = new_data[i];
+			data->directions[i] = new_data->directions[i];
 		}
 	}
 }
@@ -92,10 +92,13 @@ void Server::update(player_data* data)
 	for (int i = 0; i < 4; ++i)
 	{
 		auto* peer = peers[i];
-		data->player_id = i + 1;
-		ENetPacket* enet_packet = enet_packet_create(data, sizeof(player_data) + 1,
-			ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
-		if (peer) enet_peer_send(peer, 0, enet_packet);	
+		if (peer)
+		{
+			data->player_id = i + 1;
+			ENetPacket* enet_packet = enet_packet_create(data, sizeof(player_data) + 1,
+				ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
+			enet_peer_send(peer, 0, enet_packet);
+		}
 	}
 	data->player_id = 0;
 
@@ -109,13 +112,13 @@ void Server::update(player_data* data)
 void Server::recieve(const ENetEvent& event, player_data* data)
 {
 	const auto* new_data = reinterpret_cast<player_data*>(event.packet->data);
-	const auto* index = &data[0];
+	const auto* index = &new_data->directions[0];
 
 	for (int i = 0; i < 4; ++i)
 	{
-		if (&new_data[i] != index)
+		if (&new_data->directions[i] != index)
 		{
-			data[i] = new_data[i];
+			data->directions[i] = new_data->directions[i];
 		}
 	}
 }
