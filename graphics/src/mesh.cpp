@@ -7,7 +7,7 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(const std::string meshfile)
+Mesh::Mesh(const std::string& meshfile)
 {
 	string filepath = "../resources/assets/" + meshfile;
 	custom_mesh = new LeapMesh(filepath.c_str());
@@ -18,24 +18,21 @@ Mesh::Mesh(const std::string meshfile)
 
 	name = custom_mesh->transform->meshName;
 
-	center_pivot = glm::vec3(custom_mesh->customMayaAttribute->centerPivot[0], custom_mesh->customMayaAttribute->centerPivot[1], custom_mesh->customMayaAttribute->centerPivot[2]);
+	center_pivot = glm::vec3(
+		custom_mesh->customMayaAttribute->centerPivot[0], 
+		custom_mesh->customMayaAttribute->centerPivot[1], 
+		custom_mesh->customMayaAttribute->centerPivot[2]);
 	height = custom_mesh->customMayaAttribute->height;
 	width = custom_mesh->customMayaAttribute->width;
 
-	glGenVertexArrays(1, &vao_id);
 	glBindVertexArray(vao_id);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
-	glEnableVertexAttribArray(5);
-	glEnableVertexAttribArray(6);
+	for (auto i = 0; i < 7; ++i)
+		glEnableVertexAttribArray(i);
 
-	glGenBuffers(1, &vbo_id);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
 	glBufferData(GL_ARRAY_BUFFER,
-		custom_mesh->counterReader.vertexCount * sizeof(VertexInformation),
+		custom_mesh->counterReader.vertexCount 
+		* sizeof(VertexInformation),
 		custom_mesh->vertices, GL_STATIC_DRAW);
 
 	//position
@@ -90,7 +87,7 @@ Mesh::Mesh(const std::string meshfile)
 
 Mesh::~Mesh()
 {
-	delete custom_mesh;
+	//delete custom_mesh;
 }
 
 void Mesh::render()const

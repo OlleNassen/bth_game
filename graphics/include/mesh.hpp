@@ -4,6 +4,7 @@
 #include <string>
 #include <GL/glew.h>
 #include <LeapImporter/LeapImporter/LeapImporter.h>
+#include "helpers.hpp"
 
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 
@@ -11,7 +12,7 @@ class Mesh
 {
 public:
 	Mesh();
-	Mesh(const std::string meshfile);
+	Mesh(const std::string& meshfile);
 	~Mesh();
 	std::string name;
 	glm::vec3 center_pivot;
@@ -21,9 +22,8 @@ public:
 	void render()const;
 
 private:
-	unsigned int vao_id;
-	unsigned int vbo_id;
-	
+	VertexArray vao_id;
+	Buffer vbo_id;	
 
 	LeapMesh* custom_mesh;
 };

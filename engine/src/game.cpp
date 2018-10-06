@@ -5,6 +5,8 @@ using namespace std::chrono_literals;
 
 Game::Game()
 	: window({1280, 720}, "Scrap Escape")
+	, level{"../resources/level/level.ssp", &mesh_lib}
+	, renderer{&level}
 {
 	window.assign_key(button::up, GLFW_KEY_W);
 	window.assign_key(button::left, GLFW_KEY_A);
@@ -18,22 +20,9 @@ Game::Game()
 	window.assign_key(button::reset, GLFW_KEY_R);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
-	mesh_lib = new MeshLib();
-
-	level = new GameScene("../resources/level/level.ssp", mesh_lib);
-
-	renderer = new Renderer(level);
-
 	net_out.player_id = 0;
 	net_out.player_count = 1;
 	net_out.directions.fill({ 0.0f, 0.0f, 0.0f });
-}
-
-Game::~Game()
-{
-	//delete mesh_lib;
-	delete level;
-	delete renderer;
 }
 
 void Game::run()
@@ -81,7 +70,7 @@ void Game::run()
 
 void Game::render()
 {
-	renderer->render(chat.begin(), chat.end(), 
+	renderer.render(chat.begin(), chat.end(), 
 		menu.button_data(), 
 		menu.on(),
 		false, menu.debug());
@@ -121,7 +110,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 	glm::vec2 updated_player_pos = luaLoad.process_input(*local_input, delta);
 
-	renderer->update(delta,
+	renderer.update(delta,
 		std::begin(player_inputs.components),
 		std::end(player_inputs.components),
 		net_out.directions,

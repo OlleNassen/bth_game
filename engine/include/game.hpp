@@ -34,22 +34,24 @@ class Game
 {
 public:
 	Game();
-	~Game();
 	void run();
+
 private:
 	void render();
 	void update(std::chrono::milliseconds delta);
 	
-	std::chrono::milliseconds timestep{16};
+	Window window; //PUT BELOW WINDOW IF OPENGL RELATED
+	
+	MeshLib mesh_lib;
+	GameScene level;
+	Renderer renderer;
 
-	MeshLib* mesh_lib;
-	GameScene* level;
-
-	Window window;
+	
 	input player_input;
+	std::chrono::milliseconds timestep{16};
 	
 	logic::Gameplay gameplay;
-	Renderer* renderer;
+	
 
 	network::Output net_out;
 	network::Messenger net;
