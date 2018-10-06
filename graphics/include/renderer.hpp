@@ -84,7 +84,7 @@ template <typename T>
 void render_type(const Shader& shader, const Camera& camera, const glm::vec3& light, const T& data)
 {
 	shader.use();
-	for (auto i = 4; i < data.size(); ++i)
+	for (auto i = 4u; i < data.size(); ++i)
 	{
 		const auto& renderable = data[i];
 		renderable.render(shader, camera, light);

@@ -42,7 +42,7 @@ void Game::run()
 		last_time = clock::now();
 
 		seconds += delta_time;
-		int fps = ++frames / seconds.count();
+		auto fps = static_cast<int>(++frames / seconds.count());
 		if (seconds > 1s)
 		{
 			seconds = 0s;

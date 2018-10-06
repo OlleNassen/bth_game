@@ -6,15 +6,16 @@
 #include <vector>
 #include <chrono>
 
-#include <gameplay.hpp>
 #include <renderer.hpp>
 #include <network.hpp>
+#include <gameplay.hpp>
+#include <lua_load.hpp>
 #include "ecs.hpp"
 #include "mesh_lib.hpp"
 #include "game_scene.hpp"
 #include "window.hpp"
 #include "input.hpp"
-#include <lua_load.hpp>
+
 #include "gui.hpp"
 #include "timer.hpp"
 

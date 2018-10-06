@@ -90,7 +90,7 @@ void Renderer::render(
 	shaders[1].uniform("projection", projection);
 	shaders[1].uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
 
-	auto offset = 0;
+	auto offset = 0.0f;
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -98,12 +98,12 @@ void Renderer::render(
 		[this, &offset, begin](const auto& s)
 	{
 		if (&s == begin || is_chat_visible)
-			text.render_text(s.c_str(), 10, (offset += 25), 0.5f);
+			text.render_text(s.c_str(), 10.0f, (offset += 25.0f), 0.5f);
 	});
 
-	constexpr auto size_y = 720 / 12;
+	constexpr float size_y = static_cast<int>(720 / 12);
 
-	for (auto i = 0; i < buttons.size(); ++i)
+	for (auto i = 0u; i < buttons.size(); ++i)
 	{
 		auto& button = buttons[i];
 		if (button.state == gui::button_state::selected)

@@ -47,12 +47,12 @@ void MeshLib::create_mesh_list()
 		"Wall.ssp"						//25
 	};
 
-	for (int i = 0; i < sizeof(meshLoader) / sizeof(meshLoader[0]); i++)
+	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
 	{
 		mesh_list.push_back(meshLoader[i]);
 	}
 
-	for (int i = 0; i < mesh_list.size(); i++)
+	for (auto i = 0u; i < mesh_list.size(); ++i)
 	{
 		add_mesh(mesh_list[i]);
 	}
