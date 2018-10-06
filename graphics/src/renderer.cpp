@@ -166,18 +166,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 		for (const auto& direction : directions)
 		{
 			using glm::vec2;
-			float speed{ 10.f };
-			vec2 offset{ 0.0f, 0.0f };
+			float speed = 10.0f;	
 			float dt = delta.count() / 1000.0f;
-
-			if (direction.z > 0.5f)
-				offset += vec2{ 0, speed } * dt;
-			if (direction.x < -0.5f)
-				offset += vec2{ -speed, 0 } * dt;
-			if (direction.z < -0.5f)
-				offset += vec2{ 0, -speed } * dt;
-			if (direction.x > 0.5f)
-				offset += vec2{ speed, 0 } * dt;
+			vec2 offset = vec2{ direction.x, direction.z } * speed * dt;
 
 			if (move_char)
 			{

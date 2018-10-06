@@ -119,8 +119,6 @@ void Game::update(std::chrono::milliseconds delta)
 
 	gameplay.update(delta);
 
-
-	//Player control-input
 	glm::vec2 updated_player_pos = luaLoad.process_input(*local_input, delta);
 
 	renderer->update(delta,
