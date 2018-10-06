@@ -8,7 +8,7 @@
 
 #include <gameplay.hpp>
 #include <renderer.hpp>
-#include <host.hpp>
+#include <network.hpp>
 #include "ecs.hpp"
 #include "mesh_lib.hpp"
 #include "game_scene.hpp"
@@ -40,7 +40,6 @@ private:
 	void render();
 	void update(std::chrono::milliseconds delta);
 	
-	std::unique_ptr<Host> host;
 	std::chrono::milliseconds timestep{16};
 
 	MeshLib* mesh_lib;
@@ -52,7 +51,8 @@ private:
 	logic::Gameplay gameplay;
 	Renderer* renderer;
 
-	player_data net_data;
+	network::output net_out;
+	network::n net;
 	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };

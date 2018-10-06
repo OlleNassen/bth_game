@@ -24,17 +24,13 @@ Game::Game()
 
 	renderer = new Renderer(level);
 
-	std::fill(
-		std::begin(net_data.directions),
-		std::end(net_data.directions), 
-		glm::vec3{ 0.0f });
-
-	net_init();
+	net_out.player_id = 0;
+	net_out.player_count = 1;
+	net_out.directions.fill({ 0.0f, 0.0f, 0.0f });
 }
 
 Game::~Game()
 {
-	net_deinit();
 	//delete mesh_lib;
 	delete level;
 	delete renderer;
@@ -88,7 +84,7 @@ void Game::render()
 	renderer->render(chat.begin(), chat.end(), 
 		menu.button_data(), 
 		menu.on(),
-		static_cast<bool>(host), menu.debug());
+		false, menu.debug());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -96,7 +92,7 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	auto& direction = net_data.directions[net_data.player_id];
+	auto& direction = net_out.directions[net_out.player_id];
 	direction = { 0.0f, 0.0f, 0.0f };
 	
 	if ((*local_input)[button::up] >= button_state::pressed)
@@ -115,29 +111,14 @@ void Game::update(std::chrono::milliseconds delta)
 		window.show_cursor();
 	}
 
-	
-	if (!host && !chat[1].empty())
-	{
-		if (chat[1] == "server")
-		{
-			host = std::make_unique<Server>();			
-		}
-		else
-		{
-			host = std::make_unique<Client>(chat[1]);
-		}
-		local_input = &player_inputs.components[net_data.player_id];
-	}
-	else if (host)
-	{
-		host->update(&net_data);
-	}
+	net_out = net.update({ chat[1], net_out.directions });
+	local_input = &player_inputs.components[net_out.player_id];
+
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
 	gameplay.update(delta);
 
-	//check if player/players reached goal
 
 	//Player control-input
 	glm::vec2 updated_player_pos = luaLoad.process_input(*local_input, delta);
@@ -145,10 +126,9 @@ void Game::update(std::chrono::milliseconds delta)
 	renderer->update(delta,
 		std::begin(player_inputs.components),
 		std::end(player_inputs.components),
-		std::begin(net_data.directions),
-		std::end(net_data.directions), 
-		chat[1], net_data.player_count, 
-		net_data.player_id, chat.is_on(), 
-		static_cast<bool>(host));
+		net_out.directions,
+		chat[1], net_out.player_count,
+		net_out.player_id, chat.is_on(),
+		false);
 
 }

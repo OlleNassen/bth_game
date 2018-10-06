@@ -8,17 +8,13 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <enet/enet.h>
-#include "packet.hpp"
 
 struct player_data
 {
 	int player_id = 0;
 	int player_count = 1;
-	glm::vec3 directions[4];
+	std::array<glm::vec3, 4> directions;
 };
-
-inline void net_init() { enet_initialize(); }
-inline void net_deinit() { enet_deinitialize(); }
 
 template <typename F1, typename F2, typename F3>
 void host_service(std::chrono::milliseconds time, ENetHost* h,

@@ -144,8 +144,7 @@ void Renderer::render(
 void Renderer::update(std::chrono::milliseconds delta,
 	const input* begin,
 	const input* end,
-	const glm::vec3* begin_v,
-	const glm::vec3* end_v,
+	const std::array<glm::vec3, 4>& directions,
 	const std::string& data,
 	int num_players,
 	int id,
@@ -164,7 +163,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (!is_on)
 	{
 		auto index = 0;
-		std::for_each(begin_v, end_v, [&](auto& direction)
+		for (const auto& direction : directions)
 		{
 			using glm::vec2;
 			float speed{ 10.f };
@@ -186,7 +185,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 				scene->v[index] += offset;
 			}
 			++index;
-		});
+		}
 	
 		if (begin[0][button::glow] == button_state::pressed)
 		{
@@ -202,7 +201,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		db_camera.update(delta, begin_v[0], begin[0].cursor);
+		db_camera.update(delta, directions[0], begin[0].cursor);
 	}
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
