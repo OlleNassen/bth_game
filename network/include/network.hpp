@@ -27,32 +27,10 @@ struct output
 class n
 {
 public:
-	n() { enet_initialize(); }
-	~n() { enet_deinitialize(); }
+	n();
+	~n();
 	
-	output update(input input)
-	{
-		player_data net_data = { 0, 1, input.directions };
-		
-		if (!host && !input.chat.empty())
-		{
-			if (input.chat == "server")
-			{
-				host = std::make_unique<Server>();
-			}
-			else
-			{
-				host = std::make_unique<Client>(input.chat);
-			}
-		}
-		else if (host)
-		{
-			host->update(&net_data);
-		}
-
-		return { net_data.player_id, net_data.player_count, net_data.directions };
-	}
-
+	output update(input input);
 
 private:
 	std::unique_ptr<Host> host;
