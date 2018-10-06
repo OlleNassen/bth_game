@@ -8,6 +8,9 @@
 
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 
+namespace graphics
+{
+
 class Mesh
 {
 public:
@@ -27,5 +30,7 @@ private:
 
 	LeapMesh* custom_mesh;
 };
+
+}
 
 #endif

@@ -1,5 +1,8 @@
 #include "framebuffer.hpp"
 
+namespace graphics
+{
+
 Framebuffer::Framebuffer()
 {
 	glGenFramebuffers(1, &fbo);
@@ -42,4 +45,6 @@ void Framebuffer::bind_texture() const
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, fbo_texture);
+}
+
 }

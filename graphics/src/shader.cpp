@@ -6,6 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+namespace graphics
+{
+
 Shader::Shader(const std::string& vertex_path, const std::string& fragment_path)
 {
 	auto vertex_code = load(vertex_path);
@@ -213,4 +216,6 @@ unsigned int Shader::create(unsigned int shader_type,
 	};
 
 	return shader_id;
+}
+
 }

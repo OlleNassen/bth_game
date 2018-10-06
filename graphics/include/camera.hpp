@@ -4,6 +4,9 @@
 #include <chrono>
 #include <glm/glm.hpp>
 
+namespace graphics
+{
+
 class Camera
 {
 public:	
@@ -49,5 +52,7 @@ private:
 	bool initialized{false};
 	glm::vec2 last_mouse_position{0.0f, 0.0f};
 };
+
+}
 
 #endif

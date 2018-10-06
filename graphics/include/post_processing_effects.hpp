@@ -7,6 +7,9 @@
 #include <chrono>
 #include <texture.hpp>
 
+namespace graphics
+{
+
 class PostProcessingEffects
 {
 public:
@@ -34,5 +37,7 @@ private:
 	unsigned int vao_id;
 	unsigned int vbo_id;
 };
+
+}
 
 #endif

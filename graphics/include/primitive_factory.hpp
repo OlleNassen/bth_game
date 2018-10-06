@@ -6,6 +6,9 @@
 #include <iostream>
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
 
+namespace graphics
+{
+
 class Box
 {
 public:
@@ -71,6 +74,8 @@ private:
 	unsigned int vbo_id;
 	Shader shader{ "../resources/shaders/box.vs", "../resources/shaders/box.fs" };
 };
+
+}
 
 
 #endif

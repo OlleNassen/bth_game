@@ -2,7 +2,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <iostream>
-#include <gl\glew.h>
+#include <gl/glew.h>
+
+namespace graphics
+{
 
 Texture::Texture(const std::string& path)
 {
@@ -45,4 +48,6 @@ void Texture::load_texture(const std::string & path)
 		height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
 
 	stbi_image_free(imageData);
+}
+
 }

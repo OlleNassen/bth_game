@@ -14,6 +14,9 @@
 #include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"
 
+namespace graphics
+{
+
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -97,6 +100,8 @@ void render_character(const Shader& shader, const Camera& camera, const glm::vec
 		const auto& renderable = data[i];
 		renderable.render(shader, camera, light);
 	}
+}
+
 }
 
 #endif

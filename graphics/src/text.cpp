@@ -2,6 +2,9 @@
 #include <iostream>
 #include <gl/glew.h>
 
+namespace graphics
+{
+
 Text::Text()
 {
 	FT_Error error = FT_Init_FreeType(&library);
@@ -119,4 +122,6 @@ void Text::render_text(const std::string& text,
 		x += (ch.advance >> 6) * scale;
 	}
 	glBindVertexArray(0);
+}
+
 }

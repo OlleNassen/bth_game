@@ -10,6 +10,9 @@
 // Olle
 // Edvard
 
+namespace graphics
+{
+
 class Shader
 {
 public:
@@ -58,5 +61,7 @@ private:
 	unsigned int create(unsigned int shader_type,
 		const char* shader_code) const;
 };
+
+}
 
 #endif // SHADER_HPP

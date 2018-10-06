@@ -1,6 +1,9 @@
 #include "model.hpp"
 #include <GLFW/glfw3.h>
 
+namespace graphics
+{
+
 Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh)
 :
 	model{model},
@@ -47,4 +50,6 @@ void Model::render(const Shader & shader, const Camera& camera, const glm::vec3&
 
 
 	mesh->render();
+}
+
 }

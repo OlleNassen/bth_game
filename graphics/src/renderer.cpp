@@ -5,6 +5,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "../../engine/include/timer.hpp"
 
+namespace graphics
+{
+
 using namespace std::chrono_literals;
 
 Renderer::Renderer()
@@ -199,4 +202,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	light.position = light.position + glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
 	light_box.set_position(light.position);
+}
+
 }

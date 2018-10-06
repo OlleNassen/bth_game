@@ -3,6 +3,9 @@
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace graphics
+{
+
 Camera::Camera(float fovy, float aspect, float near, float far)
 	: projection{glm::perspective(fovy, aspect, near, far)}
 	, aspect{aspect}
@@ -84,4 +87,6 @@ void DebugCamera::change_rotation(const glm::vec2& mouse_pos)
 	front.y = glm::sin(glm::radians(pitch));
 	front.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
 	forward = glm::normalize(front);
+}
+
 }

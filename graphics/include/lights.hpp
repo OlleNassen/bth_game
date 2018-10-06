@@ -2,6 +2,9 @@
 #define LIGHTS_HPP
 #include <glm/glm.hpp>
 
+namespace graphics
+{
+
 struct DirectionalLight
 {
 	glm::vec3 direction;
@@ -34,5 +37,7 @@ struct SpotLight
 {
 	//todo
 };
+
+}
 
 #endif

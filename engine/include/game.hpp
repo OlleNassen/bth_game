@@ -42,20 +42,17 @@ private:
 	
 	Window window; //PUT BELOW WINDOW IF OPENGL RELATED
 	
-	MeshLib mesh_lib;
-	GameScene level;
-	Renderer renderer;
+	graphics::MeshLib mesh_lib;
+	graphics::GameScene level;
+	graphics::Renderer renderer;
 
-	
-	input player_input;
-	std::chrono::milliseconds timestep{16};
-	
 	logic::Gameplay gameplay;
 	
-
 	network::Output net_out;
 	network::Messenger net;
-	
+
+	input player_input;
+	std::chrono::milliseconds timestep{16};
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
 	gui::Chat chat;

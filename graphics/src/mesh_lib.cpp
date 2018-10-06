@@ -1,5 +1,8 @@
 #include "mesh_lib.hpp"
 
+namespace graphics
+{
+
 MeshLib::MeshLib()
 {
 	create_mesh_list();
@@ -69,4 +72,6 @@ Mesh* MeshLib::get_mesh(int key)
 int MeshLib::get_number_of_meshes()
 {
 	return meshes.size();
+}
+
 }

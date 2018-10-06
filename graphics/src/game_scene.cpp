@@ -1,5 +1,8 @@
 #include "game_scene.hpp"
 
+namespace graphics
+{
+
 GameScene::GameScene()
 {
 }
@@ -38,4 +41,6 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 
 GameScene::~GameScene()
 {
+}
+
 }
