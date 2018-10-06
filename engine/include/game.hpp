@@ -51,8 +51,8 @@ private:
 	logic::Gameplay gameplay;
 	Renderer* renderer;
 
-	network::output net_out;
-	network::n net;
+	network::Output net_out;
+	network::Messenger net;
 	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };

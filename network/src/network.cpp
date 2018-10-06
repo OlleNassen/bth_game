@@ -3,16 +3,16 @@
 namespace network
 {
 
-n::n()
+Messenger::Messenger()
 {
 	enet_initialize();
 }
-n::~n()
+Messenger::~Messenger()
 {
 	enet_deinitialize();
 }
 
-output n::update(input input)
+Output Messenger::update(Input input)
 {
 	player_data net_data = { 0, 1, input.directions };
 

@@ -11,26 +11,26 @@
 namespace network
 {
 
-struct input
+struct Input
 {
 	const std::string& chat;
 	const std::array<glm::vec3, 4>& directions;
 };
 
-struct output
+struct Output
 {
 	int player_id;
 	int player_count;
 	std::array<glm::vec3, 4> directions;
 };
 
-class n
+class Messenger
 {
 public:
-	n();
-	~n();
+	Messenger();
+	~Messenger();
 	
-	output update(input input);
+	Output update(Input input);
 
 private:
 	std::unique_ptr<Host> host;
