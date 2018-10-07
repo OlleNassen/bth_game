@@ -24,6 +24,17 @@ Renderer::Renderer(GameScene* scene)
 {
 	this->scene = scene;
 
+	physics.add_dynamic_body(glm::vec2(0.0, 0.0), 1, 3.5, glm::vec2(0.0, 2.25), v[0]);
+	//models.emplace_back(glm::translate(model, vec3{ physics.dynamic_positions[0], 0 }));
+
+
+	//Static
+	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(0, -10));
+	physics.add_static_body(10, 2, glm::vec2(0.0, 0.0), glm::vec2(25, -10));
+	physics.add_static_body(15, 2, glm::vec2(0.0, 0.0), glm::vec2(50, -15));
+	physics.add_static_body(18.25, 2, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
+	physics.add_static_body(2, 20, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
+
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
 		"../resources/shaders/pbr.vs",
@@ -40,7 +51,11 @@ Renderer::Renderer(GameScene* scene)
 	shaders.emplace_back(
 		"../resources/shaders/temp.vs",
 		"../resources/shaders/temp.fs");
-
+	shaders.emplace_back(
+		"../resources/shaders/lines.vs",
+		"../resources/shaders/lines.fs");
+	
+	debug_active = true;
 	db_camera.position.z = 20.0f;
 }
 
@@ -130,6 +145,8 @@ void Renderer::render(
 	}
 
 
+		
+
 	glEnable(GL_DEPTH_TEST);
 
 	// Post Processing Effects
@@ -142,6 +159,29 @@ void Renderer::render(
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
+
+	if (debug_active)
+	{
+		glDisable(GL_DEPTH_TEST);
+		auto& s = shaders[5];
+
+		if (debug_camera_active)
+		{
+			s.use();
+			s.uniform("projection", db_camera.projection);
+			s.uniform("view", db_camera.view());
+		}
+		else
+		{
+			s.use();
+			s.uniform("projection", game_camera.projection);
+			s.uniform("view", game_camera.view());
+		}
+
+		line_debug(debug_positions);
+		glEnable(GL_DEPTH_TEST);
+	}
+
 }
 
 void Renderer::update(std::chrono::milliseconds delta,

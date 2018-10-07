@@ -17,7 +17,8 @@ enum class button
 	cancel,
 	glow,
 	refresh,
-	menu,	
+	menu,
+	switch_camera,
 	reset,
 	quit
 };

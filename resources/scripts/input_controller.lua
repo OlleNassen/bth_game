@@ -5,8 +5,8 @@ function start()
 	player.x = 0
 	player.y = 0
 	player.is_dead = false
-	WALK_SPEED = 100
-	JUMP_FORCE = 60
+	WALK_SPEED = 200
+	JUMP_FORCE = 65
 
 end
 
@@ -19,7 +19,7 @@ function update(a)
 	--print("Wazooo")
 
 	--print("Lua can_jump: ")
-	--print(player.can_jump)
+	--print(dt)
 
 	player.x = 0
 	player.y = 0
@@ -29,22 +29,22 @@ function update(a)
 		
 		end
 	if(a == 1)then
-		print("Left")
+	--	print("Left")
 		walk(-dt)
 		end
 	if(a == 2)then
-		print("Down")
+		--print("Down")
 		end
 	if(a == 3)then
-		print("Right")
+		--print("Right")
 		walk(dt)
 		end
 	if(a == 4)then
 		jump(can_jump)
-		print("Jump")
+		--print("Jump")
 	end
 	
-	return a, player.x, player.y
+	return player.x, player.y
 end
 
 function walk(dt)

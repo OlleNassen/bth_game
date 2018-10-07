@@ -10,6 +10,8 @@
 #include <network.hpp>
 #include <gameplay.hpp>
 #include <lua_load.hpp>
+#include <world.hpp>
+#include <host.hpp>
 #include "ecs.hpp"
 #include "mesh_lib.hpp"
 #include "game_scene.hpp"
@@ -38,7 +40,7 @@ public:
 	void run();
 
 private:
-	void render();
+	void render(std::vector<glm::vec2> debug_positions);
 	void update(std::chrono::milliseconds delta);
 	
 	Window window; //PUT BELOW WINDOW IF OPENGL RELATED
@@ -54,6 +56,9 @@ private:
 
 	input player_input;
 	std::chrono::milliseconds timestep{16};
+	Renderer renderer;
+	physics::World physics;
+	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
 	gui::Chat chat;
@@ -66,5 +71,5 @@ private:
 
 
 
-#endif
 
+#endif

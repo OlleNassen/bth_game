@@ -17,6 +17,7 @@ Game::Game()
 	window.assign_key(button::refresh, GLFW_KEY_F5);
 	window.assign_key(button::menu, GLFW_KEY_F1);
 	window.assign_key(button::debug, GLFW_KEY_F3);
+	window.assign_key(button::switch_camera, GLFW_KEY_F4);
 	window.assign_key(button::reset, GLFW_KEY_R);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
@@ -30,6 +31,13 @@ void Game::run()
 	using clock = std::chrono::steady_clock;
 	auto last_time = clock::now();
 	auto delta_time = 0ns;
+
+	physics.add_dynamic_body({ 10, 10 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body({ -5.0, -5.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body({ 14.0, 2.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body({ -4.0, -20.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+
+	physics.add_static_body({ 0.0, -22.0 }, { 0.0, 0.0 }, 1000, 2, false);
 
 	auto frames = 0;
 	std::chrono::duration<float> seconds = 0s;
@@ -62,13 +70,14 @@ void Game::run()
 			update(timestep);
 		}
 
-		render();
+		std::vector<glm::vec2> debug_positions = physics.get_all_debug();
+		render(debug_positions);
 		window.swap_buffers();
 		window.poll_events();		
 	}
 }
 
-void Game::render()
+void Game::render(std::vector<glm::vec2> debug_positions)
 {
 	renderer.render(chat.begin(), chat.end(), 
 		menu.button_data(), 
@@ -110,7 +119,9 @@ void Game::update(std::chrono::milliseconds delta)
 
 	glm::vec2 updated_player_pos = luaLoad.process_input(*local_input, delta);
 
-	renderer.update(delta,
+	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
+	
+	renderer.update(delta, 
 		std::begin(player_inputs.components),
 		std::end(player_inputs.components),
 		net_out.directions,
