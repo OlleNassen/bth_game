@@ -9,9 +9,8 @@
 #include <renderer.hpp>
 #include <network.hpp>
 #include <gameplay.hpp>
-#include <lua_load.hpp>
 #include <world.hpp>
-#include <host.hpp>
+
 #include "ecs.hpp"
 #include "mesh_lib.hpp"
 #include "game_scene.hpp"
@@ -49,24 +48,21 @@ private:
 	graphics::GameScene level;
 	graphics::Renderer renderer;
 
+	logic::Output logic_out;
 	logic::Gameplay gameplay;
 	
 	network::Output net_out;
 	network::Messenger net;
 
+	physics::World physics;
+	
 	input player_input;
 	std::chrono::milliseconds timestep{16};
-	Renderer renderer;
-	physics::World physics;
 	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
 	gui::Chat chat;
-	gui::Menu menu;
-	
-	LuaLoad luaLoad; //Test
-	
-	
+	gui::Menu menu;	
 };
 
 

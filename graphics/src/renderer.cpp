@@ -21,20 +21,8 @@ Renderer::Renderer(GameScene* scene)
 	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, t{ 300s }
+	, scene { scene }
 {
-	this->scene = scene;
-
-	physics.add_dynamic_body(glm::vec2(0.0, 0.0), 1, 3.5, glm::vec2(0.0, 2.25), v[0]);
-	//models.emplace_back(glm::translate(model, vec3{ physics.dynamic_positions[0], 0 }));
-
-
-	//Static
-	physics.add_static_body(20, 2, glm::vec2(0.0, 0.0), glm::vec2(0, -10));
-	physics.add_static_body(10, 2, glm::vec2(0.0, 0.0), glm::vec2(25, -10));
-	physics.add_static_body(15, 2, glm::vec2(0.0, 0.0), glm::vec2(50, -15));
-	physics.add_static_body(18.25, 2, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
-	physics.add_static_body(2, 20, glm::vec2(0.0, 0.0), glm::vec2(-25, -10));
-
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
 		"../resources/shaders/pbr.vs",
@@ -55,7 +43,6 @@ Renderer::Renderer(GameScene* scene)
 		"../resources/shaders/lines.vs",
 		"../resources/shaders/lines.fs");
 	
-	debug_active = true;
 	db_camera.position.z = 20.0f;
 }
 
@@ -160,7 +147,7 @@ void Renderer::render(
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
 
-	if (debug_active)
+	/*if (debug_active)
 	{
 		glDisable(GL_DEPTH_TEST);
 		auto& s = shaders[5];
@@ -180,7 +167,7 @@ void Renderer::render(
 
 		line_debug(debug_positions);
 		glEnable(GL_DEPTH_TEST);
-	}
+	}*/
 
 }
 

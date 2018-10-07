@@ -92,7 +92,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 	auto& direction = net_out.directions[net_out.player_id];
 	direction = { 0.0f, 0.0f, 0.0f };
-	
+
 	if ((*local_input)[button::up] >= button_state::pressed)
 		direction.z += 1.0f;
 	if ((*local_input)[button::left] >= button_state::pressed)
@@ -102,12 +102,11 @@ void Game::update(std::chrono::milliseconds delta)
 	if ((*local_input)[button::right] >= button_state::pressed)
 		direction.x += 1.0f;
 
-	if (!menu.on()) window.hide_cursor();
+	if (!menu.on())
+		window.hide_cursor();
 
 	if ((*local_input)[button::menu] == button_state::pressed)
-	{
 		window.show_cursor();
-	}
 
 	net_out = net.update({ chat[1], net_out.directions });
 	local_input = &player_inputs.components[net_out.player_id];
@@ -115,9 +114,8 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
-	gameplay.update(delta);
-
-	glm::vec2 updated_player_pos = luaLoad.process_input(*local_input, delta);
+	logic_out = gameplay.update({delta, local_input});
+	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
 
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
 	
