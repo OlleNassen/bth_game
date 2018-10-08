@@ -10,6 +10,7 @@
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 #include "lights.hpp"
+#include "fx.hpp"
 #include "../../engine/include/timer.hpp"
 #include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"

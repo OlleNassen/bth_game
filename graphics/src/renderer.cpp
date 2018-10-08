@@ -181,6 +181,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	bool is_on,
 	bool move_char)
 {
+
 	using namespace std::chrono_literals;
 	time = data != log ? 0ms : time + delta;
 	log = data;
