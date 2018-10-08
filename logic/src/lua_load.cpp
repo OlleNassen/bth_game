@@ -34,13 +34,13 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 
 	lua_pushnumber(lua_input.getLuaState(), delta.count());
 	lua_setglobal(lua_input.getLuaState(), "dt");
-	lua_pushnumber(lua_input.getLuaState(), can_lua_jump);
-	lua_setglobal(lua_input.getLuaState(), "can_jump");
+	/*lua_pushnumber(lua_input.getLuaState(), can_lua_jump);
+	lua_setglobal(lua_input.getLuaState(), "can_jump");*/
 
 	for (int J = 0; J < 5; ++J)
 	{
 		//Button state
-		if (i[static_cast<button>(J)] == static_cast<button_state>(2))
+		if ((i[static_cast<button>(J)] == static_cast<button_state>(2) && J!=4) || (i[static_cast<button>(J)] == button_state::pressed))
 		{
 			lua_getglobal(lua_input.getLuaState(), "update");
 			lua_pushinteger(lua_input.getLuaState(), J);
@@ -52,7 +52,7 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 			//std::cout << error << std::endl;
 		}
 
-		//std::cout << force.x << " " << force.y << std::endl;
+		//std::cout << "Force.x: " << combined_force.x << "\tForce.y: " << combined_force.y << std::endl;
 
 		//lua_pushinteger(luaInput.getLuaState(), 5);
 	}

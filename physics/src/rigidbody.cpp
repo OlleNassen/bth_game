@@ -63,6 +63,9 @@ void Rigidbody::cancel_force_y()
 
 void Rigidbody::add_force(glm::vec2 force_direction)
 {
+	if (force_direction.y > 0.0)
+		can_jump = false;
+
 	this->force += force_direction;
 }
 

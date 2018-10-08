@@ -121,20 +121,14 @@ void Game::update(std::chrono::milliseconds delta)
 
 	//Update new direction force of player to physics
 	if (physics.dynamic_rigidbodies[0].can_jump == true)
+	{
 		physics.dynamic_rigidbodies[0].add_force(combined_force);
+	}
 	else
 		physics.dynamic_rigidbodies[0].add_force({ combined_force.x, 0 });
 
-
-	//std::cout << physics.dynamic_rigidbodies[0]. << std::endl;
-
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
-	
-	 //std::cout << dynamic_pos[0].x << dynamic_pos[0].y << std::endl;
 
-	/*
-	glm::vec2 updated_player_pos = logic_out.force;*/
-	
 	physics.update(delta);
 
 	for (int i = 0; i < 4; ++i)
