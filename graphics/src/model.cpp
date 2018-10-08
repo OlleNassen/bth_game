@@ -7,14 +7,6 @@ Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh
 	emissive_color{emissive_color}
 {
 	this->mesh = mesh;
-
-	textures.reserve(sizeof(Texture) * 3);
-	textures.emplace_back("../resources/textures/" + mesh->name + "_BaseColor.png");
-	textures.emplace_back("../resources/textures/" + mesh->name + "_Normal.png");
-	textures.emplace_back("../resources/textures/" + mesh->name + "_Metallic.png");
-	textures.emplace_back("../resources/textures/" + mesh->name + "_Roughness.png");
-	textures.emplace_back("../resources/textures/" + mesh->name + "_AO.png");
-	textures.emplace_back("../resources/textures/" + mesh->name + "_Emissive.png");
 }
 
 Model::~Model()
@@ -44,12 +36,12 @@ void Model::render(const Shader & shader, const Camera& camera)const
 	shader.uniform("emissive_map", 5);
 	shader.uniform("player_color", emissive_color);
 
-	textures[0].bind(0);
-	textures[1].bind(1);
-	textures[2].bind(2);
-	textures[3].bind(3);
-	textures[4].bind(4);
-	textures[5].bind(5);
+	mesh->textures[0].bind(0);
+	mesh->textures[1].bind(1);
+	mesh->textures[2].bind(2);
+	mesh->textures[3].bind(3);
+	mesh->textures[4].bind(4);
+	mesh->textures[5].bind(5);
 
 
 	mesh->render();

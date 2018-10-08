@@ -16,7 +16,7 @@ void MeshLib::create_mesh_list()
 		"Robot_1.0.ssp",				//0
 		"Controlpanel_1_Wide.ssp",		//1
 		"Controlpanel_1_Wide.ssp",		//2
-		"Controlpanel_1_Wide.ssp",		//3
+		"Big_Wall.ssp",					//3
 		"Controlpanel_1_Wide.ssp",		//4
 		"Controlpanel_2_Small.ssp",		//5
 		"Controlpanel_3_Big.ssp",		//6

@@ -3,6 +3,7 @@
 #include "LeapImporter\LeapImporter\LeapLevel.h"
 #include <vector>
 #include <string>
+#include <glm/glm.hpp>
 
 class GameScene
 {
