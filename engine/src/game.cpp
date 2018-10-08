@@ -82,7 +82,7 @@ void Game::render(std::vector<glm::vec2> debug_positions)
 	renderer.render(chat.begin(), chat.end(), 
 		menu.button_data(), 
 		menu.on(),
-		net_out.player_count > 1, menu.debug());
+		true, menu.debug());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -125,6 +125,6 @@ void Game::update(std::chrono::milliseconds delta)
 		net_out.directions,
 		chat[1], net_out.player_count,
 		net_out.player_id, chat.is_on(),
-		net_out.player_count > 1);
+		true);
 
 }
