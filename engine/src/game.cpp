@@ -108,6 +108,8 @@ void Game::update(std::chrono::milliseconds delta)
 	logic_out = gameplay.update({delta, local_input});
 	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
 	
+	level.physics.update(delta);
+
 	renderer.update(delta,
 		std::begin(player_inputs.components),
 		std::end(player_inputs.components),
