@@ -4,6 +4,7 @@
 #include "LeapImporter\LeapImporter\LeapLevel.h"
 #include <vector>
 #include <string>
+#include <glm/glm.hpp>
 
 namespace graphics
 {

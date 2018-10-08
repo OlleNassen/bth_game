@@ -6,11 +6,14 @@ void CustomLevel::loader(const char * fileName)
 
 	infile.read((char*)&counterReader, sizeof(Counter));
 
-	for (int i = 0; i < counterReader.levelObjectCount; i++)
+	levelObjects = new LevelObject[counterReader.levelObjectCount];
+
+	for (unsigned int i = 0; i < counterReader.levelObjectCount; i++)
 	{
-		LevelObject* lvl = new LevelObject();
-		levelObjects.push_back(lvl);
-		infile.read((char*)levelObjects[i], sizeof(LevelObject));
+		infile.read((char*)levelObjects[i].position, sizeof(float) * 3);
+		infile.read((char*)levelObjects[i].rotation, sizeof(float) * 3);
+		infile.read((char*)levelObjects[i].collisionBox, sizeof(float) * 2);
+		infile.read((char*)&levelObjects[i].id, sizeof(int));
 	}
 	if (infile.is_open())
 	{
@@ -32,9 +35,5 @@ CustomLevel::CustomLevel(const char * fileName)
 
 CustomLevel::~CustomLevel()
 {
-	for (LevelObject* lvl_ptr : levelObjects)
-	{
-		delete lvl_ptr;
-	}
-	levelObjects.clear();
+	
 }

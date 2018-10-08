@@ -12,14 +12,14 @@ using namespace std::chrono_literals;
 
 Renderer::Renderer()
 	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
-	, game_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
+	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, t{ 300s }
 {
 }
 
 Renderer::Renderer(GameScene* scene)
 	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
-	, game_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
+	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, t{ 300s }
 	, scene { scene }
 {
