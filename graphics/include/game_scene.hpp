@@ -6,6 +6,9 @@
 #include <string>
 #include <glm/glm.hpp>
 
+//FIX THIS SOMEONE!!! / Vincent & Lucas
+#include <../../physics/include/world.hpp>
+
 namespace graphics
 {
 
@@ -20,6 +23,8 @@ public:
 
 	glm::vec2 v[4];
 	std::vector<Model> models;
+
+	physics::World physics;
 };
 
 }

@@ -31,14 +31,6 @@ void Game::run()
 	using clock = std::chrono::steady_clock;
 	auto last_time = clock::now();
 	auto delta_time = 0ns;
-
-	physics.add_dynamic_body({ 10, 10 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body({ -5.0, -5.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body({ 14.0, 2.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body({ -4.0, -20.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-
-	physics.add_static_body({ 0.0, -22.0 }, { 0.0, 0.0 }, 1000, 2, false);
-
 	auto frames = 0;
 	std::chrono::duration<float> seconds = 0s;
 
@@ -70,17 +62,16 @@ void Game::run()
 			update(timestep);
 		}
 
-		std::vector<glm::vec2> debug_positions = physics.get_all_debug();
-		render(debug_positions);
+		render();
 		window.swap_buffers();
 		window.poll_events();		
 	}
 }
 
-void Game::render(std::vector<glm::vec2> debug_positions)
+void Game::render()
 {
-	renderer.render(chat.begin(), chat.end(), 
-		menu.button_data(), 
+	renderer.render(chat.begin(), chat.end(),
+		menu.button_data(),
 		menu.on(),
 		net_out.player_count > 1, menu.debug());
 }
@@ -116,10 +107,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 	logic_out = gameplay.update({delta, local_input});
 	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
-
-	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
 	
-	renderer.update(delta, 
+	renderer.update(delta,
 		std::begin(player_inputs.components),
 		std::end(player_inputs.components),
 		net_out.directions,

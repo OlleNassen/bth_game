@@ -27,6 +27,11 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }), vec3{ 0.1f, 0.1f, 0.9f}, mesh_lib->get_mesh(0));
 	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }), vec3{ 0.9f, 0.8f, 0.1f}, mesh_lib->get_mesh(0));
 
+	physics.add_dynamic_body(v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(v[1], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(v[2], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(v[3], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+
 	for (unsigned int i = 0; i < level.counterReader.levelObjectCount; i++)
 	{
 		glm::mat4 model{ 1.0f };
@@ -37,6 +42,16 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 		model = glm::rotate(model, glm::radians(level.levelObjects[i].rotation[2]), glm::vec3{ 0,0,1 });
 
 		models.emplace_back(model, glm::vec3(0, 0, 0), mesh_lib->get_mesh(level.levelObjects[i].id));
+
+		if(level.levelObjects[i].position[2] > -0.01 && level.levelObjects[i].position[2] < 0.01)
+		{ 
+			glm::vec2 position = { level.levelObjects[i].position[0], level.levelObjects[i].position[1] };
+			float width = level.levelObjects[i].collisionBox[1];
+			float height = level.levelObjects[i].collisionBox[0];
+			glm::vec2 offset = { width / 2, 0 };
+			std::cout << mesh_lib->get_mesh(level.levelObjects[i].id)->center_pivot.x << " : " << mesh_lib->get_mesh(level.levelObjects[i].id)->center_pivot.y << std::endl;
+			physics.add_static_body(position, offset, width, height, false);
+		}
 	}
 }
 

@@ -39,8 +39,6 @@ void Model::render(const Shader & shader, const Camera& camera, const glm::vec3&
 	mesh->textures[3].bind(3);
 	mesh->textures[4].bind(4);
 	mesh->textures[5].bind(5);
-
-
 	mesh->render();
 }
 
