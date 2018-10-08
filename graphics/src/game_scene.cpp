@@ -49,7 +49,6 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 			float width = level.levelObjects[i].collisionBox[1];
 			float height = level.levelObjects[i].collisionBox[0];
 			glm::vec2 offset = { width / 2, 0 };
-			std::cout << mesh_lib->get_mesh(level.levelObjects[i].id)->center_pivot.x << " : " << mesh_lib->get_mesh(level.levelObjects[i].id)->center_pivot.y << std::endl;
 			physics.add_static_body(position, offset, width, height, false);
 		}
 	}
