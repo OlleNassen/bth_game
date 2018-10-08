@@ -42,23 +42,6 @@ void LeapMesh::loader(const char* fileName)
 	material = new MaterialInformation[counterReader.matCount];
 	infile.read((char*)material, sizeof(MaterialInformation) * counterReader.matCount);
 
-	animation = new AnimationInformation[1];
-
-	if (animation->nrOfJoints > 0)
-	{
-		infile.read((char*)animation->animationName, sizeof(char) * 9);
-		infile.read((char*)&animation->keyFrameCount, sizeof(int));
-		infile.read((char*)&animation->nrOfJoints, sizeof(int));
-		animation->joints.resize(animation->nrOfJoints);
-		for (int i = 0; i < animation->nrOfJoints; i++)
-		{	
-			infile.read((char*)&animation->joints[i].jointName, sizeof(char) * 100);
-			infile.read((char*)&animation->joints[i].parentName, sizeof(char) * 100);
-			animation->joints[i].keyFrames.resize(animation->keyFrameCount);
-			infile.read((char*)animation->joints[i].keyFrames.data(), sizeof(KeyFrame) * animation->keyFrameCount);
-		}
-	}
-
 	customMayaAttribute = new CustomMayaAttributes[counterReader.customMayaAttributeCount];
 	infile.read((char*)customMayaAttribute, sizeof(CustomMayaAttributes) * counterReader.customMayaAttributeCount);
 

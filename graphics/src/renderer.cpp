@@ -51,6 +51,7 @@ void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
 	const gui::button_array& buttons,
+	const std::vector<glm::vec2>& debug_positions,
 	bool is_menu,
 	bool connected,
 	bool debug)const
@@ -147,7 +148,8 @@ void Renderer::render(
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
 
-	/*if (debug_active)
+	//Collision Debug Lines
+	if (debug_active)
 	{
 		glDisable(GL_DEPTH_TEST);
 		auto& s = shaders[5];
@@ -167,7 +169,7 @@ void Renderer::render(
 
 		line_debug(debug_positions);
 		glEnable(GL_DEPTH_TEST);
-	}*/
+	}
 
 }
 
@@ -196,7 +198,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		for (const auto& direction : directions)
 		{
 			using glm::vec2;
-			float speed = 10.0f;	
+			float speed = 10.0f;
 			float dt = delta.count() / 1000.0f;
 			vec2 offset = vec2{ direction.x, direction.z } * speed * dt;
 
@@ -207,7 +209,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			}
 			++index;
 		}
-	
+
 		if (begin[0][button::glow] == button_state::pressed)
 		{
 			want_glow = !want_glow;
@@ -222,8 +224,19 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
+		if (begin[0][button::debug] == button_state::pressed)
+		{
+			debug_active = !debug_active;
+		}
+
+		if (begin[0][button::switch_camera] == button_state::pressed)
+		{
+			debug_camera_active = !debug_camera_active;
+		}
+
 		db_camera.update(delta, directions[0], begin[0].cursor);
 	}
+
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
 

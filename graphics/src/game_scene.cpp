@@ -17,7 +17,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
 
-	v[0] = { 9, 0 };
+	v[0] = { 10, 15 };
 	v[1] = { -3, 0 };
 	v[2] = { 3, 0 };
 	v[3] = { -9, 0 };
@@ -37,6 +37,16 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 		model = glm::rotate(model, glm::radians(level.levelObjects[i].rotation[2]), glm::vec3{ 0,0,1 });
 
 		models.emplace_back(model, glm::vec3(0, 0, 0), mesh_lib->get_mesh(level.levelObjects[i].id));
+
+		if(level.levelObjects[i].position[2] > -0.01 && level.levelObjects[i].position[2] < 0.01)
+		{ 
+			glm::vec2 position = { level.levelObjects[i].position[0], level.levelObjects[i].position[1] };
+			float width = level.levelObjects[i].collisionBox[1];
+			float height = level.levelObjects[i].collisionBox[0];
+			glm::vec2 offset = { width / 2, 0 };
+			
+			coll_data.emplace_back(collision_data{ position, offset, width, height, false });
+		}
 	}
 }
 

@@ -31,6 +31,7 @@ public:
 		const std::string* begin,
 		const std::string* end,
 		const gui::button_array& buttons,
+		const std::vector<glm::vec2>& debug_positions,
 		bool is_menu,
 		bool connected,
 		bool debug) const;
@@ -44,6 +45,22 @@ public:
 		int id,
 		bool is_on,
 		bool move_char);
+
+	static void line_debug(const std::vector<glm::vec2>& lines)
+	{
+		VertexArray vao;
+		Buffer vertex_buffer;
+
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+		gl_buffer_data(GL_ARRAY_BUFFER, lines, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
+
+		glLineWidth(1.0f);
+		glDrawArrays(GL_LINES, 0, lines.size());
+		glBindVertexArray(0);
+	}
 
 private:
 
@@ -77,6 +94,9 @@ private:
 
 	bool want_glow{false};
 	PointLight light{ glm::vec3(0,2,4) };
+
+	bool debug_active{ false };
+	bool debug_camera_active{ true };
 };
 
 

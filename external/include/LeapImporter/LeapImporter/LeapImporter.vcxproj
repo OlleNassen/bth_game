@@ -129,13 +129,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationStructs.h" />
     <ClInclude Include="CustomLevel.h" />
+    <ClInclude Include="LeapAnimation.h" />
     <ClInclude Include="LeapImporter.h" />
     <ClInclude Include="LeapMesh.h" />
     <ClInclude Include="MeshStructs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CustomLevel.cpp" />
+    <ClCompile Include="LeapAnimation.cpp" />
     <ClCompile Include="LeapImporter.cpp" />
     <ClCompile Include="LeapMesh.cpp" />
   </ItemGroup>
