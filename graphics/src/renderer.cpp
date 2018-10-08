@@ -14,7 +14,10 @@ Renderer::Renderer()
 	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, t{ 300s }
+	, dust_texture(std::string("dust_texture.png"))
+	, dust_particles(dust_texture)	
 {
+
 }
 
 Renderer::Renderer(GameScene* scene)
@@ -22,6 +25,8 @@ Renderer::Renderer(GameScene* scene)
 	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, t{ 300s }
 	, scene { scene }
+	, dust_texture(std::string("dust_texture.png"))
+	, dust_particles(dust_texture)
 {
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
@@ -208,6 +213,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 			}
 			++index;
 		}
+
+		//FX dust_particles("dust_texture.png");
+		/*dust_particles.render_dust();
+		dust_particles.render_particles();*/
 	
 		if (begin[0][button::glow] == button_state::pressed)
 		{

@@ -1,8 +1,11 @@
 #include "..\include\fx.hpp"
-
-FX::FX()
+namespace graphics
 {
-	
+
+FX::FX(Texture& texture)
+{
+	gen_particle_buffer(fx);
+	set_texture(texture);
 }
 
 FX::~FX()
@@ -25,10 +28,10 @@ void FX::gen_particle_buffer(FXdata particle)
 	glBindBuffer(GL_ARRAY_BUFFER, particle.color_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 
-	particle.width = 0;
+	/*particle.width = 0;
 	particle.height = 0;
 	particle.nr_of_channels = 0;
-	particle.texture_data = stbi_load(particle.texture_name, &particle.width, &particle.height, &particle.nr_of_channels, 0);
+	particle.texture_data = stbi_load(texture_name, &particle.width, &particle.height, &particle.nr_of_channels, 0);
 	glGenTextures(1, &particle.texture_buffer);
 	glBindTexture(GL_TEXTURE_2D, particle.texture_buffer);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -44,14 +47,14 @@ void FX::gen_particle_buffer(FXdata particle)
 	{
 		std::cout << "Failed to load Billboard Texture from path" << std::endl;
 	}
-	stbi_image_free(particle.texture_data);
+	stbi_image_free(particle.texture_data);*/
 }
 
-void FX::render_particles(unsigned int vao, unsigned int vbo, unsigned int position_buffer, unsigned int color_buffer)
+void FX::render_particles()
 {
-	glBindVertexArray(vao);
+	glBindVertexArray(fx.vao);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, fx.vbo);
 	glVertexAttribPointer(
 		0,                  // attribute. No particular reason for 0, but must match the layout in the shader.
 		3,                  // size
@@ -63,12 +66,12 @@ void FX::render_particles(unsigned int vao, unsigned int vbo, unsigned int posit
 
 	//Positions : center
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, fx.position_buffer);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	//Colors
 	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, color_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, fx.color_buffer);
 	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
 
 	glVertexAttribDivisor(0, 0);
@@ -113,3 +116,16 @@ void FX::particle_linear_sort(Particle * arr, int size)
 		arr[b + 1].life = key;
 	}
 }
+
+void FX::render_dust()
+{
+
+}
+
+void FX::set_texture(Texture & texture)
+{
+	this->texture = &texture;
+}
+
+}
+

@@ -78,6 +78,9 @@ private:
 
 	bool want_glow{false};
 	PointLight light{ glm::vec3(0,2,4) };
+
+	Texture dust_texture;
+	FX dust_particles;
 };
 
 
