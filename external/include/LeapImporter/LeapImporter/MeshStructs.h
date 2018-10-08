@@ -37,13 +37,13 @@ struct MaterialInformation {
 
 struct CustomMayaAttributes {
 	float particlePivot[3];
-	float centerPivot[3];
 	int id;
 };
 
 struct LevelObject {
 	float position[3];
 	float rotation[3];
+	float centerPivot[3];
 	float collisionBox[2];
 	int id;
 };
