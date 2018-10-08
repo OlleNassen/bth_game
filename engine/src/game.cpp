@@ -115,7 +115,14 @@ void Game::update(std::chrono::milliseconds delta)
 	menu.update(delta, *local_input);
 
 	logic_out = gameplay.update({delta, local_input});
-	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
+	glm::vec2 combined_force = logic_out.updated_player_pos;
+
+	//Update new direction force of player to physics
+	if(physics.dynamic_rigidbodies[0].can_jump == true)
+		physics.dynamic_rigidbodies[0].add_force(combined_force);
+	else
+		physics.dynamic_rigidbodies[0].add_force({ combined_force.x, 0 });
+
 
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
 	
