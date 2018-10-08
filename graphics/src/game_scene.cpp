@@ -27,11 +27,6 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }), vec3{ 0.1f, 0.1f, 0.9f}, mesh_lib->get_mesh(0));
 	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }), vec3{ 0.9f, 0.8f, 0.1f}, mesh_lib->get_mesh(0));
 
-	physics.add_dynamic_body(v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body(v[1], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body(v[2], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body(v[3], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-
 	for (unsigned int i = 0; i < level.counterReader.levelObjectCount; i++)
 	{
 		glm::mat4 model{ 1.0f };
@@ -49,7 +44,8 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 			float width = level.levelObjects[i].collisionBox[1];
 			float height = level.levelObjects[i].collisionBox[0];
 			glm::vec2 offset = { width / 2, 0 };
-			physics.add_static_body(position, offset, width, height, false);
+			
+			coll_data.emplace_back(collision_data{ position, offset, width, height, false });
 		}
 	}
 }
