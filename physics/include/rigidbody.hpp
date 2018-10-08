@@ -9,6 +9,9 @@
 
 #include "boxcollider.hpp"
 
+namespace physics
+{
+
 class Rigidbody
 {
 public:
@@ -37,5 +40,7 @@ private:
 
 	Box box_collider;
 };
+
+}
 
 #endif
