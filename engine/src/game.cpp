@@ -32,7 +32,12 @@ void Game::run()
 	auto last_time = clock::now();
 	auto delta_time = 0ns;
 
-	physics.add_dynamic_body({ 10, 10 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	/*physics.add_dynamic_body({ 10, 10 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body({ -5.0, -5.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body({ 14.0, 2.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body({ -4.0, -20.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });*/
+
+	physics.add_dynamic_body({ 2, 10 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 	physics.add_dynamic_body({ -5.0, -5.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 	physics.add_dynamic_body({ 14.0, 2.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 	physics.add_dynamic_body({ -4.0, -20.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
@@ -115,23 +120,27 @@ void Game::update(std::chrono::milliseconds delta)
 	menu.update(delta, *local_input);
 
 	logic_out = gameplay.update({delta, local_input});
-	glm::vec2 combined_force = logic_out.updated_player_pos;
+	glm::vec2 combined_force = logic_out.force;
 
 	//Update new direction force of player to physics
-	if(physics.dynamic_rigidbodies[0].can_jump == true)
+	if (physics.dynamic_rigidbodies[0].can_jump == true)
 		physics.dynamic_rigidbodies[0].add_force(combined_force);
 	else
-		physics.dynamic_rigidbodies[0].add_force({ combined_force.x, 0 }); 
+		physics.dynamic_rigidbodies[0].add_force({ combined_force.x, 0 });
 
+
+	//std::cout << physics.dynamic_rigidbodies[0]. << std::endl;
 
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
 	
+	 std::cout << dynamic_pos[0].x << dynamic_pos[0].y << std::endl;
+
 	renderer.update(delta, 
 		std::begin(player_inputs.components),
 		std::end(player_inputs.components),
 		net_out.directions,
 		chat[1], net_out.player_count,
 		net_out.player_id, chat.is_on(),
-		net_out.player_count > 1);
+		net_out.player_count >= 1);
 
 }

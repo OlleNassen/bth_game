@@ -21,8 +21,8 @@ Output Gameplay::update(Input input)
 		scripts[entity].update(input.delta);
 	}
 
-	glm::vec2 updated_player_pos = luaLoad.process_input(*input.local_input, input.delta);
-	return Output{ updated_player_pos };
+	glm::vec2 force = luaLoad.process_input(*input.local_input, input.delta);
+	return Output{ force };
 }
 
 

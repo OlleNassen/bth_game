@@ -22,7 +22,7 @@ public:
 private:
 	void start_lua();
 	LuaScript lua_input;
-	glm::vec2 position = { 0.f, 0.f };
+	glm::vec2 force = { 0.f, 0.f };
 		//LuaScript lua_input2;
 };
 

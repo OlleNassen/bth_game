@@ -20,7 +20,7 @@ struct Input
 
 struct Output
 {
-	glm::vec2 updated_player_pos;
+	glm::vec2 force;
 
 };
 

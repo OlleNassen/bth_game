@@ -19,8 +19,9 @@ public:
 
 	void update(std::chrono::milliseconds delta);
 
-
+	lua_State* getLuaState();
 private:
+	lua_State* L = nullptr;
 	LuaStack stack;
 };
 
