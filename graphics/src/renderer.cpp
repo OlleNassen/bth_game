@@ -235,6 +235,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		db_camera.update(delta, directions[0], begin[0].cursor);
 	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		scene->models[i].set_position(scene->physics.dynamic_positions[i]);
+	}
+
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
 

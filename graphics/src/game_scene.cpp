@@ -17,7 +17,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
 
-	v[0] = { 9, 0 };
+	v[0] = { 10, 15 };
 	v[1] = { -3, 0 };
 	v[2] = { 3, 0 };
 	v[3] = { -9, 0 };
