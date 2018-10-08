@@ -32,7 +32,7 @@ Game::Game()
 
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
-			coll.offset, coll.width, coll.height, coll.trigger);
+			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
 }
 
 void Game::run()

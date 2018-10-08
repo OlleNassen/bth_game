@@ -43,9 +43,10 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 			glm::vec2 position = { level.levelObjects[i].position[0], level.levelObjects[i].position[1] };
 			float width = level.levelObjects[i].collisionBox[1];
 			float height = level.levelObjects[i].collisionBox[0];
-			glm::vec2 offset = { width / 2, 0 };
+			auto* ptr = level.levelObjects[i].centerPivot;
 			
-			coll_data.emplace_back(collision_data{ position, offset, width, height, false });
+			coll_data.emplace_back(collision_data{ 
+				glm::vec2{ ptr[0], ptr[1] }, width, height, false });
 		}
 	}
 }

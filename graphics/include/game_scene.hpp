@@ -12,7 +12,6 @@ namespace graphics
 struct collision_data
 {
 	glm::vec2 position; 
-	glm::vec2 offset;
 	float width;
 	float height;
 	bool trigger;

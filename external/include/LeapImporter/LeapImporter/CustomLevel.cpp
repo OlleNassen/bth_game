@@ -12,6 +12,7 @@ void CustomLevel::loader(const char * fileName)
 	{
 		infile.read((char*)levelObjects[i].position, sizeof(float) * 3);
 		infile.read((char*)levelObjects[i].rotation, sizeof(float) * 3);
+		infile.read((char*)levelObjects[i].centerPivot, sizeof(float) * 3);
 		infile.read((char*)levelObjects[i].collisionBox, sizeof(float) * 2);
 		infile.read((char*)&levelObjects[i].id, sizeof(int));
 	}
