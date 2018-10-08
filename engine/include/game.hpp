@@ -39,7 +39,7 @@ public:
 	void run();
 
 private:
-	void render(std::vector<glm::vec2> debug_positions);
+	void render();
 	void update(std::chrono::milliseconds delta);
 	
 	Window window; //PUT BELOW WINDOW IF OPENGL RELATED

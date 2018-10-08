@@ -2,6 +2,9 @@
 #include <iostream>
 #include <chrono>
 
+namespace physics
+{
+
 Rigidbody::Rigidbody(glm::vec2 start_force)
 {
 	this->converter = 0.2;
@@ -67,3 +70,7 @@ glm::vec2 Rigidbody::get_force() const
 {
 	return force;
 }
+
+}
+
+

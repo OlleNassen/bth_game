@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 #include <array>
 
+namespace physics
+{
+
 class Box
 {
 public:
@@ -39,5 +42,8 @@ private:
 
 	bool is_trigger;
 };
+
+}
+
 
 #endif
