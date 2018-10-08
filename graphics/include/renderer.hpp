@@ -96,7 +96,6 @@ private:
 	PointLight light{ glm::vec3(0,2,4) };
 
 	bool debug_active{ false };
-	bool debug_camera_active{ true };
 };
 
 
