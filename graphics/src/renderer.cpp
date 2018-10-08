@@ -141,6 +141,8 @@ void Renderer::render(
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	shaders[3].uniform("scene_texture", 0);
 	scene_texture.bind_texture();
+	/*shaders[3].uniform("depth_texture", 1);
+	scene_texture.bind_depth();*/
 	shaders[3].uniform("screen_warning", 1);
 	post_processing_effects.texture.bind(1);
 

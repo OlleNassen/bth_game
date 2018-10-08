@@ -15,9 +15,11 @@ public:
 
 	void bind_framebuffer() const;
 	void bind_texture() const;
+	void bind_depth() const;
 
 	unsigned int fbo_texture;
 	unsigned int fbo_depth;
+	unsigned int depth_texture;
 
 private:
 	unsigned int fbo;

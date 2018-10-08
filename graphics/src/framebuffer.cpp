@@ -19,6 +19,16 @@ Framebuffer::Framebuffer()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, 
 		GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_texture, 0);
 
+	//glGenTextures(1, &depth_texture);
+	//glBindTexture(GL_TEXTURE_2D, depth_texture);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1280, 720, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER,
+	//	GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_texture, 1);
+
 	glGenRenderbuffers(1, &fbo_depth);
 	glBindRenderbuffer(GL_RENDERBUFFER, fbo_depth);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1280, 720);
@@ -47,4 +57,9 @@ void Framebuffer::bind_texture() const
 	glBindTexture(GL_TEXTURE_2D, fbo_texture);
 }
 
+void Framebuffer::bind_depth() const
+{
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, depth_texture);
+}
 }
