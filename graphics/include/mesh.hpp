@@ -19,7 +19,6 @@ public:
 	Mesh(const std::string& meshfile);
 	~Mesh();
 	std::string name;
-	glm::vec3 center_pivot;
 	float height;
 	float width;
 	std::vector<Texture>textures;
