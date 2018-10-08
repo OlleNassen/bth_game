@@ -73,7 +73,7 @@ void Renderer::render(
 
 		glDisable(GL_DEPTH_TEST);
 		auto& s = shaders[5];
-		if (!debug_active)
+		if (debug_active)
 		{
 			s.use();
 			s.uniform("projection", game_camera.projection);
