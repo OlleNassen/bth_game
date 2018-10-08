@@ -18,6 +18,17 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\boxcollider.hpp" />
+    <ClInclude Include="include\rigidbody.hpp" />
+    <ClInclude Include="include\static_collision.hpp" />
+    <ClInclude Include="include\world.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\boxcollider.cpp" />
+    <ClCompile Include="src\rigidbody.cpp" />
+    <ClCompile Include="src\world.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{16176C5D-BDEB-4F0C-BF6E-ACA0EFAC7C3F}</ProjectGuid>
@@ -80,7 +91,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)external/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)external/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -118,12 +133,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="include\world.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\world.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

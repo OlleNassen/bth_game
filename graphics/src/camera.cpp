@@ -1,21 +1,27 @@
 #include "camera.hpp"
 
-#include <iostream>
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(float fovy, float width,
-	float height, float near, float far)
-	: projection{glm::perspective(fovy, width / height, near, far)}
-	, view{1.0f}
-	, aspect_ratio{width / height}
+namespace graphics
+{
+
+Camera::Camera(float fovy, float aspect, float near, float far)
+	: projection{glm::perspective(fovy, aspect, near, far)}
+	, aspect{aspect}
 	, fovy{fovy}
-	, position{0.0f, 0.0f, 20.0f}
+	, near{near}
+	, far{far}
 {
 
 }
 
-void Camera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
+glm::mat4 Camera::view() const
+{
+	return glm::lookAt(position, position + forward, up);
+}
+
+void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2* end)
 {
 	auto pos_x = [](const auto& l, const auto& r) { return l.x < r.x; };
 	auto pos_y = [](const auto& l, const auto& r) { return l.y < r.y; };
@@ -27,91 +33,60 @@ void Camera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::vec2
 	using namespace glm;
 	auto size = vec2{ minmax_x.second->x - minmax_x.first->x, minmax_y.second->y - minmax_y.first->y };
 	auto desired_position = vec2{ vec2{ minmax_x.first->x, minmax_y.first->y } + (size / 2.0f) };
+	//desired_position.y += 6.0f;
 	
-	auto desired_distance = 0.0f;
 	auto distance_height = size.y / glm::tan(fovy / 2.0f);
-	auto distance_width = (size.x / aspect_ratio) / glm::tan(fovy / 2.0f);
-	
-	desired_distance = distance_height > distance_width ? distance_height : distance_width;
-	if (desired_distance < 20.0f) desired_distance = 20.0f;
+	auto distance_width = (size.x / aspect) / glm::tan(fovy / 2.0f);
+	auto desired_distance = std::max({ 12.0f, distance_width, distance_height });
 
 	std::chrono::duration<float> delta_seconds = delta;
-	position = glm::mix(position, { desired_position, desired_distance }, delta_seconds.count());
+	position = glm::mix(position, { desired_position, desired_distance }, delta_seconds.count() * 2.0f);
+	
+	forward = vec3{ desired_position, 0.0f } -position;
+	forward = glm::normalize(forward);
 }
 
-glm::mat4 Camera::view_matrix() const
+
+
+void DebugCamera::update(std::chrono::milliseconds delta, const glm::vec3& direction, const glm::vec2& mouse_pos)
 {
-	using namespace glm;
-	return lookAt(position, position + vec3{0.0f, 0.0f, -1.0f}, vec3{ 0.0f, 1.0f, 0.0f });
+	change_position(delta, direction);
+	change_rotation(mouse_pos);
 }
 
-
-
-
-
-DebugCamera::DebugCamera(float fovy, float width,
-	float height, float near, float far)
-	: projection(glm::perspective(fovy, width / height, near, far))
+void DebugCamera::change_position(std::chrono::milliseconds delta, const glm::vec3& direction)
 {
+	std::chrono::duration<float> float_seconds = delta;
+	auto velocity = 10.0f * float_seconds.count();
+
+	position += forward * velocity * direction.z;
+	position += glm::normalize(glm::cross(forward, up)) * velocity * direction.x;
 }
 
-void DebugCamera::update(std::chrono::milliseconds delta, const input & i)
-{
-	using namespace std::chrono;
-	using float_seconds = duration<float>;
-	auto velocity = 10.0f;
-
-	velocity *= duration_cast<float_seconds>(delta).count();
-
-	if (i[button::up] >= button_state::pressed)
-		position += forward * velocity;
-	if (i[button::left] >= button_state::pressed)
-		position -= glm::normalize(glm::cross(forward, up)) * velocity;
-	if (i[button::down] >= button_state::pressed)
-		position -= forward * velocity;
-	if (i[button::right] >= button_state::pressed)
-		position += glm::normalize(glm::cross(forward, up)) * velocity;
-}
-
-glm::mat4 DebugCamera::projection_matrix() const
-{
-	return projection;
-}
-
-glm::mat4 DebugCamera::view_matrix() const
-{
-	return glm::lookAt(position, position + forward, up);
-}
-
-void DebugCamera::mouse_movement(const glm::vec2& mouse_pos)
+void DebugCamera::change_rotation(const glm::vec2& mouse_pos)
 {
 	if (!initialized)
 	{
-		last_mouse_position.x = mouse_pos.x;
-		last_mouse_position.y = mouse_pos.y;
+		last_mouse_position = mouse_pos;
 		initialized = true;
 	}
 
-	auto xoffset = mouse_pos.x - last_mouse_position.x;
-	auto yoffset = last_mouse_position.y - mouse_pos.y;
-	last_mouse_position.x = mouse_pos.x;
-	last_mouse_position.y = mouse_pos.y;
+	glm::vec2 offset
+	{
+		mouse_pos.x - last_mouse_position.x,
+		last_mouse_position.y - mouse_pos.y
+	};
+	last_mouse_position = mouse_pos;
 
-	auto sensitivity = 0.05f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-
-	yaw += xoffset;
-	pitch += yoffset;
-
-	if (pitch > 89.0f)
-		pitch = 89.0f;
-	if (pitch < -89.0f)
-		pitch = -89.0f;
+	offset *= 0.05f;
+	yaw = yaw + offset.x;
+	pitch = glm::clamp(pitch += offset.y, -89.0f, 89.0f);
 
 	glm::vec3 front;
 	front.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
 	front.y = glm::sin(glm::radians(pitch));
 	front.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
 	forward = glm::normalize(front);
+}
+
 }

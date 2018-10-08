@@ -6,11 +6,20 @@
 
 enum class button
 {
+	
 	up,
 	left,
 	down,
 	right,
+	jump,
+	debug,
+	select,
+	cancel,
 	glow,
+	refresh,
+	menu,
+	switch_camera,
+	reset,
 	quit
 };
 
@@ -28,7 +37,7 @@ public:
 	static constexpr int indices = 12;
 	int index = 0;
 	glm::vec2 cursor;
-	
+
 	const button_state& operator[](button b)const
 	{
 		return data[static_cast<int>(b)];

@@ -6,11 +6,15 @@
 #include <iostream>
 #include <chrono>
 #include <string>
+#include <glm/glm.hpp>
 #include <enet/enet.h>
-#include "packet.hpp"
 
-inline void net_init() { enet_initialize(); }
-inline void net_deinit() { enet_deinitialize(); }
+struct player_data
+{
+	int player_id = 0;
+	int player_count = 1;
+	std::array<glm::vec3, 4> directions;
+};
 
 template <typename F1, typename F2, typename F3>
 void host_service(std::chrono::milliseconds time, ENetHost* h,
@@ -34,8 +38,9 @@ class Host
 {
 public:
 	virtual ~Host() = default;
-	virtual void update(const Packet& p, input* begin, input* end) = 0;
-	virtual int id() const = 0;
+	virtual void update(player_data* data) = 0;
+
+	bool connected = false;
 };
 
 
@@ -45,17 +50,13 @@ public:
 	Client(const std::string& ip_address);
 	~Client();
 
-	void update(const Packet& p, input* begin, input* end) override;
-	int id() const override { return client_id; }
+	void update(player_data* data) override;
 	
 
 private:
-	void recieve(const ENetEvent& event, input* begin, input* end);
+	void recieve(const ENetEvent& event, player_data* data);
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);	
-	
-	int client_id = 3;
-	bool connected = false;
 
 	ENetAddress address;
 	ENetHost* enet_host;
@@ -68,11 +69,10 @@ public:
 	Server();
 	~Server();
 
-	void update(const Packet& p, input* begin, input* end) override;
-	int id() const override { return 0; }
+	void update(player_data* data) override;
 
 private:	
-	void recieve(const ENetEvent& event, input* begin, input* end);
+	void recieve(const ENetEvent& event, player_data* data);
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);	
 

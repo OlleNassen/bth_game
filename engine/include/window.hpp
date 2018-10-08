@@ -169,6 +169,9 @@ public:
 	void update_input(input& input);
 	void assign_key(button name, int keybind) { keybinds.insert(std::make_pair(keybind, name)); }
 
+	void show_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
+	void hide_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
+	void title(const char* title) { glfwSetWindowTitle(glfw_window, title); }
 	
 private:
 	GLFWwindow* glfw_window;

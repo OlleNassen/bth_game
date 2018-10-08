@@ -15,21 +15,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LeapImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="MeshStructs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CustomMesh.h">
+    <ClInclude Include="LeapMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CustomImporter.h">
+    <ClInclude Include="CustomLevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LeapAnimation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CustomMesh.cpp">
+    <ClCompile Include="LeapImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CustomImporter.cpp">
+    <ClCompile Include="LeapMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomLevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LeapAnimation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,11 +7,18 @@
 #include <chrono>
 
 #include <renderer.hpp>
-#include <host.hpp>
+#include <network.hpp>
+#include <gameplay.hpp>
+#include <world.hpp>
+
 #include "ecs.hpp"
+#include "mesh_lib.hpp"
+#include "game_scene.hpp"
 #include "window.hpp"
 #include "input.hpp"
+
 #include "gui.hpp"
+#include "timer.hpp"
 
 //::.. authors ..:://
 // Edvard
@@ -29,21 +36,35 @@ class Game
 {
 public:
 	Game();
-	~Game();
 	void run();
+
 private:
 	void render();
 	void update(std::chrono::milliseconds delta);
 	
-	std::unique_ptr<Host> host;
-	std::chrono::milliseconds timestep{16};
-	Window window;
+	Window window; //PUT BELOW WINDOW IF OPENGL RELATED
+	
+	graphics::MeshLib mesh_lib;
+	graphics::GameScene level;
+	graphics::Renderer renderer;
+
+	logic::Output logic_out;
+	logic::Gameplay gameplay;
+	
+	network::Output net_out;
+	network::Messenger net;
+
+	physics::World physics;
+	
 	input player_input;
-	Renderer renderer;
+	std::chrono::milliseconds timestep{16};
+	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
-	gui::chat chat;
+	gui::Chat chat;
+	gui::Menu menu;	
 };
+
 
 
 

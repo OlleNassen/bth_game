@@ -2,6 +2,10 @@
 #define FRAMEBUFFER_HPP
 #include <GL/glew.h>
 #include <iostream>
+#include "texture.hpp"
+
+namespace graphics
+{
 
 class Framebuffer
 {
@@ -18,5 +22,7 @@ public:
 private:
 	unsigned int fbo;
 };
+
+}
 
 #endif

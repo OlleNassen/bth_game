@@ -4,6 +4,8 @@
 #include <array>
 #include <vector>
 #include <gl/glew.h>
+namespace graphics
+{
 
 class Buffer
 {
@@ -58,5 +60,6 @@ void gl_buffer_data(GLenum target, std::vector<T> data, GLenum usage)
 	glBufferData(target, sizeof(T) * data.size(), data.data(), usage);
 }
 
+}
 
 #endif

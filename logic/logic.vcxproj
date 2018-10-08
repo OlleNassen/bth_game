@@ -19,9 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameplay.cpp" />
+    <ClCompile Include="src\lua_load.cpp" />
     <ClCompile Include="src\lua_script.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\gameplay.hpp" />
+    <ClInclude Include="include\lua_load.hpp" />
     <ClInclude Include="include\lua_script.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -76,10 +80,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)include/;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include/;$(SolutionDir)external/include/;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)game\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)temp\$(ProjectName)-$(Platform)-$(Configuration)\</IntDir>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
+    <SourcePath>$(ProjectDir)src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -87,7 +92,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external/include/luajit/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external/include/;$(SolutionDir)external/include/luajit/</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)external/lib/</AdditionalLibraryDirectories>

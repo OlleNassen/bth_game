@@ -5,6 +5,10 @@
 #include <iostream>
 #include <primitives.hpp>
 #include <chrono>
+#include <texture.hpp>
+
+namespace graphics
+{
 
 class PostProcessingEffects
 {
@@ -19,6 +23,8 @@ public:
 
 	float glow_value = 0;
 
+	Texture texture;
+
 	//Texture data
 	int width = 0, height = 0, nrOfChannels = 0;
 	unsigned char* data = nullptr;
@@ -31,5 +37,7 @@ private:
 	unsigned int vao_id;
 	unsigned int vbo_id;
 };
+
+}
 
 #endif

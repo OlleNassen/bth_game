@@ -8,6 +8,9 @@
 #include "shader.hpp"
 #include FT_FREETYPE_H
 
+namespace graphics
+{
+
 struct character
 {
 	unsigned int texture_index;  // ID handle of the glyph texture
@@ -29,5 +32,7 @@ private:
 	unsigned int VAO, VBO;
 	std::array<character, 128> characters;
 };
+
+}
 
 #endif

@@ -1,26 +1,37 @@
 #ifndef MESH_HPP
 #define MESH_HPP
-#include "shader.hpp"
 #include <string>
 #include <GL/glew.h>
-#include <LeapImporter\LeapImporter\CustomMesh.h>
+#include <LeapImporter/LeapImporter/LeapImporter.h>
+#include "helpers.hpp"
+#include "shader.hpp"
+#include "texture.hpp"
 
 #define BUFFER_OFFSET(i) ((char *)nullptr + (i))
+
+namespace graphics
+{
 
 class Mesh
 {
 public:
 	Mesh();
-	Mesh(const std::string meshfile);
+	Mesh(const std::string& meshfile);
 	~Mesh();
+	std::string name;
+	float height;
+	float width;
+	std::vector<Texture>textures;
 
 	void render()const;
 
 private:
-	unsigned int vao_id;
-	unsigned int vbo_id;
+	VertexArray vao_id;
+	Buffer vbo_id;	
 
-	CustomMesh* custom_mesh;
+	LeapMesh* custom_mesh;
 };
+
+}
 
 #endif

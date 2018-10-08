@@ -93,7 +93,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)external\include\LeapImporter\LeapImporter;$(SolutionDir)external/include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)external/include/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -102,10 +102,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)external/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Lib>
-      <AdditionalDependencies>freetype.lib;CustomImporter.lib</AdditionalDependencies>
+      <AdditionalDependencies>freetype.lib;LeapImporter.lib</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)external/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)external/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -153,6 +153,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\game_scene.cpp" />
+    <ClCompile Include="src\mesh_lib.cpp" />
     <ClCompile Include="src\post_processing_effects.cpp" />
     <ClCompile Include="src\framebuffer.cpp" />
     <ClCompile Include="src\camera.cpp" />
@@ -162,21 +164,27 @@
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\text.cpp" />
+    <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\game_scene.hpp" />
     <ClInclude Include="include\helpers.hpp" />
     <ClInclude Include="include\camera.hpp" />
     <ClInclude Include="include\framebuffer.hpp" />
     <ClInclude Include="include\lights.hpp" />
     <ClInclude Include="include\mesh.hpp" />
+    <ClInclude Include="include\mesh_lib.hpp" />
     <ClInclude Include="include\model.hpp" />
     <ClInclude Include="include\post_processing_effects.hpp" />
     <ClInclude Include="include\primitives.hpp" />
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\shader.hpp" />
     <ClInclude Include="include\text.hpp" />
+    <ClInclude Include="include\texture.hpp" />
     <ClInclude Include="include\user_interface.hpp" />
+    <ClInclude Include="include\stupid_file.hpp" />
+    <ClInclude Include="include\primitive_factory.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

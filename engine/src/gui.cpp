@@ -32,12 +32,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}	
 }
 
-bool chat::is_on() const
+bool Chat::is_on() const
 {
 	return chat_on;
 }
 
-void chat::update(std::chrono::milliseconds delta)
+void Chat::update(std::chrono::milliseconds delta)
 {
 	constexpr auto underscore = '_';
 	
@@ -73,6 +73,92 @@ void chat::update(std::chrono::milliseconds delta)
 	{
 		chat_log[0].clear();
 	}
+}
+
+Menu::Menu() 
+{
+	buttons[0][10] = { "Debug", button_state::none };
+	
+	buttons[0][8] = { "Start", button_state::none };
+	buttons[0][7] = { "Options", button_state::none };
+	buttons[0][6] = { "Exit", button_state::none };
+
+	buttons[1][8] = { "Host", button_state::none };
+	buttons[1][7] = { "Join", button_state::none };
+	buttons[1][6] = { "Back", button_state::none };
+}
+
+const gui::button_array& Menu::button_data() const
+{
+	return *current_buttons;
+}
+
+void Menu::update(std::chrono::milliseconds delta, const input& i)
+{
+	auto index = input::indices - i.index - 1;
+	auto& button = (*current_buttons)[index];
+	
+	for (auto& arrays : buttons)
+		for (auto& button : arrays)
+			button.state = button_state::none;
+
+	button.state = button_state::hover;
+	
+	if (i[::button::select] == ::button_state::released)
+	{
+		if (current_buttons == &buttons[0] && index == 10)
+		{
+			is_on = false;
+			is_debug = true;
+			current_buttons = &buttons[2];
+		}
+		else if (current_buttons == &buttons[0] && index == 8)
+		{
+			current_buttons = &buttons[1];
+		}
+		else if (current_buttons == &buttons[0] && index == 6)
+		{
+			static constexpr auto true_dat = true;
+			want_exit = true_dat;
+		}
+		else if (current_buttons == &buttons[1] && index == 8)
+		{
+			current_buttons = &buttons[2];
+			is_on = false;
+			string_buffer = "server";
+			chat_on = true;
+		}
+		else if (current_buttons == &buttons[1] && index == 7)
+		{
+			current_buttons = &buttons[2];
+			is_on = false;
+			string_buffer = "";
+			chat_on = true;
+		}
+		else if (current_buttons == &buttons[1] && index == 6)
+		{
+			current_buttons = &buttons[0];
+		}	
+	}
+	else if (i[::button::select] >= ::button_state::pressed)
+	{
+		button.state = button_state::selected;		
+	}	
+}
+
+bool Menu::debug() const
+{
+	return is_debug;
+}
+
+bool Menu::on() const
+{
+	return is_on;
+}
+
+bool Menu::exit() const
+{
+	return want_exit;
 }
 
 }
