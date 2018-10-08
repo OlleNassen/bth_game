@@ -35,26 +35,6 @@ struct MaterialInformation {
 	char textureName[100];
 };
 
-struct KeyFrame {
-	float time;
-	float position[3];
-	float rotation[3];
-	float scaling[3];
-};
-
-struct JointInformation {
-	char jointName[100];
-	char parentName[100];
-	std::vector<KeyFrame> keyFrames;
-};
-
-struct AnimationInformation {
-	char animationName[9];
-	int keyFrameCount;
-	int nrOfJoints;
-	std::vector<JointInformation> joints;
-};
-
 struct CustomMayaAttributes {
 	float particlePivot[3];
 	float centerPivot[3];
