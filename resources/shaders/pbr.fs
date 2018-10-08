@@ -19,6 +19,7 @@ uniform sampler2D metallic_map;
 uniform sampler2D roughness_map;
 uniform sampler2D ao_map;
 uniform vec3 player_color;
+uniform vec3 light_color;
 
 const float PI = 3.14159265359;
 
@@ -73,7 +74,7 @@ void main()
 	for(int i = 0; i < 4; i++)
 	{
 		lightPositions[i] = fs_in.tangent_light_pos;
-		lightColors[i] = vec3(1.0, 1.0, 1.0);
+		lightColors[i] = light_color;
 	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));

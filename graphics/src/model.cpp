@@ -16,14 +16,15 @@ Model::~Model()
 {
 }
 
-void Model::render(const Shader & shader, const Camera& camera, const glm::vec3& light)const
+void Model::render(const Shader & shader, const Camera& camera, const PointLight& light)const
 {
 	shader.uniform("model", model);
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
 	shader.uniform("view_pos", glm::vec3{camera.position});
-	shader.uniform("light_pos", light);
+	shader.uniform("light_pos", light.position);
+	shader.uniform("light_color", light.color);
 
 	shader.uniform("albedo_map", 0);
 	shader.uniform("normal_map", 1);

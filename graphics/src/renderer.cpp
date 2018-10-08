@@ -68,15 +68,15 @@ void Renderer::render(
 	if (!is_menu && connected)
 	{
 		render_character(shaders[0], 
-			game_camera, light.position, scene->models, new_player_count);
-		render_type(shaders[0], game_camera, light.position, scene->models);
+			game_camera, light, scene->models, new_player_count);
+		render_type(shaders[0], game_camera, light, scene->models);
 	}
 	else if (!is_menu)
 	{
 		if(debug)
 			render_character(shaders[0], 
-				db_camera, light.position, scene->models, 4);
-		render_type(shaders[0], db_camera, light.position, scene->models);
+				db_camera, light, scene->models, 4);
+		render_type(shaders[0], db_camera, light, scene->models);
 
 		light_box.render(db_camera);
 	}
@@ -194,22 +194,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_on)
 	{
-		auto index = 0;
-		for (const auto& direction : directions)
-		{
-			using glm::vec2;
-			float speed = 10.0f;
-			float dt = delta.count() / 1000.0f;
-			vec2 offset = vec2{ direction.x, direction.z } * speed * dt;
-
-			if (move_char)
-			{
-				scene->models[index].move(offset);
-				scene->v[index] += offset;
-			}
-			++index;
-		}
-
 		if (begin[0][button::glow] == button_state::pressed)
 		{
 			want_glow = !want_glow;

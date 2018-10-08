@@ -84,7 +84,7 @@ void Game::render()
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_data(),
 		db_coll, menu.on(),
-		net_out.player_count > 1, menu.debug());
+		false, menu.debug());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -131,8 +131,15 @@ void Game::update(std::chrono::milliseconds delta)
 
 	physics.update(delta);
 
+	if ((*local_input)[button::jump] == button_state::pressed)
+		physics.dynamic_rigidbodies[0].add_force(glm::vec2{0.0f, 50.0f});
+
 	for (int i = 0; i < 4; ++i)
+	{	
+		physics.dynamic_rigidbodies[i].add_force(net_out.directions[i]);
+		level.v[i] = physics.dynamic_positions[i];
 		level.models[i].set_position(physics.dynamic_positions[i]);
+	}		
 
 	renderer.update(delta,
 		std::begin(player_inputs.components),
@@ -140,6 +147,6 @@ void Game::update(std::chrono::milliseconds delta)
 		net_out.directions,
 		chat[1], net_out.player_count,
 		net_out.player_id, chat.is_on(),
-		net_out.player_count >= 1);
+		false);
 
 }
