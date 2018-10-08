@@ -21,12 +21,15 @@ Mesh::Mesh(const std::string& meshfile)
 
 	name = custom_mesh->transform->meshName;
 
-	center_pivot = glm::vec3(
-		custom_mesh->customMayaAttribute->centerPivot[0], 
-		custom_mesh->customMayaAttribute->centerPivot[1], 
-		custom_mesh->customMayaAttribute->centerPivot[2]);
-	height = custom_mesh->customMayaAttribute->height;
-	width = custom_mesh->customMayaAttribute->width;
+	center_pivot = glm::vec3(custom_mesh->customMayaAttribute->centerPivot[0], custom_mesh->customMayaAttribute->centerPivot[1], custom_mesh->customMayaAttribute->centerPivot[2]);
+
+	textures.reserve(sizeof(Texture) * 3);
+	textures.emplace_back("../resources/textures/" + name + "_BaseColor.png");
+	textures.emplace_back("../resources/textures/" + name + "_Normal.png");
+	textures.emplace_back("../resources/textures/" + name + "_Metallic.png");
+	textures.emplace_back("../resources/textures/" + name + "_Roughness.png");
+	textures.emplace_back("../resources/textures/" + name + "_AO.png");
+	textures.emplace_back("../resources/textures/" + name + "_Emissive.png");
 
 	glBindVertexArray(vao_id);
 	for (auto i = 0; i < 7; ++i)
@@ -90,7 +93,7 @@ Mesh::Mesh(const std::string& meshfile)
 
 Mesh::~Mesh()
 {
-	//delete custom_mesh;
+	delete custom_mesh;
 }
 
 void Mesh::render()const

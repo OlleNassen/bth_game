@@ -15,5 +15,5 @@ public:
 	~CustomLevel();
 
 	Counter counterReader;
-	std::vector <LevelObject*> levelObjects;
+	LevelObject* levelObjects;
 };
