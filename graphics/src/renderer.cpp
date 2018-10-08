@@ -194,22 +194,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_on)
 	{
-		auto index = 0;
-		for (const auto& direction : directions)
-		{
-			using glm::vec2;
-			float speed = 10.0f;
-			float dt = delta.count() / 1000.0f;
-			vec2 offset = vec2{ direction.x, direction.z } * speed * dt;
-
-			if (move_char)
-			{
-				scene->models[index].move(offset);
-				scene->v[index] += offset;
-			}
-			++index;
-		}
-
 		if (begin[0][button::glow] == button_state::pressed)
 		{
 			want_glow = !want_glow;
