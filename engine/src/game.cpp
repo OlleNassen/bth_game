@@ -121,7 +121,7 @@ void Game::update(std::chrono::milliseconds delta)
 	if(physics.dynamic_rigidbodies[0].can_jump == true)
 		physics.dynamic_rigidbodies[0].add_force(combined_force);
 	else
-		physics.dynamic_rigidbodies[0].add_force({ combined_force.x, 0 });
+		physics.dynamic_rigidbodies[0].add_force({ combined_force.x, 0 }); 
 
 
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
