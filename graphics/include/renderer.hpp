@@ -24,7 +24,6 @@ namespace graphics
 class Renderer
 {
 public:
-	Renderer();
 	Renderer(GameScene* scene);
 
 	void render(
