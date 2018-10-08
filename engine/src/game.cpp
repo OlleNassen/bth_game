@@ -130,10 +130,10 @@ void Game::update(std::chrono::milliseconds delta)
 
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
 	
-	 std::cout << dynamic_pos[0].x << dynamic_pos[0].y << std::endl;
+	 //std::cout << dynamic_pos[0].x << dynamic_pos[0].y << std::endl;
 
-	
-	glm::vec2 updated_player_pos = logic_out.force;
+	/*
+	glm::vec2 updated_player_pos = logic_out.force;*/
 	
 	physics.update(delta);
 
