@@ -24,7 +24,6 @@ namespace graphics
 class Renderer
 {
 public:
-	Renderer();
 	Renderer(GameScene* scene);
 
 	void render(
@@ -96,7 +95,6 @@ private:
 	PointLight light{ glm::vec3(0,2,4), glm::vec3(1,1,1) };
 
 	bool debug_active{ false };
-	bool debug_camera_active{ true };
 };
 
 
