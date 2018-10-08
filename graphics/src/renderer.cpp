@@ -68,15 +68,15 @@ void Renderer::render(
 	if (!is_menu && connected)
 	{
 		render_character(shaders[0], 
-			game_camera, light.position, scene->models, new_player_count);
-		render_type(shaders[0], game_camera, light.position, scene->models);
+			game_camera, light, scene->models, new_player_count);
+		render_type(shaders[0], game_camera, light, scene->models);
 	}
 	else if (!is_menu)
 	{
 		if(debug)
 			render_character(shaders[0], 
-				db_camera, light.position, scene->models, 4);
-		render_type(shaders[0], db_camera, light.position, scene->models);
+				db_camera, light, scene->models, 4);
+		render_type(shaders[0], db_camera, light, scene->models);
 
 		light_box.render(db_camera);
 	}

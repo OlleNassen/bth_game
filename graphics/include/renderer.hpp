@@ -93,7 +93,7 @@ private:
 	PostProcessingEffects post_processing_effects;
 
 	bool want_glow{false};
-	PointLight light{ glm::vec3(0,2,4) };
+	PointLight light{ glm::vec3(0,2,4), glm::vec3(1,1,1) };
 
 	bool debug_active{ false };
 	bool debug_camera_active{ true };
@@ -101,7 +101,7 @@ private:
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const glm::vec3& light, const T& data)
+void render_type(const Shader& shader, const Camera& camera, const PointLight& light, const T& data)
 {
 	shader.use();
 	for (auto i = 4u; i < data.size(); ++i)
@@ -112,7 +112,7 @@ void render_type(const Shader& shader, const Camera& camera, const glm::vec3& li
 }
 
 template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const glm::vec3& light, const T& data, int num_players)
+void render_character(const Shader& shader, const Camera& camera, const PointLight& light, const T& data, int num_players)
 {
 	shader.use();
 	for (auto i = 0; i < num_players; ++i)
