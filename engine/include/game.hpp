@@ -9,6 +9,7 @@
 #include <renderer.hpp>
 #include <network.hpp>
 #include <gameplay.hpp>
+#include <world.hpp>
 
 #include "ecs.hpp"
 #include "mesh_lib.hpp"
@@ -52,6 +53,8 @@ private:
 	
 	network::Output net_out;
 	network::Messenger net;
+
+	physics::World physics;
 	
 	input player_input;
 	std::chrono::milliseconds timestep{16};

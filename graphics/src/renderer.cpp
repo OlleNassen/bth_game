@@ -51,6 +51,7 @@ void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
 	const gui::button_array& buttons,
+	const std::vector<glm::vec2>& debug_positions,
 	bool is_menu,
 	bool connected,
 	bool debug)const
@@ -166,7 +167,7 @@ void Renderer::render(
 			s.uniform("view", game_camera.view());
 		}
 
-		line_debug(scene->physics.get_all_debug());
+		line_debug(debug_positions);
 		glEnable(GL_DEPTH_TEST);
 	}
 
@@ -234,11 +235,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		}
 
 		db_camera.update(delta, directions[0], begin[0].cursor);
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		scene->models[i].set_position(scene->physics.dynamic_positions[i]);
 	}
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);

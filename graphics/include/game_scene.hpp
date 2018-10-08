@@ -6,11 +6,17 @@
 #include <string>
 #include <glm/glm.hpp>
 
-//FIX THIS SOMEONE!!! / Vincent & Lucas
-#include <../../physics/include/world.hpp>
-
 namespace graphics
 {
+
+struct collision_data
+{
+	glm::vec2 position; 
+	glm::vec2 offset;
+	float width;
+	float height;
+	bool trigger;
+};
 
 class GameScene
 {
@@ -23,8 +29,7 @@ public:
 
 	glm::vec2 v[4];
 	std::vector<Model> models;
-
-	physics::World physics;
+	std::vector<collision_data> coll_data;
 };
 
 }

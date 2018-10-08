@@ -31,6 +31,7 @@ public:
 		const std::string* begin,
 		const std::string* end,
 		const gui::button_array& buttons,
+		const std::vector<glm::vec2>& debug_positions,
 		bool is_menu,
 		bool connected,
 		bool debug) const;

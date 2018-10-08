@@ -24,6 +24,15 @@ Game::Game()
 	net_out.player_id = 0;
 	net_out.player_count = 1;
 	net_out.directions.fill({ 0.0f, 0.0f, 0.0f });
+
+	physics.add_dynamic_body(level.v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(level.v[1], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(level.v[2], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(level.v[3], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+
+	for (auto& coll : level.coll_data)
+		physics.add_static_body(coll.position, 
+			coll.offset, coll.width, coll.height, coll.trigger);
 }
 
 void Game::run()
@@ -69,10 +78,12 @@ void Game::run()
 }
 
 void Game::render()
-{
+{	
+	std::vector<glm::vec2> db_coll = physics.get_all_debug();
+	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_data(),
-		menu.on(),
+		db_coll, menu.on(),
 		net_out.player_count > 1, menu.debug());
 }
 
@@ -108,7 +119,10 @@ void Game::update(std::chrono::milliseconds delta)
 	logic_out = gameplay.update({delta, local_input});
 	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
 	
-	level.physics.update(delta);
+	physics.update(delta);
+
+	for (int i = 0; i < 4; ++i)
+		level.models[i].set_position(physics.dynamic_positions[i]);
 
 	renderer.update(delta,
 		std::begin(player_inputs.components),
