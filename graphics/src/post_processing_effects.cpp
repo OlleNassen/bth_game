@@ -1,6 +1,9 @@
 #include "post_processing_effects.hpp"
 #include <cmath>
 
+namespace graphics
+{
+
 PostProcessingEffects::PostProcessingEffects()
 :texture("../resources/textures/screen_warning.png")
 {
@@ -33,5 +36,7 @@ void PostProcessingEffects::update(std::chrono::milliseconds delta)
 
 void PostProcessingEffects::initialize_textures()
 {
+
+}
 
 }

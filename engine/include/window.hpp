@@ -171,6 +171,7 @@ public:
 
 	void show_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
 	void hide_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
+	void title(const char* title) { glfwSetWindowTitle(glfw_window, title); }
 	
 private:
 	GLFWwindow* glfw_window;

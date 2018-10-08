@@ -4,6 +4,9 @@
 #include <iostream>
 #include "texture.hpp"
 
+namespace graphics
+{
+
 class Framebuffer
 {
 public:
@@ -19,5 +22,7 @@ public:
 private:
 	unsigned int fbo;
 };
+
+}
 
 #endif

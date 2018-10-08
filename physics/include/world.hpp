@@ -10,6 +10,8 @@
 #include <vector>
 #include <math.h>
 
+
+#include "static_collision.hpp"
 #include "rigidbody.hpp"
 #include "boxcollider.hpp"
 
@@ -21,10 +23,11 @@ class World
 {
 public:
 	World();
-	~World();
+	World(int nr_of_players);
 
-	void add_dynamic_body(glm::vec2 start_force, float width, float height, glm::vec2 offset, glm::vec2 start_position);
-	void add_static_body(float width, float height, glm::vec2 offset, glm::vec2 start_position);
+	//void add_dynamic_body(glm::vec2 start_force, float width, float height, glm::vec2 offset, glm::vec2 start_position);
+	void add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force);
+	void add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
 
 	//Dynamic
 	std::vector<Rigidbody> dynamic_rigidbodies;
@@ -35,12 +38,20 @@ public:
 	std::vector<Box> static_box_colliders;
 	std::vector<glm::vec2> static_positions;
 
-	void update(std::chrono::milliseconds delta);
+	//void update(std::chrono::milliseconds delta);
+	std::vector<glm::vec2> update(std::chrono::milliseconds delta);
+
+	void load_players(std::vector<glm::vec2> player_pos);
+	void load_static_bodies(std::vector<Static_collider> static_bodies);
 
 	std::vector<glm::vec2> get_forces()const;
 	bool intersects(const int box_id, const int target_box_id);
-private:
 
+	std::vector<glm::vec2> get_all_debug()const;
+private:
+	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
+
+	int nr_of_players = 0;
 };
 
 }

@@ -2,6 +2,9 @@
 
 #include "primitives.hpp"
 
+namespace graphics
+{
+
 UserInterface::UserInterface()
 {
 	elements.fill({ {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f } });
@@ -71,4 +74,6 @@ void UserInterface::rebind_buffers()
 
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(gui_element), (void*)(sizeof(glm::vec2) * 2));
+}
+
 }

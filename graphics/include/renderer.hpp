@@ -14,6 +14,9 @@
 #include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"
 
+namespace graphics
+{
+
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -35,8 +38,7 @@ public:
 	void update(std::chrono::milliseconds delta,
 		const input* begin,
 		const input* end,
-		const glm::vec3* begin_v,
-		const glm::vec3* end_v,
+		const std::array<glm::vec3, 4>& directions,
 		const std::string& data,
 		int num_players,
 		int id,
@@ -82,7 +84,7 @@ template <typename T>
 void render_type(const Shader& shader, const Camera& camera, const glm::vec3& light, const T& data)
 {
 	shader.use();
-	for (auto i = 4; i < data.size(); ++i)
+	for (auto i = 4u; i < data.size(); ++i)
 	{
 		const auto& renderable = data[i];
 		renderable.render(shader, camera, light);
@@ -98,6 +100,8 @@ void render_character(const Shader& shader, const Camera& camera, const glm::vec
 		const auto& renderable = data[i];
 		renderable.render(shader, camera, light);
 	}
+}
+
 }
 
 #endif

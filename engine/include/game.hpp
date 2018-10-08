@@ -6,15 +6,17 @@
 #include <vector>
 #include <chrono>
 
-#include <gameplay.hpp>
 #include <renderer.hpp>
-#include <host.hpp>
+#include <network.hpp>
+#include <gameplay.hpp>
+#include <world.hpp>
+
 #include "ecs.hpp"
 #include "mesh_lib.hpp"
 #include "game_scene.hpp"
 #include "window.hpp"
 #include "input.hpp"
-#include <lua_load.hpp>
+
 #include "gui.hpp"
 #include "timer.hpp"
 
@@ -34,37 +36,36 @@ class Game
 {
 public:
 	Game();
-	~Game();
 	void run();
+
 private:
-	void render();
+	void render(std::vector<glm::vec2> debug_positions);
 	void update(std::chrono::milliseconds delta);
 	
-	std::unique_ptr<Host> host;
-	std::chrono::milliseconds timestep{16};
-
-	MeshLib* mesh_lib;
-	GameScene* level;
-
-	Window window;
-	input player_input;
+	Window window; //PUT BELOW WINDOW IF OPENGL RELATED
 	
-	logic::Gameplay gameplay;
-	Renderer* renderer;
+	graphics::MeshLib mesh_lib;
+	graphics::GameScene level;
+	graphics::Renderer renderer;
 
-	player_data net_data;
+	logic::Output logic_out;
+	logic::Gameplay gameplay;
+	
+	network::Output net_out;
+	network::Messenger net;
+
+	physics::World physics;
+	
+	input player_input;
+	std::chrono::milliseconds timestep{16};
 	
 	input_array<4> player_inputs;
 	input* local_input{ &player_inputs.components[0] };
 	gui::Chat chat;
-	gui::Menu menu;
-	
-	LuaLoad luaLoad; //Test
-	
-	
+	gui::Menu menu;	
 };
 
 
 
-#endif
 
+#endif

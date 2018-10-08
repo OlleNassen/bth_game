@@ -1,9 +1,13 @@
-#pragma once
-#include <gl\glew.h>
-#include <glm\glm.hpp>
+#ifndef STUPID_FILE_HPP
+#define STUPID_FILE_HPP
+#include <gl/glew.h>
+#include <glm/glm.hpp>
 #include "shader.hpp"
 #include "camera.hpp"
 #include "texture.hpp"
+
+namespace graphics
+{
 
 class Temp
 {
@@ -111,10 +115,10 @@ public:
 	void render(const Shader & shader, const DebugCamera& camera)const
 	{
 		shader.uniform("model", glm::mat4(1.f));
-		shader.uniform("view", camera.view_matrix());
-		shader.uniform("projection", camera.projection_matrix());
+		shader.uniform("view", camera.view());
+		shader.uniform("projection", camera.projection);
 
-		shader.uniform("view_position", glm::vec3{ camera.view_position() });
+		shader.uniform("view_position", glm::vec3{ camera.position });
 
 		static glm::vec3 light_pos = glm::vec3(-15, -2, 6);
 		light_pos.x += glm::sin(glfwGetTime() * 2.0f);
@@ -140,3 +144,7 @@ private:
 	std::vector<Texture>textures;
 
 };
+
+}
+
+#endif

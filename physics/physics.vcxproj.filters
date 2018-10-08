@@ -24,6 +24,9 @@
     <ClInclude Include="include\world.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\static_collision.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\boxcollider.cpp">

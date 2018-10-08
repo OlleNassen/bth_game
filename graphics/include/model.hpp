@@ -12,6 +12,9 @@
 
 //TEMP MODEL CLASS, TECHNICAL ARTISTS FEEL FREE TO CHANGE THIS
 
+namespace graphics
+{
+
 class Model
 {
 public:
@@ -37,5 +40,7 @@ private:
 	glm::vec3 emissive_color;
 	glm::vec3 light_pos{ 0, 3, 1 };
 };
+
+}
 
 #endif

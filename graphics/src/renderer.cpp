@@ -5,6 +5,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "../../engine/include/timer.hpp"
 
+namespace graphics
+{
+
 using namespace std::chrono_literals;
 
 Renderer::Renderer()
@@ -18,9 +21,8 @@ Renderer::Renderer(GameScene* scene)
 	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, t{ 300s }
+	, scene { scene }
 {
-	this->scene = scene;
-
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
 		"../resources/shaders/pbr.vs",
@@ -37,7 +39,10 @@ Renderer::Renderer(GameScene* scene)
 	shaders.emplace_back(
 		"../resources/shaders/temp.vs",
 		"../resources/shaders/temp.fs");
-
+	shaders.emplace_back(
+		"../resources/shaders/lines.vs",
+		"../resources/shaders/lines.fs");
+	
 	db_camera.position.z = 20.0f;
 }
 
@@ -87,7 +92,7 @@ void Renderer::render(
 	shaders[1].uniform("projection", projection);
 	shaders[1].uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
 
-	auto offset = 0;
+	auto offset = 0.0f;
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -95,12 +100,12 @@ void Renderer::render(
 		[this, &offset, begin](const auto& s)
 	{
 		if (&s == begin || is_chat_visible)
-			text.render_text(s.c_str(), 10, (offset += 25), 0.5f);
+			text.render_text(s.c_str(), 10.0f, (offset += 25.0f), 0.5f);
 	});
 
-	constexpr auto size_y = 720 / 12;
+	constexpr float size_y = static_cast<int>(720 / 12);
 
-	for (auto i = 0; i < buttons.size(); ++i)
+	for (auto i = 0u; i < buttons.size(); ++i)
 	{
 		auto& button = buttons[i];
 		if (button.state == gui::button_state::selected)
@@ -127,6 +132,8 @@ void Renderer::render(
 	}
 
 
+		
+
 	glEnable(GL_DEPTH_TEST);
 
 	// Post Processing Effects
@@ -139,13 +146,35 @@ void Renderer::render(
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
+
+	/*if (debug_active)
+	{
+		glDisable(GL_DEPTH_TEST);
+		auto& s = shaders[5];
+
+		if (debug_camera_active)
+		{
+			s.use();
+			s.uniform("projection", db_camera.projection);
+			s.uniform("view", db_camera.view());
+		}
+		else
+		{
+			s.use();
+			s.uniform("projection", game_camera.projection);
+			s.uniform("view", game_camera.view());
+		}
+
+		line_debug(debug_positions);
+		glEnable(GL_DEPTH_TEST);
+	}*/
+
 }
 
 void Renderer::update(std::chrono::milliseconds delta,
 	const input* begin,
 	const input* end,
-	const glm::vec3* begin_v,
-	const glm::vec3* end_v,
+	const std::array<glm::vec3, 4>& directions,
 	const std::string& data,
 	int num_players,
 	int id,
@@ -164,21 +193,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (!is_on)
 	{
 		auto index = 0;
-		std::for_each(begin_v, end_v, [&](auto& direction)
+		for (const auto& direction : directions)
 		{
 			using glm::vec2;
-			float speed{ 10.f };
-			vec2 offset{ 0.0f, 0.0f };
+			float speed = 10.0f;	
 			float dt = delta.count() / 1000.0f;
-
-			if (direction.z > 0.5f)
-				offset += vec2{ 0, speed } * dt;
-			if (direction.x < -0.5f)
-				offset += vec2{ -speed, 0 } * dt;
-			if (direction.z < -0.5f)
-				offset += vec2{ 0, -speed } * dt;
-			if (direction.x > 0.5f)
-				offset += vec2{ speed, 0 } * dt;
+			vec2 offset = vec2{ direction.x, direction.z } * speed * dt;
 
 			if (move_char)
 			{
@@ -186,7 +206,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 				scene->v[index] += offset;
 			}
 			++index;
-		});
+		}
 	
 		if (begin[0][button::glow] == button_state::pressed)
 		{
@@ -202,11 +222,13 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
-		db_camera.update(delta, begin_v[0], begin[0].cursor);
+		db_camera.update(delta, directions[0], begin[0].cursor);
 	}
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
 
 	light.position = light.position + glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
 	light_box.set_position(light.position);
+}
+
 }

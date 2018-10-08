@@ -6,6 +6,8 @@
 #include "shader.hpp"
 #include "helpers.hpp"
 
+namespace graphics
+{
 
 struct gui_element
 {
@@ -32,5 +34,7 @@ private:
 
 	std::array<gui_element, 100> elements;
 };
+
+}
 
 #endif

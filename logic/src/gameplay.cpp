@@ -14,14 +14,15 @@ void Gameplay::refresh()
 
 }
 
-void Gameplay::update(std::chrono::milliseconds delta)
+Output Gameplay::update(Input input)
 {
-	
-	
 	for (auto& entity : entities)
 	{
-		scripts[entity].update(delta);
+		scripts[entity].update(input.delta);
 	}
+
+	glm::vec2 updated_player_pos = luaLoad.process_input(*input.local_input, input.delta);
+	return Output{ updated_player_pos };
 }
 
 

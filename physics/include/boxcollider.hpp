@@ -8,7 +8,7 @@ class Box
 {
 public:
 	Box();
-	Box(float _width, float _height, glm::vec2 _offset);
+	Box(float _width, float _height, glm::vec2 _offset, bool _is_trigger);
 
 	void set_height(float to_height);
 	void set_width(float to_width);
@@ -27,17 +27,17 @@ public:
 	glm::vec2 get_bottom_left()const;
 	glm::vec2 get_bottom_right()const;
 
+	bool get_trigger()const;
+
 private:
 	glm::vec2 top_left;
-	glm::vec2 top_right;
-
-	glm::vec2 bottom_left;
-	glm::vec2 bottom_right;
 
 	glm::vec2 offset;
 
 	float width;
 	float height;
+
+	bool is_trigger;
 };
 
 #endif

@@ -1,8 +1,12 @@
-#pragma once
+#ifndef GAME_SCENE_HPP
+#define GAME_SCENE_HPP
 #include "model.hpp"
 #include "LeapImporter\LeapImporter\LeapLevel.h"
 #include <vector>
 #include <string>
+
+namespace graphics
+{
 
 class GameScene
 {
@@ -16,3 +20,7 @@ public:
 	glm::vec2 v[4];
 	std::vector<Model> models;
 };
+
+}
+
+#endif

@@ -4,6 +4,9 @@
 
 //Basic STB_image texture class
 
+namespace graphics
+{
+
 class Texture
 {
 public:
@@ -19,5 +22,7 @@ private:
 	int height;
 	int num_components;
 };
+
+}
 
 #endif
