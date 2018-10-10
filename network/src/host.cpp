@@ -94,17 +94,16 @@ void Server::update(player_data* data)
 			ENetPacket* enet_packet = enet_packet_create(data, sizeof(player_data) + 1,
 				ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 			enet_peer_send(peer, 0, enet_packet);
-
-			enet_host_flush(enet_host);
 		}		
 	}
-	data->player_id = 0;
-	
+		
 	using namespace std::chrono_literals;
 	host_service(0ms, enet_host,
 		[this, data](const ENetEvent& event) { recieve(event, data); },
 		[this](const ENetEvent& event) { connect(event); },
 		[this](const ENetEvent& event) { disconnect(event); });	
+	
+	data->player_id = 0;
 }
 
 void Server::recieve(const ENetEvent& event, player_data* data)
