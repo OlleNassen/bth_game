@@ -113,7 +113,7 @@ void Game::update(std::chrono::milliseconds delta)
 	std::vector<glm::vec2> forces = physics.get_forces();
 
 	net_out = net.update({ chat[1], net_out.directions, physics.dynamic_positions, forces });
-	local_input = &player_inputs.components[net_out.player_id];
+	//local_input = &player_inputs.components[net_out.player_id];
 
 	for (auto i = 0; i < 4; ++i)
 		physics.dynamic_positions[i] = net_out.positions[i];
