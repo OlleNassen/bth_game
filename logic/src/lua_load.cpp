@@ -30,7 +30,7 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 {
 	force = { 0, 0 };
 
-	//std::cout << can_lua_jump << std::endl;
+	/*std::cout << delta.count() << std::endl;*/
 
 	lua_pushnumber(lua_input.getLuaState(), delta.count());
 	lua_setglobal(lua_input.getLuaState(), "dt");

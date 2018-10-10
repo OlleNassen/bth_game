@@ -5,7 +5,7 @@ function start()
 	player.x = 0
 	player.y = 0
 	player.is_dead = false
-	WALK_SPEED = 120
+	WALK_SPEED = 85
 	JUMP_FORCE = 50
 
 end

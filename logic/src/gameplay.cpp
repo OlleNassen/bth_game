@@ -30,6 +30,8 @@ Output Gameplay::update(Input input)
 	{
 		scripts[entity].update(input.delta, input.directions[0], velocities[0]);
 	}*/
+
+
 	// TEMP!!!
 	for (auto i = 0; i < 4; ++i)
 	{

@@ -152,6 +152,7 @@ void Renderer::render(
 	{
 		text.render_text("GAME OVER!", 1280 / 2.f, 720 / 2.f, 2.0f);
 	}
+
 	else
 	{
 		text.render_text(t.to_string(), 0, 700, 0.5f);

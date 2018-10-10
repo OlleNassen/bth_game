@@ -63,6 +63,8 @@ private:
 	input* local_input{ &player_inputs.components[0] };
 	gui::Chat chat;
 	gui::Menu menu;	
+
+	int* leader_board = NULL;
 };
 
 

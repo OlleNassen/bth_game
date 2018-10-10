@@ -33,6 +33,8 @@ Game::Game()
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
+
+	leader_board = new int[net_out.player_count];
 }
 
 void Game::run()
@@ -135,9 +137,9 @@ void Game::update(std::chrono::milliseconds delta)
 	physics.update(delta);
 
 	/*if ((*local_input)[button::jump] == button_state::pressed)
-		physics.dynamic_rigidbodies[0].add_force(glm::vec2{0.0f, 50.0f});*/
+		physics.dynamic_rigidbodies[0].add_force(glm::vec2{0.0f, 50.0f});
 
-	/*for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 4; ++i)
 	{	
 		if (net.connected())
 			physics.dynamic_rigidbodies[i].add_force(logic_out.velocities[i]);
@@ -148,7 +150,7 @@ void Game::update(std::chrono::milliseconds delta)
 	for (int i = 0; i < 4; ++i)
 	{	
 		if (net.connected())
-			physics.dynamic_rigidbodies[i].add_force(logic_out.force);
+			//physics.dynamic_rigidbodies[i].add_force(logic_out.force);
 		level.v[i] = physics.dynamic_positions[i];
 		level.models[i].set_position(physics.dynamic_positions[i]);
 	}

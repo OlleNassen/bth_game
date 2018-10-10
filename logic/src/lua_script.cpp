@@ -7,8 +7,6 @@ LuaScript::LuaScript()
 	stack.setglobal("entities");
 }
 
-//	: stack{filename.c_str()}
-
 LuaScript::LuaScript(const std::string& filename)
 	: stack{filename.c_str()}
 {
