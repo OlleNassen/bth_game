@@ -115,8 +115,8 @@ void Game::update(std::chrono::milliseconds delta)
 	net_out = net.update({ chat[1], net_out.directions, physics.dynamic_positions, forces });
 	local_input = &player_inputs.components[net_out.player_id];
 
-	for (auto i = 0; i < 4; ++i)
-		physics.dynamic_positions[i] = net_out.positions[i];
+	//for (auto i = 0; i < 4; ++i)
+		//physics.dynamic_positions[i] = net_out.positions[i];
 
 	chat.update(delta);
 	menu.update(delta, *local_input);

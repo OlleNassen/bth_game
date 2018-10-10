@@ -23,7 +23,7 @@ void Client::update(player_data* data)
 	data->player_count = player_count;
 	data->player_id = player_id;
 	
-	ENetPacket* enet_packet = enet_packet_create(data, sizeof(glm::vec3) * 4 + 1,
+	ENetPacket* enet_packet = enet_packet_create(data, sizeof(player_data) * 4 + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 
 	if (!peer)
