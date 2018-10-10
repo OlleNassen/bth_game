@@ -20,6 +20,8 @@ Client::~Client()
 
 void Client::update(player_data* data)
 {
+	data->player_id = player_id;
+	
 	ENetPacket* enet_packet = enet_packet_create(data, sizeof(glm::vec3) * 4 + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 

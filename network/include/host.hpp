@@ -41,7 +41,6 @@ class Host
 public:
 	virtual ~Host() = default;
 	virtual void update(player_data* data) = 0;
-
 	bool connected = false;
 };
 
@@ -58,7 +57,9 @@ public:
 private:
 	void recieve(const ENetEvent& event, player_data* data);
 	void connect(const ENetEvent& event);
-	void disconnect(const ENetEvent& event);	
+	void disconnect(const ENetEvent& event);
+
+	int player_id = 0;
 
 	ENetAddress address;
 	ENetHost* enet_host;
