@@ -57,7 +57,7 @@ void Skybox::render(const Shader& shader, const Camera& camera) const
 	shader.uniform("projection", camera.projection);
 
 
-	texture.bind(5);
+	texture.bind(5, GL_TEXTURE_CUBE_MAP);
 
 	glDepthFunc(GL_LEQUAL);
 	glBindVertexArray(vao_id);

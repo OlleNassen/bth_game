@@ -2,6 +2,7 @@
 #define TEXTURE_HPP
 #include <string>
 #include <vector>
+#include <gl/glew.h>
 
 //Basic STB_image texture class
 
@@ -15,7 +16,9 @@ public:
 	Texture(const std::string& path);
 	~Texture() = default;
 
-	virtual void bind(unsigned int index)const;
+	void bind(unsigned int index, 
+		GLenum type = GL_TEXTURE_2D)const;
+	
 	void load_texture(const std::string& path);
 protected:
 	unsigned int texture_id;
@@ -30,7 +33,7 @@ class SkyboxTexture : public Texture
 public:
 	SkyboxTexture(const std::vector<std::string>& paths);
 
-	void bind(unsigned int index)const override;
+	//void bind(unsigned int index)const override;
 	void load_texture(const std::vector<std::string>& paths);
 };
 

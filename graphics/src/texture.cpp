@@ -12,10 +12,10 @@ Texture::Texture(const std::string& path)
 	load_texture(path);
 }
 
-void Texture::bind(unsigned int index)const
+void Texture::bind(unsigned int index, GLenum type)const
 {
 	glActiveTexture(GL_TEXTURE0 + index);
-	glBindTexture(GL_TEXTURE_2D, texture_id);
+	glBindTexture(type, texture_id);
 }
 
 void Texture::load_texture(const std::string & path)
@@ -49,12 +49,6 @@ SkyboxTexture::SkyboxTexture(const std::vector<std::string>& paths)
 
 {
 	load_texture(paths);
-}
-
-void SkyboxTexture::bind(unsigned int index) const
-{
-	glActiveTexture(GL_TEXTURE0 + 5);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, index);
 }
 
 void SkyboxTexture::load_texture(const std::vector<std::string>& paths)
