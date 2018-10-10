@@ -43,15 +43,20 @@ void Framebuffer::bind_framebuffer() const
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 }
 
-void Framebuffer::bind_texture() const
+void Framebuffer::bind_texture(int index) const
 {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, fbo_texture);
+	switch(index)
+	{
+	case 0: // texture
+		glActiveTexture(GL_TEXTURE0 + index);
+		glBindTexture(GL_TEXTURE_2D, fbo_texture);
+		break;
+	case 1: // depth texture
+		glActiveTexture(GL_TEXTURE0 + index);
+		glBindTexture(GL_TEXTURE_2D, depth_texture);
+		break;
+	}
+
 }
 
-void Framebuffer::bind_depth() const
-{
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, depth_texture);
-}
 }

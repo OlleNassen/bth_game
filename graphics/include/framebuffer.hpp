@@ -14,15 +14,12 @@ public:
 	~Framebuffer();
 
 	void bind_framebuffer() const;
-	void bind_texture() const;
-	void bind_depth() const;
-
-	unsigned int fbo_texture;
-	unsigned int fbo_depth;
-	unsigned int depth_texture;
-
+	void bind_texture(int index) const;
 private:
+	unsigned int fbo_texture;
+	unsigned int depth_texture;
 	unsigned int fbo;
+
 };
 
 }

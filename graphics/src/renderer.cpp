@@ -145,8 +145,8 @@ void Renderer::render(
 	shaders[3].uniform("depth_texture", 1);
 	shaders[3].uniform("screen_warning", 2);
 
-	scene_texture.bind_texture();
-	scene_texture.bind_depth();
+	scene_texture.bind_texture(0);
+	scene_texture.bind_texture(1);
 	post_processing_effects.texture.bind(2);
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
