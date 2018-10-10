@@ -60,6 +60,7 @@ private:
 	void disconnect(const ENetEvent& event);
 
 	int player_id = 0;
+	int player_count = 0;
 
 	ENetAddress address;
 	ENetHost* enet_host;
