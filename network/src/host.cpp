@@ -50,6 +50,8 @@ void Client::recieve(const ENetEvent& event, player_data* data)
 		if (i != data->player_id)
 		{
 			data->directions[i] = new_data->directions[i];
+			data->positions[i] = new_data->positions[i];
+			data->velocities[i] = new_data->velocities[i];
 		}
 	}
 }
@@ -118,6 +120,8 @@ void Server::recieve(const ENetEvent& event, player_data* data)
 		if (&new_data->directions[i] != index)
 		{
 			data->directions[i] = new_data->directions[i];
+			data->positions[i] = new_data->positions[i];
+			data->velocities[i] = new_data->velocities[i];
 		}
 	}
 }

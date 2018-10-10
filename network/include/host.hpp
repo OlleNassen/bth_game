@@ -14,6 +14,8 @@ struct player_data
 	int player_id = 0;
 	int player_count = 1;
 	std::array<glm::vec3, 4> directions;
+	std::array<glm::vec2, 4> positions;
+	std::array<glm::vec2, 4> velocities;
 };
 
 template <typename F1, typename F2, typename F3>
