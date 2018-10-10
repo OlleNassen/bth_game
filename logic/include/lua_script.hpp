@@ -16,8 +16,9 @@ class LuaScript
 public:
 	LuaScript();
 	LuaScript(const std::string& filename);
-
-	void update(std::chrono::milliseconds delta);
+	
+	void setup(int entity);
+	void update(std::chrono::milliseconds delta, const glm::vec3& direction, glm::vec2& velocity);
 
 
 private:

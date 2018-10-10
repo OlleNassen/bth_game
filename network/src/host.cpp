@@ -123,11 +123,17 @@ void Server::recieve(const ENetEvent& event, player_data* data)
 
 void Server::connect(const ENetEvent& event)
 {
-	peers[num_peers++] = event.peer;
+	++num_peers;
+	using namespace std;
+	auto& peer = *find(begin(peers), end(peers), nullptr);
+	peer = event.peer;
 }
 
 void Server::disconnect(const ENetEvent& event)
 {
-
+	--num_peers;
+	using namespace std;
+	auto& peer = *find(begin(peers), end(peers), event.peer);
+	peer = nullptr;
 }
 
