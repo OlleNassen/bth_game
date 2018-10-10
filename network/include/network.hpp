@@ -29,6 +29,8 @@ class Messenger
 public:
 	Messenger();
 	~Messenger();
+
+	bool connected() const { return static_cast<bool>(host); }
 	
 	Output update(Input input);
 

@@ -13,6 +13,7 @@
 #include "../../engine/include/timer.hpp"
 #include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"
+#include "skybox.hpp"
 
 namespace graphics
 {
@@ -24,7 +25,6 @@ namespace graphics
 class Renderer
 {
 public:
-	Renderer();
 	Renderer(GameScene* scene);
 
 	void render(
@@ -70,6 +70,7 @@ private:
 	std::vector<Model> models;
 
 	Box light_box;
+	Skybox skybox;
 
 	Text text;
 	UserInterface ui;
@@ -96,7 +97,6 @@ private:
 	PointLight light{ glm::vec3(0,2,4), glm::vec3(1,1,1) };
 
 	bool debug_active{ false };
-	bool debug_camera_active{ true };
 };
 
 

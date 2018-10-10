@@ -84,7 +84,7 @@ void Game::render()
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_data(),
 		db_coll, menu.on(),
-		false, menu.debug());
+		net.connected(), menu.debug());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -129,6 +129,9 @@ void Game::update(std::chrono::milliseconds delta)
 
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
 
+	logic_out = gameplay.update({delta, local_input, net_out.directions});
+	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
+	
 	physics.update(delta);
 
 	/*if ((*local_input)[button::jump] == button_state::pressed)
@@ -136,7 +139,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 	for (int i = 0; i < 4; ++i)
 	{	
-		physics.dynamic_rigidbodies[i].add_force(net_out.directions[i]);
+		if (net.connected())
+			physics.dynamic_rigidbodies[i].add_force(logic_out.velocities[i]);
 		level.v[i] = physics.dynamic_positions[i];
 		level.models[i].set_position(physics.dynamic_positions[i]);
 	}		
@@ -147,6 +151,6 @@ void Game::update(std::chrono::milliseconds delta)
 		net_out.directions,
 		chat[1], net_out.player_count,
 		net_out.player_id, chat.is_on(),
-		false);
+		net.connected());
 
 }
