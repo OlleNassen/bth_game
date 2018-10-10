@@ -135,12 +135,12 @@ void main()
     // this ambient lighting with environment lighting).
     vec3 ambient = vec3(0.03) * albedo * ao;
     
-    vec3 color = ambient + Lo;
+    vec3 color = ambient + Lo + emission; //emissive here?
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
-    frag_color = vec4(color + emission, 1.0);
+    frag_color = vec4(color, 1.0);
 }
