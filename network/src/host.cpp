@@ -113,17 +113,12 @@ void Server::update(player_data* data)
 void Server::recieve(const ENetEvent& event, player_data* data)
 {
 	const auto* new_data = reinterpret_cast<player_data*>(event.packet->data);
-	const auto* index = &new_data->directions[0];
 
-	for (int i = 0; i < 4; ++i)
-	{
-		if (&new_data->directions[i] != index)
-		{
-			data->directions[i] = new_data->directions[i];
-			data->positions[i] = new_data->positions[i];
-			data->velocities[i] = new_data->velocities[i];
-		}
-	}
+	auto index = new_data->player_id;
+	data->directions[index] = new_data->directions[index];
+	data->positions[index] = new_data->positions[index];
+	data->velocities[index] = new_data->velocities[index];
+
 }
 
 void Server::connect(const ENetEvent& event)
