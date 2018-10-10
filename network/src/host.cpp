@@ -47,12 +47,9 @@ void Client::recieve(const ENetEvent& event, player_data* data)
 	
 	for (int i = 1; i < 4; ++i)
 	{
-		if (i != data->player_id)
-		{
-			data->directions[i] = new_data->directions[i];
-			data->positions[i] = new_data->positions[i];
-			data->velocities[i] = new_data->velocities[i];
-		}
+		data->directions[i] = new_data->directions[i];
+		data->positions[i] = new_data->positions[i];
+		data->velocities[i] = new_data->velocities[i];
 	}
 }
 
