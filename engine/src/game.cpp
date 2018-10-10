@@ -121,8 +121,8 @@ void Game::update(std::chrono::milliseconds delta)
 	
 	physics.update(delta);
 
-	if ((*local_input)[button::jump] == button_state::pressed && net.connected())
-		physics.dynamic_rigidbodies[0].add_force(glm::vec2{0.0f, 50.0f});
+	/*if ((*local_input)[button::jump] == button_state::pressed && net.connected())
+		physics.dynamic_rigidbodies[0].add_force(glm::vec2{0.0f, 50.0f});*/
 
 	for (int i = 0; i < 4; ++i)
 	{	
