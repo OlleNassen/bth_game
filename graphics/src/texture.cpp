@@ -53,7 +53,7 @@ SkyboxTexture::SkyboxTexture(const std::vector<std::string>& paths)
 
 void SkyboxTexture::load_texture(const std::vector<std::string>& paths)
 {
-	stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(false);
 
 	glGenTextures(1, &texture_id);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);

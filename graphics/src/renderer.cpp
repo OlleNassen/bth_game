@@ -67,6 +67,9 @@ void Renderer::render(
 			game_camera, light, scene->models, new_player_count);
 		render_type(shaders[0], game_camera, light, scene->models);
 
+		shaders[6].use();
+		skybox.render(shaders[6], game_camera);
+
 		glDisable(GL_DEPTH_TEST);
 		auto& s = shaders[5];
 		if (debug_active)
@@ -84,6 +87,9 @@ void Renderer::render(
 			render_character(shaders[0], 
 				db_camera, light, scene->models, 4);
 		render_type(shaders[0], db_camera, light, scene->models);
+
+		shaders[6].use();
+		skybox.render(shaders[6], db_camera);
 
 		light_box.render(db_camera);
 		if (debug_active)
@@ -111,9 +117,6 @@ void Renderer::render(
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	shaders[1].uniform("projection", projection);
 	shaders[1].uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
-
-	shaders[6].use();
-	skybox.render(shaders[6], db_camera);
 
 	auto offset = 0.0f;
 

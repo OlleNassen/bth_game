@@ -53,7 +53,7 @@ void Skybox::render(const Shader& shader, const Camera& camera) const
 {
 	shader.use();
 	shader.uniform("skybox", 0);
-	shader.uniform("view", camera.view());
+	shader.uniform("view", glm::mat4(glm::mat3(camera.view())));
 	shader.uniform("projection", camera.projection);
 
 
