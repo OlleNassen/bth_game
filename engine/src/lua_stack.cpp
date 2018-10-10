@@ -13,26 +13,8 @@ LuaStack::LuaStack(const char* path)
 {
 	luaL_openlibs(lua_state);
 	
-	if (luaL_loadfile(lua_state, path))
+	if (luaL_loadfile(lua_state, path) || lua_pcall(lua_state, 0, 0, 0))
 		cout << lua_tostring(lua_state, -1) << nl;
-	
-	newtable();
-	//for (int i = 1; i <= 5; i++) 
-	//{
-	//	push(std::string{"hello" + std::to_string(i)}.c_str());   /* Push the table index */
-	//	push(i * 2); /* Push the cell value */
-	//	rawset(-3);      /* Stores the pair in the table */
-	//}
-	for (int i = 1; i <= 5; i++)
-	{
-		push(i * 2); /* Push the cell value */
-		rawset(-2, i);      /* Stores the pair in the table */
-	}
-	setglobal("foo");
-	
-	call(0, 0);
-
-	//stack_dump(lua_state);
 }
 
 LuaStack::~LuaStack()
@@ -42,7 +24,8 @@ LuaStack::~LuaStack()
 
 void LuaStack::call(int nargs, int nresults)
 {
-	lua_pcall(lua_state, nargs, nresults, 0);
+	if (lua_pcall(lua_state, nargs, nresults, 0))
+		cout << lua_tostring(lua_state, -1) << nl;
 }
 
 void LuaStack::newtable()
