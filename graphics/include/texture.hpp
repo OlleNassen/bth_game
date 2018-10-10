@@ -10,11 +10,19 @@ namespace graphics
 class Texture
 {
 public:
+	//Temp for HDR
+	Texture();
+
 	Texture(const std::string& path);
 	~Texture();
 
 	void bind(unsigned int index)const;
+	void bind_hdr()
+	{
+
+	}
 	void load_texture(const std::string& path);
+	void load_hdr(const std::string& path);
 private:
 	unsigned int texture_id;
 
