@@ -36,11 +36,12 @@ Output Gameplay::update(Input input)
 		scripts[0].update(input.delta, input.directions[i], velocities[i]);
 	}
 
+	/*
 	glm::vec2 updated_player_pos = luaLoad.process_input(*input.local_input, input.delta);
-
 	return Output{ updated_player_pos, velocities };
-	/*glm::vec2 force = luaLoad.process_input(*input.local_input, input.delta);
-	return Output{ force };*/
+	*/
+	glm::vec2 force = luaLoad.process_input(*input.local_input, input.delta);
+	return Output{ force };
 }
 
 
