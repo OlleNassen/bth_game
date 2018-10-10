@@ -13,6 +13,7 @@
 #include "../../engine/include/timer.hpp"
 #include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"
+#include "skybox.hpp"
 
 namespace graphics
 {
@@ -69,6 +70,7 @@ private:
 	std::vector<Model> models;
 
 	Box light_box;
+	Skybox skybox;
 
 	Text text;
 	UserInterface ui;

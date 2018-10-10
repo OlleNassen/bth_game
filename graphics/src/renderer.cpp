@@ -35,7 +35,10 @@ Renderer::Renderer(GameScene* scene)
 	shaders.emplace_back(
 		"../resources/shaders/lines.vs",
 		"../resources/shaders/lines.fs");
-	
+	shaders.emplace_back(
+		"../resources/shaders/ibl.vs",
+		"../resources/shaders/ibl.fs");
+
 	db_camera.position.z = 20.0f;
 }
 
@@ -64,6 +67,9 @@ void Renderer::render(
 			game_camera, light, scene->models, new_player_count);
 		render_type(shaders[0], game_camera, light, scene->models);
 
+		shaders[6].use();
+		skybox.render(shaders[6], game_camera);
+
 		glDisable(GL_DEPTH_TEST);
 		auto& s = shaders[5];
 		if (debug_active)
@@ -81,6 +87,9 @@ void Renderer::render(
 			render_character(shaders[0], 
 				db_camera, light, scene->models, 4);
 		render_type(shaders[0], db_camera, light, scene->models);
+
+		shaders[6].use();
+		skybox.render(shaders[6], db_camera);
 
 		light_box.render(db_camera);
 		if (debug_active)
