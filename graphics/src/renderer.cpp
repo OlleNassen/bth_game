@@ -35,7 +35,10 @@ Renderer::Renderer(GameScene* scene)
 	shaders.emplace_back(
 		"../resources/shaders/lines.vs",
 		"../resources/shaders/lines.fs");
-	
+	shaders.emplace_back(
+		"../resources/shaders/ibl.vs",
+		"../resources/shaders/ibl.fs");
+
 	db_camera.position.z = 20.0f;
 }
 
@@ -108,6 +111,9 @@ void Renderer::render(
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	shaders[1].uniform("projection", projection);
 	shaders[1].uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
+
+	shaders[6].use();
+	skybox.render(shaders[6], db_camera);
 
 	auto offset = 0.0f;
 
