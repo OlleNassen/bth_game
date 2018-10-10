@@ -13,8 +13,18 @@ Messenger::~Messenger()
 }
 
 Output Messenger::update(Input input)
-{
-	player_data net_data = { 0, 1, input.directions };
+{	
+	std::array<glm::vec2, 4> pos;
+	std::array<glm::vec2, 4> vel;
+
+	for (auto i = 0; i < 4; ++i)
+	{
+		pos[i] = input.positions[i];
+		vel[i] = input.velocities[i];
+	}
+		
+	
+	player_data net_data = { 0, 1, input.directions, pos, vel };
 
 	if (!host && !input.chat.empty())
 	{
@@ -32,7 +42,10 @@ Output Messenger::update(Input input)
 		host->update(&net_data);
 	}
 
-	return { net_data.player_id, net_data.player_count, net_data.directions };
+	net_data.positions[net_data.player_id] = input.positions[net_data.player_id];
+	net_data.velocities[net_data.player_id] = input.velocities[net_data.player_id];
+
+	return { net_data.player_id, net_data.player_count, net_data.directions, net_data.positions, net_data.velocities };
 }
 
 }
