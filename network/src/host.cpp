@@ -123,15 +123,23 @@ void Server::recieve(const ENetEvent& event, player_data* data)
 
 void Server::connect(const ENetEvent& event)
 {
-	++num_peers;
-	using namespace std;
-	auto& peer = *find(begin(peers), end(peers), nullptr);
-	peer = event.peer;
+	if (num_peers >= 4)
+	{
+		cout << "Player " << ++num_peers << " connected." << nl;
+		using namespace std;
+		auto& peer = *find(begin(peers), end(peers), nullptr);
+		peer = event.peer;
+	}
+	else
+	{
+		cout << "Game is full. :(" << nl;
+	}
+	
 }
 
 void Server::disconnect(const ENetEvent& event)
 {
-	--num_peers;
+	cout << "Player " << num_peers-- << " disconnected." << nl;
 	using namespace std;
 	auto& peer = *find(begin(peers), end(peers), event.peer);
 	peer = nullptr;
