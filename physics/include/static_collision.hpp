@@ -3,6 +3,9 @@
 
 #include <glm/glm.hpp>
 
+namespace physics
+{
+
 struct Static_collider
 {
 	glm::vec2 start_pos;
@@ -18,5 +21,8 @@ struct Static_collider
 		this->height = height;
 	}
 };
+
+}
+
 
 #endif // !STATIC_COLLISON

@@ -16,21 +16,13 @@ struct DirectionalLight
 
 struct PointLight
 {
-	PointLight(const glm::vec3& pos)
+	PointLight(const glm::vec3& pos, const glm::vec3& col)
 	{
 		position = pos;
+		color = col;
 	}
 	glm::vec3 position;
-
-	//colors
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
-	
-	//attributes
-	float constant;
-	float linear;
-	float quadratic;
+	glm::vec3 color;
 };
 
 struct SpotLight

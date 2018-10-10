@@ -10,13 +10,6 @@ namespace graphics
 
 using namespace std::chrono_literals;
 
-Renderer::Renderer()
-	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
-	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
-	, t{ 300s }
-{
-}
-
 Renderer::Renderer(GameScene* scene)
 	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
@@ -42,7 +35,10 @@ Renderer::Renderer(GameScene* scene)
 	shaders.emplace_back(
 		"../resources/shaders/lines.vs",
 		"../resources/shaders/lines.fs");
-	
+	shaders.emplace_back(
+		"../resources/shaders/ibl.vs",
+		"../resources/shaders/ibl.fs");
+
 	db_camera.position.z = 20.0f;
 }
 
@@ -51,6 +47,7 @@ void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
 	const gui::button_array& buttons,
+	const std::vector<glm::vec2>& debug_positions,
 	bool is_menu,
 	bool connected,
 	bool debug)const
@@ -67,17 +64,46 @@ void Renderer::render(
 	if (!is_menu && connected)
 	{
 		render_character(shaders[0], 
-			game_camera, light.position, scene->models, new_player_count);
-		render_type(shaders[0], game_camera, light.position, scene->models);
+			game_camera, light, scene->models, new_player_count);
+		render_type(shaders[0], game_camera, light, scene->models);
+
+		shaders[6].use();
+		skybox.render(shaders[6], game_camera);
+
+		glDisable(GL_DEPTH_TEST);
+		auto& s = shaders[5];
+		if (debug_active)
+		{
+			s.use();
+			s.uniform("projection", game_camera.projection);
+			s.uniform("view", game_camera.view());
+			line_debug(debug_positions);
+			glEnable(GL_DEPTH_TEST);
+		}
 	}
 	else if (!is_menu)
 	{
 		if(debug)
 			render_character(shaders[0], 
-				db_camera, light.position, scene->models, 4);
-		render_type(shaders[0], db_camera, light.position, scene->models);
+				db_camera, light, scene->models, 4);
+		render_type(shaders[0], db_camera, light, scene->models);
+
+		shaders[6].use();
+		skybox.render(shaders[6], db_camera);
 
 		light_box.render(db_camera);
+		if (debug_active)
+		{
+			glDisable(GL_DEPTH_TEST);
+			auto& s = shaders[5];
+			s.use();
+			s.uniform("projection", game_camera.projection);
+			s.uniform("view", game_camera.view());
+			s.uniform("projection", db_camera.projection);
+			s.uniform("view", db_camera.view());
+			line_debug(debug_positions);
+			glEnable(GL_DEPTH_TEST);
+		}
 	}
 
 	// Text
@@ -146,29 +172,6 @@ void Renderer::render(
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
-
-	/*if (debug_active)
-	{
-		glDisable(GL_DEPTH_TEST);
-		auto& s = shaders[5];
-
-		if (debug_camera_active)
-		{
-			s.use();
-			s.uniform("projection", db_camera.projection);
-			s.uniform("view", db_camera.view());
-		}
-		else
-		{
-			s.use();
-			s.uniform("projection", game_camera.projection);
-			s.uniform("view", game_camera.view());
-		}
-
-		line_debug(debug_positions);
-		glEnable(GL_DEPTH_TEST);
-	}*/
-
 }
 
 void Renderer::update(std::chrono::milliseconds delta,
@@ -192,22 +195,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_on)
 	{
-		auto index = 0;
-		for (const auto& direction : directions)
-		{
-			using glm::vec2;
-			float speed = 10.0f;	
-			float dt = delta.count() / 1000.0f;
-			vec2 offset = vec2{ direction.x, direction.z } * speed * dt;
-
-			if (move_char)
-			{
-				scene->models[index].move(offset);
-				scene->v[index] += offset;
-			}
-			++index;
-		}
-	
 		if (begin[0][button::glow] == button_state::pressed)
 		{
 			want_glow = !want_glow;
@@ -222,8 +209,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 			post_processing_effects.glow_value = 0;
 		}
 
+		if (begin[0][button::debug] == button_state::pressed)
+		{
+			debug_active = !debug_active;
+		}
+
 		db_camera.update(delta, directions[0], begin[0].cursor);
 	}
+
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
 

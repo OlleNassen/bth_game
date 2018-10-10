@@ -18,6 +18,12 @@ LeapMesh * LeapImporter::getMesh(const char* meshName)
 	return newMesh;
 }
 
+LeapAnimation * LeapImporter::getAnimation(const char * meshName)
+{
+	LeapAnimation* newAnimation = new LeapAnimation(meshName);
+	return newAnimation;
+}
+
 CustomLevel * LeapImporter::getLevel(const char * levelName)
 {
 
@@ -34,4 +40,9 @@ void LeapImporter::deleteObject(LeapMesh * mesh)
 void LeapImporter::deleteObject(CustomLevel * level)
 {
 	delete level;
+}
+
+void LeapImporter::deleteObject(LeapAnimation * animation)
+{
+	delete animation;
 }

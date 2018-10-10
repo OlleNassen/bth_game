@@ -19,6 +19,7 @@ uniform sampler2D metallic_map;
 uniform sampler2D roughness_map;
 uniform sampler2D ao_map;
 uniform vec3 player_color;
+uniform vec3 light_color;
 
 const float PI = 3.14159265359;
 
@@ -73,7 +74,7 @@ void main()
 	for(int i = 0; i < 4; i++)
 	{
 		lightPositions[i] = fs_in.tangent_light_pos;
-		lightColors[i] = vec3(1.0, 1.0, 1.0);
+		lightColors[i] = light_color;
 	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
@@ -100,7 +101,7 @@ void main()
         vec3 L = normalize(lightPositions[i] - WorldPos);
         vec3 H = normalize(V + L);
         float distance = length(lightPositions[i] - WorldPos);
-        float attenuation = 1.0 / (distance * distance);
+        float attenuation = 1000 / (distance * distance);
         vec3 radiance = lightColors[i] * attenuation;
 
         // Cook-Torrance BRDF
@@ -134,12 +135,12 @@ void main()
     // this ambient lighting with environment lighting).
     vec3 ambient = vec3(0.03) * albedo * ao;
     
-    vec3 color = ambient + Lo;
+    vec3 color = ambient + Lo + emission; //emissive here?
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
-    frag_color = vec4(color + emission, 1.0);
+    frag_color = vec4(color, 1.0);
 }

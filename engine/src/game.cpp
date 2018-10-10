@@ -24,6 +24,15 @@ Game::Game()
 	net_out.player_id = 0;
 	net_out.player_count = 1;
 	net_out.directions.fill({ 0.0f, 0.0f, 0.0f });
+
+	physics.add_dynamic_body(level.v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(level.v[1], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(level.v[2], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(level.v[3], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+
+	for (auto& coll : level.coll_data)
+		physics.add_static_body(coll.position, 
+			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
 }
 
 void Game::run()
@@ -31,14 +40,6 @@ void Game::run()
 	using clock = std::chrono::steady_clock;
 	auto last_time = clock::now();
 	auto delta_time = 0ns;
-
-	physics.add_dynamic_body({ 10, 10 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body({ -5.0, -5.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body({ 14.0, 2.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body({ -4.0, -20.0 }, { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-
-	physics.add_static_body({ 0.0, -22.0 }, { 0.0, 0.0 }, 1000, 2, false);
-
 	auto frames = 0;
 	std::chrono::duration<float> seconds = 0s;
 
@@ -70,19 +71,20 @@ void Game::run()
 			update(timestep);
 		}
 
-		std::vector<glm::vec2> debug_positions = physics.get_all_debug();
-		render(debug_positions);
+		render();
 		window.swap_buffers();
 		window.poll_events();		
 	}
 }
 
-void Game::render(std::vector<glm::vec2> debug_positions)
-{
-	renderer.render(chat.begin(), chat.end(), 
-		menu.button_data(), 
-		menu.on(),
-		net_out.player_count > 1, menu.debug());
+void Game::render()
+{	
+	std::vector<glm::vec2> db_coll = physics.get_all_debug();
+	
+	renderer.render(chat.begin(), chat.end(),
+		menu.button_data(),
+		db_coll, menu.on(),
+		net.connected(), menu.debug());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -114,24 +116,28 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
-	logic_out = gameplay.update({delta, local_input});
-	glm::vec2 combined_force = logic_out.updated_player_pos;
-
-	//Update new direction force of player to physics
-	if(physics.dynamic_rigidbodies[0].can_jump == true)
-		physics.dynamic_rigidbodies[0].add_force(combined_force);
-	else
-		physics.dynamic_rigidbodies[0].add_force({ combined_force.x, 0 }); 
-
-
-	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
+	logic_out = gameplay.update({delta, local_input, net_out.directions});
+	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
 	
-	renderer.update(delta, 
+	physics.update(delta);
+
+	if ((*local_input)[button::jump] == button_state::pressed && net.connected())
+		physics.dynamic_rigidbodies[0].add_force(glm::vec2{0.0f, 50.0f});
+
+	for (int i = 0; i < 4; ++i)
+	{	
+		if (net.connected())
+			physics.dynamic_rigidbodies[i].add_force(logic_out.velocities[i]);
+		level.v[i] = physics.dynamic_positions[i];
+		level.models[i].set_position(physics.dynamic_positions[i]);
+	}		
+
+	renderer.update(delta,
 		std::begin(player_inputs.components),
 		std::end(player_inputs.components),
 		net_out.directions,
 		chat[1], net_out.player_count,
 		net_out.player_id, chat.is_on(),
-		net_out.player_count > 1);
+		net.connected());
 
 }

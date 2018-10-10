@@ -13,6 +13,7 @@
 #include "../../engine/include/timer.hpp"
 #include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"
+#include "skybox.hpp"
 
 namespace graphics
 {
@@ -24,13 +25,13 @@ namespace graphics
 class Renderer
 {
 public:
-	Renderer();
 	Renderer(GameScene* scene);
 
 	void render(
 		const std::string* begin,
 		const std::string* end,
 		const gui::button_array& buttons,
+		const std::vector<glm::vec2>& debug_positions,
 		bool is_menu,
 		bool connected,
 		bool debug) const;
@@ -45,6 +46,22 @@ public:
 		bool is_on,
 		bool move_char);
 
+	static void line_debug(const std::vector<glm::vec2>& lines)
+	{
+		VertexArray vao;
+		Buffer vertex_buffer;
+
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+		gl_buffer_data(GL_ARRAY_BUFFER, lines, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
+
+		glLineWidth(1.0f);
+		glDrawArrays(GL_LINES, 0, lines.size());
+		glBindVertexArray(0);
+	}
+
 private:
 
 	GameScene* scene;
@@ -53,6 +70,7 @@ private:
 	std::vector<Model> models;
 
 	Box light_box;
+	Skybox skybox;
 
 	Text text;
 	UserInterface ui;
@@ -76,12 +94,14 @@ private:
 	PostProcessingEffects post_processing_effects;
 
 	bool want_glow{false};
-	PointLight light{ glm::vec3(0,2,4) };
+	PointLight light{ glm::vec3(0,2,4), glm::vec3(1,1,1) };
+
+	bool debug_active{ false };
 };
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const glm::vec3& light, const T& data)
+void render_type(const Shader& shader, const Camera& camera, const PointLight& light, const T& data)
 {
 	shader.use();
 	for (auto i = 4u; i < data.size(); ++i)
@@ -92,7 +112,7 @@ void render_type(const Shader& shader, const Camera& camera, const glm::vec3& li
 }
 
 template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const glm::vec3& light, const T& data, int num_players)
+void render_character(const Shader& shader, const Camera& camera, const PointLight& light, const T& data, int num_players)
 {
 	shader.use();
 	for (auto i = 0; i < num_players; ++i)

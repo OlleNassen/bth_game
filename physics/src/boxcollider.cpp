@@ -1,5 +1,8 @@
 #include "boxcollider.hpp"
 
+namespace physics
+{
+
 Box::Box()
 {
 
@@ -108,3 +111,6 @@ bool Box::get_trigger() const
 {
 	return is_trigger;
 }
+
+}
+
