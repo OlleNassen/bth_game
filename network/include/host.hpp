@@ -78,7 +78,7 @@ private:
 
 	ENetAddress address;
 	ENetHost* enet_host;
-	ENetPeer* peers[10] = { nullptr };
+	ENetPeer* peers[3] = { nullptr };
 	int num_peers = 0;
 };
 

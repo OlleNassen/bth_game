@@ -45,7 +45,7 @@ void Client::recieve(const ENetEvent& event, player_data* data)
 	data->player_count = new_data->player_count;
 	data->player_id = new_data->player_id;
 	
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		if (i != data->player_id)
 		{
@@ -85,7 +85,7 @@ void Server::update(player_data* data)
 	data->player_count = num_peers + 1;
 
 	/* Send the packet to the peer over channel id 0. */
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		auto* peer = peers[i];
 		if (peer)
@@ -95,16 +95,17 @@ void Server::update(player_data* data)
 			ENetPacket* enet_packet = enet_packet_create(data, sizeof(player_data) + 1,
 				ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 			enet_peer_send(peer, 0, enet_packet);
-		}
+
+			enet_host_flush(enet_host);
+		}		
 	}
+	data->player_id = 0;
 	
 	using namespace std::chrono_literals;
 	host_service(0ms, enet_host,
 		[this, data](const ENetEvent& event) { recieve(event, data); },
 		[this](const ENetEvent& event) { connect(event); },
-		[this](const ENetEvent& event) { disconnect(event); });
-
-	data->player_id = 0;
+		[this](const ENetEvent& event) { disconnect(event); });	
 }
 
 void Server::recieve(const ENetEvent& event, player_data* data)
@@ -123,9 +124,9 @@ void Server::recieve(const ENetEvent& event, player_data* data)
 
 void Server::connect(const ENetEvent& event)
 {
-	if (num_peers >= 4)
+	if (num_peers < 3)
 	{
-		cout << "Player " << ++num_peers << " connected." << nl;
+		cout << "Player " << ++num_peers + 1 << " connected." << nl;
 		using namespace std;
 		auto& peer = *find(begin(peers), end(peers), nullptr);
 		peer = event.peer;
@@ -139,7 +140,7 @@ void Server::connect(const ENetEvent& event)
 
 void Server::disconnect(const ENetEvent& event)
 {
-	cout << "Player " << num_peers-- << " disconnected." << nl;
+	cout << "Player " << num_peers-- + 1 << " disconnected." << nl;
 	using namespace std;
 	auto& peer = *find(begin(peers), end(peers), event.peer);
 	peer = nullptr;
