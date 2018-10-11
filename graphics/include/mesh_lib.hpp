@@ -14,9 +14,9 @@ public:
 	~MeshLib();
 
 	void create_mesh_list();
-	void add_mesh(const std::string filePath);
+	void add_mesh(const std::string& file_path);
 	Mesh* get_mesh(int key);
-	int get_number_of_meshes();
+	int get_number_of_meshes()const;
 
 private:
 	std::vector<Mesh*> meshes;

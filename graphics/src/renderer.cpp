@@ -163,12 +163,16 @@ void Renderer::render(
 	glEnable(GL_DEPTH_TEST);
 
 	// Post Processing Effects
-	shaders[3].use();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	shaders[3].use();
 	shaders[3].uniform("scene_texture", 0);
-	scene_texture.bind_texture();
-	shaders[3].uniform("screen_warning", 1);
-	post_processing_effects.texture.bind(1);
+	shaders[3].uniform("depth_texture", 1);
+	shaders[3].uniform("screen_warning", 2);
+
+	scene_texture.bind_texture(0);
+	scene_texture.bind_texture(1);
+	post_processing_effects.texture.bind(2);
 
 	shaders[3].uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
