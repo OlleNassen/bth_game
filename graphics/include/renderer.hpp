@@ -85,8 +85,6 @@ private:
 	int player_count{0};
 	glm::vec2 v[4];
 
-	bool game_over{false};
-
 	bool show_start{false};
 	bool debug_active{ false };
 };

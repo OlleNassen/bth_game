@@ -160,8 +160,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_on || time < 3s;
 
-	game_over = t.is_up(delta);
-
 	player_count = num_players;
 
 	if (!is_on)
