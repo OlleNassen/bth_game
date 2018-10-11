@@ -3,7 +3,6 @@
 #include <iostream>
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
-#include "../../engine/include/timer.hpp"
 
 namespace graphics
 {
@@ -13,7 +12,6 @@ using namespace std::chrono_literals;
 Renderer::Renderer(GameScene* scene)
 	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
-	, t{ 300s }
 	, scene { scene }
 {
 	shaders.reserve(sizeof(Shader) * 10);
@@ -46,7 +44,7 @@ Renderer::Renderer(GameScene* scene)
 void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
-	const gui::button_array& buttons,
+	const std::array<std::string, 12>& buttons,
 	const std::vector<glm::vec2>& debug_positions,
 	bool is_menu,
 	bool connected,
@@ -132,21 +130,7 @@ void Renderer::render(
 	constexpr float size_y = static_cast<int>(720 / 12);
 
 	for (auto i = 0u; i < buttons.size(); ++i)
-	{
-		auto& button = buttons[i];
-		if (button.state == gui::button_state::selected)
-		{
-			text.render_text("[" + button.text + "]", 20.0f, i * size_y, 1.0f);
-		}
-		else if (button.state == gui::button_state::hover)
-		{
-			text.render_text(button.text, 20.0f, i * size_y, 1.0f);
-		}
-		else
-		{
-			text.render_text(button.text, 10.0f, i * size_y, 1.0f);
-		}
-	}
+		text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -180,7 +164,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_on)
 	{
-		if (begin[0][button::glow] == button_state::pressed)
+		/*if (begin[0][button::glow] == button_state::pressed)
 		{
 			want_glow = !want_glow;
 		}
@@ -197,7 +181,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		if (begin[0][button::debug] == button_state::pressed)
 		{
 			debug_active = !debug_active;
-		}
+		}*/
 
 		db_camera.update(delta, directions[0], cursor);
 	}

@@ -82,7 +82,7 @@ void Game::render()
 	std::vector<glm::vec2> db_coll = physics.get_all_debug();
 	
 	renderer.render(chat.begin(), chat.end(),
-		menu.button_data(),
+		menu.button_strings(),
 		db_coll, menu.on(),
 		net.connected(), menu.debug());
 }

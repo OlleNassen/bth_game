@@ -10,7 +10,6 @@
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 #include "lights.hpp"
-#include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
 
@@ -29,7 +28,7 @@ public:
 	void render(
 		const std::string* begin,
 		const std::string* end,
-		const gui::button_array& buttons,
+		const std::array<std::string, 12>& buttons,
 		const std::vector<glm::vec2>& debug_positions,
 		bool is_menu,
 		bool connected,

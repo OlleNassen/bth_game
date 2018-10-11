@@ -75,6 +75,22 @@ void Chat::update(std::chrono::milliseconds delta)
 	}
 }
 
+static void current_menu(int index, std::array<std::string, 12>& strings, const button_array& data)
+{
+	for (int i = 0; i < 12; ++i)
+	{
+		strings[i] = data[i].text;
+		
+		if (data[i].state == button_state::selected)
+			strings[index] = "[" + strings[index] + "]";
+		
+		if (data[i].state == button_state::hover)
+			strings[index] = " " + strings[index];	
+	}
+	
+	
+}
+
 Menu::Menu() 
 {
 	buttons[0][10] = { "Debug", button_state::none };
@@ -88,9 +104,9 @@ Menu::Menu()
 	buttons[1][6] = { "Back", button_state::none };
 }
 
-const gui::button_array& Menu::button_data() const
+const std::array<std::string, 12>& Menu::button_strings() const
 {
-	return *current_buttons;
+	return strings;
 }
 
 void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
@@ -144,6 +160,8 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 	{
 		button.state = button_state::selected;		
 	}	
+
+	current_menu(index, strings, *current_buttons);
 }
 
 bool Menu::debug() const
