@@ -35,9 +35,6 @@ Output Gameplay::update(Input input)
 		direction.z -= 1.0f;
 	if ((*input.local_input)[button::right] >= button_state::pressed)
 		direction.x += 1.0f;
-
-	//if ((*input.local_input)[button::jump] == button_state::pressed && net.connected())
-		//physics.dynamic_rigidbodies[net_out.player_id].add_force(glm::vec2{ 0.0f, 50.0f });
 		
 	std::array<glm::vec2, 4> velocities;
 	
