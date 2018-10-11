@@ -9,7 +9,7 @@
 namespace graphics
 {
 
-struct gui_element
+struct GuiElement
 {
 	glm::vec2 position;
 	glm::vec2 color;
@@ -32,7 +32,7 @@ private:
 	Buffer vertex_buffer;
 	Buffer gui_buffer;
 
-	std::array<gui_element, 100> elements;
+	std::array<GuiElement, 100> elements;
 };
 
 }

@@ -21,13 +21,13 @@ Mesh::Mesh(const std::string& meshfile)
 
 	name = custom_mesh->transform->meshName;
 
-	textures.reserve(sizeof(Texture) * 3);
-	textures.emplace_back("../resources/textures/" + name + "_BaseColor.png");
-	textures.emplace_back("../resources/textures/" + name + "_Normal.png");
-	textures.emplace_back("../resources/textures/" + name + "_Metallic.png");
-	textures.emplace_back("../resources/textures/" + name + "_Roughness.png");
-	textures.emplace_back("../resources/textures/" + name + "_AO.png");
-	textures.emplace_back("../resources/textures/" + name + "_Emissive.png");
+	textures.reserve(sizeof(Texture) * 6);
+	textures.emplace_back("../resources/textures/" + name + "/" + name + "_BaseColor.png");
+	textures.emplace_back("../resources/textures/" + name + "/" + name + "_Normal.png");
+	textures.emplace_back("../resources/textures/" + name + "/" + name + "_Metallic.png");
+	textures.emplace_back("../resources/textures/" + name + "/" + name + "_Roughness.png");
+	textures.emplace_back("../resources/textures/" + name + "/" + name + "_AO.png");
+	textures.emplace_back("../resources/textures/" + name + "/" + name + "_Emissive.png");
 
 	glBindVertexArray(vao_id);
 	for (auto i = 0; i < 7; ++i)

@@ -10,12 +10,14 @@ MeshLib::MeshLib()
 
 MeshLib::~MeshLib()
 {
+	for (auto& mesh : meshes)
+		delete mesh;
 }
-
 
 void MeshLib::create_mesh_list()
 {
-	std::string meshLoader[] = {
+	std::string meshLoader[] =
+	{
 		"Robot_1.0.ssp",				//0
 		"Controlpanel_1_Wide.ssp",		//1
 		"Controlpanel_1_Wide.ssp",		//2
@@ -46,7 +48,7 @@ void MeshLib::create_mesh_list()
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
 	{
-		mesh_list.push_back(meshLoader[i]);
+		mesh_list.emplace_back(meshLoader[i]);
 	}
 
 	for (auto i = 0u; i < mesh_list.size(); ++i)
@@ -55,10 +57,10 @@ void MeshLib::create_mesh_list()
 	}
 }
 
-void MeshLib::add_mesh(const std::string file_path)
+void MeshLib::add_mesh(const std::string& file_path)
 {
 	Mesh* new_mesh = new Mesh(file_path);
-	meshes.push_back(new_mesh);
+	meshes.emplace_back(new_mesh);
 }
 
 Mesh* MeshLib::get_mesh(int key)
@@ -66,7 +68,7 @@ Mesh* MeshLib::get_mesh(int key)
 	return meshes.at(key);
 }
 
-int MeshLib::get_number_of_meshes()
+int MeshLib::get_number_of_meshes()const
 {
 	return meshes.size();
 }
