@@ -4,6 +4,9 @@
 #include <map>
 #include <glm/glm.hpp>
 
+namespace logic
+{
+
 enum class button
 {
 	
@@ -52,6 +55,8 @@ private:
 	button_state data[static_cast<int>(button::quit) + 1];
 
 };
+
+}
 
 #endif
 

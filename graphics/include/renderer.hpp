@@ -10,8 +10,6 @@
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 #include "lights.hpp"
-#include "../../engine/include/timer.hpp"
-#include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
 
@@ -30,15 +28,14 @@ public:
 	void render(
 		const std::string* begin,
 		const std::string* end,
-		const gui::button_array& buttons,
+		const std::array<std::string, 12>& buttons,
 		const std::vector<glm::vec2>& debug_positions,
 		bool is_menu,
 		bool connected,
 		bool debug) const;
 
 	void update(std::chrono::milliseconds delta,
-		const input* begin,
-		const input* end,
+		const glm::vec2& cursor,
 		const std::array<glm::vec3, 4>& directions,
 		const std::string& data,
 		int num_players,
@@ -77,7 +74,6 @@ private:
 	bool is_chat_visible{false};
 
 	std::chrono::milliseconds time{10000};
-	Timer t;
 
 	std::string log;
 
@@ -89,7 +85,6 @@ private:
 	int player_count{0};
 	glm::vec2 v[4];
 
-	bool want_glow{false};
 	bool game_over{false};
 
 	bool show_start{false};

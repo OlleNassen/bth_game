@@ -7,13 +7,14 @@
 
 #include "lua_load.hpp"
 #include "lua_script.hpp"
-#include "../../engine/include/input.hpp"
+#include "input.hpp"
 
 namespace logic
 {
 
 struct Input
 {
+	int player_id;
 	std::chrono::milliseconds delta;
 	const input* local_input;
 	std::array<glm::vec3, 4> directions;
@@ -23,6 +24,7 @@ struct Output
 {
 	glm::vec2 updated_player_pos;
 	std::array<glm::vec2, 4> velocities;
+	std::array<glm::vec3, 4> directions;
 };
 
 template <typename T>
