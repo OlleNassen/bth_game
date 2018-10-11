@@ -63,39 +63,36 @@ public:
 	}
 
 private:
-
 	GameScene* scene;
 	DebugCamera db_camera;
 	GameCamera game_camera;
 	std::vector<Model> models;
+	std::vector<Shader> shaders;
 
 	Box light_box;
 	Skybox skybox;
 
 	Text text;
 	UserInterface ui;
-	std::vector<Shader> shaders;
-	std::chrono::milliseconds time{10000};
-
-	std::string log;
-	Timer t;
-
-	int new_player_count{0};
-
-	glm::vec2 v[4];
 	bool is_chat_visible{false};
 
-	bool game_over{false};
+	std::chrono::milliseconds time{10000};
+	Timer t;
 
-	bool show_start{false};
-
+	std::string log;
 
 	Framebuffer scene_texture;
 	PostProcessingEffects post_processing_effects;
 
-	bool want_glow{false};
 	PointLight light{ glm::vec3(0,2,4), glm::vec3(1,1,1) };
 
+	int player_count{0};
+	glm::vec2 v[4];
+
+	bool want_glow{false};
+	bool game_over{false};
+
+	bool show_start{false};
 	bool debug_active{ false };
 };
 

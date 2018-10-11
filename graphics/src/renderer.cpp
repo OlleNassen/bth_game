@@ -52,10 +52,7 @@ void Renderer::render(
 	bool connected,
 	bool debug)const
 {
-	if (is_menu)
-		glClearColor(1.0f, 0.8f, 0.0f, 0.f);
-	else
-		glClearColor(0.6f, 0.9f, 0.6f, 0.f);
+	glClearColor(1.0f, 0.8f, 0.0f, 0.f);
 		
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	scene_texture.bind_framebuffer();
@@ -64,7 +61,7 @@ void Renderer::render(
 	if (!is_menu && connected)
 	{
 		render_character(shaders[0], 
-			game_camera, light, scene->models, new_player_count);
+			game_camera, light, scene->models, player_count);
 		render_type(shaders[0], game_camera, light, scene->models);
 
 		shaders[6].use();
@@ -92,13 +89,12 @@ void Renderer::render(
 		skybox.render(shaders[6], db_camera);
 
 		light_box.render(db_camera);
+
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
 			auto& s = shaders[5];
 			s.use();
-			s.uniform("projection", game_camera.projection);
-			s.uniform("view", game_camera.view());
 			s.uniform("projection", db_camera.projection);
 			s.uniform("view", db_camera.view());
 			line_debug(debug_positions);
@@ -157,9 +153,6 @@ void Renderer::render(
 		text.render_text(t.to_string(), 0, 700, 0.5f);
 	}
 
-
-		
-
 	glEnable(GL_DEPTH_TEST);
 
 	// Post Processing Effects
@@ -195,7 +188,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	game_over = t.is_up(delta);
 
-	new_player_count = num_players;
+	player_count = num_players;
 
 	if (!is_on)
 	{
@@ -224,7 +217,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
 
-	light.position = light.position + glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
+	light.position += glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
 	light_box.set_position(light.position);
 }
 
