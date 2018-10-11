@@ -24,6 +24,7 @@ Game::Game()
 	net_out.player_id = 0;
 	net_out.player_count = 1;
 	net_out.directions.fill({ 0.0f, 0.0f, 0.0f });
+	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
 
 	physics.add_dynamic_body(level.v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 	physics.add_dynamic_body(level.v[1], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
@@ -92,8 +93,7 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	auto& direction = net_out.directions[net_out.player_id];
-	direction = { 0.0f, 0.0f, 0.0f };
+	net_out.directions = logic_out.directions;
 
 	if (!menu.on())
 		window.hide_cursor();

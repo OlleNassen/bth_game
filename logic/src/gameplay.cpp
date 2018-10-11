@@ -50,7 +50,7 @@ Output Gameplay::update(Input input)
 
 	glm::vec2 updated_player_pos = luaLoad.process_input(*input.local_input, input.delta);
 
-	return Output{ updated_player_pos, velocities };
+	return Output{ updated_player_pos, velocities, input.directions };
 }
 
 

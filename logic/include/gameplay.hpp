@@ -24,6 +24,7 @@ struct Output
 {
 	glm::vec2 updated_player_pos;
 	std::array<glm::vec2, 4> velocities;
+	std::array<glm::vec3, 4> directions;
 };
 
 template <typename T>
