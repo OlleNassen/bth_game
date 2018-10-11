@@ -1,6 +1,9 @@
 #include "lua_load.hpp"
 #include <list>
 
+namespace logic
+{
+
 //	:luaInput2("../resources/scripts/test.lua"), "../resources/scripts/input_controller.lua"
 LuaLoad::LuaLoad()
 	:lua_input("../resources/scripts/input_controller.lua")
@@ -55,4 +58,6 @@ glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta
 		//lua_pushinteger(luaInput.getLuaState(), 5);
 	}*/
 	return position;
+}
+
 }

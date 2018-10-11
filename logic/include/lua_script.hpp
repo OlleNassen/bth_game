@@ -5,11 +5,14 @@
 #include <vector>
 #include <iostream>
 #include <lua.hpp>
-#include "../../engine/include/lua_stack.hpp"
+#include "lua_stack.hpp"
 
 //::.. authors ..:://
 // Olle
 // Edvard
+
+namespace logic
+{
 
 class LuaScript
 {
@@ -24,5 +27,7 @@ public:
 private:
 	LuaStack stack;
 };
+
+}
 
 #endif

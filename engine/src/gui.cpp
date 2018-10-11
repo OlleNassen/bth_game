@@ -93,9 +93,9 @@ const gui::button_array& Menu::button_data() const
 	return *current_buttons;
 }
 
-void Menu::update(std::chrono::milliseconds delta, const input& i)
+void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 {
-	auto index = input::indices - i.index - 1;
+	auto index = logic::input::indices - i.index - 1;
 	auto& button = (*current_buttons)[index];
 	
 	for (auto& arrays : buttons)
@@ -104,7 +104,7 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 
 	button.state = button_state::hover;
 	
-	if (i[::button::select] == ::button_state::released)
+	if (i[logic::button::select] == logic::button_state::released)
 	{
 		if (current_buttons == &buttons[0] && index == 10)
 		{
@@ -140,7 +140,7 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 			current_buttons = &buttons[0];
 		}	
 	}
-	else if (i[::button::select] >= ::button_state::pressed)
+	else if (i[logic::button::select] >= logic::button_state::pressed)
 	{
 		button.state = button_state::selected;		
 	}	

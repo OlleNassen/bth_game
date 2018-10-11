@@ -10,7 +10,6 @@
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 #include "lights.hpp"
-#include "../../engine/include/timer.hpp"
 #include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
@@ -37,8 +36,7 @@ public:
 		bool debug) const;
 
 	void update(std::chrono::milliseconds delta,
-		const input* begin,
-		const input* end,
+		const glm::vec2& cursor,
 		const std::array<glm::vec3, 4>& directions,
 		const std::string& data,
 		int num_players,
@@ -78,14 +76,11 @@ private:
 	std::chrono::milliseconds time{10000};
 
 	std::string log;
-	Timer t;
 
 	int new_player_count{0};
 
 	glm::vec2 v[4];
 	bool is_chat_visible{false};
-
-	bool game_over{false};
 
 	bool show_start{false};
 

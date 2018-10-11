@@ -148,18 +148,6 @@ void Renderer::render(
 		}
 	}
 
-	if (game_over)
-	{
-		text.render_text("GAME OVER!", 1280 / 2.f, 720 / 2.f, 2.0f);
-	}
-	else
-	{
-		text.render_text(t.to_string(), 0, 700, 0.5f);
-	}
-
-
-		
-
 	glEnable(GL_DEPTH_TEST);
 
 	// Post Processing Effects
@@ -175,8 +163,7 @@ void Renderer::render(
 }
 
 void Renderer::update(std::chrono::milliseconds delta,
-	const input* begin,
-	const input* end,
+	const glm::vec2& cursor,
 	const std::array<glm::vec3, 4>& directions,
 	const std::string& data,
 	int num_players,
@@ -188,8 +175,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 	time = data != log ? 0ms : time + delta;
 	log = data;
 	is_chat_visible = is_on || time < 3s;
-
-	game_over = t.is_up(delta);
 
 	new_player_count = num_players;
 
@@ -214,7 +199,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			debug_active = !debug_active;
 		}
 
-		db_camera.update(delta, directions[0], begin[0].cursor);
+		db_camera.update(delta, directions[0], cursor);
 	}
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
