@@ -155,11 +155,11 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 			data.particle_container[particle_index].speed = main_dir + random_dir * spread;
 
 			//Set colors, if you want color from texture, don't change the color
-			data.particle_container[particle_index].r = 255;
+			/*data.particle_container[particle_index].r = 255;
 			data.particle_container[particle_index].g = 0;
-			data.particle_container[particle_index].b = 0;
+			data.particle_container[particle_index].b = 0;*/
 			data.particle_container[particle_index].a = 255;
-			data.particle_container[particle_index].size = 100.0f;
+			data.particle_container[particle_index].size = 1.0f;
 		}
 
 	}

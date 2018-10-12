@@ -45,10 +45,10 @@ public:
 		bool move_char);
 
 	void update_particles(
-		Texture texture,
-		Shader shader,
+		Texture& texture,
+		Shader& shader,
 		std::string texture_name,
-		Camera camera,
+		Camera& camera,
 		int id);
 
 private:
