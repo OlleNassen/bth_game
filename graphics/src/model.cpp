@@ -34,6 +34,9 @@ void Model::render(const Shader & shader, const Camera& camera, const PointLight
 	shader.uniform("emissive_map", 5);
 	shader.uniform("player_color", emissive_color);
 
+
+
+
 	mesh->textures[0].bind(0);
 	mesh->textures[1].bind(1);
 	mesh->textures[2].bind(2);

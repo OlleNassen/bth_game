@@ -10,6 +10,7 @@
 #include "texture.hpp"
 #include "lights.hpp"
 #include <GLFW/glfw3.h>
+#include "Animation.hpp"
 
 //TEMP MODEL CLASS, TECHNICAL ARTISTS FEEL FREE TO CHANGE THIS
 
@@ -21,6 +22,15 @@ class Model
 public:
 	Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh);
 	~Model();
+	bool is_animated = false;
+
+
+
+	void create_animation_data(const std::string & file_path)
+	{
+		this->animaiton_handler->create_animation_data(file_path);
+		is_animated = true;
+	}
 
 	void move(glm::vec2 offset)
 	{
@@ -36,6 +46,7 @@ public:
 
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
+	AnimationHandler * animaiton_handler;
 	glm::mat4 model;
 	glm::vec3 emissive_color;
 	glm::vec3 light_pos{ 0, 3, 1 };
