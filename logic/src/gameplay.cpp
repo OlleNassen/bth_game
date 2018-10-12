@@ -24,6 +24,18 @@ void Gameplay::refresh()
 
 Output Gameplay::update(Input input)
 {
+	auto& direction = input.directions[input.player_id];
+	direction = { 0.0f, 0.0f, 0.0f };
+
+	if ((*input.local_input)[button::up] >= button_state::pressed)
+		direction.z += 1.0f;
+	if ((*input.local_input)[button::left] >= button_state::pressed)
+		direction.x -= 1.0f;
+	if ((*input.local_input)[button::down] >= button_state::pressed)
+		direction.z -= 1.0f;
+	if ((*input.local_input)[button::right] >= button_state::pressed)
+		direction.x += 1.0f;
+		
 	std::array<glm::vec2, 4> velocities;
 	
 	/*for (auto& entity : entities)
@@ -40,7 +52,7 @@ Output Gameplay::update(Input input)
 	  
 	give_up(input);
 
-	return Output{ updated_player_pos, velocities };
+	return Output{ updated_player_pos, velocities, input.directions };
 }
 
 void Gameplay::give_up(Input input)

@@ -2,11 +2,14 @@
 
 #include <iostream>
 #include <lua.hpp>
+
+namespace logic
+{
+
 using std::cout;
 constexpr auto nl = '\n';
 
 static void stack_dump(lua_State* lua_state);
-
 
 LuaStack::LuaStack(const char* path)
 	: lua_state{luaL_newstate()}
@@ -201,4 +204,6 @@ static void stack_dump(lua_State* lua_state)
 		}
 	}
 	cout << nl;  /* end the listing */
+}
+
 }
