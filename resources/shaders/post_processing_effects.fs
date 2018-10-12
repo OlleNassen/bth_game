@@ -19,7 +19,7 @@ vec2 texel = vec2(1.0/width,1.0/height);
 float focalDepth = 1.0;
 float focalLength = 5.0;
 float fstop = 2.0;
-bool showFocus = true;
+bool showFocus = false;
 
 float znear = 0.1; //camera clipping start
 float zfar = 100.0; //camera clipping end
@@ -208,4 +208,11 @@ void main()
 	
 	frag_color.rgb = col;
 	frag_color.a = 1.0;
+
+	if (pulse > 0.0)
+	{
+		//Screen Warning Glow
+		frag_color.rgb = frag_color.rgb * abs((texture(screen_warning, tex_coord).w * pulse) - 1);
+		frag_color.rgb += texture(screen_warning, tex_coord).rgb  * texture(screen_warning, tex_coord).w * pulse;
+	}
 }
