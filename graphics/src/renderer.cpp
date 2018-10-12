@@ -100,12 +100,28 @@ void Renderer::render(
 		}
 	}
 
+	// Post Processing Effects
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	shaders[3].use();
+	shaders[3].uniform("scene_texture", 0);
+	shaders[3].uniform("depth_texture", 1);
+	shaders[3].uniform("screen_warning", 2);
+
+	scene_texture.bind_texture(0);
+	scene_texture.bind_texture(1);
+	post_processing_effects.texture.bind(2);
+
+	shaders[3].uniform("pulse", post_processing_effects.glow_value);
+	post_processing_effects.render();
+
 	// Text
 	shaders[2].use();
 	if (is_chat_visible)
 	{
 		ui.render();
 	}
+
 
 	shaders[1].use();
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
@@ -130,20 +146,6 @@ void Renderer::render(
 
 	glEnable(GL_DEPTH_TEST);
 
-	// Post Processing Effects
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	shaders[3].use();
-	shaders[3].uniform("scene_texture", 0);
-	shaders[3].uniform("depth_texture", 1);
-	shaders[3].uniform("screen_warning", 2);
-
-	scene_texture.bind_texture(0);
-	scene_texture.bind_texture(1);
-	post_processing_effects.texture.bind(2);
-
-	shaders[3].uniform("pulse", post_processing_effects.glow_value);
-	post_processing_effects.render();
 }
 
 void Renderer::update(std::chrono::milliseconds delta,
