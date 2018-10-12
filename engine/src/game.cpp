@@ -18,6 +18,7 @@ Game::Game()
 	window.assign_key(button::menu, GLFW_KEY_F1);
 	window.assign_key(button::debug, GLFW_KEY_F3);
 	window.assign_key(button::switch_camera, GLFW_KEY_F4);
+	window.assign_key(button::give_up, GLFW_KEY_O);
 	window.assign_key(button::reset, GLFW_KEY_R);	
 	window.assign_key(button::build_mode, GLFW_KEY_B);
 	window.assign_key(button::place_object, GLFW_KEY_KP_ENTER);

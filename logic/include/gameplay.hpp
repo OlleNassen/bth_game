@@ -42,6 +42,9 @@ private:
 	script_array<LuaScript> scripts;
 
 	LuaLoad luaLoad; //Test
+
+	float give_up_timer{ 0.0f };
+	void give_up(Input input);
 };
 
 }

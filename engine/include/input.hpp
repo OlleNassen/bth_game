@@ -22,6 +22,8 @@ enum class button
 	reset,
 	build_mode,
 	place_object,
+
+	give_up,
 	quit
 };
 

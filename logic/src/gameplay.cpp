@@ -37,9 +37,26 @@ Output Gameplay::update(Input input)
 	}
 
 	glm::vec2 updated_player_pos = luaLoad.process_input(*input.local_input, input.delta);
+	  
+	give_up(input);
 
 	return Output{ updated_player_pos, velocities };
 }
 
+void Gameplay::give_up(Input input)
+{
+	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(input.delta).count();
+	if ((*input.local_input)[button::give_up] == button_state::held)
+	{
+		give_up_timer += dt;
+		if (give_up_timer >= 5.0f)
+		{
+			give_up_timer = 0.0f;
+			std::cout << "BOOM! Do something!" << std::endl;
+		}
+	}
+	else if (give_up_timer != 0.0f)
+		give_up_timer = 0.0f;
+}
 
 }
