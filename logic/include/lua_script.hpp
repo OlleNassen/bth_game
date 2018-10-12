@@ -24,6 +24,8 @@ public:
 	void setup();
 	void update(std::chrono::milliseconds delta, const glm::vec3& direction, glm::vec2& velocity);
 
+	void goal_reached(int value);
+
 	lua_State* getLuaState();
 private:
 	lua_State* L = nullptr;

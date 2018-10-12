@@ -41,8 +41,8 @@ Game::Game()
 
 
 	//A Temporary goal-object
-	physics.add_static_body({5.0f, 0.0f}, glm::vec2{ 0.0f, 0.0f }, 2, 2, true);
-	std::cout << physics.static_box_colliders.size() << std::endl;
+	physics.add_static_body({7.0f, 11.0f}, glm::vec2{ 0.0f, 0.0f }, 2, 2, true);
+	
 	//Temporary leaderboard in the game4
 	leader_board = new int[net_out.player_count];
 	current_gameboard = new int[net_out.player_count];
@@ -177,13 +177,13 @@ void Game::update(std::chrono::milliseconds delta)
 		net_out.player_id, chat.is_on(),
 		net.connected());
 
-	//physics.dynamic_rigidbodies[1].
-
-	/*if (logic.)
+	
+	if (physics.intersects(net_out.player_id, physics.static_box_colliders.size() -1))
 	{
-		physics.dynamic_rigidbodies[0].cancel_forces();
-		physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
-		physics.set_win_state();
-	}*/
+		
+		physics.dynamic_rigidbodies[net_out.player_id].cancel_forces();
+		physics.dynamic_positions[net_out.player_id] = glm::vec2(0.0, 0.0);
+		//physics.set_win_state();
+	}
 
 }

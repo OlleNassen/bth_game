@@ -56,6 +56,15 @@ void LuaScript::update(std::chrono::milliseconds delta, const glm::vec3& directi
 	
 }
 
+void LuaScript::goal_reached(int value)
+{
+	stack.getglobal("reached_goal");
+	stack.push(value);
+
+	stack.call(1, 0);
+	stack.clear();
+}
+
 lua_State* LuaScript::getLuaState()
 {
 	return this->L;
