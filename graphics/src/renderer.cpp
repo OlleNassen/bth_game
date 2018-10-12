@@ -77,6 +77,8 @@ void Renderer::render(
 		render_character(shaders[0], 
 			game_camera, light.position, scene->models, new_player_count);
 		render_type(shaders[0], game_camera, light.position, scene->models);
+		shaders[6].use();
+		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 	}
 	else if (!is_menu)
 	{
@@ -84,13 +86,14 @@ void Renderer::render(
 			render_character(shaders[0], 
 				db_camera, light.position, scene->models, 4);
 		render_type(shaders[0], db_camera, light.position, scene->models);
-
+		shaders[6].use();
+		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 		light_box.render(db_camera);
 	}
 
-	glDisable(GL_DEPTH_TEST);
-	shaders[6].use();
-	dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
+	//glDisable(GL_DEPTH_TEST);
+	//shaders[6].use();
+	//dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 
 	// Text
 	shaders[2].use();

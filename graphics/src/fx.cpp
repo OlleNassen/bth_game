@@ -146,7 +146,7 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 
 			//Set default values for the particles, first off life and position.
 			data.particle_container[particle_index].life = 10.0f;
-			data.particle_container[particle_index].pos = glm::vec3(data.default_x, data.default_y, data.default_z);
+			data.particle_container[particle_index].pos = glm::vec3(0, 0, 0);
 			
 			//Create a direction for the particles to travel
 			glm::vec3 main_dir = glm::vec3(0, 1, 0);
@@ -158,7 +158,7 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 			data.particle_container[particle_index].r = 255;
 			data.particle_container[particle_index].g = 0;
 			data.particle_container[particle_index].b = 0;
-			data.particle_container[particle_index].a = (rand() % 256) / 3;
+			data.particle_container[particle_index].a = 255;
 			data.particle_container[particle_index].size = 100.0f;
 		}
 
@@ -202,7 +202,7 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 	//Update particle information
 	glBindBuffer(GL_ARRAY_BUFFER, data.position_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, total_particle_count * 4 * sizeof(GLfloat), data.color_data);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, total_particle_count * 4 * sizeof(GLfloat), data.position_data);
 
 	glBindBuffer(GL_ARRAY_BUFFER, data.color_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
