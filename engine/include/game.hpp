@@ -55,7 +55,10 @@ private:
 	gui::Chat chat;
 	gui::Menu menu;	
 
+
+	//Temp leaderboards
 	int* leader_board = NULL;
+	int* current_gameboard = NULL;
 };
 
 

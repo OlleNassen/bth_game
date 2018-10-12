@@ -35,7 +35,13 @@ Game::Game()
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
 
+
+	//A Temporary goal-object
+	physics.add_static_body({5.0f, 0.0f}, glm::vec2{ 0.0f, 0.0f }, 2, 2, true);
+	std::cout << physics.static_box_colliders.size() << std::endl;
+	//Temporary leaderboard in the game4
 	leader_board = new int[net_out.player_count];
+	current_gameboard = new int[net_out.player_count];
 }
 
 void Game::run()
@@ -111,8 +117,8 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
-	logic_out = gameplay.update({net_out.player_id, delta, local_input, net_out.directions});
-	
+	logic_out = gameplay.update({ net_out.player_id, delta, local_input, net_out.directions });
+
 	glm::vec2 combined_force = logic_out.force;
 
 	//Update new direction force of player to physics
@@ -121,16 +127,16 @@ void Game::update(std::chrono::milliseconds delta)
 		physics.dynamic_rigidbodies[0].add_force(combined_force);
 	}
 	else
-		physics.dynamic_rigidbodies[0].add_force({combined_force.x, 0 });
+		physics.dynamic_rigidbodies[0].add_force({ combined_force.x, 0 });
 
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
 	physics.update(delta);
 
 	for (int i = 0; i < 4; ++i)
-	{	
+	{
 		if (net.connected())
 			//physics.dynamic_rigidbodies[i].add_force(logic_out.force);
-		level.v[i] = physics.dynamic_positions[i];
+			level.v[i] = physics.dynamic_positions[i];
 		level.models[i].set_position(physics.dynamic_positions[i]);
 	}
 
@@ -140,5 +146,14 @@ void Game::update(std::chrono::milliseconds delta)
 		chat[1], net_out.player_count,
 		net_out.player_id, chat.is_on(),
 		net.connected());
+
+	//physics.dynamic_rigidbodies[1].
+
+	/*if (logic.)
+	{
+		physics.dynamic_rigidbodies[0].cancel_forces();
+		physics.dynamic_positions[0] = glm::vec2(0.0, 0.0);
+		physics.set_win_state();
+	}*/
 
 }

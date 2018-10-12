@@ -1,4 +1,6 @@
 function setup()
+	player_playable = false
+	
 
 end
 

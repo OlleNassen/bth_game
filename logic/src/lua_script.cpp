@@ -20,11 +20,19 @@ LuaScript::LuaScript(const std::string& filename)
 		fprintf(stderr, "Couldn't load file: %s\n\n", lua_tostring(L, -1));
 	}
 	//stack.setglobal("entities");
+	setup();
+
 }
 
 void LuaScript::setup(int entity)
 {
+	
+}
 
+void LuaScript::setup()
+{
+	stack.getglobal("setup");
+	stack.call(0, 0);
 }
 
 void LuaScript::update(std::chrono::milliseconds delta, const glm::vec3& direction, glm::vec2& velocity)

@@ -49,7 +49,7 @@ end
 
 function walk(dt)
 	--print(player.x)
-	player.x = (dt/1000) * WALK_SPEED -- + fysik
+	player.x = (dt/1000) * WALK_SPEED
 end
 
 function jump(can_jump)
