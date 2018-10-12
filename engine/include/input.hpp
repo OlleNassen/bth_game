@@ -20,11 +20,8 @@ enum class button
 	menu,
 	switch_camera,
 	reset,
-	arrow_up,
-	arrow_down,
-	arrow_right,
-	arrow_left,
-	enter,
+	build_mode,
+	place_object,
 	quit
 };
 

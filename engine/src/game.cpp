@@ -19,11 +19,8 @@ Game::Game()
 	window.assign_key(button::debug, GLFW_KEY_F3);
 	window.assign_key(button::switch_camera, GLFW_KEY_F4);
 	window.assign_key(button::reset, GLFW_KEY_R);	
-	window.assign_key(button::arrow_up, GLFW_KEY_ESCAPE);
-	window.assign_key(button::arrow_down, GLFW_KEY_ESCAPE);
-	window.assign_key(button::arrow_right, GLFW_KEY_ESCAPE);
-	window.assign_key(button::arrow_left, GLFW_KEY_ESCAPE);
-	window.assign_key(button::enter, GLFW_KEY_ESCAPE);
+	window.assign_key(button::build_mode, GLFW_KEY_B);
+	window.assign_key(button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(button::quit, GLFW_KEY_ESCAPE);
 
 
@@ -98,17 +95,33 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
+	if ((*local_input)[button::build_mode] == button_state::pressed)
+	{
+		level.build_mode_active = !level.build_mode_active;
+	}
+
 	auto& direction = net_out.directions[net_out.player_id];
 	direction = { 0.0f, 0.0f, 0.0f };
+	direction = { 0.0f, 0.0f, 0.0f };
 
-	if ((*local_input)[button::up] >= button_state::pressed)
-		direction.z += 1.0f;
-	if ((*local_input)[button::left] >= button_state::pressed)
-		direction.x -= 1.0f;
-	if ((*local_input)[button::down] >= button_state::pressed)
-		direction.z -= 1.0f;
-	if ((*local_input)[button::right] >= button_state::pressed)
-		direction.x += 1.0f;
+	if (!level.build_mode_active)
+	{
+		if ((*local_input)[button::up] >= button_state::pressed)
+			direction.z += 1.0f;
+		if ((*local_input)[button::left] >= button_state::pressed)
+			direction.x -= 1.0f;
+		if ((*local_input)[button::down] >= button_state::pressed)
+			direction.z -= 1.0f;
+		if ((*local_input)[button::right] >= button_state::pressed)
+			direction.x += 1.0f;
+	}
+
+
+	if (level.build_mode_active && (*local_input)[button::place_object] == button_state::pressed)
+	{
+		level.add_object(glm::vec2(15.0f, 0.0f));
+	}
+
 
 	if (!menu.on())
 		window.hide_cursor();
