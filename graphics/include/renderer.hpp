@@ -66,6 +66,11 @@ private:
 	std::vector<Model> models;
 	std::vector<Shader> shaders;
 
+	//temp
+	unsigned int captureFBO;
+	unsigned int captureRBO;
+	unsigned int envCubemap;
+
 	Box light_box;
 	Skybox skybox;
 

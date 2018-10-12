@@ -36,7 +36,7 @@
     <None Include="shaders\pbr.fs" />
     <None Include="shaders\box.vs" />
     <None Include="shaders\box.fs" />
-    <None Include="shaders\ibl.vs" />
-    <None Include="shaders\ibl.fs" />
+    <None Include="shaders\skybox.fs" />
+    <None Include="shaders\skybox.vs" />
   </ItemGroup>
 </Project>
