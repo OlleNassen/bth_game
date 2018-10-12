@@ -57,14 +57,18 @@ Output Gameplay::update(Input input)
 	}
 	if (input.scene->build_mode_active)
 	{
+		collision_data data;
+
 		if ((*input.local_input)[logic::button::place_object] == logic::button_state::pressed)
 		{
-			object_placed_id = input.scene->add_object(glm::vec2(15.0f, 0.0f));
+			model_id = input.scene->add_object(data, glm::vec2(15.0f, -2.0f));
+			physics_id = input.physics->add_static_body(data.position, glm::vec2(0.0, 0.0), data.width, data.height, data.trigger);
 		}
 
-		if (object_placed_id != -1)
+		if (model_id != -1)
 		{
-			input.scene->models[object_placed_id].move(direction);
+			input.physics->static_positions[physics_id] += glm::vec2(direction.x, direction.y);
+			input.scene->models[model_id].set_position(input.physics->static_positions[physics_id]);
 		}
 	}
 	

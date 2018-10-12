@@ -9,10 +9,19 @@
 #include "lua_script.hpp"
 #include "input.hpp"
 #include "../../graphics/include/game_scene.hpp"
+#include "../../physics/include/world.hpp"
+
+//struct collision_data
+//{
+//	glm::vec2 position;
+//	float width;
+//	float height;
+//	bool trigger;
+//};
 
 namespace logic
 {
-
+	   
 struct Input
 {
 	int player_id;
@@ -20,6 +29,7 @@ struct Input
 	const input* local_input;
 	std::array<glm::vec3, 4> directions;
 	graphics::GameScene* scene;
+	physics::World* physics;
 };
 
 struct Output
@@ -47,7 +57,8 @@ private:
 
 	LuaLoad luaLoad; //Test
 
-	int object_placed_id{ -1 };
+	int model_id{ -1 };
+	int physics_id{ -1 };
 
 	float give_up_timer{ 0.0f };
 	void give_up(Input input);

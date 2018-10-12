@@ -6,9 +6,6 @@
 #include <string>
 #include <glm/glm.hpp>
 
-namespace graphics
-{
-
 struct collision_data
 {
 	glm::vec2 position; 
@@ -16,6 +13,9 @@ struct collision_data
 	float height;
 	bool trigger;
 };
+
+namespace graphics
+{
 
 class GameScene
 {
@@ -34,10 +34,12 @@ public:
 
 // Lucas/Vincet Test för placering av object.
 	Mesh *player; 
+	collision_data player_coll_data;
+	glm::mat4 player_model;
 	bool build_mode_active = false;
 	int placing_object_id;
 
-	int add_object(glm::vec2 Position);
+	int add_object(collision_data& physics_data, glm::vec2 Position);
 	//void move_object(int id, glm::vec2 position);
 };
 

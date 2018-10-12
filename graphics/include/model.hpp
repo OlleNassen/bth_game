@@ -29,7 +29,10 @@ public:
 
 	void set_position(glm::vec2 position)
 	{
-		model = glm::translate(glm::mat4(1.f), glm::vec3{ position, 0.0f });
+		//model = glm::translate(glm::mat4(1.f), glm::vec3{ position, 0.0f });
+		model[3][0] = position.x;
+		model[3][1] = position.y;
+		//model[3][2] = 0.0f;
 	}
 
 	void render(const Shader & shader, const Camera& camera, const PointLight& light)const;

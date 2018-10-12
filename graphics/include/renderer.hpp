@@ -59,6 +59,7 @@ public:
 		glBindVertexArray(0);
 	}
 
+	bool debug_active{ false };
 private:
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -86,7 +87,6 @@ private:
 	glm::vec2 v[4];
 
 	bool show_start{false};
-	bool debug_active{ false };
 };
 
 

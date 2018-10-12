@@ -95,6 +95,7 @@ void Renderer::render(
 			s.use();
 			s.uniform("projection", db_camera.projection);
 			s.uniform("view", db_camera.view());
+			s.uniform("line_color", glm::vec3(1.0, 0.0, 0.0));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -176,11 +177,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		else
 		{
 			post_processing_effects.glow_value = 0;
-		}
-
-		if (begin[0][button::debug] == button_state::pressed)
-		{
-			debug_active = !debug_active;
 		}*/
 
 		db_camera.update(delta, directions[0], cursor);
@@ -188,6 +184,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (scene->build_mode_active)
 	{
+		glm::vec2 build_pos[2];
+
 		//game_camera.update(delta, &scene->v[scene->placing_object_id], &scene->v[scene->placing_object_id + 1]);
 	}
 	else

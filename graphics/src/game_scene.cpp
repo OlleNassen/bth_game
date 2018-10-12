@@ -51,19 +51,33 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 	}
 
 	// Lucas/Vincet Test för placering av object.
-	player = mesh_lib->get_mesh(0);
+	int i = 1;
+
+	model = glm::mat4{1.0f};
+
+	model = glm::translate(model, glm::vec3(level.levelObjects[i].position[0], level.levelObjects[i].position[1], level.levelObjects[i].position[2]));
+	model = glm::rotate(model, glm::radians(level.levelObjects[i].rotation[1]), glm::vec3{ 0,1,0 });
+	model = glm::rotate(model, glm::radians(level.levelObjects[i].rotation[0]), glm::vec3{ 1,0,0 });
+	model = glm::rotate(model, glm::radians(level.levelObjects[i].rotation[2]), glm::vec3{ 0,0,1 });
+
+	glm::vec2 position = { level.levelObjects[i].position[0], level.levelObjects[i].position[1] };
+	float width = level.levelObjects[i].collisionBox[1];
+	float height = level.levelObjects[i].collisionBox[0];
+	auto* ptr = level.levelObjects[i].centerPivot;
+
+	player = mesh_lib->get_mesh(level.levelObjects[i].id);
+	player_coll_data = collision_data{ glm::vec2{ ptr[0], ptr[1] }, width, height, false };
+	player_model = model;
 }
 
 GameScene::~GameScene()
 {
 }
 
-int GameScene::add_object(glm::vec2 Position = glm::vec2(0.0f, 0.0f))
+int GameScene::add_object(collision_data& physics_data, glm::vec2 Position = glm::vec2(0.0f, 0.0f))
 {
-	glm::mat4 model{ 1.0f };
-
-
-	models.emplace_back(glm::translate(model, glm::vec3(Position, 0.0)), glm::vec3(0, 0, 0), player);
+	physics_data = player_coll_data;
+	models.emplace_back(player_model, glm::vec3(0, 0, 0), player);
 
 	return models.size() - 1;
 }

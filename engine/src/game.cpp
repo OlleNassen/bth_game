@@ -124,6 +124,11 @@ void Game::update(std::chrono::milliseconds delta)
 	}*/
 
 
+	if ((*local_input)[logic::button::debug] == logic::button_state::pressed)
+	{
+		renderer.debug_active = !renderer.debug_active;
+	}
+
 	if (!menu.on())
 		window.hide_cursor();
 
@@ -138,7 +143,7 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
-	logic_out = gameplay.update({net_out.player_id, delta, local_input, net_out.directions, &level});
+	logic_out = gameplay.update({net_out.player_id, delta, local_input, net_out.directions, &level, &physics});
 	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
 	
 	physics.update(delta);
