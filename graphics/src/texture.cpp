@@ -6,9 +6,6 @@
 
 namespace graphics
 {
-	Texture::Texture()
-	{
-	}
 	Texture::Texture(const std::string& path)
 {
 	load_texture(path);

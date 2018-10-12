@@ -42,7 +42,7 @@ Renderer::Renderer(GameScene* scene)
 
 	db_camera.position.z = 20.0f;
 
-	dust_texture = new Texture(std::string("dust_texture.png"));
+	dust_texture = new Texture(std::string("../resources/textures/dust_texture.png"));
 	dust_particles = new FX(*dust_texture);
 }
 
@@ -70,6 +70,8 @@ void Renderer::render(
 
 		shaders[6].use();
 		skybox.render(shaders[6], game_camera);
+		shaders[7].use();
+		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 
 		glDisable(GL_DEPTH_TEST);
 		auto& s = shaders[5];
@@ -81,8 +83,6 @@ void Renderer::render(
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
-		shaders[7].use();
-		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 	}
 	else if (!is_menu)
 	{
@@ -180,7 +180,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		//Dust Particles
 		dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
-		update_particles(*dust_texture, shaders[6], "dust_texture", db_camera, id);
+		update_particles(*dust_texture, shaders[7], "dust_texture", db_camera, id);
 		/*if (begin[0][button::glow] == button_state::pressed)
 		{
 			want_glow = !want_glow;
