@@ -75,6 +75,22 @@ void Chat::update(std::chrono::milliseconds delta)
 	}
 }
 
+static void current_menu(int index, std::array<std::string, 12>& strings, const button_array& data)
+{
+	for (int i = 0; i < 12; ++i)
+	{
+		strings[i] = data[i].text;
+		
+		if (data[i].state == button_state::selected)
+			strings[index] = "[" + strings[index] + "]";
+		
+		if (data[i].state == button_state::hover)
+			strings[index] = " " + strings[index];	
+	}
+	
+	
+}
+
 Menu::Menu() 
 {
 	buttons[0][10] = { "Debug", button_state::none };
@@ -88,14 +104,14 @@ Menu::Menu()
 	buttons[1][6] = { "Back", button_state::none };
 }
 
-const gui::button_array& Menu::button_data() const
+const std::array<std::string, 12>& Menu::button_strings() const
 {
-	return *current_buttons;
+	return strings;
 }
 
-void Menu::update(std::chrono::milliseconds delta, const input& i)
+void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 {
-	auto index = input::indices - i.index - 1;
+	auto index = logic::input::indices - i.index - 1;
 	auto& button = (*current_buttons)[index];
 	
 	for (auto& arrays : buttons)
@@ -104,7 +120,7 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 
 	button.state = button_state::hover;
 	
-	if (i[::button::select] == ::button_state::released)
+	if (i[logic::button::select] == logic::button_state::released)
 	{
 		if (current_buttons == &buttons[0] && index == 10)
 		{
@@ -140,10 +156,12 @@ void Menu::update(std::chrono::milliseconds delta, const input& i)
 			current_buttons = &buttons[0];
 		}	
 	}
-	else if (i[::button::select] >= ::button_state::pressed)
+	else if (i[logic::button::select] >= logic::button_state::pressed)
 	{
 		button.state = button_state::selected;		
 	}	
+
+	current_menu(index, strings, *current_buttons);
 }
 
 bool Menu::debug() const

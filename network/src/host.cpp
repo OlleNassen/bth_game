@@ -20,7 +20,10 @@ Client::~Client()
 
 void Client::update(player_data* data)
 {
-	ENetPacket* enet_packet = enet_packet_create(data, sizeof(glm::vec3) * 4 + 1,
+	data->player_count = player_count;
+	data->player_id = player_id;
+	
+	ENetPacket* enet_packet = enet_packet_create(data, sizeof(player_data) + 1,
 		ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 
 	if (!peer)
@@ -44,13 +47,14 @@ void Client::recieve(const ENetEvent& event, player_data* data)
 	const auto* new_data = reinterpret_cast<player_data*>(event.packet->data);
 	data->player_count = new_data->player_count;
 	data->player_id = new_data->player_id;
+	player_count = new_data->player_count;
+	player_id = new_data->player_id;
 	
-	for (int i = 0; i < 3; ++i)
+	for (int i = 1; i < 4; ++i)
 	{
-		if (i != data->player_id)
-		{
-			data->directions[i] = new_data->directions[i];
-		}
+		data->directions[i] = new_data->directions[i];
+		data->positions[i] = new_data->positions[i];
+		data->velocities[i] = new_data->velocities[i];
 	}
 }
 
@@ -95,31 +99,26 @@ void Server::update(player_data* data)
 			ENetPacket* enet_packet = enet_packet_create(data, sizeof(player_data) + 1,
 				ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 			enet_peer_send(peer, 0, enet_packet);
-
-			enet_host_flush(enet_host);
 		}		
 	}
-	data->player_id = 0;
-	
+		
 	using namespace std::chrono_literals;
 	host_service(0ms, enet_host,
 		[this, data](const ENetEvent& event) { recieve(event, data); },
 		[this](const ENetEvent& event) { connect(event); },
 		[this](const ENetEvent& event) { disconnect(event); });	
+	
+	data->player_id = 0;
 }
 
 void Server::recieve(const ENetEvent& event, player_data* data)
 {
 	const auto* new_data = reinterpret_cast<player_data*>(event.packet->data);
-	const auto* index = &new_data->directions[0];
 
-	for (int i = 0; i < 4; ++i)
-	{
-		if (&new_data->directions[i] != index)
-		{
-			data->directions[i] = new_data->directions[i];
-		}
-	}
+	auto index = new_data->player_id;
+	data->directions[index] = new_data->directions[index];
+	data->positions[index] = new_data->positions[index];
+	data->velocities[index] = new_data->velocities[index];
 }
 
 void Server::connect(const ENetEvent& event)

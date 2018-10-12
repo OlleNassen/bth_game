@@ -1,6 +1,9 @@
 #include "lua_script.hpp"
 #include <functional>
 
+namespace logic
+{
+
 LuaScript::LuaScript()
 	: stack{ "../resources/scripts/script.lua" }
 {
@@ -48,4 +51,6 @@ void LuaScript::update(std::chrono::milliseconds delta, const glm::vec3& directi
 lua_State* LuaScript::getLuaState()
 {
 	return this->L;
+}
+
 }
