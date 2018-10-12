@@ -8,6 +8,7 @@
 #include "lua_load.hpp"
 #include "lua_script.hpp"
 #include "input.hpp"
+#include "../../graphics/include/game_scene.hpp"
 
 namespace logic
 {
@@ -18,6 +19,7 @@ struct Input
 	std::chrono::milliseconds delta;
 	const input* local_input;
 	std::array<glm::vec3, 4> directions;
+	graphics::GameScene* scene;
 };
 
 struct Output
@@ -44,6 +46,8 @@ private:
 	script_array<LuaScript> scripts;
 
 	LuaLoad luaLoad; //Test
+
+	int object_placed_id{ -1 };
 
 	float give_up_timer{ 0.0f };
 	void give_up(Input input);
