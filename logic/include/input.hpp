@@ -23,6 +23,10 @@ enum class button
 	menu,
 	switch_camera,
 	reset,
+	build_mode,
+	place_object,
+
+	give_up,
 	quit
 };
 

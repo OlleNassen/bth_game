@@ -49,10 +49,30 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 				glm::vec2{ ptr[0], ptr[1] }, width, height, false });
 		}
 	}
+
+	// Lucas/Vincet Test för placering av object.
+	player = mesh_lib->get_mesh(0);
 }
 
 GameScene::~GameScene()
 {
 }
 
+int GameScene::add_object(glm::vec2 Position = glm::vec2(0.0f, 0.0f))
+{
+	glm::mat4 model{ 1.0f };
+
+
+	models.emplace_back(glm::translate(model, glm::vec3(Position, 0.0)), glm::vec3(0, 0, 0), player);
+
+	return models.size() - 1;
 }
+//
+//void GameScene::move_object(int id, glm::vec2 position)
+//{
+//	models[id].set_position(position);
+//}
+
+}
+
+

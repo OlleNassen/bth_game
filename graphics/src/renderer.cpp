@@ -199,7 +199,15 @@ void Renderer::update(std::chrono::milliseconds delta,
 		db_camera.update(delta, directions[0], cursor);
 	}
 
-	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
+	if (scene->build_mode_active)
+	{
+		//game_camera.update(delta, &scene->v[scene->placing_object_id], &scene->v[scene->placing_object_id + 1]);
+	}
+	else
+	{
+		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
+	}
+
 	ui.update();
 
 	light.position += glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);

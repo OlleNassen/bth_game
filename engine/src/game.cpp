@@ -18,8 +18,12 @@ Game::Game()
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
 	window.assign_key(logic::button::debug, GLFW_KEY_F3);
 	window.assign_key(logic::button::switch_camera, GLFW_KEY_F4);
-	window.assign_key(logic::button::reset, GLFW_KEY_R);
+	window.assign_key(logic::button::give_up, GLFW_KEY_O);
+	window.assign_key(logic::button::reset, GLFW_KEY_R);	
+	window.assign_key(logic::button::build_mode, GLFW_KEY_B);
+	window.assign_key(logic::button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
+
 
 	net_out.player_id = 0;
 	net_out.player_count = 1;
@@ -102,6 +106,32 @@ void Game::update(std::chrono::milliseconds delta)
 	constexpr char nl = '\n';
 
 	//net_out.directions = logic_out.directions;
+	/*if ((*local_input)[logic::button::build_mode] == logic::button_state::pressed)
+	{
+		level.build_mode_active = !level.build_mode_active;
+	}*/
+
+	auto& direction = net_out.directions[net_out.player_id];
+	direction = { 0.0f, 0.0f, 0.0f };
+
+	if (!level.build_mode_active)
+	{
+		if ((*local_input)[logic::button::up] >= logic::button_state::pressed)
+			direction.z += 1.0f;
+		if ((*local_input)[logic::button::left] >= logic::button_state::pressed)
+			direction.x -= 1.0f;
+		if ((*local_input)[logic::button::down] >= logic::button_state::pressed)
+			direction.z -= 1.0f;
+		if ((*local_input)[logic::button::right] >= logic::button_state::pressed)
+			direction.x += 1.0f;
+	}
+
+
+	/*if (level.build_mode_active && (*local_input)[logic::button::place_object] == logic::button_state::pressed)
+	{
+		level.add_object(glm::vec2(15.0f, 0.0f));
+	}*/
+
 
 	if (!menu.on())
 		window.hide_cursor();

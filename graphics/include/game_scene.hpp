@@ -29,6 +29,16 @@ public:
 	glm::vec2 v[4];
 	std::vector<Model> models;
 	std::vector<collision_data> coll_data;
+
+
+
+// Lucas/Vincet Test för placering av object.
+	Mesh *player; 
+	bool build_mode_active = false;
+	int placing_object_id;
+
+	int add_object(glm::vec2 Position);
+	//void move_object(int id, glm::vec2 position);
 };
 
 }
