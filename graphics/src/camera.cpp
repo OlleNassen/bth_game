@@ -33,7 +33,7 @@ void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::
 	using namespace glm;
 	auto size = vec2{ minmax_x.second->x - minmax_x.first->x, minmax_y.second->y - minmax_y.first->y };
 	auto desired_position = vec2{ vec2{ minmax_x.first->x, minmax_y.first->y } + (size / 2.0f) };
-	desired_position.y += 6.0f;
+	//desired_position.y += 6.0f;
 	
 	auto distance_height = size.y / glm::tan(fovy / 2.0f);
 	auto distance_width = (size.x / aspect) / glm::tan(fovy / 2.0f);

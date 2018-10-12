@@ -10,9 +10,8 @@
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 #include "lights.hpp"
-#include "../../engine/include/timer.hpp"
-#include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"
+#include "skybox.hpp"
 
 namespace graphics
 {
@@ -24,21 +23,19 @@ namespace graphics
 class Renderer
 {
 public:
-	Renderer();
 	Renderer(GameScene* scene);
 
 	void render(
 		const std::string* begin,
 		const std::string* end,
-		const gui::button_array& buttons,
+		const std::array<std::string, 12>& buttons,
 		const std::vector<glm::vec2>& debug_positions,
 		bool is_menu,
 		bool connected,
 		bool debug) const;
 
 	void update(std::chrono::milliseconds delta,
-		const input* begin,
-		const input* end,
+		const glm::vec2& cursor,
 		const std::array<glm::vec3, 4>& directions,
 		const std::string& data,
 		int num_players,
@@ -63,45 +60,38 @@ public:
 	}
 
 private:
-
 	GameScene* scene;
 	DebugCamera db_camera;
 	GameCamera game_camera;
 	std::vector<Model> models;
+	std::vector<Shader> shaders;
 
 	Box light_box;
+	Skybox skybox;
 
 	Text text;
 	UserInterface ui;
-	std::vector<Shader> shaders;
+	bool is_chat_visible{false};
+
 	std::chrono::milliseconds time{10000};
 
 	std::string log;
-	Timer t;
-
-	int new_player_count{0};
-
-	glm::vec2 v[4];
-	bool is_chat_visible{false};
-
-	bool game_over{false};
-
-	bool show_start{false};
-
 
 	Framebuffer scene_texture;
 	PostProcessingEffects post_processing_effects;
 
-	bool want_glow{false};
-	PointLight light{ glm::vec3(0,2,4) };
+	PointLight light{ glm::vec3(0,2,4), glm::vec3(1,1,1) };
 
+	int player_count{0};
+	glm::vec2 v[4];
+
+	bool show_start{false};
 	bool debug_active{ false };
-	bool debug_camera_active{ true };
 };
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const glm::vec3& light, const T& data)
+void render_type(const Shader& shader, const Camera& camera, const PointLight& light, const T& data)
 {
 	shader.use();
 	for (auto i = 4u; i < data.size(); ++i)
@@ -112,7 +102,7 @@ void render_type(const Shader& shader, const Camera& camera, const glm::vec3& li
 }
 
 template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const glm::vec3& light, const T& data, int num_players)
+void render_character(const Shader& shader, const Camera& camera, const PointLight& light, const T& data, int num_players)
 {
 	shader.use();
 	for (auto i = 0; i < num_players; ++i)

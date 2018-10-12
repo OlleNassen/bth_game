@@ -90,7 +90,7 @@ void Window::poll_events()
 	glfwPollEvents();
 }
 
-void Window::update_input(input& input)
+void Window::update_input(logic::input& input)
 {
 	for (auto&[key, value] : keybinds)
 	{
@@ -98,41 +98,41 @@ void Window::update_input(input& input)
 		auto& button = input[value];
 		
 		
-		if (key_state == GLFW_RELEASE && button == button_state::held)
+		if (key_state == GLFW_RELEASE && button == logic::button_state::held)
 		{
-			button = button_state::released;			
+			button = logic::button_state::released;
 		}
-		else if (button == button_state::pressed || button == button_state::held)
+		else if (button == logic::button_state::pressed || button == logic::button_state::held)
 		{
-			button = button_state::held;		
+			button = logic::button_state::held;
 		}
-		else if (key_state == GLFW_PRESS && button == button_state::none)
+		else if (key_state == GLFW_PRESS && button == logic::button_state::none)
 		{
-			button = button_state::pressed;		
+			button = logic::button_state::pressed;
 		}	
 		else
 		{
-			button = button_state::none;
+			button = logic::button_state::none;
 		}				
 	}
 	auto button_state = glfwGetMouseButton(glfw_window, GLFW_MOUSE_BUTTON_LEFT);
-	auto& button = input[button::select];
+	auto& button = input[logic::button::select];
 
-	if (button_state == GLFW_RELEASE && button == button_state::held)
+	if (button_state == GLFW_RELEASE && button == logic::button_state::held)
 	{
-		button = button_state::released;
+		button = logic::button_state::released;
 	}
-	else if (button == button_state::pressed || button == button_state::held)
+	else if (button == logic::button_state::pressed || button == logic::button_state::held)
 	{
-		button = button_state::held;
+		button = logic::button_state::held;
 	}
-	else if (button_state == GLFW_PRESS && button == button_state::none)
+	else if (button_state == GLFW_PRESS && button == logic::button_state::none)
 	{
-		button = button_state::pressed;
+		button = logic::button_state::pressed;
 	}
 	else
 	{
-		button = button_state::none;
+		button = logic::button_state::none;
 	}
 
 	glm::ivec2 window_size;
@@ -142,10 +142,10 @@ void Window::update_input(input& input)
 	double y = 0.0;
 	glfwGetCursorPos(glfw_window, &x, &y);
 
-	input.index = (y / window_size.y) * (input::indices - 1);
+	input.index = (y / window_size.y) * (logic::input::indices - 1);
 	
 	if (input.index < 0) input.index = 0;
-	if (input.index >= input::indices) input.index = input::indices - 1;
+	if (input.index >= logic::input::indices) input.index = logic::input::indices - 1;
 	
 	input.cursor = { x, y };
 	int count = 0;

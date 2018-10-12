@@ -14,6 +14,8 @@ struct player_data
 	int player_id = 0;
 	int player_count = 1;
 	std::array<glm::vec3, 4> directions;
+	std::array<glm::vec2, 4> positions;
+	std::array<glm::vec2, 4> velocities;
 };
 
 template <typename F1, typename F2, typename F3>
@@ -39,7 +41,6 @@ class Host
 public:
 	virtual ~Host() = default;
 	virtual void update(player_data* data) = 0;
-
 	bool connected = false;
 };
 
@@ -56,7 +57,10 @@ public:
 private:
 	void recieve(const ENetEvent& event, player_data* data);
 	void connect(const ENetEvent& event);
-	void disconnect(const ENetEvent& event);	
+	void disconnect(const ENetEvent& event);
+
+	int player_id = 0;
+	int player_count = 0;
 
 	ENetAddress address;
 	ENetHost* enet_host;
@@ -78,7 +82,7 @@ private:
 
 	ENetAddress address;
 	ENetHost* enet_host;
-	ENetPeer* peers[10] = { nullptr };
+	ENetPeer* peers[3] = { nullptr };
 	int num_peers = 0;
 };
 
