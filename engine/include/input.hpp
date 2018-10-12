@@ -25,6 +25,7 @@ enum class button
 	arrow_right,
 	arrow_left,
 	enter,
+	give_up,
 	quit
 };
 

@@ -58,20 +58,20 @@ GameScene::~GameScene()
 {
 }
 
-int GameScene::add_object(glm::vec2 Position = glm::vec2(0.0f, 0.0f), glm::vec3 RGB)
-{
-	glm::mat4 model{ 1.0f };
-
-
-	models.emplace_back(model, Position, RGB, player);
-
-	return models.size() - 1;
-}
-
-void GameScene::move_object(int id, glm::vec2 position)
-{
-	models[id].set_position(position);
-}
+//int GameScene::add_object(glm::vec2 Position = glm::vec2(0.0f, 0.0f), glm::vec3 RGB)
+//{
+//	glm::mat4 model{ 1.0f };
+//
+//
+//	models.emplace_back(model, Position, RGB, player);
+//
+//	return models.size() - 1;
+//}
+//
+//void GameScene::move_object(int id, glm::vec2 position)
+//{
+//	models[id].set_position(position);
+//}
 
 }
 
