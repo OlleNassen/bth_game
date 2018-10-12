@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include "input.hpp"
+#include <input.hpp>
 #include "gui.hpp"
 
 //::.. authors ..:://
@@ -166,8 +166,8 @@ public:
 
 	void swap_buffers();
 	void poll_events();
-	void update_input(input& input);
-	void assign_key(button name, int keybind) { keybinds.insert(std::make_pair(keybind, name)); }
+	void update_input(logic::input& input);
+	void assign_key(logic::button name, int keybind) { keybinds.insert(std::make_pair(keybind, name)); }
 
 	void show_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
 	void hide_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
@@ -176,7 +176,7 @@ public:
 private:
 	GLFWwindow* glfw_window;
 
-	std::map<int, button> keybinds;
+	std::map<int, logic::button> keybinds;
 };
 
 #endif

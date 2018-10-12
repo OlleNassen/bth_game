@@ -5,7 +5,7 @@
 #include <array>
 #include <string>
 #include <GLFW/glfw3.h>
-#include "input.hpp"
+#include <input.hpp>
 
 namespace gui
 {
@@ -46,15 +46,15 @@ struct Button
 	button_state state = button_state::none;
 };
 
-using button_array = std::array<gui::Button, input::indices>;
+using button_array = std::array<gui::Button, logic::input::indices>;
 
 class Menu
 {
 public:	
 	Menu();
-	void update(std::chrono::milliseconds delta, const input& i);
+	void update(std::chrono::milliseconds delta, const logic::input& i);
 
-	const button_array& button_data() const;
+	const std::array<std::string, 12>& button_strings() const;
 
 	bool debug() const;
 
@@ -63,11 +63,13 @@ public:
 	bool exit() const;
 
 private:
-	bool is_debug =false;
+	bool is_debug = false;
 	bool is_on = true;
 	bool want_exit = false;
 	button_array buttons[3];
 	button_array* current_buttons{&buttons[0]};
+
+	std::array<std::string, 12> strings;
 };
 
 }

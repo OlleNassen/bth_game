@@ -36,6 +36,8 @@
     <None Include="shaders\pbr.fs" />
     <None Include="shaders\box.vs" />
     <None Include="shaders\box.fs" />
+    <None Include="shaders\ibl.vs" />
+    <None Include="shaders\ibl.fs" />
     <None Include="shaders\fx_dust.fs" />
     <None Include="shaders\fx_dust.vs" />
   </ItemGroup>

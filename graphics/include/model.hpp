@@ -8,6 +8,7 @@
 #include "shader.hpp"
 #include "camera.hpp"
 #include "texture.hpp"
+#include "lights.hpp"
 #include <GLFW/glfw3.h>
 
 //TEMP MODEL CLASS, TECHNICAL ARTISTS FEEL FREE TO CHANGE THIS
@@ -31,7 +32,7 @@ public:
 		model = glm::translate(glm::mat4(1.f), glm::vec3{ position, 0.0f });
 	}
 
-	void render(const Shader & shader, const Camera& camera, const glm::vec3& light)const;
+	void render(const Shader & shader, const Camera& camera, const PointLight& light)const;
 
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern

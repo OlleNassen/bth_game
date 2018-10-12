@@ -4,6 +4,7 @@ in vec2 tex_coord;
 out vec4 color;
 
 uniform sampler2D scene_texture;
+uniform sampler2D depth_texture;
 uniform sampler2D screen_warning;
 
 uniform float pulse;

@@ -20,8 +20,5 @@ public:
 	MeshInfo* transform;
 	VertexInformation* vertices;
 	MaterialInformation* material;
-	JointInformation* joints;
-	AnimationInformation* animation;
-	KeyFrame* keyFrame;
 	CustomMayaAttributes* customMayaAttribute;
 };

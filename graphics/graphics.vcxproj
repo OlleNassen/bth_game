@@ -164,6 +164,7 @@
     <ClCompile Include="src\model.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\skybox.cpp" />
     <ClCompile Include="src\text.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\user_interface.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="include\user_interface.hpp" />
     <ClInclude Include="include\stupid_file.hpp" />
     <ClInclude Include="include\primitive_factory.hpp" />
+    <ClInclude Include="include\skybox.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

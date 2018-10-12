@@ -152,19 +152,15 @@
   <ItemGroup>
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\gui.cpp" />
-    <ClCompile Include="src\lua_stack.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\ecs.hpp" />
     <ClInclude Include="include\game.hpp" />
     <ClInclude Include="include\gui.hpp" />
-    <ClInclude Include="include\lua_stack.hpp" />
     <ClInclude Include="include\timer.hpp" />
     <ClInclude Include="include\window.hpp" />
-    <ClInclude Include="include\input.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
