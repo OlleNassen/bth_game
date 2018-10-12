@@ -4,6 +4,8 @@
 #include "glm/glm.hpp"
 #include "stb_image.h"
 #include "texture.hpp"
+#include "camera.hpp"
+#include <chrono>
 #define MAX_PARTICLES 1000
 
 namespace graphics
@@ -11,6 +13,7 @@ namespace graphics
 
 class FX {
 public:
+	FX();
 	FX(Texture& texture);
 	~FX();
 
@@ -29,6 +32,7 @@ public:
 		unsigned int texture_buffer;
 		float g_vertex_buffer_data[12] = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, -0.5f,  0.5f, 0.0f, 0.5f,  0.5f, 0.0f };
 		float default_x, default_y, default_z;
+		float random_x, random_y, random_z;
 		float offset;
 		GLfloat* position_data = new GLfloat[MAX_PARTICLES * 4];
 		GLubyte* color_data = new GLubyte[MAX_PARTICLES * 4];
@@ -40,14 +44,14 @@ public:
 	unsigned int last_used_particle = 0;
 	unsigned int total_particle_count = 0;
 
-	void render_particles();
-	void render_dust();
+	void render_particles(FXdata& data)const;
+	void calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera);
 
 	void set_texture(Texture& texture);
+	FXdata* fx;
 
 private:
-	FXdata fx;
-	void gen_particle_buffer(FXdata particle);
+	void gen_particle_buffer(FXdata& particle);
 	void particle_linear_sort(Particle* arr, int size);
 	int find_unused_particle(Particle* container, int lastUsedParticle);
 

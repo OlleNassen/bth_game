@@ -13,11 +13,10 @@ using namespace std::chrono_literals;
 Renderer::Renderer()
 	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
-	, t{ 300s }
-	, dust_texture(std::string("dust_texture.png"))
-	, dust_particles(dust_texture)	
+	, t{ 300s }	
 {
-
+	dust_texture = new Texture(std::string("dust_texture.png"));
+	dust_particles = new FX(*dust_texture);
 }
 
 Renderer::Renderer(GameScene* scene)
@@ -25,8 +24,6 @@ Renderer::Renderer(GameScene* scene)
 	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
 	, t{ 300s }
 	, scene { scene }
-	, dust_texture(std::string("dust_texture.png"))
-	, dust_particles(dust_texture)
 {
 	shaders.reserve(sizeof(Shader) * 10);
 	shaders.emplace_back(
@@ -47,8 +44,14 @@ Renderer::Renderer(GameScene* scene)
 	shaders.emplace_back(
 		"../resources/shaders/lines.vs",
 		"../resources/shaders/lines.fs");
-	
+	shaders.emplace_back(
+		"../resources/shaders/fx_dust.vs",
+		"../resources/shaders/fx_dust.fs");
+
 	db_camera.position.z = 20.0f;
+
+	dust_texture = new Texture(std::string("dust_texture.png"));
+	dust_particles = new FX(*dust_texture);
 }
 
 
@@ -84,6 +87,10 @@ void Renderer::render(
 
 		light_box.render(db_camera);
 	}
+
+	glDisable(GL_DEPTH_TEST);
+	shaders[6].use();
+	dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 
 	// Text
 	shaders[2].use();
@@ -135,9 +142,6 @@ void Renderer::render(
 	{
 		text.render_text(t.to_string(), 0, 700, 0.5f);
 	}
-
-
-		
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -214,9 +218,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 			++index;
 		}
 
-		//FX dust_particles("dust_texture.png");
-		/*dust_particles.render_dust();
-		dust_particles.render_particles();*/
+		//Dust Particles
+		dust_particles->calculate_dust_data(*dust_particles->fx,scene->v, delta, db_camera);
+		update_particles(*dust_texture, shaders[6], "dust_texture", db_camera, id);
+
 	
 		if (begin[0][button::glow] == button_state::pressed)
 		{
@@ -239,6 +244,26 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	light.position = light.position + glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
 	light_box.set_position(light.position);
+}
+
+void Renderer::update_particles(Texture texture, Shader shader, std::string texture_name, Camera camera, int id)
+{
+	//Apply Texture
+	texture.bind(0);
+	shader.uniform("particle_texture", 0);
+
+	//Get and set matrices
+	glm::vec3 start_point = glm::vec3(scene->v[id], 0);
+	glm::mat4 view_matrix = camera.view();
+	glm::mat4 projection_matrix = camera.projection;
+	glm::mat4 view_projection_matrix = projection_matrix * view_matrix;
+	glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
+	glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
+	shader.uniform("camera_right_worldspace", camera_right_vector);
+	shader.uniform("camera_up_worldspace", camera_up_vector);
+	shader.uniform("vp", view_projection_matrix);
+	shader.uniform("view_position", scene->v[id]);
+	shader.uniform("particle_pivot", start_point);
 }
 
 }

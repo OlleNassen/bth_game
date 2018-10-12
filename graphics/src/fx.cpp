@@ -1,18 +1,22 @@
 #include "..\include\fx.hpp"
 namespace graphics
 {
-
+FX::FX()
+{
+}
 FX::FX(Texture& texture)
 {
-	gen_particle_buffer(fx);
+	fx = new FXdata();
+	gen_particle_buffer(*fx);
 	set_texture(texture);
 }
 
 FX::~FX()
 {
+	delete fx;
 }
 
-void FX::gen_particle_buffer(FXdata particle)
+void FX::gen_particle_buffer(FXdata & particle)
 {
 	glGenVertexArrays(1, &particle.vao);
 	glBindVertexArray(particle.vao);
@@ -50,11 +54,11 @@ void FX::gen_particle_buffer(FXdata particle)
 	stbi_image_free(particle.texture_data);*/
 }
 
-void FX::render_particles()
+void FX::render_particles(FXdata& data) const
 {
-	glBindVertexArray(fx.vao);
+	glBindVertexArray(data.vao);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, fx.vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, data.vbo);
 	glVertexAttribPointer(
 		0,                  // attribute. No particular reason for 0, but must match the layout in the shader.
 		3,                  // size
@@ -66,17 +70,19 @@ void FX::render_particles()
 
 	//Positions : center
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, fx.position_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, data.position_buffer);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	//Colors
 	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, fx.color_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, data.color_buffer);
 	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
 
 	glVertexAttribDivisor(0, 0);
 	glVertexAttribDivisor(1, 1);
 	glVertexAttribDivisor(2, 1);
+
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, total_particle_count);
 }
 
 int FX::find_unused_particle(Particle * container, int lastUsedParticle)
@@ -117,9 +123,90 @@ void FX::particle_linear_sort(Particle * arr, int size)
 	}
 }
 
-void FX::render_dust()
+void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera)
 {
+	data.default_x = model_position_2d[0].x;
+	data.default_y = model_position_2d[0].y;
+	data.default_z = 0.0f;
+	data.nr_of_particles = 21;
 
+	//Update data for particles
+	if (total_particle_count <= MAX_PARTICLES)
+	{
+		for (int i = 0; i < data.nr_of_particles; i++)
+		{
+			//Create a random position here
+
+
+
+
+			//Find and update the last used particle
+			last_used_particle = find_unused_particle(data.particle_container, last_used_particle);
+			int particle_index = last_used_particle;
+
+			//Set default values for the particles, first off life and position.
+			data.particle_container[particle_index].life = 10.0f;
+			data.particle_container[particle_index].pos = glm::vec3(data.default_x, data.default_y, data.default_z);
+			
+			//Create a direction for the particles to travel
+			glm::vec3 main_dir = glm::vec3(0, 1, 0);
+			glm::vec3 random_dir = glm::vec3(0);
+			float spread = (rand() % 100 / 100.0f);
+			data.particle_container[particle_index].speed = main_dir + random_dir * spread;
+
+			//Set colors, if you want color from texture, don't change the color
+			data.particle_container[particle_index].r = 255;
+			data.particle_container[particle_index].g = 0;
+			data.particle_container[particle_index].b = 0;
+			data.particle_container[particle_index].a = (rand() % 256) / 3;
+			data.particle_container[particle_index].size = 100.0f;
+		}
+
+	}
+	std::chrono::duration<float> seconds = delta;
+
+	total_particle_count = 0;
+	//Update movement
+	for (int i = 0; i < MAX_PARTICLES; i++)
+	{
+		//Update life with delta time
+		data.particle_container[i].life -= seconds.count() / 2.0f;
+
+		if (data.particle_container[i].life > 0.0f)
+		{
+			data.particle_container[i].speed += glm::vec3(0, 1, 0) * seconds.count();
+			data.particle_container[i].pos += data.particle_container[i].speed / 70.0f;
+			data.particle_container[i].camera_distance = glm::length(data.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			data.position_data[4 * total_particle_count + 0] = data.particle_container[i].pos.x;
+			data.position_data[4 * total_particle_count + 1] = data.particle_container[i].pos.y;
+			data.position_data[4 * total_particle_count + 2] = data.particle_container[i].pos.z;
+			data.position_data[4 * total_particle_count + 3] = data.particle_container[i].size;
+
+			//Set colors in the color data
+			data.color_data[4 * total_particle_count + 0] = data.particle_container[i].r;
+			data.color_data[4 * total_particle_count + 1] = data.particle_container[i].g;
+			data.color_data[4 * total_particle_count + 2] = data.particle_container[i].b;
+			data.color_data[4 * total_particle_count + 3] = data.particle_container[i].a;
+		}
+		else
+		{
+			//They ded, hide 'em
+			data.particle_container[i].camera_distance = 1.0f;
+			data.position_data[4 * total_particle_count + 3] = 0;
+		}
+		total_particle_count++;
+	}
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, data.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, total_particle_count * 4 * sizeof(GLfloat), data.color_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, data.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, total_particle_count * 4 * sizeof(GLubyte), data.color_data);
 }
 
 void FX::set_texture(Texture & texture)

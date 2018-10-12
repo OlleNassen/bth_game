@@ -46,6 +46,13 @@ public:
 		bool is_on,
 		bool move_char);
 
+	void update_particles(
+		Texture texture,
+		Shader shader,
+		std::string texture_name,
+		Camera camera,
+		int id);
+
 private:
 
 	GameScene* scene;
@@ -79,8 +86,8 @@ private:
 	bool want_glow{false};
 	PointLight light{ glm::vec3(0,2,4) };
 
-	Texture dust_texture;
-	FX dust_particles;
+	Texture* dust_texture;
+	FX* dust_particles;
 };
 
 
