@@ -5,7 +5,7 @@ layout(location = 2) in vec3 bi_normal;
 layout(location = 3) in vec3 tangent;
 layout(location = 4) in vec2 uv;
 layout(location = 5) in vec4 weights;
-layout(location = 6) in vec4 weights_id;
+layout(location = 6) in ivec4 weights_id;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -13,6 +13,12 @@ uniform mat4 projection;
 
 uniform vec3 light_pos;
 uniform vec3 view_pos;
+
+const int JOINT_SIZE = 20;
+uniform int animated;
+uniform mat4 bone_mats[JOINT_SIZE];
+
+
 
 out VS_OUT{
 	vec3 frag_pos;
@@ -24,6 +30,16 @@ out VS_OUT{
 
 void main()
 {
+	bone_matrix = mat4(1.0);
+	if(animted == 1)
+	{
+	bone_matrix = bone_mats[weights_id.x] * weights.x;
+	bone_matrix += bone_mats[weights_id.y] * weights.y;
+	bone_matrix += bone_mats[weights_id.z] * weights.z;
+	bone_matrix += bone_mats[weights_id.w] * weights.w;
+	}
+	
+
 	vs_out.frag_pos = vec3(model * vec4(position, 1.0));
     vs_out.tex_coord = uv;
 
@@ -38,5 +54,6 @@ void main()
     vs_out.tangent_view_pos  = tbn_matrix * view_pos;
     vs_out.tangent_fragment_pos  = tbn_matrix * vs_out.frag_pos;
 
-	gl_Position = projection * view * model * vec4(position, 1.0);
+
+	gl_Position = projection * view * model * bone_matrix * vec4(position, 1.0);
 }

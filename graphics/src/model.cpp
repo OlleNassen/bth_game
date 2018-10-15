@@ -34,6 +34,8 @@ namespace graphics
 		shader.uniform("emissive_map", 5);
 		shader.uniform("player_color", emissive_color);
 
+		shader.uniform("animated", is_animated);
+
 		if (is_animated)
 		{
 			std::vector<glm::mat4> bone_mats = animation_handler.bone_mat_vector;

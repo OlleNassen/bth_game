@@ -203,7 +203,7 @@ void Animation_handler::update_bone_mat_vector()
 		else
 		{
 			glm::mat4 ct = get_parent_transform(this->joints[i]) * mat_to_GLM(this->joints[i].local_transform_matrix);
-			bone_mat_vector.push_back(glm::inverse(mat_to_GLM(this->joints[0].local_transform_matrix)) * ct * offsetMatrices[i]);//glm::inverse(mat_to_GLM(this->joints[i].bind_pose_matrix)));
+			bone_mat_vector.push_back(glm::inverse(mat_to_GLM(this->joints[0].local_transform_matrix)) * ct * offsetMatrices[i]);
 
 			
 		}
@@ -270,9 +270,9 @@ void Animation_handler::update_animation(float delta)
 
 void Animation_handler::get_time(float delta)
 {
-	this->time_seconds += (delta * 0.00001);
+	this->time_seconds += (delta * 0.001);
 	if (animations[current_animation]->switching)
-		time_at_switch += (delta * 0.00001);
+		time_at_switch += (delta * 0.001);
 }
 void Animation_handler::fixInverseBindPoses()
 {
