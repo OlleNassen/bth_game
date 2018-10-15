@@ -2,6 +2,7 @@
 #define RENDERER_HPP
 
 #include <chrono>
+#include <time.h>
 #include <vector>
 #include "game_scene.hpp"
 #include "camera.hpp"
@@ -98,6 +99,7 @@ private:
 	bool debug_active{ false };
 	Texture* dust_texture;
 	FX* dust_particles;
+	int randomizer;
 };
 
 

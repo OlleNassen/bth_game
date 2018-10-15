@@ -7,6 +7,8 @@
 #include "camera.hpp"
 #include <chrono>
 #define MAX_PARTICLES 1000
+#define MAX_DUST_PARTICLES 500
+#define DF 3.0f
 
 namespace graphics
 {
