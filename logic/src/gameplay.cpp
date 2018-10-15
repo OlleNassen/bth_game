@@ -47,9 +47,11 @@ Output Gameplay::update(Input input)
 	// TEMP!!!
 	for (auto i = 0; i < 4; ++i)
 	{
-		scripts[0].update(input.delta, input.directions[i], velocities[i]);
+		if(scripts[0].player_status() == true)
+			scripts[0].update(input.delta, input.directions[i], velocities[i]);
 	}
 
+	glm::vec2 force{ 0.0f };
 	/*
 	glm::vec2 updated_player_pos = luaLoad.process_input(*input.local_input, input.delta);
 	  
@@ -78,7 +80,9 @@ Output Gameplay::update(Input input)
 	return Output{ updated_player_pos, velocities, input.directions };
 	return Output{ updated_player_pos, velocities };
 	*/
-	glm::vec2 force = luaLoad.process_input(*input.local_input, input.delta);
+	if (scripts[0].player_status() == true)
+		force = luaLoad.process_input(*input.local_input, input.delta);
+
 	return Output{ force };
 }
 
@@ -96,6 +100,11 @@ void Gameplay::give_up(Input input)
 	}
 	else if (give_up_timer != 0.0f)
 		give_up_timer = 0.0f;
+}
+ 
+void Gameplay::set_player_status(int i, bool status)
+{
+	
 }
 
 }

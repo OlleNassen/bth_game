@@ -45,6 +45,7 @@ public:
 	void refresh();
 
 	Output update(Input input);
+	void set_player_status(int i, bool status);
 
 private:
 	script_array<int> entities;

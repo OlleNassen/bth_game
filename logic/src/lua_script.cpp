@@ -28,12 +28,6 @@ void LuaScript::setup(int entity)
 	stack.call(0, 0);
 }
 
-//void LuaScript::setup()
-//{
-//	stack.getglobal("setup");
-//	stack.call(0, 0);
-//}
-
 void LuaScript::update(std::chrono::milliseconds delta, const glm::vec3& direction, glm::vec2& velocity)
 {
 	stack.getglobal("update");
@@ -52,10 +46,9 @@ void LuaScript::update(std::chrono::milliseconds delta, const glm::vec3& directi
 	velocity.y = stack.tonumber(-1);
 
 	stack.clear();
-	
 }
 
-void LuaScript::goal_reached(int value)
+void LuaScript::goal_reached(bool value)
 {
 	stack.getglobal("reached_goal");
 	stack.push(value);
@@ -67,6 +60,17 @@ void LuaScript::goal_reached(int value)
 lua_State* LuaScript::getLuaState()
 {
 	return this->L;
+}
+
+bool LuaScript::player_status()
+{
+	stack.getglobal("get_playable");
+	stack.call(0, 1);
+	
+	player_alive = stack.toboolean(-1);
+	stack.clear();
+	
+	return player_alive;
 }
 
 }

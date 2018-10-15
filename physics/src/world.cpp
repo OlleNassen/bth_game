@@ -45,11 +45,12 @@ std::vector<glm::vec2> World::update(std::chrono::milliseconds delta)
 				{
 					collision_handling(previous_position, i, j);
 				}
-					
-				//else
-				//{
-				//	//dynamic_box_colliders[i].set_is_trigger(true);
-				//}
+				else
+				{
+					//Ändra här vad "Målgång" innebär
+					dynamic_rigidbodies[i].set_reached_goal(true);
+					//dynamic_box_colliders[i].set_is_trigger(true);
+				}
 			}
 		}
 	}

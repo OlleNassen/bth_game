@@ -21,15 +21,17 @@ public:
 	LuaScript(const std::string& filename);
 	
 	void setup(int entity);
-	//void setup();
 	void update(std::chrono::milliseconds delta, const glm::vec3& direction, glm::vec2& velocity);
 
-	void goal_reached(int value);
+	void goal_reached(bool value);
 
 	lua_State* getLuaState();
+
+	bool player_status();
 private:
 	lua_State* L = nullptr;
 	LuaStack stack;
+	bool player_alive = true;
 };
 
 }

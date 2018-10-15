@@ -1,5 +1,6 @@
 function setup()
-	player_playable = 1 -- 1 should be thought as a playable player 
+	player_playable = true -- 1 should be thought as a playable player 
+	player_points = 0
 end
 
 function update(delta_seconds, entity)
@@ -12,4 +13,8 @@ end
 function reached_goal(value)
 	--print("You reached the goal")
 	player_playable = value
+end
+
+function get_playable()
+	return player_playable
 end

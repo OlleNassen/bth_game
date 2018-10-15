@@ -126,12 +126,10 @@ void Game::update(std::chrono::milliseconds delta)
 			direction.x += 1.0f;
 	}
 
-
 	/*if (level.build_mode_active && (*local_input)[logic::button::place_object] == logic::button_state::pressed)
 	{
 		level.add_object(glm::vec2(15.0f, 0.0f));
 	}*/
-
 
 	if (!menu.on())
 		window.hide_cursor();
@@ -162,6 +160,13 @@ void Game::update(std::chrono::milliseconds delta)
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
 	physics.update(delta);
 
+	//Temp test
+	for (int i = 0; i < net_out.player_count; i++)
+	{
+		if (physics.dynamic_rigidbodies[i].get_reached_goal())
+			gameplay.set_player_status(i, true);	//Should change the status on players who reached goal
+	}
+
 	for (int i = 0; i < 4; ++i)
 	{
 		if (net.connected())
@@ -178,12 +183,19 @@ void Game::update(std::chrono::milliseconds delta)
 		net.connected());
 
 	
+	/*
 	if (physics.intersects(net_out.player_id, physics.static_box_colliders.size() -1))
 	{
 		
 		physics.dynamic_rigidbodies[net_out.player_id].cancel_forces();
-		physics.dynamic_positions[net_out.player_id] = glm::vec2(0.0, 0.0);
-		//physics.set_win_state();
+		w_time -= delta;
+
+		if (w_time < 0s)
+		{
+			w_time = { 5000 };
+			physics.dynamic_positions[net_out.player_id] = glm::vec2(0.0, 0.0);
+		}
 	}
+	*/
 
 }

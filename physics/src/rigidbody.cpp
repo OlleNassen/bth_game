@@ -74,6 +74,17 @@ glm::vec2 Rigidbody::get_force() const
 	return force;
 }
 
+
+void Rigidbody::set_reached_goal(bool value)
+{
+	this->reached_goal = value;
+}
+
+bool Rigidbody::get_reached_goal()const
+{
+	return this->reached_goal;
+}
+
 }
 
 

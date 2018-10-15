@@ -52,6 +52,9 @@ private:
 	physics::World physics;	
 	std::chrono::milliseconds timestep{16};
 	
+	//Win clock //Temp
+	//std::chrono::milliseconds w_time{ 5000 };
+
 	gui::Chat chat;
 	gui::Menu menu;	
 
