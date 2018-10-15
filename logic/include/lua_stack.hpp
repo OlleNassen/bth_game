@@ -6,6 +6,11 @@
 struct lua_State;
 typedef int(*lua_CFunction)(lua_State *L);
 
+namespace logic
+{
+
+
+
 class LuaStack
 {
 public:
@@ -46,6 +51,8 @@ public:
 private:
 	lua_State* lua_state;
 };
+
+}
 
 #endif
 
