@@ -1,7 +1,5 @@
 function setup()
 	player_playable = 1 -- 1 should be thought as a playable player 
-	
-
 end
 
 function update(delta_seconds, entity)
@@ -12,6 +10,6 @@ function update(delta_seconds, entity)
 end
 
 function reached_goal(value)
-	print("You reached the goal")
+	--print("You reached the goal")
 	player_playable = value
 end
