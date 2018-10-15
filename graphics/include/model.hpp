@@ -31,7 +31,11 @@ public:
 	{
 		model = glm::translate(glm::mat4(1.f), glm::vec3{ position, 0.0f });
 	}
-
+	
+	float get_y_position() const
+	{
+		return this->model[3][1];
+	}
 	void render(const Shader & shader, const Camera& camera, const PointLight& light)const;
 
 private:

@@ -14,6 +14,7 @@
 #include "../../engine/include/gui.hpp"
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
+#include "minimap.hpp"
 
 namespace graphics
 {
@@ -97,6 +98,7 @@ private:
 	PointLight light{ glm::vec3(0,2,4), glm::vec3(1,1,1) };
 
 	bool debug_active{ false };
+	Minimap minimap;
 };
 
 

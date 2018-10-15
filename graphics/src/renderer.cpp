@@ -222,6 +222,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	light.position = light.position + glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
 	light_box.set_position(light.position);
+	//if (scene->models.size()>0)
+		//std::cout << scene->models[0].get_y_position() << std::endl;
+
+	minimap.update(scene->models, new_player_count);
+
 }
 
 }
