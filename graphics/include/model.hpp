@@ -42,7 +42,6 @@ public:
 		glm::mat3 rotation{ model };
 		glm::vec3 translation{ model[3][0], model[3][1], model[3][2] };
 
-
 		model = glm::mat4{ 1.0f };
 		model = glm::translate(model, translation);
 		model = glm::rotate(model, glm::radians(degree), {0.0f, 0.0f, 1.0f});
