@@ -41,9 +41,17 @@ void Renderer::render(
 
 	if (!is_menu && connected)
 	{
+		pbr.use();
+		pbr.uniform("irradiance_map", 6);
+		irradiance_buffer.bind_texture(2);
 		render_character(pbr, 
 			game_camera, light, scene->models, player_count);
 		render_type(pbr, game_camera, light, scene->models);
+
+		skybox_shader.use();
+		//irradiance_buffer.bind_texture(2);
+		//skybox.irradiance_render(skybox_shader, db_camera);
+		skybox.render(skybox_shader, db_camera);
 
 		fx_dust.use();
 		fx_dust.uniform("particle_texture", 0);
