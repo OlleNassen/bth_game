@@ -143,6 +143,11 @@ std::vector<glm::vec2> World::get_all_debug() const
 	return out_position;
 }
 
+void World::rotate_static_box(int id)
+{
+	static_box_colliders[id].rotate_colliders();
+}
+
 void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index)
 {
 	glm::vec2 dynamic_world_pos = prev_position + dynamic_box_colliders[dynamic_index].get_offset();

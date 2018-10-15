@@ -22,7 +22,7 @@ enum class button
 	refresh,
 	menu,
 	switch_camera,
-	reset,
+	rotate,
 	build_mode,
 	place_object,
 

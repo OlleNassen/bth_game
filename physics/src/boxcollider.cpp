@@ -112,5 +112,11 @@ bool Box::get_trigger() const
 	return is_trigger;
 }
 
+void Box::rotate_colliders()
+{
+	std::swap(width, height);
+	top_left = glm::vec2(-width / 2, height / 2);
+}
+
 }
 

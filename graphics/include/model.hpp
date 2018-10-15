@@ -37,6 +37,26 @@ public:
 		//model[3][2] = 0.0f;
 	}
 
+	void rotate(float degree, glm::vec2 center_pivot)
+	{
+		glm::mat4 ident{ 1.0f };
+		glm::mat4 temp = model;
+		glm::mat4 rotate = glm::rotate(ident, glm::radians(degree), glm::vec3{ 0,0,1 });
+		glm::mat4 trans = glm::translate(ident, glm::vec3(0.0, center_pivot.y / 2, 0.0));
+
+		//model = glm::translate(model, glm::vec3(0.0, 0.0, 0.0));
+		//model = glm::rotate(model, glm::radians(degree), glm::vec3{ 1,0,0 });
+		//model = glm::translate(temp, { temp_pos, 0.0 });
+
+		//model = glm::translate(ident, glm::vec3(0.0, 0.0, 0.0));
+		//ident = glm::rotate(ident, glm::radians(degree), glm::vec3{ 0,0,1 });
+		//model = model * ident;
+
+		model = ident;
+		model = model * trans;
+		model = model * rotate;
+	}
+
 	void render(const Shader & shader, const Camera& camera, const PointLight& light)const;
 
 private:

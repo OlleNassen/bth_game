@@ -33,14 +33,14 @@ public:
 
 
 // Lucas/Vincet Test för placering av object.
-	Mesh *player; 
-	collision_data player_coll_data;
-	glm::mat4 player_model;
+	Mesh *placeable_object_mesh; 
+	collision_data placeable_object_coll_data;
+	glm::mat4 placeable_object_model;
 	bool build_mode_active = false;
-	int placing_object_id;
 
+	void inititate_object(CustomLevel& level, MeshLib* mesh_lib, int model_id);
 	int add_object(collision_data& physics_data);
-	//void move_object(int id, glm::vec2 position);
+	void rotate_object(int model_id);
 };
 
 }

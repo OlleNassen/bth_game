@@ -48,6 +48,8 @@ public:
 	bool intersects(const int box_id, const int target_box_id);
 
 	std::vector<glm::vec2> get_all_debug()const;
+
+	void rotate_static_box(int id);
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 

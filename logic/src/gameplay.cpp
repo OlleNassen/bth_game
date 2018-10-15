@@ -64,13 +64,18 @@ Output Gameplay::update(Input input)
 			glm::vec2 position = glm::vec2(0.0f, 5.0f);
 			model_id = input.scene->add_object(data);
 			physics_id = input.physics->add_static_body(data.position, glm::vec2(0.0, 0.0), data.width, data.height, data.trigger);
-			//input.physics->static_positions[physics_id] = position;
 		}
 
 		if (model_id != -1)
 		{
 			input.physics->static_positions[physics_id] += glm::vec2(direction.x, direction.y);
 			input.scene->models[model_id].move(glm::vec2(direction.x, direction.y));
+		}
+
+		if ((*input.local_input)[logic::button::rotate] == logic::button_state::pressed)
+		{
+			input.scene->rotate_object(model_id);
+			input.physics->rotate_static_box(physics_id);
 		}
 	}
 	
