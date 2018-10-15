@@ -39,7 +39,7 @@ public:
 	bool build_mode_active = false;
 	int placing_object_id;
 
-	int add_object(collision_data& physics_data, glm::vec2 Position);
+	int add_object(collision_data& physics_data);
 	//void move_object(int id, glm::vec2 position);
 };
 

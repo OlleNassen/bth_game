@@ -28,13 +28,13 @@ Output Gameplay::update(Input input)
 	direction = { 0.0f, 0.0f, 0.0f };
 
 	if ((*input.local_input)[button::up] >= button_state::pressed)
-		direction.y += 1.0f;
+		direction.y += 0.25f;
 	if ((*input.local_input)[button::left] >= button_state::pressed)
-		direction.x -= 1.0f;
+		direction.x -= 0.25f;
 	if ((*input.local_input)[button::down] >= button_state::pressed)
-		direction.y -= 1.0f;
+		direction.y -= 0.25f;
 	if ((*input.local_input)[button::right] >= button_state::pressed)
-		direction.x += 1.0f;
+		direction.x += 0.25f;
 		
 	std::array<glm::vec2, 4> velocities;
 	
@@ -61,14 +61,16 @@ Output Gameplay::update(Input input)
 
 		if ((*input.local_input)[logic::button::place_object] == logic::button_state::pressed)
 		{
-			model_id = input.scene->add_object(data, glm::vec2(15.0f, -2.0f));
+			glm::vec2 position = glm::vec2(0.0f, 5.0f);
+			model_id = input.scene->add_object(data);
 			physics_id = input.physics->add_static_body(data.position, glm::vec2(0.0, 0.0), data.width, data.height, data.trigger);
+			//input.physics->static_positions[physics_id] = position;
 		}
 
 		if (model_id != -1)
 		{
 			input.physics->static_positions[physics_id] += glm::vec2(direction.x, direction.y);
-			input.scene->models[model_id].set_position(input.physics->static_positions[physics_id]);
+			input.scene->models[model_id].move(glm::vec2(direction.x, direction.y));
 		}
 	}
 	

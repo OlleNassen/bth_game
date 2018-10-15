@@ -24,7 +24,9 @@ public:
 
 	void move(glm::vec2 offset)
 	{
-		model = glm::translate(model, glm::vec3{ offset, 0.0f });
+		//model = glm::translate(model, glm::vec3{ offset, 0.0f });
+		model[3][0] += offset.x;
+		model[3][1] += offset.y;
 	}
 
 	void set_position(glm::vec2 position)

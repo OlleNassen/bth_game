@@ -40,7 +40,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 
 		if(level.levelObjects[i].position[2] > -0.01 && level.levelObjects[i].position[2] < 0.01)
 		{ 
-			glm::vec2 position = { level.levelObjects[i].position[0], level.levelObjects[i].position[1] };
+			//glm::vec2 position = { level.levelObjects[i].position[0], level.levelObjects[i].position[1] };
 			float width = level.levelObjects[i].collisionBox[1];
 			float height = level.levelObjects[i].collisionBox[0];
 			auto* ptr = level.levelObjects[i].centerPivot;
@@ -50,7 +50,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 		}
 	}
 
-	// Lucas/Vincet Test för placering av object.
+	// Lucas/Vincent Test för placering av object.
 	int i = 1;
 
 	model = glm::mat4{1.0f};
@@ -74,7 +74,7 @@ GameScene::~GameScene()
 {
 }
 
-int GameScene::add_object(collision_data& physics_data, glm::vec2 Position = glm::vec2(0.0f, 0.0f))
+int GameScene::add_object(collision_data& physics_data)
 {
 	physics_data = player_coll_data;
 	models.emplace_back(player_model, glm::vec3(0, 0, 0), player);
