@@ -126,7 +126,6 @@ void FX::particle_linear_sort(Particle * arr, int size)
 void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera)
 {
 	std::chrono::duration<float> seconds = delta;
-	time_t fusk_tid;
 	
 	data.default_x = 0.0f;
 	data.default_y = 0.0f;
