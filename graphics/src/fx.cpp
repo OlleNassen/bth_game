@@ -128,7 +128,7 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 	data.default_x = model_position_2d[0].x;
 	data.default_y = model_position_2d[0].y;
 	data.default_z = 0.0f;
-	data.nr_of_particles = 21;
+	data.nr_of_particles = 1;
 
 	//Update data for particles
 	if (total_particle_count <= MAX_PARTICLES)
@@ -136,9 +136,6 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 		for (int i = 0; i < data.nr_of_particles; i++)
 		{
 			//Create a random position here
-
-
-
 
 			//Find and update the last used particle
 			last_used_particle = find_unused_particle(data.particle_container, last_used_particle);
@@ -167,14 +164,14 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 
 	total_particle_count = 0;
 	//Update movement
-	for (int i = 0; i < MAX_PARTICLES; i++)
+	for (int i = 0; i < data.nr_of_particles; i++)
 	{
 		//Update life with delta time
 		data.particle_container[i].life -= seconds.count() / 2.0f;
 
 		if (data.particle_container[i].life > 0.0f)
 		{
-			data.particle_container[i].speed += glm::vec3(0, 1, 0) * seconds.count();
+			data.particle_container[i].speed += glm::vec3(0, 0.1f, 0) * seconds.count();
 			data.particle_container[i].pos += data.particle_container[i].speed / 70.0f;
 			data.particle_container[i].camera_distance = glm::length(data.particle_container[i].pos - camera.position);
 
