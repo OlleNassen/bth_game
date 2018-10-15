@@ -44,8 +44,8 @@ Game::Game()
 	physics.add_static_body({7.0f, 11.0f}, glm::vec2{ 0.0f, 0.0f }, 2, 2, true);
 	
 	//Temporary leaderboard in the game4
-	leader_board = new int[net_out.player_count];
-	current_gameboard = new int[net_out.player_count];
+	leader_board.push_back(net_out.player_count);
+	current_gameboard.push_back(net_out.player_count);
 }
 
 void Game::run()

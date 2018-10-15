@@ -57,8 +57,8 @@ private:
 
 
 	//Temp leaderboards
-	int* leader_board = NULL;
-	int* current_gameboard = NULL;
+	std::vector<int> leader_board;
+	std::vector<int> current_gameboard;
 };
 
 
