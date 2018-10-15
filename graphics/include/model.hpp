@@ -10,7 +10,7 @@
 #include "texture.hpp"
 #include "lights.hpp"
 #include <GLFW/glfw3.h>
-#include "Animation.hpp"
+#include "animation_handler.hpp"
 
 //TEMP MODEL CLASS, TECHNICAL ARTISTS FEEL FREE TO CHANGE THIS
 
