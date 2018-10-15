@@ -39,22 +39,22 @@ public:
 
 	void rotate(float degree, glm::vec2 center_pivot)
 	{
-		glm::mat4 ident{ 1.0f };
-		glm::mat4 temp = model;
-		glm::mat4 rotate = glm::rotate(ident, glm::radians(degree), glm::vec3{ 0,0,1 });
-		glm::mat4 trans = glm::translate(ident, glm::vec3(0.0, center_pivot.y / 2, 0.0));
+		glm::mat3 rotation{ model };
+		glm::vec3 translation{ model[3][0], model[3][1], model[3][2] };
 
-		//model = glm::translate(model, glm::vec3(0.0, 0.0, 0.0));
-		//model = glm::rotate(model, glm::radians(degree), glm::vec3{ 1,0,0 });
-		//model = glm::translate(temp, { temp_pos, 0.0 });
 
-		//model = glm::translate(ident, glm::vec3(0.0, 0.0, 0.0));
-		//ident = glm::rotate(ident, glm::radians(degree), glm::vec3{ 0,0,1 });
-		//model = model * ident;
+		model = glm::mat4{ 1.0f };
+		model = glm::translate(model, translation);
+		model = glm::rotate(model, glm::radians(degree), {0.0f, 0.0f, 1.0f});
+		model = model * glm::mat4{rotation};
 
-		model = ident;
-		model = model * trans;
-		model = model * rotate;
+		
+		//Works but not for all
+		//model = glm::translate(model, { 0.0, center_pivot.x / 2, 0.0 });
+		//model = glm::rotate(model, glm::radians(degree), { 1,0,0 });
+		//model = glm::translate(model, { 0.0, -center_pivot.x / 2, 0.0 });
+
+
 	}
 
 	void render(const Shader & shader, const Camera& camera, const PointLight& light)const;
