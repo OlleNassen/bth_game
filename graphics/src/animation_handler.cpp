@@ -1,14 +1,18 @@
 #include "animation_handler.hpp"
 
-AnimationHandler::AnimationHandler()
+Animation_handler::Animation_handler()
+{
+	this->animations.clear();
+	this->linkMatricies.clear();
+	this->transformMatrices.clear();
+}
+
+
+Animation_handler::~Animation_handler()
 {
 }
 
-AnimationHandler::~AnimationHandler()
-{
-}
-
-glm::vec3 AnimationHandler::calc_interpolated_translation(float time, int index)
+glm::vec3 Animation_handler::calc_interpolated_translation(float time, int index)
 {
 	unsigned int translationIndex = find_current_keyframe(time, index);
 	unsigned int nextTranslation = translationIndex + 1;
@@ -38,7 +42,7 @@ glm::vec3 AnimationHandler::calc_interpolated_translation(float time, int index)
 	return val;
 }
 
-glm::quat AnimationHandler::calc_interpolated_rotation(float time, int index)
+glm::quat Animation_handler::calc_interpolated_rotation(float time, int index)
 {
 	unsigned int rotationIndex = find_current_keyframe(time, index);
 	unsigned int nextRotation = rotationIndex + 1;
@@ -78,7 +82,7 @@ glm::quat AnimationHandler::calc_interpolated_rotation(float time, int index)
 	return val;
 }
 
-glm::vec3 AnimationHandler::calc_interpolated_scale(float time, int index)
+glm::vec3 Animation_handler::calc_interpolated_scale(float time, int index)
 {
 	unsigned int scaleIndex = find_current_keyframe(time, index);
 	unsigned int nextScale = scaleIndex + 1;
@@ -111,7 +115,7 @@ glm::vec3 AnimationHandler::calc_interpolated_scale(float time, int index)
 }
 
 
-unsigned int AnimationHandler::find_current_keyframe(float time, int index)
+unsigned int Animation_handler::find_current_keyframe(float time, int index)
 {
 
 	for (int i = 0; i < this->current_animation->nr_of_keyframes - 1; i++)
@@ -121,7 +125,7 @@ unsigned int AnimationHandler::find_current_keyframe(float time, int index)
 	}
 	return 0;
 }
-unsigned int AnimationHandler::find_switching_keyframe(float time, int index)
+unsigned int Animation_handler::find_switching_keyframe(float time, int index)
 {
 
 	for (int i = 0; i < this->previous_animation->nr_of_keyframes - 1; i++)
@@ -132,7 +136,7 @@ unsigned int AnimationHandler::find_switching_keyframe(float time, int index)
 	return 0;
 }
 
-void AnimationHandler::update_keyframe_transform(float time, int index)
+void Animation_handler::update_keyframe_transform(float time, int index)
 {
 	if (this->current_animation->nr_of_keyframes != 0)
 	{
@@ -150,7 +154,7 @@ void AnimationHandler::update_keyframe_transform(float time, int index)
 	}
 }
 
-glm::mat4 AnimationHandler::get_parent_transform(Joint joint)
+glm::mat4 Animation_handler::get_parent_transform(Joint joint)
 {
 	std::vector<glm::mat4> mats;
 	int parentIndex = joint.parent_id;
@@ -179,12 +183,12 @@ glm::mat4 AnimationHandler::get_parent_transform(Joint joint)
 
 }
 
-glm::mat4 AnimationHandler::get_switch_parent_transform(Joint join)
+glm::mat4 Animation_handler::get_switch_parent_transform(Joint join)
 {
 	return glm::mat4();
 }
 
-void AnimationHandler::update_bone_mat_vector()
+void Animation_handler::update_bone_mat_vector()
 {
 
 	this->bone_mat_vector.clear();
@@ -208,7 +212,7 @@ void AnimationHandler::update_bone_mat_vector()
 }
 
 
-bool AnimationHandler::switch_animation(const std::string & animation_name, float interpolation_time)
+bool Animation_handler::switch_animation(const std::string & animation_name, float interpolation_time)
 {
 	bool foundAnimation = false;
 	int animationIndex;
@@ -231,7 +235,7 @@ bool AnimationHandler::switch_animation(const std::string & animation_name, floa
 	return foundAnimation;
 }
 
-void AnimationHandler::update_animation(float delta)
+void Animation_handler::update_animation(float delta)
 {
 	get_time(delta);
 
@@ -264,13 +268,13 @@ void AnimationHandler::update_animation(float delta)
 
 }
 
-void AnimationHandler::get_time(float delta)
+void Animation_handler::get_time(float delta)
 {
 	this->time_seconds += (delta * 0.00001);
 	if (current_animation->switching)
 		time_at_switch += (delta * 0.00001);
 }
-void AnimationHandler::fixInverseBindPoses()
+void Animation_handler::fixInverseBindPoses()
 {
 	std::vector<glm::mat4> LM, GM, IBP;
 	for (int i = 0; i < this->joints.size(); i++)
@@ -296,7 +300,7 @@ void AnimationHandler::fixInverseBindPoses()
 
 
 }
-glm::mat4 AnimationHandler::mat_to_GLM(float mat[4][4])
+glm::mat4 Animation_handler::mat_to_GLM(float mat[4][4])
 {
 	glm::mat4 tmp;
 	tmp[0][0] = mat[0][0];
@@ -320,7 +324,7 @@ glm::mat4 AnimationHandler::mat_to_GLM(float mat[4][4])
 	tmp[3][3] = mat[3][3];
 	return tmp;
 }
-void AnimationHandler::set_local_matrix(glm::mat4 mat, int index)
+void Animation_handler::set_local_matrix(glm::mat4 mat, int index)
 {
 	this->joints[index].local_transform_matrix[0][0] = mat[0][0];
 	this->joints[index].local_transform_matrix[0][1] = mat[0][1];
@@ -340,21 +344,19 @@ void AnimationHandler::set_local_matrix(glm::mat4 mat, int index)
 	this->joints[index].local_transform_matrix[3][3] = mat[3][3];
 }
 
-void AnimationHandler::create_animation_data(const std::string & file_path)
+void Animation_handler::create_animation_data(const std::string & file_path)
 {
 	std::string filepath = "../resources/assets/" + file_path;
 	LeapImporter importer;
 	LeapAnimation* custom_anim = importer.getAnimation(filepath.c_str());
 
-	//animations.clear();
-	animations.push_back(custom_anim->animation);
+
+	this->animations.push_back(custom_anim->animation);
 	if (animations.size() > 0)
 	{
-		current_animation = custom_anim->animation;
+		this->current_animation = custom_anim->animation;
 		this->joints = custom_anim->animation->joints;
-		//joints.push_back(custom_anim->animation->joints[0]);
-		this->linkMatricies.clear();
-		transformMatrices.clear();
+
 
 		for (int i = 0; i < this->joints.size(); i++)
 		{
@@ -369,7 +371,7 @@ void AnimationHandler::create_animation_data(const std::string & file_path)
 
 }
 
-std::vector<glm::mat4> AnimationHandler::getMatrices()
+std::vector<glm::mat4> Animation_handler::getMatrices()
 {
 	return this->bone_mat_vector;
 }

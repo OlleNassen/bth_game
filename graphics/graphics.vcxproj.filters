@@ -116,7 +116,7 @@
     <ClInclude Include="include\skybox.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\animation_handler.h">
+    <ClInclude Include="include\animation_handler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
