@@ -130,6 +130,8 @@
     <None Include="shaders\ibl.vs" />
     <None Include="shaders\lines.fs" />
     <None Include="shaders\lines.vs" />
+    <None Include="shaders\minimap.fs" />
+    <None Include="shaders\minimap.vs" />
     <None Include="shaders\pbr.fs" />
     <None Include="shaders\pbr.vs" />
     <None Include="shaders\template.fs" />

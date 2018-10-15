@@ -36,6 +36,10 @@ Renderer::Renderer(GameScene* scene)
 	shaders.emplace_back(
 		"../resources/shaders/ibl.vs",
 		"../resources/shaders/ibl.fs");
+	shaders.emplace_back(
+		"../resources/shaders/minimap.vs",
+		"../resources/shaders/minimap.fs");
+	
 
 	db_camera.position.z = 20.0f;
 }
@@ -97,7 +101,10 @@ void Renderer::render(
 			s.uniform("view", db_camera.view());
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
+
 		}
+		minimap.render(shaders[7]);
+
 	}
 
 	// Text
@@ -194,7 +201,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	//if (scene->models.size()>0)
 		//std::cout << scene->models[0].get_y_position() << std::endl;
 
-	minimap.update(scene->models, new_player_count);
+	minimap.update(scene->models, player_count);
 
 }
 

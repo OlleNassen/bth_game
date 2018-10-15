@@ -38,5 +38,7 @@
     <None Include="shaders\box.fs" />
     <None Include="shaders\ibl.vs" />
     <None Include="shaders\ibl.fs" />
+    <None Include="shaders\minimap.vs" />
+    <None Include="shaders\minimap.fs" />
   </ItemGroup>
 </Project>
