@@ -151,7 +151,7 @@ void Animation_handler::update_keyframe_transform(float time, int index)
 		glm::mat4 temp_mat = glm::mat4(1);
 
 		temp_mat *= glm::translate(glm::mat4(1), glm::vec3(temp3));
-		temp_mat *= glm::mat4_cast(temp);
+		//temp_mat *= glm::mat4_cast(temp);
 		temp_mat *= glm::scale(glm::mat4(1), glm::vec3(temp2));
 
 		set_local_matrix(temp_mat, index);
