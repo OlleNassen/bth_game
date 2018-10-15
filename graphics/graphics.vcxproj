@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\fx.cpp" />
     <ClCompile Include="src\game_scene.cpp" />
     <ClCompile Include="src\mesh_lib.cpp" />
     <ClCompile Include="src\post_processing_effects.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="src\user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\fx.hpp" />
     <ClInclude Include="include\game_scene.hpp" />
     <ClInclude Include="include\helpers.hpp" />
     <ClInclude Include="include\camera.hpp" />

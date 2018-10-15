@@ -2,6 +2,7 @@
 #define RENDERER_HPP
 
 #include <chrono>
+#include <time.h>
 #include <vector>
 #include "game_scene.hpp"
 #include "camera.hpp"
@@ -10,6 +11,7 @@
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 #include "lights.hpp"
+#include "fx.hpp"
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
 
@@ -43,6 +45,14 @@ public:
 		bool is_on,
 		bool move_char);
 
+	void update_particles(
+		Texture& texture,
+		Shader& shader,
+		std::string texture_name,
+		Camera& camera,
+		int id);
+
+private:
 	static void line_debug(const std::vector<glm::vec2>& lines)
 	{
 		VertexArray vao;
@@ -102,6 +112,9 @@ private:
 
 	bool show_start{false};
 	bool debug_active{ false };
+	Texture* dust_texture;
+	FX* dust_particles;
+	int randomizer;
 };
 
 
