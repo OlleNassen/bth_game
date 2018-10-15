@@ -55,6 +55,9 @@ void Renderer::render(
 	}
 	else if (!is_menu)
 	{
+		pbr.use();
+		pbr.uniform("irradiance_map", 6);
+		irradiance_buffer.bind_texture(2);
 		if(debug)
 			render_character(pbr, 
 				db_camera, light, scene->models, 4);

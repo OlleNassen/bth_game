@@ -62,7 +62,7 @@ Framebuffer::Framebuffer(const Shader& shader, const Skybox& skybox)
 	};
 
 	shader.use();
-	shader.uniform("environmentMap", 0);
+	shader.uniform("environment_map", 0);
 	shader.uniform("projection", captureProjection);
 
 	skybox.bind_texture();
@@ -112,9 +112,9 @@ void Framebuffer::bind_texture(int index) const
 		glBindTexture(GL_TEXTURE_2D, depth_texture);
 		break;
 	case 2: //irradiance map -- stupid solution, sorry
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, irradiance_map);
-		break;;
+		break;
 	}
 
 }
