@@ -69,7 +69,7 @@ private:
 	//temp
 	unsigned int captureFBO;
 	unsigned int captureRBO;
-	unsigned int envCubemap;
+	unsigned int irradianceMap;
 
 	Box light_box;
 	Skybox skybox;
