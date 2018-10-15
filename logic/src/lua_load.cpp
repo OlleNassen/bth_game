@@ -26,7 +26,7 @@ void LuaLoad::start_lua()
 	//int test = lua_tonumber(lua_input.getLuaState(), -1);
 	//lua_pop(lua_input.getLuaState(), 0);
 
-	std::cout << error << std::endl;/**/
+	/*std::cout << error << std::endl;*/
 }
 
 glm::vec2 LuaLoad::process_input(const input& i, std::chrono::milliseconds delta)
