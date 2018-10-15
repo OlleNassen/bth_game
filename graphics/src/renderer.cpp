@@ -45,11 +45,8 @@ void Renderer::render(
 			game_camera, light, scene->models, player_count);
 		render_type(pbr, game_camera, light, scene->models);
 
-		shaders[6].use();
-		skybox.render(shaders[6], game_camera);
-
-		shaders[7].use();
-		shaders[7].uniform("particle_texture", 0);
+		fx_dust.use();
+		fx_dust.uniform("particle_texture", 0);
 		dust_texture->bind(0);
 
 		//Get and set matrices
@@ -57,12 +54,12 @@ void Renderer::render(
 		glm::mat4 view_matrix = game_camera.view();
 		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
 		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
-		shaders[7].uniform("camera_right_worldspace", camera_right_vector);
-		shaders[7].uniform("camera_up_worldspace", camera_up_vector);
-		shaders[7].uniform("view", game_camera.view());
-		shaders[7].uniform("projection", game_camera.projection);
-		shaders[7].uniform("view_position", scene->v[0]);
-		shaders[7].uniform("particle_pivot", start_point);
+		fx_dust.uniform("camera_right_worldspace", camera_right_vector);
+		fx_dust.uniform("camera_up_worldspace", camera_up_vector);
+		fx_dust.uniform("view", game_camera.view());
+		fx_dust.uniform("projection", game_camera.projection);
+		fx_dust.uniform("view_position", scene->v[0]);
+		fx_dust.uniform("particle_pivot", start_point);
 
 		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 
@@ -93,8 +90,8 @@ void Renderer::render(
 		skybox.render(skybox_shader, db_camera);
 
 		//Dust
-		shaders[7].use();
-		shaders[7].uniform("particle_texture", 0);
+		fx_dust.use();
+		fx_dust.uniform("particle_texture", 0);
 		dust_texture->bind(0);
 
 		//Get and set matrices
@@ -102,12 +99,12 @@ void Renderer::render(
 		glm::mat4 view_matrix = db_camera.view();
 		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
 		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
-		shaders[7].uniform("camera_right_worldspace", camera_right_vector);
-		shaders[7].uniform("camera_up_worldspace", camera_up_vector);
-		shaders[7].uniform("view", db_camera.view());
-		shaders[7].uniform("projection", db_camera.projection);
-		shaders[7].uniform("view_position", scene->v[0]);
-		shaders[7].uniform("particle_pivot", start_point);
+		fx_dust.uniform("camera_right_worldspace", camera_right_vector);
+		fx_dust.uniform("camera_up_worldspace", camera_up_vector);
+		fx_dust.uniform("view", db_camera.view());
+		fx_dust.uniform("projection", db_camera.projection);
+		fx_dust.uniform("view_position", scene->v[0]);
+		fx_dust.uniform("particle_pivot", start_point);
 		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 
 
@@ -197,7 +194,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
 		}
 
-		//update_particles(*dust_texture, shaders[7], "dust_texture", db_camera, id);
+		//update_particles(*dust_texture, fx_dust, "dust_texture", db_camera, id);
 		/*if (begin[0][button::glow] == button_state::pressed)
 		{
 			want_glow = !want_glow;

@@ -207,7 +207,7 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 			data.particle_container[particle_index].g = 200.0f;
 			data.particle_container[particle_index].b = 200.0f;
 
-			data.particle_container[particle_index].a = rand() % 255 / 3.0f;
+			data.particle_container[particle_index].a = rand() % 255;
 			data.particle_container[particle_index].size = 0;
 		}
 

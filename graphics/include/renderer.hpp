@@ -80,6 +80,8 @@ private:
 		"../resources/shaders/skybox.fs" };
 	Shader irradiance{ "../resources/shaders/irradiance.vs",
 		"../resources/shaders/irradiance.fs" };
+	Shader fx_dust{ "../resources/shaders/fx_dust.vs",
+	"../resources/shaders/fx_dust.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
