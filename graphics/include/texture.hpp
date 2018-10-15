@@ -20,9 +20,9 @@ public:
 		GLenum type = GL_TEXTURE_2D)const;
 	
 	void load_texture(const std::string& path);
-	unsigned int texture_id;
-protected:
 
+protected:
+	unsigned int texture_id;
 	int width;
 	int height;
 	int num_components;

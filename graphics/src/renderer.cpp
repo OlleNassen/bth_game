@@ -12,93 +12,14 @@ using namespace std::chrono_literals;
 
 
 Renderer::Renderer(GameScene* scene)
-	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
-	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
-	, scene { scene }
+	: db_camera{glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f}
+	, game_camera{glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f}
+	, scene{scene}
+	, irradiance_buffer{irradiance, skybox}
 {
-	shaders.reserve(sizeof(Shader) * 10);
-	shaders.emplace_back(
-		"../resources/shaders/pbr.vs",
-		"../resources/shaders/pbr.fs");
-	shaders.emplace_back(
-		"../resources/shaders/text.vs",
-		"../resources/shaders/text.fs");
-	shaders.emplace_back(
-		"../resources/shaders/gui.vs",
-		"../resources/shaders/gui.fs");
-	shaders.emplace_back(
-		"../resources/shaders/post_processing_effects.vs",
-		"../resources/shaders/post_processing_effects.fs");
-	shaders.emplace_back(
-		"../resources/shaders/temp.vs",
-		"../resources/shaders/temp.fs");
-	shaders.emplace_back(
-		"../resources/shaders/lines.vs",
-		"../resources/shaders/lines.fs");
-	shaders.emplace_back(
-		"../resources/shaders/skybox.vs",
-		"../resources/shaders/skybox.fs");
-	shaders.emplace_back(
-		"../resources/shaders/irradiance.vs",
-		"../resources/shaders/irradiance.fs");
-
 	db_camera.position.z = 20.0f;
-
-
-	glGenTextures(1, &irradianceMap);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-	for (unsigned int i = 0; i < 6; ++i)
-	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0,
-			GL_RGB, GL_FLOAT, nullptr);
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-	glm::mat4 captureViews[] =
-	{
-	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
-	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
-	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
-	};
-
-	glGenFramebuffers(1, &captureFBO);
-	glGenRenderbuffers(1, &captureRBO);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
-
-	shaders[7].use();
-	shaders[7].uniform("environmentMap", 0);
-	shaders[7].uniform("projection", captureProjection);
-	glActiveTexture(GL_TEXTURE0);
-	//skybox.bind_texture();
-	glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.texture.texture_id);
-
-	glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
-	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-	for (unsigned int i = 0; i < 6; ++i)
-	{
-		shaders[7].uniform("view", captureViews[i]);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-			GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		skybox.temp_render();
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, 1280, 720); // don't forget to configure the viewport to the capture dimensions.
-
 }
-
 
 void Renderer::render(
 	const std::string* begin,
@@ -117,18 +38,12 @@ void Renderer::render(
 
 	if (!is_menu && connected)
 	{
-		render_character(shaders[0], 
+		render_character(pbr, 
 			game_camera, light, scene->models, player_count);
-		render_type(shaders[0], game_camera, light, scene->models);
-
-		shaders[6].use();
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-		//skybox.temp_render();
-		skybox.render(shaders[6], game_camera);
+		render_type(pbr, game_camera, light, scene->models);
 
 		glDisable(GL_DEPTH_TEST);
-		auto& s = shaders[5];
+		auto& s = lines;
 		if (debug_active)
 		{
 			s.use();
@@ -141,22 +56,21 @@ void Renderer::render(
 	else if (!is_menu)
 	{
 		if(debug)
-			render_character(shaders[0], 
+			render_character(pbr, 
 				db_camera, light, scene->models, 4);
-		render_type(shaders[0], db_camera, light, scene->models);
+		render_type(pbr, db_camera, light, scene->models);
 
-		shaders[6].use();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-		skybox.temp_render2(shaders[6], db_camera);
-		//skybox.render(shaders[6], db_camera);
+		skybox_shader.use();
+		//irradiance_buffer.bind_texture(2);
+		//skybox.irradiance_render(skybox_shader, db_camera);
+		skybox.render(skybox_shader, db_camera);
 
 		light_box.render(db_camera);
 
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
-			auto& s = shaders[5];
+			auto& s = lines;
 			s.use();
 			s.uniform("projection", db_camera.projection);
 			s.uniform("view", db_camera.view());
@@ -166,16 +80,16 @@ void Renderer::render(
 	}
 
 	// Text
-	shaders[2].use();
+	gui.use();
 	if (is_chat_visible)
 	{
 		ui.render();
 	}
 
-	shaders[1].use();
+	text_shader.use();
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
-	shaders[1].uniform("projection", projection);
-	shaders[1].uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
+	text_shader.uniform("projection", projection);
+	text_shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
 
 	auto offset = 0.0f;
 
@@ -198,16 +112,16 @@ void Renderer::render(
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	shaders[3].use();
-	shaders[3].uniform("scene_texture", 0);
-	shaders[3].uniform("depth_texture", 1);
-	shaders[3].uniform("screen_warning", 2);
+	post_proccessing.use();
+	post_proccessing.uniform("scene_texture", 0);
+	post_proccessing.uniform("depth_texture", 1);
+	post_proccessing.uniform("screen_warning", 2);
 
 	scene_texture.bind_texture(0);
 	scene_texture.bind_texture(1);
 	post_processing_effects.texture.bind(2);
 
-	shaders[3].uniform("pulse", post_processing_effects.glow_value);
+	post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
 }
 

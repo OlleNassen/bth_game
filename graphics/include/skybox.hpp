@@ -15,14 +15,14 @@ public:
 
 	void render(const Shader& shader, const Camera& camera)const;
 
-	void temp_render()const
+	void init_irradiance()const
 	{
 		glBindVertexArray(vao_id);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 	}
 
-	void temp_render2(const Shader& shader, const Camera& camera)const
+	void irradiance_render(const Shader& shader, const Camera& camera)const
 	{
 		shader.uniform("skybox", 0);
 		shader.uniform("view", glm::mat4(glm::mat3(camera.view())));
@@ -37,12 +37,14 @@ public:
 
 	void bind_texture()const
 	{
-		texture.bind(5, GL_TEXTURE_CUBE_MAP);
+		texture.bind(0, GL_TEXTURE_CUBE_MAP);
 	}
-	SkyboxTexture texture;
+
 private:
 	unsigned int vao_id;
 	unsigned int vbo_id;
+
+	SkyboxTexture texture;
 };
 
 }
