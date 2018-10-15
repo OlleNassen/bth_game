@@ -8,8 +8,10 @@ in VS_OUT{
 	vec3 tangent_light_pos;
 	vec3 tangent_view_pos;
 	vec3 tangent_fragment_pos;
+	vec4 weights;
 } fs_in;
 
+uniform int animated;
 // material parameters
 uniform sampler2D emissive_map;
 
@@ -143,5 +145,7 @@ void main()
     color = pow(color, vec3(1.0/2.2)); 
 
     frag_color = vec4(color, 1.0);
+	//if(animated == 1)
+	//frag_color = vec4(fs_in.weights.xyz, 1.0);
 	
 }

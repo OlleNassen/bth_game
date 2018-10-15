@@ -26,21 +26,15 @@ out VS_OUT{
 	vec3 tangent_light_pos;
 	vec3 tangent_view_pos;
 	vec3 tangent_fragment_pos;
+	vec4 weights;
 } vs_out;
 
 void main()
 {
-	bone_matrix = mat4(1.0);
-	if(animted == 1)
-	{
-	bone_matrix = bone_mats[weights_id.x] * weights.x;
-	bone_matrix += bone_mats[weights_id.y] * weights.y;
-	bone_matrix += bone_mats[weights_id.z] * weights.z;
-	bone_matrix += bone_mats[weights_id.w] * weights.w;
-	}
-	
-
+	mat4 bone_matrix = mat4(1.0);
+	vs_out.weights = weights;
 	vs_out.frag_pos = vec3(model * vec4(position, 1.0));
+
     vs_out.tex_coord = uv;
 
     mat3 normal_matrix = transpose(inverse(mat3(model)));
@@ -53,7 +47,21 @@ void main()
     vs_out.tangent_light_pos = tbn_matrix * light_pos;
     vs_out.tangent_view_pos  = tbn_matrix * view_pos;
     vs_out.tangent_fragment_pos  = tbn_matrix * vs_out.frag_pos;
-
-
 	gl_Position = projection * view * model * bone_matrix * vec4(position, 1.0);
+
+	if(animated == 1)
+	{
+	bone_matrix = bone_mats[int(weights_id.x)] * weights.x;
+	bone_matrix += bone_mats[int(weights_id.z)] * weights.z;
+	bone_matrix += bone_mats[int(weights_id.w)] * weights.w;
+	bone_matrix += bone_mats[int(weights_id.y)] * weights.y;
+
+	vec3 using_position = (bone_matrix * vec4(position, 1.0)).xyz;
+	vec4 view_pos = (view * model * vec4(using_position, 1.0));
+
+	vs_out.frag_pos = vec3(model * bone_matrix * vec4(position, 1.0));
+	gl_Position = projection * view_pos;
+
+	}
+
 }

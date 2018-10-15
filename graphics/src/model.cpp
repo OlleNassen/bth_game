@@ -38,12 +38,12 @@ namespace graphics
 
 		if (is_animated)
 		{
-			std::vector<glm::mat4> bone_mats = animation_handler.bone_mat_vector;
+			//std::vector<glm::mat4> bone_mats = animation_handler.bone_mat_vector;
 
-			for (int i = 0; i < bone_mats.size(); i++)
+			for (int i = 0; i < animation_handler.bone_mat_vector.size(); i++)
 			{
 				std::string name = "bone_mats[" + std::to_string(i) + "]";
-				shader.uniform(name, bone_mats[i]);
+				shader.uniform(name, animation_handler.bone_mat_vector[i]);
 			}
 		}
 

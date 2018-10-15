@@ -151,7 +151,7 @@ void Animation_handler::update_keyframe_transform(float time, int index)
 		glm::mat4 temp_mat = glm::mat4(1);
 
 		temp_mat *= glm::translate(glm::mat4(1), glm::vec3(temp3));
-		//temp_mat *= glm::mat4_cast(temp);
+		temp_mat *= glm::mat4_cast(temp);
 		temp_mat *= glm::scale(glm::mat4(1), glm::vec3(temp2));
 
 		set_local_matrix(temp_mat, index);
@@ -164,18 +164,19 @@ glm::mat4 Animation_handler::get_parent_transform(Joint joint)
 	int parentIndex = joint.parent_id;
 	Joint b = joint;
 
-	if (parentIndex != -1)
-	{
-		b = this->joints[parentIndex];
-		parentIndex = b.parent_id;
-	}
+	//if (parentIndex != -1)
+	//{
+	//	b = this->joints[parentIndex];
+	//	parentIndex = b.parent_id;
+	//}
 	while (parentIndex != -1)
 	{
+		b = this->joints[parentIndex];
 		glm::mat4 tmp_mat = mat_to_GLM(b.local_transform_matrix);
 		mats.push_back(tmp_mat);
 
 
-		b = joints[b.parent_id];
+		//b = joints[b.parent_id];
 		parentIndex = b.parent_id;
 	}
 
@@ -196,14 +197,15 @@ void Animation_handler::update_bone_mat_vector()
 {
 
 	this->bone_mat_vector.clear();
-	for (unsigned int i = 0; i < 30; i++)
+	for (unsigned int i = 0; i < 20; i++)
 	{
 		if (i > joints.size() - 1)
 			bone_mat_vector.push_back(glm::mat4(1));
 		else
 		{
 			glm::mat4 ct = get_parent_transform(this->joints[i]) * mat_to_GLM(this->joints[i].local_transform_matrix);
-			bone_mat_vector.push_back(glm::inverse(mat_to_GLM(this->joints[0].local_transform_matrix)) * ct * offsetMatrices[i]);
+			glm::mat4 final_transform = glm::inverse(mat_to_GLM(this->joints[0].local_transform_matrix)) * ct * offsetMatrices[i];
+			bone_mat_vector.push_back(final_transform);
 
 			
 		}
@@ -270,9 +272,9 @@ void Animation_handler::update_animation(float delta)
 
 void Animation_handler::get_time(float delta)
 {
-	this->time_seconds += (delta * 0.001);
+	this->time_seconds += (delta * 0.00000001);
 	if (animations[current_animation]->switching)
-		time_at_switch += (delta * 0.001);
+		time_at_switch += (delta * 0.00000001);
 }
 void Animation_handler::fixInverseBindPoses()
 {
