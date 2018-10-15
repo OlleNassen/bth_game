@@ -22,7 +22,8 @@ public:
 	~Animation_handler();
 
 	glm::vec3 calc_interpolated_translation(float time, int index);
-	glm::quat calc_interpolated_rotation(float time, int index);
+	glm::quat calc_interpolated_quaternion(float time, int index);
+	glm::vec3 calc_interpolated_rotation(float time, int index);
 	glm::vec3 calc_interpolated_scale(float time, int index);
 
 	unsigned int find_switching_keyframe(float time, int index);

@@ -38,15 +38,9 @@ namespace graphics
 
 		if (is_animated)
 		{
-			//std::vector<glm::mat4> bone_mats = animation_handler.bone_mat_vector;
-
-			for (int i = 0; i < animation_handler.bone_mat_vector.size(); i++)
-			{
-				std::string name = "bone_mats[" + std::to_string(i) + "]";
-				shader.uniform(name, animation_handler.bone_mat_vector[i]);
-			}
+			shader.uniform("bone_mats", animation_handler.bone_mat_vector);
 		}
-
+		
 
 		mesh->textures[0].bind(0);
 		mesh->textures[1].bind(1);

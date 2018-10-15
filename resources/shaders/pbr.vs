@@ -32,7 +32,7 @@ out VS_OUT{
 void main()
 {
 	mat4 bone_matrix = mat4(1.0);
-	vs_out.weights = weights;
+	vs_out.weights = weights_id;
 	vs_out.frag_pos = vec3(model * vec4(position, 1.0));
 
     vs_out.tex_coord = uv;
@@ -61,6 +61,7 @@ void main()
 
 	vs_out.frag_pos = vec3(model * bone_matrix * vec4(position, 1.0));
 	gl_Position = projection * view_pos;
+	//gl_Position = projection * view * model * vec4(position, 1.0);
 
 	}
 

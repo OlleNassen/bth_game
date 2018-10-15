@@ -145,7 +145,7 @@ void main()
     color = pow(color, vec3(1.0/2.2)); 
 
     frag_color = vec4(color, 1.0);
-	//if(animated == 1)
-	//frag_color = vec4(fs_in.weights.xyz, 1.0);
+	if(animated == 1)
+	frag_color = vec4(fs_in.weights.xyz, 1.0);
 	
 }

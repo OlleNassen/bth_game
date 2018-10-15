@@ -74,7 +74,7 @@ void Game::run()
 		for (unsigned int i = 0; i < level.models.size(); i++)
 		{
 		if (level.models[i].is_animated)
-			level.models[i].update_animation((float)delta_time.count());
+			level.models[i].update_animation((float)timestep.count());
 
 		}
 

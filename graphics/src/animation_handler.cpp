@@ -28,25 +28,25 @@ glm::vec3 Animation_handler::calc_interpolated_translation(float time, int index
 		deltaTime = 0.1;
 	}
 
-	float factor = abs((time - animations[current_animation]->joints[index].keyFrames[translationIndex].time) / deltaTime);
+	float factor = (time - animations[current_animation]->joints[index].keyFrames[translationIndex].time) / deltaTime;
 	if (factor < 0)
 		factor = 0.0;
 	if (factor > 1.0)
 		factor = 1.0;
 
-	glm::vec3 t1(animations[current_animation]->joints[index].keyFrames[translationIndex].scaling[0],
-		animations[current_animation]->joints[index].keyFrames[translationIndex].scaling[1],
-		animations[current_animation]->joints[index].keyFrames[translationIndex].scaling[2]);
-	glm::vec3 t2(animations[current_animation]->joints[index].keyFrames[nextTranslation].scaling[0],
-		animations[current_animation]->joints[index].keyFrames[nextTranslation].scaling[1],
-		animations[current_animation]->joints[index].keyFrames[nextTranslation].scaling[2]);
+	glm::vec3 t1(animations[current_animation]->joints[index].keyFrames[translationIndex].translation[0],
+		animations[current_animation]->joints[index].keyFrames[translationIndex].translation[1],
+		animations[current_animation]->joints[index].keyFrames[translationIndex].translation[2]);
+	glm::vec3 t2(animations[current_animation]->joints[index].keyFrames[nextTranslation].translation[0],
+		animations[current_animation]->joints[index].keyFrames[nextTranslation].translation[1],
+		animations[current_animation]->joints[index].keyFrames[nextTranslation].translation[2]);
 
 	glm::vec3 val = glm::mix(t1, t2, factor);
 
 	return val;
 }
 
-glm::quat Animation_handler::calc_interpolated_rotation(float time, int index)
+glm::quat Animation_handler::calc_interpolated_quaternion(float time, int index)
 {
 	unsigned int rotationIndex = find_current_keyframe(time, index);
 	unsigned int nextRotation = rotationIndex + 1;
@@ -58,7 +58,7 @@ glm::quat Animation_handler::calc_interpolated_rotation(float time, int index)
 		deltaTime = 0.1;
 	}
 
-	float factor = abs((time - animations[current_animation]->joints[index].keyFrames[rotationIndex].time) / deltaTime);
+	float factor = (time - animations[current_animation]->joints[index].keyFrames[rotationIndex].time) / deltaTime;
 	if (factor < 0)
 		factor = 0.0;
 	if (factor > 1.0)
@@ -67,20 +67,58 @@ glm::quat Animation_handler::calc_interpolated_rotation(float time, int index)
 
 
 	glm::quat r1;
-	r1.x = animations[current_animation]->joints[index].keyFrames[rotationIndex].rotation[0];
-	r1.y = animations[current_animation]->joints[index].keyFrames[rotationIndex].rotation[1];
-	r1.z = animations[current_animation]->joints[index].keyFrames[rotationIndex].rotation[2];
-	r1.w = animations[current_animation]->joints[index].keyFrames[rotationIndex].rotation[3];
+	r1.x = animations[current_animation]->joints[index].keyFrames[rotationIndex].quatern[0];
+	r1.y = animations[current_animation]->joints[index].keyFrames[rotationIndex].quatern[1];
+	r1.z = animations[current_animation]->joints[index].keyFrames[rotationIndex].quatern[2];
+	r1.w = animations[current_animation]->joints[index].keyFrames[rotationIndex].quatern[3];
 
 	glm::quat r2;
-	r2.x = animations[current_animation]->joints[index].keyFrames[nextRotation].rotation[0];
-	r2.y = animations[current_animation]->joints[index].keyFrames[nextRotation].rotation[1];
-	r2.z = animations[current_animation]->joints[index].keyFrames[nextRotation].rotation[2];
-	r2.w = animations[current_animation]->joints[index].keyFrames[nextRotation].rotation[3];
+	r2.x = animations[current_animation]->joints[index].keyFrames[nextRotation].quatern[0];
+	r2.y = animations[current_animation]->joints[index].keyFrames[nextRotation].quatern[1];
+	r2.z = animations[current_animation]->joints[index].keyFrames[nextRotation].quatern[2];
+	r2.w = animations[current_animation]->joints[index].keyFrames[nextRotation].quatern[3];
 
 
 
 	glm::quat val = glm::slerp(r1, r2, factor);
+
+
+	return val;
+}
+
+glm::vec3 Animation_handler::calc_interpolated_rotation(float time, int index)
+{
+	unsigned int rotationIndex = find_current_keyframe(time, index);
+	unsigned int nextRotation = rotationIndex + 1;
+
+	//position mellan de två keyframesen
+	float deltaTime = animations[current_animation]->joints[index].keyFrames[nextRotation].time - animations[current_animation]->joints[index].keyFrames[rotationIndex].time;
+	if (deltaTime < 0.001)
+	{
+		deltaTime = 0.1;
+	}
+
+	float factor = (time - animations[current_animation]->joints[index].keyFrames[rotationIndex].time) / deltaTime;
+	if (factor < 0)
+		factor = 0.0;
+	if (factor > 1.0)
+		factor = 1.0;
+
+
+
+	glm::vec3 r1;
+	r1.x = animations[current_animation]->joints[index].keyFrames[rotationIndex].rotation[0];
+	r1.y = animations[current_animation]->joints[index].keyFrames[rotationIndex].rotation[1];
+	r1.z = animations[current_animation]->joints[index].keyFrames[rotationIndex].rotation[2];
+
+	glm::vec3 r2;
+	r2.x = animations[current_animation]->joints[index].keyFrames[nextRotation].rotation[0];
+	r2.y = animations[current_animation]->joints[index].keyFrames[nextRotation].rotation[1];
+	r2.z = animations[current_animation]->joints[index].keyFrames[nextRotation].rotation[2];
+
+
+
+	glm::vec3 val = glm::mix(r1, r2, factor);
 
 
 	return val;
@@ -98,7 +136,7 @@ glm::vec3 Animation_handler::calc_interpolated_scale(float time, int index)
 		deltaTime = 0.1;
 	}
 
-	float factor = abs((time - animations[current_animation]->joints[index].keyFrames[scaleIndex].time) / deltaTime);
+	float factor = (time - animations[current_animation]->joints[index].keyFrames[scaleIndex].time) / deltaTime;
 	if (factor < 0)
 		factor = 0.0;
 	if (factor > 1.0)
@@ -144,15 +182,20 @@ void Animation_handler::update_keyframe_transform(float time, int index)
 {
 	if (this->animations[current_animation]->nr_of_keyframes != 0)
 	{
-		glm::quat temp = calc_interpolated_rotation(time, index);
+		glm::quat temp = calc_interpolated_quaternion(time, index);
 		glm::vec3 temp2 = calc_interpolated_scale(time, index);
 		glm::vec3 temp3 = calc_interpolated_translation(time, index);
+		glm::vec3 temp4 = calc_interpolated_rotation(time, index);
 
 		glm::mat4 temp_mat = glm::mat4(1);
 
+
 		temp_mat *= glm::translate(glm::mat4(1), glm::vec3(temp3));
-		temp_mat *= glm::mat4_cast(temp);
+		temp_mat *= mat4_cast(temp);
 		temp_mat *= glm::scale(glm::mat4(1), glm::vec3(temp2));
+
+
+
 
 		set_local_matrix(temp_mat, index);
 	}
@@ -164,19 +207,19 @@ glm::mat4 Animation_handler::get_parent_transform(Joint joint)
 	int parentIndex = joint.parent_id;
 	Joint b = joint;
 
-	//if (parentIndex != -1)
-	//{
-	//	b = this->joints[parentIndex];
-	//	parentIndex = b.parent_id;
-	//}
-	while (parentIndex != -1)
+	if (parentIndex != -1)
 	{
 		b = this->joints[parentIndex];
+		parentIndex = b.parent_id;
+	}
+	while (parentIndex != -1)
+	{
+
 		glm::mat4 tmp_mat = mat_to_GLM(b.local_transform_matrix);
 		mats.push_back(tmp_mat);
 
 
-		//b = joints[b.parent_id];
+		b = joints[b.parent_id];
 		parentIndex = b.parent_id;
 	}
 
@@ -188,10 +231,6 @@ glm::mat4 Animation_handler::get_parent_transform(Joint joint)
 
 }
 
-glm::mat4 Animation_handler::get_switch_parent_transform(Joint join)
-{
-	return glm::mat4();
-}
 
 void Animation_handler::update_bone_mat_vector()
 {
@@ -204,10 +243,10 @@ void Animation_handler::update_bone_mat_vector()
 		else
 		{
 			glm::mat4 ct = get_parent_transform(this->joints[i]) * mat_to_GLM(this->joints[i].local_transform_matrix);
-			glm::mat4 final_transform = glm::inverse(mat_to_GLM(this->joints[0].local_transform_matrix)) * ct * offsetMatrices[i];
-			bone_mat_vector.push_back(final_transform);
-
+			glm::mat4 final_transform = glm::inverse(mat_to_GLM(this->joints[0].local_transform_matrix)) * mat_to_GLM(this->joints[0].local_transform_matrix) * ct * offsetMatrices[i];
 			
+			
+			bone_mat_vector.push_back(final_transform);
 		}
 	}
 
@@ -261,20 +300,14 @@ void Animation_handler::update_animation(float delta)
 	}
 	update_bone_mat_vector();
 
-	//bone_mat_vector.clear();
-	//for (unsigned int i = 1; i < this->joints.size(); i++)
-	//{
-	//	bone_mat_vector.push_back(glm::mat4(1));
-	//}
-	//testMatricFunction(1);
 
 }
 
 void Animation_handler::get_time(float delta)
 {
-	this->time_seconds += (delta * 0.00000001);
+	this->time_seconds += (delta * 0.001);
 	if (animations[current_animation]->switching)
-		time_at_switch += (delta * 0.00000001);
+		time_at_switch += (delta * 0.001);
 }
 void Animation_handler::fixInverseBindPoses()
 {
@@ -364,8 +397,6 @@ void Animation_handler::create_animation_data(const std::string & file_path)
 		{
 			this->linkMatricies.push_back(mat_to_GLM(joints[i].local_transform_matrix));
 			this->transformMatrices.push_back(mat_to_GLM(joints[i].bind_pose_matrix));
-			//this->globalTransforms.push_back(mat_to_GLM(joints[i].local_transform_matrix));
-			//this->localTransforms.push_back(mat_to_GLM(joints[i].bind_pose_matrix));
 		}
 		fixInverseBindPoses();
 	}
