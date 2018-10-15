@@ -22,7 +22,7 @@ uniform vec3 player_color;
 uniform vec3 light_color;
 
 //IBL
-uniform samplerCube irradianceMap;
+uniform samplerCube irradiance_map;
 
 const float PI = 3.14159265359;
 
@@ -81,8 +81,8 @@ void main()
 	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
-    float metallic  = texture(metallic_map, fs_in.tex_coord).r;
-    float roughness = texture(roughness_map, fs_in.tex_coord).r;
+    float metallic  = 0.0;//texture(metallic_map, fs_in.tex_coord).r;
+    float roughness = 1.0;//texture(roughness_map, fs_in.tex_coord).r;
     float ao        = texture(ao_map, fs_in.tex_coord).r;
 
 	vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
@@ -141,7 +141,7 @@ void main()
     vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;	  
-    vec3 irradiance = texture(irradianceMap, N).rgb;
+    vec3 irradiance = texture(irradiance_map, N).rgb;
     vec3 diffuse      = irradiance * albedo;
     vec3 ambient = (kD * diffuse) * ao;
     
