@@ -81,7 +81,7 @@ void main()
 	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
-    float metallic  = 0.0;//texture(metallic_map, fs_in.tex_coord).r;
+    float metallic  = texture(metallic_map, fs_in.tex_coord).r;
     float roughness = texture(roughness_map, fs_in.tex_coord).r;
     float ao        = texture(ao_map, fs_in.tex_coord).r;
 
@@ -144,8 +144,6 @@ void main()
     vec3 irradiance = texture(irradianceMap, N).rgb;
     vec3 diffuse      = irradiance * albedo;
     vec3 ambient = (kD * diffuse) * ao;
-
-    //vec3 ambient = vec3(0.03) * albedo * ao;
     
     vec3 color = ambient + Lo + emission; //emissive here?
 
