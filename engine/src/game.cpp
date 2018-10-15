@@ -109,6 +109,8 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
+
+
 	logic_out = gameplay.update({net_out.player_id, delta, local_input, net_out.directions});
 	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
 	
@@ -123,6 +125,10 @@ void Game::update(std::chrono::milliseconds delta)
 			physics.dynamic_rigidbodies[i].add_force(logic_out.velocities[i]);
 		level.v[i] = physics.dynamic_positions[i];
 		level.models[i].set_position(physics.dynamic_positions[i]);
+		if (level.models[i].is_animated)
+		{
+			level.models[i].update_animation((float)delta.count());
+		}
 	}		
 
 	renderer.update(delta,

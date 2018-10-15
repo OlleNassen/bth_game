@@ -54,4 +54,5 @@ void main()
     vec3 specular = vec3(0.2) * spec;
 
 	frag_color = vec4(ambient + diffuse + specular + emission, 1.0);
+	frag_color = vec4(0.91);
 }

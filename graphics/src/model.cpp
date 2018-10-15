@@ -4,55 +4,60 @@
 namespace graphics
 {
 
-Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh)
-:
-	model{model},
-	emissive_color{emissive_color}
-{
-	this->mesh = mesh;
-}
-
-Model::~Model()
-{
-}
-
-void Model::render(const Shader & shader, const Camera& camera, const PointLight& light)const
-{
-	shader.uniform("model", model);
-	shader.uniform("view", camera.view());
-	shader.uniform("projection", camera.projection);
-
-	shader.uniform("view_pos", glm::vec3{camera.position});
-	shader.uniform("light_pos", light.position);
-	shader.uniform("light_color", light.color);
-
-	shader.uniform("albedo_map", 0);
-	shader.uniform("normal_map", 1);
-	shader.uniform("metallic_map", 2);
-	shader.uniform("roughness_map", 3);
-	shader.uniform("ao_map", 4);
-	shader.uniform("emissive_map", 5);
-	shader.uniform("player_color", emissive_color);
-
-	if (is_animated)
+	Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh)
+		:
+		model{ model },
+		emissive_color{ emissive_color }
 	{
-		std::vector<glm::mat4> bone_mats = this->animation_handler->getMatrices();
-
-		for (int i = 0; i < bone_mats.size(); i++)
-		{
-			std::string name = "bone_mats[" + std::to_string(i) + "]";
-			shader.uniform(name, bone_mats[i]);
-		}
+		this->mesh = mesh;
 	}
 
+	Model::~Model()
+	{
+	}
 
-	mesh->textures[0].bind(0);
-	mesh->textures[1].bind(1);
-	mesh->textures[2].bind(2);
-	mesh->textures[3].bind(3);
-	mesh->textures[4].bind(4);
-	mesh->textures[5].bind(5);
-	mesh->render();
-}
+	void Model::render(const Shader & shader, const Camera& camera, const PointLight& light)const
+	{
+		shader.uniform("model", model);
+		shader.uniform("view", camera.view());
+		shader.uniform("projection", camera.projection);
+
+		shader.uniform("view_pos", glm::vec3{ camera.position });
+		shader.uniform("light_pos", light.position);
+		shader.uniform("light_color", light.color);
+
+		shader.uniform("albedo_map", 0);
+		shader.uniform("normal_map", 1);
+		shader.uniform("metallic_map", 2);
+		shader.uniform("roughness_map", 3);
+		shader.uniform("ao_map", 4);
+		shader.uniform("emissive_map", 5);
+		shader.uniform("player_color", emissive_color);
+
+		if (is_animated)
+		{
+			std::vector<glm::mat4> bone_mats = animation_handler.bone_mat_vector;
+
+			for (int i = 0; i < bone_mats.size(); i++)
+			{
+				std::string name = "bone_mats[" + std::to_string(i) + "]";
+				shader.uniform(name, bone_mats[i]);
+			}
+		}
+
+
+		mesh->textures[0].bind(0);
+		mesh->textures[1].bind(1);
+		mesh->textures[2].bind(2);
+		mesh->textures[3].bind(3);
+		mesh->textures[4].bind(4);
+		mesh->textures[5].bind(5);
+		mesh->render();
+	}
+
+	void Model::update_animation(float time)
+	{
+		this->animation_handler.update_animation(time);
+	}
 
 }

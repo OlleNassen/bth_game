@@ -16,14 +16,6 @@
 class Animation_handler
 {
 private:
-	std::vector<Animation*> animations;
-	std::vector<glm::mat4> bone_mat_vector, switch_bone_mat_vector, linkMatricies, transformMatrices, offsetMatrices, localTransforms, globalTransforms;
-	std::vector<Joint> joints;
-	Animation* current_animation;
-	Animation* previous_animation;
-	float time_seconds;
-	int nr_of_animations;
-	float switch_time, time_at_switch;
 
 public:
 	Animation_handler();
@@ -51,7 +43,15 @@ public:
 	void set_local_matrix(glm::mat4 mat, int index);
 
 	void create_animation_data(const std::string & file_path);
-	std::vector<glm::mat4> getMatrices();
+	glm::mat4 getMatrices(int index);
 
+	std::vector<Animation*> animations;
+	std::vector<glm::mat4> bone_mat_vector, switch_bone_mat_vector, linkMatricies, transformMatrices, offsetMatrices, localTransforms, globalTransforms;
+	std::vector<Joint> joints;
+	int current_animation;
+	int previous_animation;
+	float time_seconds;
+	int nr_of_animations;
+	float switch_time, time_at_switch;
 };
 #endif 
