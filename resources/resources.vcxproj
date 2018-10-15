@@ -126,8 +126,8 @@
     <None Include="shaders\box.vs" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
-    <None Include="shaders\ibl.fs" />
-    <None Include="shaders\ibl.vs" />
+    <None Include="shaders\skybox.fs" />
+    <None Include="shaders\skybox.vs" />
     <None Include="shaders\lines.fs" />
     <None Include="shaders\lines.vs" />
     <None Include="shaders\pbr.fs" />

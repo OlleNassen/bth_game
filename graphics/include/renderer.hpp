@@ -60,14 +60,27 @@ public:
 	}
 
 private:
+	Shader pbr{ "../resources/shaders/pbr.vs", "../resources/shaders/pbr.fs" };
+	Shader text_shader{ "../resources/shaders/text.vs", "../resources/shaders/text.fs" };
+	Shader gui{ "../resources/shaders/gui.vs","../resources/shaders/gui.fs" };
+	Shader post_proccessing{ "../resources/shaders/post_processing_effects.vs",
+		"../resources/shaders/post_processing_effects.fs" };
+	Shader lines{ "../resources/shaders/lines.vs", "../resources/shaders/lines.fs" };
+	Shader skybox_shader{ "../resources/shaders/skybox.vs",
+		"../resources/shaders/skybox.fs" };
+	Shader irradiance{ "../resources/shaders/irradiance.vs",
+		"../resources/shaders/irradiance.fs" };
+
 	GameScene* scene;
 	DebugCamera db_camera;
 	GameCamera game_camera;
 	std::vector<Model> models;
 	std::vector<Shader> shaders;
 
-	Box light_box;
 	Skybox skybox;
+
+
+	Box light_box;
 
 	Text text;
 	UserInterface ui;
@@ -78,6 +91,8 @@ private:
 	std::string log;
 
 	Framebuffer scene_texture;
+	Framebuffer irradiance_buffer;
+
 	PostProcessingEffects post_processing_effects;
 
 	PointLight light{ glm::vec3(0,2,4), glm::vec3(1,1,1) };

@@ -21,6 +21,9 @@ uniform sampler2D ao_map;
 uniform vec3 player_color;
 uniform vec3 light_color;
 
+//IBL
+uniform samplerCube irradianceMap;
+
 const float PI = 3.14159265359;
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
@@ -101,7 +104,7 @@ void main()
         vec3 L = normalize(lightPositions[i] - WorldPos);
         vec3 H = normalize(V + L);
         float distance = length(lightPositions[i] - WorldPos);
-        float attenuation = 1000 / (distance * distance);
+        float attenuation = 1.0 / (distance * distance);
         vec3 radiance = lightColors[i] * attenuation;
 
         // Cook-Torrance BRDF
@@ -133,7 +136,14 @@ void main()
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * albedo * ao;
+	
+    // ambient lighting (we now use IBL as the ambient term)
+    vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - metallic;	  
+    vec3 irradiance = texture(irradianceMap, N).rgb;
+    vec3 diffuse      = irradiance * albedo;
+    vec3 ambient = (kD * diffuse) * ao;
     
     vec3 color = ambient + Lo + emission; //emissive here?
 
