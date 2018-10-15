@@ -146,10 +146,10 @@ void Renderer::render(
 		render_type(shaders[0], db_camera, light, scene->models);
 
 		shaders[6].use();
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-		//skybox.temp_render()
-		skybox.render(shaders[6], db_camera);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+		skybox.temp_render2(shaders[6], db_camera);
+		//skybox.render(shaders[6], db_camera);
 
 		light_box.render(db_camera);
 
