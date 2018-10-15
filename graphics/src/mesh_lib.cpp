@@ -18,7 +18,7 @@ void MeshLib::create_mesh_list()
 {
 	std::string meshLoader[] =
 	{
-		"Robot_1.0.ssp",				//0
+		"Robot.ssp",				//0
 		"Controlpanel_1_Wide.ssp",		//1
 		"Controlpanel_1_Wide.ssp",		//2
 		"Big_Wall.ssp",					//3

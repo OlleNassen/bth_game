@@ -28,7 +28,7 @@ public:
 
 	void create_animation_data(const std::string & file_path)
 	{
-		this->animaiton_handler->create_animation_data(file_path);
+		this->animation_handler->create_animation_data(file_path);
 		is_animated = true;
 	}
 
@@ -46,7 +46,7 @@ public:
 
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
-	AnimationHandler * animaiton_handler;
+	AnimationHandler * animation_handler;
 	glm::mat4 model;
 	glm::vec3 emissive_color;
 	glm::vec3 light_pos{ 0, 3, 1 };

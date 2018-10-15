@@ -57,7 +57,7 @@
     <ClCompile Include="src\skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Animation.cpp">
+    <ClCompile Include="src\animation_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,7 +116,7 @@
     <ClInclude Include="include\skybox.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Animation.hpp">
+    <ClInclude Include="include\animation_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

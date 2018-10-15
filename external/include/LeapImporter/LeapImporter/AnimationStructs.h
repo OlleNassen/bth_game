@@ -4,7 +4,7 @@
 struct KeyFrame {
 	float time;
 	float position[3];
-	float rotation[3];
+	float rotation[4];
 	float scaling[3];
 };
 

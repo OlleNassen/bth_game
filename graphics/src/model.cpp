@@ -34,7 +34,16 @@ void Model::render(const Shader & shader, const Camera& camera, const PointLight
 	shader.uniform("emissive_map", 5);
 	shader.uniform("player_color", emissive_color);
 
+	if (is_animated)
+	{
+		std::vector<glm::mat4> bone_mats = this->animation_handler->getMatrices();
 
+		for (int i = 0; i < bone_mats.size(); i++)
+		{
+			std::string name = "bone_mats[" + std::to_string(i) + "]";
+			shader.uniform(name, bone_mats[i]);
+		}
+	}
 
 
 	mesh->textures[0].bind(0);
