@@ -38,9 +38,9 @@
     <None Include="shaders\box.fs" />
     <None Include="shaders\skybox.fs" />
     <None Include="shaders\skybox.vs" />
-    <None Include="shaders\ibl.vs" />
-    <None Include="shaders\ibl.fs" />
     <None Include="shaders\fx_dust.fs" />
     <None Include="shaders\fx_dust.vs" />
+    <None Include="shaders\pre_filter.vs" />
+    <None Include="shaders\pre_filter.fs" />
   </ItemGroup>
 </Project>

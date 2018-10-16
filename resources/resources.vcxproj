@@ -128,6 +128,8 @@
     <None Include="shaders\fx_dust.vs" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
+    <None Include="shaders\pre_filter.fs" />
+    <None Include="shaders\pre_filter.vs" />
     <None Include="shaders\skybox.fs" />
     <None Include="shaders\skybox.vs" />
     <None Include="shaders\lines.fs" />
