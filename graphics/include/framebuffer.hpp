@@ -20,7 +20,8 @@ public:
 	~Framebuffer();
 	unsigned int quadVAO = 0;
 	unsigned int quadVBO = 0;
-	void render_quad()
+
+	void create_quad()
 	{
 		if (quadVAO == 0 && quadVBO == 0)
 		{
@@ -43,7 +44,10 @@ public:
 			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 		}
-		
+	}
+
+	void render_quad()
+	{
 		glBindVertexArray(quadVAO);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);

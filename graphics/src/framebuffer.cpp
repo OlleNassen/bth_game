@@ -180,7 +180,7 @@ Framebuffer::Framebuffer(const Shader & shader, const Skybox & skybox, float tem
 	glViewport(0, 0, 512, 512);
 	shader.use();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+	create_quad();
 	render_quad();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

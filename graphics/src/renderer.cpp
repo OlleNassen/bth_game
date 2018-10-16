@@ -110,7 +110,7 @@ void Renderer::render(
 		//prefilter_buffer.bind_texture(8);
 		//skybox.irradiance_render(skybox_shader, db_camera);
 		skybox.render(skybox_shader, db_camera);
-
+		
 		//brdf.use();
 		//brdf_buffer.bind_texture(6);
 		//brdf_buffer.render_quad();
