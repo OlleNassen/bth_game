@@ -24,7 +24,7 @@ public:
 
 	void irradiance_render(const Shader& shader, const Camera& camera)const
 	{
-		shader.uniform("skybox", 6);
+		shader.uniform("skybox", 8);
 		shader.uniform("view", glm::mat4(glm::mat3(camera.view())));
 		shader.uniform("projection", camera.projection);
 

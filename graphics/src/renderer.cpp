@@ -33,7 +33,7 @@ void Renderer::render(
 	const std::vector<glm::vec2>& debug_positions,
 	bool is_menu,
 	bool connected,
-	bool debug)const
+	bool debug)
 {
 	glClearColor(1.0f, 0.8f, 0.0f, 0.f);
 		
@@ -44,8 +44,14 @@ void Renderer::render(
 	if (!is_menu && connected)
 	{
 		pbr.use();
-		pbr.uniform("irradiance_map", 6);
-		irradiance_buffer.bind_texture(2);
+		pbr.uniform("brdf_lut", 6);
+		//pbr.uniform("irradiance_map", 7);
+		//pbr.uniform("prefilter_map", 8);
+
+		brdf_buffer.bind_texture(6);
+		//irradiance_buffer.bind_texture(7);
+		//prefilter_buffer.bind_texture(8);
+
 		render_character(pbr, 
 			game_camera, light, scene->models, player_count);
 		render_type(pbr, game_camera, light, scene->models);
@@ -87,17 +93,27 @@ void Renderer::render(
 	else if (!is_menu)
 	{
 		pbr.use();
-		pbr.uniform("irradiance_map", 6);
-		irradiance_buffer.bind_texture(2);
+		pbr.uniform("brdf_lut", 6);
+		pbr.uniform("irradiance_map", 7);
+		pbr.uniform("prefilter_map", 8);
+
+		brdf_buffer.bind_texture(6);
+		irradiance_buffer.bind_texture(7);
+		prefilter_buffer.bind_texture(8);
+
 		if(debug)
 			render_character(pbr, 
 				db_camera, light, scene->models, 4);
 		render_type(pbr, db_camera, light, scene->models);
 
 		skybox_shader.use();
-		//prefilter_buffer.bind_texture(3);
+		//prefilter_buffer.bind_texture(8);
 		//skybox.irradiance_render(skybox_shader, db_camera);
 		skybox.render(skybox_shader, db_camera);
+
+		//brdf.use();
+		//brdf_buffer.bind_texture(6);
+		//brdf_buffer.render_quad();
 
 		//Dust
 		fx_dust.use();

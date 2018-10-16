@@ -22,7 +22,9 @@ uniform vec3 player_color;
 uniform vec3 light_color;
 
 //IBL
+uniform sampler2D   brdf_lut;
 uniform samplerCube irradiance_map;
+uniform samplerCube prefilter_map;
 
 const float PI = 3.14159265359;
 
@@ -66,6 +68,11 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}   
+
 void main()
 {
 	vec3 WorldPos = fs_in.tangent_fragment_pos;
@@ -81,20 +88,20 @@ void main()
 	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
-    float metallic  = texture(metallic_map, fs_in.tex_coord).r;
-    float roughness = texture(roughness_map, fs_in.tex_coord).r;
+    float metallic  = 0.9;//texture(metallic_map, fs_in.tex_coord).r;
+    float roughness = 0.0;//texture(roughness_map, fs_in.tex_coord).r;
     float ao        = texture(ao_map, fs_in.tex_coord).r;
 
 	vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
     // transform normal vector to range [-1,1]
     N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
-
 	vec3 V = normalize(camPos - WorldPos);
+	vec3 R = reflect(-V, N);
 
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 	
-	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
+	//vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
@@ -138,14 +145,24 @@ void main()
     // this ambient lighting with environment lighting).
 	
     // ambient lighting (we now use IBL as the ambient term)
-    vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
+	
+    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+
+    vec3 kS = F;
     vec3 kD = 1.0 - kS;
-    kD *= 1.0 - metallic;	  
+    kD *= 1.0 - metallic;	
+	
     vec3 irradiance = texture(irradiance_map, N).rgb;
     vec3 diffuse      = irradiance * albedo;
-    vec3 ambient = (kD * diffuse) * ao;
+
+	const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(prefilter_map, R,  roughness * MAX_REFLECTION_LOD).rgb;    
+    vec2 brdf  = texture(brdf_lut, vec2(max(dot(N, V), 0.0), roughness)).rg;
+    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+
+    vec3 ambient = (kD * diffuse + specular) * ao;
     
-    vec3 color = ambient + Lo + emission; //emissive here?
+    vec3 color = ambient + Lo; //emissive here?
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));
