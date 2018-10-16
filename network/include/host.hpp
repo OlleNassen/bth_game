@@ -29,7 +29,6 @@ public:
 	void update(GameState& state);
 
 	int num_players = 1;
-	int player_id;
 
 private:
 	void send(GameState& state);

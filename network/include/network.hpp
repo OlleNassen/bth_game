@@ -21,6 +21,7 @@ private:
 	EnetInit init;
 	Host player_host;
 	int num_players = 1;
+	int player_id = 0;
 };
 
 }
