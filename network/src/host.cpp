@@ -1,4 +1,5 @@
 #include "host.hpp"
+#include <iostream>
 
 namespace network
 {
@@ -82,6 +83,7 @@ void Host::receive(GameState& state)
 
 void Host::connect(const ENetEvent& event)
 {
+	std::cout << "working";
 	++num_players;
 	for (auto& peer : peers)
 		if (peer == nullptr)

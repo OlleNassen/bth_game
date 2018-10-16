@@ -141,8 +141,6 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 		{
 			current_buttons = &buttons[2];
 			is_on = false;
-			string_buffer = "server";
-			chat_on = true;
 		}
 		else if (current_buttons == &buttons[1] && index == 7)
 		{

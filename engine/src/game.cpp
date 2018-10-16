@@ -97,7 +97,15 @@ void Game::update(std::chrono::milliseconds delta)
 
 	std::vector<glm::vec2> forces = physics.get_forces();
 
-	net.update(net_state, nullptr);
+	const char* str = nullptr;
+	static bool connected;
+	if (!chat[1].empty() && !connected)
+	{
+		str = chat[1].c_str();
+		connected = true;
+	}
+
+	net.update(net_state, str);
 	local_input = &player_inputs[net.id()];
 
 	//for (auto i = 0; i < 4; ++i)
