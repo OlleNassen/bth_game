@@ -7,6 +7,12 @@
 namespace network
 {
 
+class EnetInit
+{
+public:
+	EnetInit();
+	~EnetInit();
+};
 
 class Host
 {
@@ -23,14 +29,14 @@ public:
 
 private:
 	void send(GameState& state);
-	void recieve(GameState& state);
+	void receive(GameState& state);
 
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);
 
 	ENetAddress address;
 	ENetHost* enet_host;
-	ENetPeer* peers[4];
+	ENetPeer* peers[4] = {nullptr};
 };
 
 }

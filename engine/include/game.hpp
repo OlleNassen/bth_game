@@ -46,7 +46,7 @@ private:
 	logic::input player_inputs[4];
 	logic::input* local_input{ &player_inputs[0] };
 	
-	network::Output net_out;
+	network::GameState net_state;
 	network::Messenger net;
 
 	physics::World physics;	

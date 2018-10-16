@@ -21,9 +21,6 @@ Game::Game()
 	window.assign_key(logic::button::reset, GLFW_KEY_R);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
 
-	net_out.player_id = 0;
-	net_out.player_count = 1;
-	net_out.directions.fill({ 0.0f, 0.0f, 0.0f });
 	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
 
 	physics.add_dynamic_body(level.v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
@@ -93,15 +90,15 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	net_out.directions = logic_out.directions;
+	//net_out.directions = logic_out.directions;
 
 	if (!menu.on())
 		window.hide_cursor();
 
 	std::vector<glm::vec2> forces = physics.get_forces();
 
-	net_out = net.update({ chat[1], net_out.directions, physics.dynamic_positions, forces });
-	local_input = &player_inputs[net_out.player_id];
+	net.update(net_state, nullptr);
+	local_input = &player_inputs[0];
 
 	//for (auto i = 0; i < 4; ++i)
 		//physics.dynamic_positions[i] = net_out.positions[i];
@@ -109,13 +106,13 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
-	logic_out = gameplay.update({net_out.player_id, delta, local_input, net_out.directions});
+	//logic_out = gameplay.update({net_out.player_id, delta, local_input, net_out.directions});
 	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
 	
 	physics.update(delta);
 
 	if ((*local_input)[logic::button::jump] == logic::button_state::pressed && net.connected())
-		physics.dynamic_rigidbodies[net_out.player_id].add_force(glm::vec2{ 0.0f, 50.0f });
+		physics.dynamic_rigidbodies[0].add_force(glm::vec2{ 0.0f, 50.0f });
 
 	for (int i = 0; i < 4; ++i)
 	{	
@@ -126,10 +123,10 @@ void Game::update(std::chrono::milliseconds delta)
 	}		
 
 	renderer.update(delta,
-		player_inputs[net_out.player_id].cursor,
-		net_out.directions,
-		chat[1], net_out.player_count,
-		net_out.player_id, chat.is_on(),
+		player_inputs[0].cursor,
+		logic_out.directions,
+		chat[1], 1,
+		0, chat.is_on(),
 		net.connected());
 
 }

@@ -3,6 +3,16 @@
 namespace network
 {
 
+EnetInit::EnetInit()
+{
+	enet_initialize();
+}
+
+EnetInit::~EnetInit()
+{
+	enet_deinitialize();
+}
+
 Host::Host(const char* ip_address)
 {
 	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
@@ -34,7 +44,7 @@ bool Host::connected() const
 void Host::update(GameState& state)
 {
 	send(state);
-	recieve(state);
+	receive(state);
 }
 
 void Host::send(GameState& state)
@@ -53,18 +63,19 @@ void Host::send(GameState& state)
 	}
 }
 
-void Host::recieve(GameState& state)
+void Host::receive(GameState& state)
 {
 	ENetEvent event;
 	while (enet_host_service(enet_host, &event, 0) > 0)
 	{
 		switch (event.type)
 		{
+		case ENET_EVENT_TYPE_RECEIVE: 
+			state = *reinterpret_cast<GameState*>(event.packet->data);		
+			break;
 		case ENET_EVENT_TYPE_CONNECT: connect(event); break;
 		case ENET_EVENT_TYPE_DISCONNECT: disconnect(event); break;
 		}
-
-		state = *reinterpret_cast<GameState*>(event.packet->data);
 		enet_packet_destroy(event.packet);
 	}
 }

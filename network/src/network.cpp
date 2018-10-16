@@ -3,15 +3,6 @@
 namespace network
 {
 
-Messenger::Messenger()
-{
-	enet_initialize();
-}
-Messenger::~Messenger()
-{
-	enet_deinitialize();
-}
-
 bool Messenger::connected() const 
 { 
 	return player_host.connected(); 
