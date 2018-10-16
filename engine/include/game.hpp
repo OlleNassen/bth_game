@@ -58,6 +58,8 @@ private:
 	
 	gui::Chat chat;
 	gui::Menu menu;	
+
+	bool is_client{};
 };
 
 

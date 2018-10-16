@@ -95,14 +95,12 @@ void Game::update(std::chrono::milliseconds delta)
 
 	chat.update(delta);
 	menu.update(delta, *local_input);
-	
-	
+		
 	const char* str = nullptr;
-	static bool connected;
-	if (!chat[1].empty() && !connected)
+	if (!chat[1].empty() && !is_client)
 	{
 		str = chat[1].c_str();
-		connected = true;
+		is_client = true;
 	}
 
 	pack_data();
