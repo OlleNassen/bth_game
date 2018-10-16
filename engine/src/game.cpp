@@ -90,8 +90,6 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	//net_out.directions = logic_out.directions;
-
 	if (!menu.on())
 		window.hide_cursor();
 
@@ -107,9 +105,6 @@ void Game::update(std::chrono::milliseconds delta)
 
 	net.update(net_state, str);
 	local_input = &player_inputs[net.id()];
-
-	//for (auto i = 0; i < 4; ++i)
-		//physics.dynamic_positions[i] = net_out.positions[i];
 
 	chat.update(delta);
 	menu.update(delta, *local_input);
@@ -141,7 +136,7 @@ void Game::update(std::chrono::milliseconds delta)
 	renderer.update(delta,
 		player_inputs[net.id()].cursor,
 		logic_out.directions,
-		chat[1], 1,
+		chat[1], net.connected_players(),
 		net.id(), chat.is_on(),
 		net.connected());
 

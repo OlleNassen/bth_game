@@ -12,6 +12,7 @@ class Messenger
 public:
 	Messenger() : init{}, player_host{} {}
 
+	int connected_players() const;
 	int id() const;
 	bool connected() const;
 	void update(GameState& state, const char* ip_address);

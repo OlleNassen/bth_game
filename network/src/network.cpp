@@ -3,6 +3,11 @@
 namespace network
 {
 
+int Messenger::connected_players() const
+{
+	return num_players;
+}
+
 int Messenger::id() const
 {
 	return player_id;
