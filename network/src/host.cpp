@@ -16,6 +16,7 @@ EnetInit::~EnetInit()
 
 Host::Host(const char* ip_address)
 {
+	player_id = 0;
 	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
 	enet_address_set_host(&address, ip_address);
 	address.port = 1234;
@@ -23,6 +24,7 @@ Host::Host(const char* ip_address)
 
 Host::Host()
 {
+	player_id = 1;
 	address.host = ENET_HOST_ANY;
 	address.port = 1234;
 	enet_host = enet_host_create(&address, 32, 2, 0, 0);
@@ -35,6 +37,7 @@ Host::~Host()
 
 Host::Host(const Host& other)
 {
+	player_id = 0;
 	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
 	address = other.address;
 	peers[0] = enet_host_connect(enet_host, &address, 2, 0);
@@ -42,6 +45,7 @@ Host::Host(const Host& other)
 
 Host& Host::operator=(const Host& other)
 {
+	player_id = 0;
 	enet_host_destroy(enet_host);
 	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
 	address = other.address;

@@ -10,7 +10,7 @@ int Messenger::connected_players() const
 
 int Messenger::id() const
 {
-	return player_id;
+	return connected() ? player_host.player_id : 0;
 }
 
 bool Messenger::connected() const 
@@ -25,11 +25,11 @@ void Messenger::update(GameState& state, const char* ip_address)
 
 	if (player_host.num_players > num_players)
 	{
-		++player_id;
+		++player_host.player_id;
 	}
 	else if (player_host.num_players < num_players)
 	{
-		--player_id;		
+		--player_host.player_id;
 	}
 	num_players = player_host.num_players;
 
