@@ -1,12 +1,8 @@
 #include "network.hpp"
+#include <iostream>
 
 namespace network
 {
-
-int Messenger::connected_players() const
-{
-	return num_players;
-}
 
 int Messenger::id() const
 {
@@ -21,18 +17,11 @@ bool Messenger::connected() const
 void Messenger::update(GameState& state, const char* ip_address)
 {	
 	if (ip_address)
-		player_host = Host{ip_address};
-
-	if (player_host.num_players > num_players)
 	{
+		player_host = Host{ip_address};
 		++player_id;
 	}
-	else if (player_host.num_players < num_players)
-	{
-		--player_id;
-	}
-	num_players = player_host.num_players;
-
+		
 	player_host.update(state);
 }
 

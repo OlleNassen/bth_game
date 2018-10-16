@@ -118,29 +118,31 @@ void Game::update(std::chrono::milliseconds delta)
 		glm::vec3{0.0f} 
 	};
 	
-	logic_out = gameplay.update({ net.id(), delta, local_input, directions });
+	logic_out = gameplay.update({ net.id(), delta, player_inputs, local_input, directions });
 	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
 	
 	physics.update(delta);
 
-	if ((*local_input)[logic::button::jump] == logic::button_state::pressed && net.connected())
-		physics.dynamic_rigidbodies[net.id()].add_force(glm::vec2{ 0.0f, 50.0f });
+	
+	if (net.connected())
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			if (player_inputs[i][logic::button::jump] == logic::button_state::pressed)
+				physics.dynamic_rigidbodies[net.id()].add_force(glm::vec2{ 0.0f, 50.0f });
 
-	for (int i = 0; i < 4; ++i)
-	{	
-		if (net.connected())
 			physics.dynamic_rigidbodies[i].add_force(logic_out.velocities[i]);
-		level.v[i] = physics.dynamic_positions[i];
-		level.models[i].set_position(physics.dynamic_positions[i]);
-	}		
+			level.v[i] = physics.dynamic_positions[i];
+			level.models[i].set_position(physics.dynamic_positions[i]);
+		}
+	}
 
 	renderer.update(delta,
 		player_inputs[net.id()].cursor,
 		logic_out.directions,
-		chat[1], net.connected_players(),
+		chat[1], player_count,
 		net.id(), chat.is_on(),
 		net.connected());
-
 }
 
 void Game::pack_data()
@@ -161,21 +163,19 @@ void Game::unpack_data()
 	if (state_sequence != net_state.sequence)
 	{
 		state_sequence = net_state.sequence;
-	}	
-	else
-	{
+		player_count = net_state.player_count;
+
 		for (int i = 0; i < 4; ++i)
 		{
 			using logic::uint16;
 			uint16 in = static_cast<uint16>(net_state.input << 16);
-			if (in && i != net.id())
+			if (i != net.id())
 				player_inputs[i] = logic::input{ in };
 		}
 
 		for (int i = 0; i < physics.dynamic_positions.size(); ++i)
 		{
-			if (net_state.game_objects[i].position.x != 0 || net_state.game_objects[i].position.y != 0)
-				physics.dynamic_positions[i] = net_state.game_objects[i].position;
+			physics.dynamic_positions[i] = net_state.game_objects[i].position;
 		}
 
 		local_input = &player_inputs[net.id()];

@@ -30,6 +30,15 @@ Host::Host()
 
 Host::~Host()
 {
+	for (auto* peer : peers)
+	{
+		if (peer)
+		{
+			enet_peer_disconnect(peer, 0);
+		}
+	}
+	
+	enet_host_flush(enet_host);
 	enet_host_destroy(enet_host);
 }
 
@@ -64,13 +73,17 @@ bool Host::connected() const
 
 void Host::update(GameState& state)
 {
-	send(state);
-	receive(state);
+	if (enet_host)
+	{
+		send(state);
+		receive(state);
+	}	
 }
 
 void Host::send(GameState& state)
 {
 	state.sequence = ++sequence;
+	state.player_count = player_count;
 	
 	for (auto* peer : peers)
 	{
@@ -78,7 +91,7 @@ void Host::send(GameState& state)
 		{
 			ENetPacket* enet_packet =
 				enet_packet_create(&state, 
-				sizeof(GameState) + 1,
+				sizeof(GameState),
 				ENET_PACKET_FLAG_UNSEQUENCED
 				| ENET_PACKET_FLAG_NO_ALLOCATE);
 			enet_peer_send(peer, 0, enet_packet);
@@ -105,8 +118,8 @@ void Host::receive(GameState& state)
 
 void Host::connect(const ENetEvent& event)
 {
-	std::cout << "working";
-	++num_players;
+	std::cout << "Connected." << '\n';
+	++player_count;
 	for (auto& peer : peers)
 		if (peer == nullptr)
 			peer = event.peer;
@@ -114,7 +127,8 @@ void Host::connect(const ENetEvent& event)
 
 void Host::disconnect(const ENetEvent& event)
 {
-	--num_players;
+	std::cout << "Diconnected." << '\n';
+	--player_count;
 	for (auto& peer : peers)
 		if (peer == event.peer)
 			peer = nullptr;

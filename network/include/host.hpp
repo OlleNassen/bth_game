@@ -28,7 +28,7 @@ public:
 
 	void update(GameState& state);
 
-	int num_players = 1;
+	
 
 private:
 	void send(GameState& state);
@@ -37,6 +37,7 @@ private:
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);
 
+	uint8 player_count = 1;
 	uint32 sequence = 0;
 	
 	ENetAddress address;

@@ -16,6 +16,7 @@ struct Input
 {
 	int player_id;
 	std::chrono::milliseconds delta;
+	const input* player_inputs; //4
 	const input* local_input;
 	std::array<glm::vec3, 4> directions;
 };
