@@ -5,7 +5,7 @@ layout(location = 2) in vec3 bi_normal;
 layout(location = 3) in vec3 tangent;
 layout(location = 4) in vec2 uv;
 layout(location = 5) in vec4 weights;
-layout(location = 6) in ivec4 weights_id;
+layout(location = 6) in vec4 weights_id;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -35,6 +35,8 @@ void main()
 	vs_out.weights = weights_id;
 	vs_out.frag_pos = vec3(model * vec4(position, 1.0));
 
+	
+
     vs_out.tex_coord = uv;
 
     mat3 normal_matrix = transpose(inverse(mat3(model)));
@@ -59,7 +61,7 @@ void main()
 	vec3 using_position = (bone_matrix * vec4(position, 1.0)).xyz;
 	vec4 view_pos = (view * model * vec4(using_position, 1.0));
 
-	vs_out.frag_pos = vec3(model * bone_matrix * vec4(position, 1.0));
+	vs_out.frag_pos = vec3(model * vec4(position, 1.0));
 	gl_Position = projection * view_pos;
 	//gl_Position = projection * view * model * vec4(position, 1.0);
 

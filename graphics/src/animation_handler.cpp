@@ -189,9 +189,16 @@ void Animation_handler::update_keyframe_transform(float time, int index)
 
 		glm::mat4 temp_mat = glm::mat4(1);
 
+		if (index == 6)
+			int a = 0;
 
 		temp_mat *= glm::translate(glm::mat4(1), glm::vec3(temp3));
+		//temp_mat *= rotation;
 		temp_mat *= mat4_cast(temp);
+		//temp_mat *= glm::rotate(temp4.x, glm::vec3(1.0, 1.0, 1.0));
+		//temp_mat *= glm::rotate(temp4.y, glm::vec3(1.0, 1.0, 1.0));
+		//temp_mat *= glm::rotate(temp4.z, glm::vec3(1.0, 1.0, 1.0));
+		
 		temp_mat *= glm::scale(glm::mat4(1), glm::vec3(temp2));
 
 
@@ -201,34 +208,53 @@ void Animation_handler::update_keyframe_transform(float time, int index)
 	}
 }
 
-glm::mat4 Animation_handler::get_parent_transform(Joint joint)
+void Animation_handler::get_parent_transform(Joint joint)
 {
-	std::vector<glm::mat4> mats;
-	int parentIndex = joint.parent_id;
-	Joint b = joint;
+	//std::vector<glm::mat4> mats;
+	//int parentIndex = joint.parent_id;
+	//Joint b = joint;
+	//
+	//if (parentIndex != -1)
+	//{
+	//	b = this->joints[parentIndex];
+	//	parentIndex = b.parent_id;
+	//}
+	//while (parentIndex != -1)
+	//{
+	//	glm::mat4 tmp_mat = mat_to_GLM(b.local_transform_matrix);
+	//	mats.push_back(tmp_mat);
+	//
+	//
+	//	b = this->joints[b.parent_id];
+	//	parentIndex = b.parent_id;
+	//}
+	//
+	//glm::mat4 concatenated_transforms = glm::mat4(1);
+	//for (int i = mats.size() - 1; i >= 0; i--)
+	//	concatenated_transforms *= mats.at(i);
+	//
+	//concatenated_transforms *= mat_to_GLM(joint.local_transform_matrix);
+	//return concatenated_transforms;
 
-	if (parentIndex != -1)
+	this->parentTransforms.clear();
+
+	std::vector<glm::mat4> global_joint_transforms, finalTransforms;
+	for (int i = 0; i < this->joints.size(); i++)
 	{
-		b = this->joints[parentIndex];
-		parentIndex = b.parent_id;
+		global_joint_transforms.push_back(glm::mat4(1));
+		this->parentTransforms.push_back(glm::mat4(1));
 	}
-	while (parentIndex != -1)
+
+	global_joint_transforms[0] = mat_to_GLM(this->joints[0].local_transform_matrix);
+	this->parentTransforms[0] = global_joint_transforms[0];
+
+	for (int i = 1; i < this->joints.size(); i++)
 	{
+		global_joint_transforms[i] = global_joint_transforms[this->joints[i].parent_id] * 
+		mat_to_GLM(this->joints[i].local_transform_matrix);
 
-		glm::mat4 tmp_mat = mat_to_GLM(b.local_transform_matrix);
-		mats.push_back(tmp_mat);
-
-
-		b = joints[b.parent_id];
-		parentIndex = b.parent_id;
+		this->parentTransforms[i] = global_joint_transforms[i];
 	}
-
-	glm::mat4 concatenated_transforms = glm::mat4(1);
-	for (int i = mats.size() - 1; i >= 0; i--)
-		concatenated_transforms *= mats.at(i);
-
-	return concatenated_transforms;
-
 }
 
 
@@ -236,15 +262,16 @@ void Animation_handler::update_bone_mat_vector()
 {
 
 	this->bone_mat_vector.clear();
+	get_parent_transform(this->joints[0]);
 	for (unsigned int i = 0; i < 20; i++)
 	{
 		if (i > joints.size() - 1)
 			bone_mat_vector.push_back(glm::mat4(1));
 		else
 		{
-			glm::mat4 ct = get_parent_transform(this->joints[i]) * mat_to_GLM(this->joints[i].local_transform_matrix);
-			glm::mat4 final_transform = glm::inverse(mat_to_GLM(this->joints[0].local_transform_matrix)) * mat_to_GLM(this->joints[0].local_transform_matrix) * ct * offsetMatrices[i];
-			
+											
+			glm::mat4 final_transform = /*glm::inverse(mat_to_GLM(this->joints[0].local_transform_matrix))* */this->parentTransforms[i] * glm::inverse(this->linkMatricies[i]);
+			/*glm::inverse(glm::mat4(1)) *(mat_to_GLM(this->joints[0].local_transform_matrix))*/  
 			
 			bone_mat_vector.push_back(final_transform);
 		}
@@ -311,6 +338,7 @@ void Animation_handler::get_time(float delta)
 }
 void Animation_handler::fixInverseBindPoses()
 {
+	this->offsetMatrices.clear();
 	std::vector<glm::mat4> LM, GM, IBP;
 	for (int i = 0; i < this->joints.size(); i++)
 	{
@@ -319,18 +347,18 @@ void Animation_handler::fixInverseBindPoses()
 		IBP.push_back(glm::mat4(1));
 	}
 
-	LM[0] = (linkMatricies[0]);
-	GM[0] = (linkMatricies[0]);
-	IBP[0] = (glm::inverse(linkMatricies[0]));
+	LM[0] = (this->linkMatricies[0]);
+	GM[0] = (LM[0]);
+	IBP[0] = (glm::inverse(LM[0]));
 	offsetMatrices.push_back(IBP[0]);
 
 	for (int i = 1; i < this->joints.size(); i++)
 	{
-		LM[i] = linkMatricies[i];
+		LM[i] = this->linkMatricies[i];
 		GM[i] = GM[joints[i].parent_id] * LM[i];
-		IBP[i] = glm::inverse(linkMatricies[i]);
+		IBP[i] = glm::inverse(GM[i]);
 
-		offsetMatrices.push_back(IBP[i]);
+		this->offsetMatrices.push_back(IBP[i]);
 	}
 
 

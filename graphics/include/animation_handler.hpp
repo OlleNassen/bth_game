@@ -4,6 +4,7 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/vector_relational.hpp>
 #include <glm/trigonometric.hpp>
@@ -29,7 +30,7 @@ public:
 	unsigned int find_switching_keyframe(float time, int index);
 	unsigned int find_current_keyframe(float time, int index);
 	void update_keyframe_transform(float time, int index);
-	glm::mat4 get_parent_transform(Joint joint);
+	void get_parent_transform(Joint joint);
 	glm::mat4 get_switch_parent_transform(Joint join);
 	void update_bone_mat_vector();
 
@@ -47,7 +48,7 @@ public:
 	glm::mat4 getMatrices(int index);
 
 	std::vector<Animation*> animations;
-	std::vector<glm::mat4> bone_mat_vector, switch_bone_mat_vector, linkMatricies, transformMatrices, offsetMatrices, localTransforms, globalTransforms;
+	std::vector<glm::mat4> bone_mat_vector, switch_bone_mat_vector, linkMatricies, transformMatrices, offsetMatrices, localTransforms, globalTransforms, parentTransforms;
 	std::vector<Joint> joints;
 	int current_animation;
 	int previous_animation;

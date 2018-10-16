@@ -84,7 +84,7 @@ Mesh::Mesh(const std::string& meshfile)
 	//weight's id
 	glVertexAttribPointer(
 		6, 4,
-		GL_INT, GL_FALSE,
+		GL_FLOAT, GL_FALSE,
 		sizeof(VertexInformation),
 		BUFFER_OFFSET(sizeof(float) * 18));
 }

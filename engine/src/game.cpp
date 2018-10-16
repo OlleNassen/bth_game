@@ -73,11 +73,10 @@ void Game::run()
 		}
 		for (unsigned int i = 0; i < level.models.size(); i++)
 		{
-		if (level.models[i].is_animated)
-			level.models[i].update_animation((float)timestep.count());
-
 		}
 
+		if (level.models[0].is_animated)
+			level.models[0].update_animation((float)timestep.count());
 
 		render();
 		window.swap_buffers();
