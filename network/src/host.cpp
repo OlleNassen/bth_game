@@ -33,6 +33,14 @@ Host::~Host()
 	enet_host_destroy(enet_host);
 }
 
+Host& Host::operator=(const Host& other)
+{
+	enet_host_destroy(enet_host);
+	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
+	address = other.address;	
+	return *this;
+}
+
 bool Host::connected() const
 {
 	for (auto* peer : peers)

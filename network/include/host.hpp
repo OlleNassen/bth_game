@@ -21,6 +21,8 @@ public:
 	Host();
 	~Host();
 
+	Host& operator=(const Host& other);
+
 	bool connected() const;
 
 	void update(GameState& state);
