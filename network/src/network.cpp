@@ -3,6 +3,11 @@
 namespace network
 {
 
+int Messenger::id() const
+{
+	return player_id;
+}
+
 bool Messenger::connected() const 
 { 
 	return player_host.connected(); 
@@ -25,7 +30,15 @@ void Messenger::write_state(GameState& state)
 
 void Messenger::read_state(GameState& state)
 {
-
+	if (player_host.num_players > num_players)
+	{
+		++player_id;
+	}
+	else if (player_host.num_players < num_players)
+	{
+		--player_id;		
+	}
+	num_players = player_host.num_players;
 }
 
 }
