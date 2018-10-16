@@ -103,24 +103,9 @@ void Game::update(std::chrono::milliseconds delta)
 		connected = true;
 	}
 
-	{
-		network::uint64 input_int = 0;
-		for (const auto& in : player_inputs)
-			input_int = (input_int | static_cast<logic::uint16>(in));
-		net_state.input = input_int;
-	}
-
+	pack_data();
 	net.update(net_state, str);
-
-	for (int i = 0; i < 4; ++i)
-	{
-		using logic::uint16;
-		uint16 in = static_cast<uint16>(net_state.input << 16);
-		if (in && i != net.id())
-			player_inputs[i] = logic::input{in};
-	}
-
-	local_input = &player_inputs[net.id()];
+	unpack_data();
 
 	chat.update(delta);
 	menu.update(delta, *local_input);
@@ -156,4 +141,43 @@ void Game::update(std::chrono::milliseconds delta)
 		net.id(), chat.is_on(),
 		net.connected());
 
+}
+
+void Game::pack_data()
+{
+	network::uint64 input_int = 0;
+	for (const auto& in : player_inputs)
+		input_int = (input_int | static_cast<logic::uint16>(in));
+	net_state.input = input_int;
+
+	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+	{
+		net_state.game_objects[i].position = physics.dynamic_positions[i];
+	}
+}
+
+void Game::unpack_data()
+{
+	if (state_sequence != net_state.sequence)
+	{
+		state_sequence = net_state.sequence;
+	}	
+	else
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			using logic::uint16;
+			uint16 in = static_cast<uint16>(net_state.input << 16);
+			if (in && i != net.id())
+				player_inputs[i] = logic::input{ in };
+		}
+
+		for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+		{
+			if (net_state.game_objects[i].position.x != 0 || net_state.game_objects[i].position.y != 0)
+				physics.dynamic_positions[i] = net_state.game_objects[i].position;
+		}
+
+		local_input = &player_inputs[net.id()];
+	}
 }
