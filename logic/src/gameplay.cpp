@@ -39,11 +39,8 @@ Output Gameplay::update(Input inputs)
 		if (in[button::right] >= button_state::pressed)
 			direction.x += 1.0f;
 	}
-	
-	
 		
-	std::array<glm::vec2, 4> velocities;
-	
+	std::array<glm::vec2, 4> velocities;	
 	/*for (auto& entity : entities)
 	{
 		scripts[entity].update(input.delta, input.directions[0], velocities[0]);
@@ -54,13 +51,7 @@ Output Gameplay::update(Input inputs)
 		scripts[0].update(inputs.delta, inputs.directions[i], velocities[i]);
 	}
 
-	glm::vec2 updated_player_pos = luaLoad.process_input(*inputs.local_input, inputs.delta);
-
-	//input inp = input{ static_cast<unsigned short>(*inputs.local_input) };	
-	//std::cout << static_cast<unsigned short>(inp) << '\n';
-
-	return Output{ updated_player_pos, velocities, inputs.directions };
+	return Output{ velocities, inputs.directions };
 }
-
 
 }

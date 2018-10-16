@@ -118,12 +118,10 @@ void Game::update(std::chrono::milliseconds delta)
 		glm::vec3{0.0f} 
 	};
 	
-	logic_out = gameplay.update({ net.id(), delta, player_inputs, local_input, directions });
-	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
+	logic_out = gameplay.update({ delta, player_inputs, directions });
 	
 	physics.update(delta);
 
-	
 	if (net.connected())
 	{
 		for (int i = 0; i < 4; ++i)
