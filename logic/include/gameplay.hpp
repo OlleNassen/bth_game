@@ -37,7 +37,7 @@ public:
 
 	void refresh();
 
-	Output update(Input input);
+	Output update(Input inputs);
 
 private:
 	script_array<int> entities;

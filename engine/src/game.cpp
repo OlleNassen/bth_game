@@ -104,6 +104,18 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 
 	net.update(net_state, str);
+
+	if (net_state.input)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			player_inputs[i] = logic::input
+			{
+				static_cast<logic::uint16>(net_state.input << 16)
+			};
+		}
+	}
+
 	local_input = &player_inputs[net.id()];
 
 	chat.update(delta);

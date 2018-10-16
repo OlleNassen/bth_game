@@ -7,6 +7,7 @@ namespace network
 {
 
 using uint32 = std::uint32_t;
+using uint64 = std::uint64_t;
 
 class Vec2
 {
@@ -25,9 +26,9 @@ public:
 class GameState
 {
 public:
-	uint32 sequence;
 	GameObject game_objects[100];
-
+	uint64 input = 0;
+	uint32 sequence = 0;
 };
 
 class queue

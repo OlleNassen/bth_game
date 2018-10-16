@@ -70,6 +70,8 @@ void Host::update(GameState& state)
 
 void Host::send(GameState& state)
 {
+	state.sequence = ++sequence;
+	
 	for (auto* peer : peers)
 	{
 		if (peer)

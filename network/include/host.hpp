@@ -37,9 +37,11 @@ private:
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);
 
+	uint32 sequence = 0;
+	
 	ENetAddress address;
 	ENetHost* enet_host;
-	ENetPeer* peers[4] = {nullptr};
+	ENetPeer* peers[4] = {nullptr};	
 };
 
 }

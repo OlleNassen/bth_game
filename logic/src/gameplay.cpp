@@ -22,18 +22,18 @@ void Gameplay::refresh()
 	}
 }
 
-Output Gameplay::update(Input input)
+Output Gameplay::update(Input inputs)
 {
-	auto& direction = input.directions[input.player_id];
+	auto& direction = inputs.directions[inputs.player_id];
 	direction = { 0.0f, 0.0f, 0.0f };
 
-	if ((*input.local_input)[button::up] >= button_state::pressed)
+	if ((*inputs.local_input)[button::up] >= button_state::pressed)
 		direction.z += 1.0f;
-	if ((*input.local_input)[button::left] >= button_state::pressed)
+	if ((*inputs.local_input)[button::left] >= button_state::pressed)
 		direction.x -= 1.0f;
-	if ((*input.local_input)[button::down] >= button_state::pressed)
+	if ((*inputs.local_input)[button::down] >= button_state::pressed)
 		direction.z -= 1.0f;
-	if ((*input.local_input)[button::right] >= button_state::pressed)
+	if ((*inputs.local_input)[button::right] >= button_state::pressed)
 		direction.x += 1.0f;
 		
 	std::array<glm::vec2, 4> velocities;
@@ -45,12 +45,15 @@ Output Gameplay::update(Input input)
 	// TEMP!!!
 	for (auto i = 0; i < 4; ++i)
 	{
-		scripts[0].update(input.delta, input.directions[i], velocities[i]);
+		scripts[0].update(inputs.delta, inputs.directions[i], velocities[i]);
 	}
 
-	glm::vec2 updated_player_pos = luaLoad.process_input(*input.local_input, input.delta);
+	glm::vec2 updated_player_pos = luaLoad.process_input(*inputs.local_input, inputs.delta);
 
-	return Output{ updated_player_pos, velocities, input.directions };
+	//input inp = input{ static_cast<unsigned short>(*inputs.local_input) };	
+	//std::cout << static_cast<unsigned short>(inp) << '\n';
+
+	return Output{ updated_player_pos, velocities, inputs.directions };
 }
 
 
