@@ -21,6 +21,7 @@ public:
 	Host();
 	~Host();
 
+	Host(const Host& other);
 	Host& operator=(const Host& other);
 
 	bool connected() const;

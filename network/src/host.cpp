@@ -33,6 +33,12 @@ Host::~Host()
 	enet_host_destroy(enet_host);
 }
 
+Host::Host(const Host& other)
+{
+	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
+	address = other.address;
+}
+
 Host& Host::operator=(const Host& other)
 {
 	enet_host_destroy(enet_host);
