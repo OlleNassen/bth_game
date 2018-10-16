@@ -98,7 +98,7 @@ void Game::update(std::chrono::milliseconds delta)
 	std::vector<glm::vec2> forces = physics.get_forces();
 
 	net.update(net_state, nullptr);
-	local_input = &player_inputs[0];
+	local_input = &player_inputs[net.id()];
 
 	//for (auto i = 0; i < 4; ++i)
 		//physics.dynamic_positions[i] = net_out.positions[i];
@@ -106,13 +106,21 @@ void Game::update(std::chrono::milliseconds delta)
 	chat.update(delta);
 	menu.update(delta, *local_input);
 
-	//logic_out = gameplay.update({net_out.player_id, delta, local_input, net_out.directions});
+	std::array<glm::vec3, 4> directions
+	{ 
+		glm::vec3{0.0f}, 
+		glm::vec3{0.0f},
+		glm::vec3{0.0f}, 
+		glm::vec3{0.0f} 
+	};
+	
+	logic_out = gameplay.update({ net.id(), delta, local_input, directions });
 	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
 	
 	physics.update(delta);
 
 	if ((*local_input)[logic::button::jump] == logic::button_state::pressed && net.connected())
-		physics.dynamic_rigidbodies[0].add_force(glm::vec2{ 0.0f, 50.0f });
+		physics.dynamic_rigidbodies[net.id()].add_force(glm::vec2{ 0.0f, 50.0f });
 
 	for (int i = 0; i < 4; ++i)
 	{	
@@ -123,10 +131,10 @@ void Game::update(std::chrono::milliseconds delta)
 	}		
 
 	renderer.update(delta,
-		player_inputs[0].cursor,
+		player_inputs[net.id()].cursor,
 		logic_out.directions,
 		chat[1], 1,
-		0, chat.is_on(),
+		net.id(), chat.is_on(),
 		net.connected());
 
 }
