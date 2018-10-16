@@ -6,16 +6,16 @@ namespace network
 
 Vec2::Vec2(glm::vec2 other)
 {
-	x = static_cast<char>(other.x);
-	y = static_cast<char>(other.y);
+	x = static_cast<char>(other.x * conversion);
+	y = static_cast<char>(other.y * conversion);
 }
 
 Vec2::operator glm::vec2() const
 {
 	return
 	{
-		static_cast<float>(x),
-		static_cast<float>(y)
+		static_cast<float>(x) / conversion,
+		static_cast<float>(y) / conversion
 	};
 }
 

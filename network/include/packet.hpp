@@ -17,6 +17,8 @@ public:
 	Vec2(glm::vec2 other);
 	operator glm::vec2() const;
 	
+	static constexpr float conversion = 10.0f;
+
 	char x;
 	char y;
 };
