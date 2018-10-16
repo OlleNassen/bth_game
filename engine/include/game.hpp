@@ -45,7 +45,6 @@ private:
 
 	logic::Output logic_out;
 	logic::Gameplay gameplay;
-	//logic::input player_input;
 	logic::input player_inputs[4];
 	logic::input* local_input{ &player_inputs[0] };
 	
