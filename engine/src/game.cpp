@@ -103,6 +103,13 @@ void Game::update(std::chrono::milliseconds delta)
 		connected = true;
 	}
 
+	{
+		network::uint64 input_int = 0;
+		for (const auto& in : player_inputs)
+			input_int = (input_int | static_cast<logic::uint16>(in));
+		net_state.input = input_int;
+	}
+
 	net.update(net_state, str);
 
 	for (int i = 0; i < 4; ++i)
