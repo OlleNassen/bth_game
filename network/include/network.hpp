@@ -1,6 +1,7 @@
 #ifndef NETWORK_HPP
 #define NETWORK_HPP
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <array>
@@ -8,26 +9,10 @@
 #include <glm/glm.hpp>
 
 #include "host.hpp"
+#include "packet.hpp"
 
 namespace network
 {
-
-struct Input
-{
-	const std::string& chat;
-	const std::array<glm::vec3, 4>& directions;
-	const std::vector<glm::vec2>& positions;
-	const std::vector<glm::vec2>& velocities;
-};
-
-struct Output
-{
-	int player_id;
-	int player_count;
-	std::array<glm::vec3, 4> directions;
-	std::array<glm::vec2, 4> positions;
-	std::array<glm::vec2, 4> velocities;
-};
 
 class Messenger
 {
@@ -35,12 +20,20 @@ public:
 	Messenger();
 	~Messenger();
 
-	bool connected() const { return static_cast<bool>(host); }
+	bool connected() const;
 	
-	Output update(Input input);
+	void update(GameState& state, const char* ip_address);
 
 private:
-	std::unique_ptr<Host> host;
+	void write_state(GameState& state);
+	void read_state(GameState& state);
+
+	queue packet_queue;
+	Host player_host;
+	int player_id = 0;
+	int num_players = 1;
+	float connect_timer{};
+	float disconnect_timer{};
 };
 
 }
