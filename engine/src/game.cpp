@@ -93,8 +93,10 @@ void Game::update(std::chrono::milliseconds delta)
 	if (!menu.on())
 		window.hide_cursor();
 
-	std::vector<glm::vec2> forces = physics.get_forces();
-
+	chat.update(delta);
+	menu.update(delta, *local_input);
+	
+	
 	const char* str = nullptr;
 	static bool connected;
 	if (!chat[1].empty() && !connected)
@@ -106,9 +108,6 @@ void Game::update(std::chrono::milliseconds delta)
 	pack_data();
 	net.update(net_state, str);
 	unpack_data();
-
-	chat.update(delta);
-	menu.update(delta, *local_input);
 
 	std::array<glm::vec3, 4> directions
 	{ 
