@@ -82,6 +82,10 @@ private:
 		"../resources/shaders/irradiance.fs" };
 	Shader fx_dust{ "../resources/shaders/fx_dust.vs",
 	"../resources/shaders/fx_dust.fs" };
+	Shader pre_filter{ "../resources/shaders/irradiance.vs",
+	"../resources/shaders/pre_filter.fs" };
+	Shader brdf{ "../resources/shaders/brdf.vs",
+	"../resources/shaders/brdf.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -104,6 +108,8 @@ private:
 
 	Framebuffer scene_texture;
 	Framebuffer irradiance_buffer;
+	Framebuffer prefilter_buffer;
+	Framebuffer brdf_buffer;
 
 	PostProcessingEffects post_processing_effects;
 

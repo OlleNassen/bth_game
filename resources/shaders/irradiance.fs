@@ -1,6 +1,6 @@
 #version 430
 
-in vec3 world_pos;
+in vec3 pos;
 out vec4 frag_color;
 
 uniform samplerCube environment_map;
@@ -10,11 +10,11 @@ const float PI = 3.14159265359;
 void main()
 {
 	// The world vector acts as the normal of a tangent surface
-    // from the origin, aligned to world_pos. Given this normal, calculate all
+    // from the origin, aligned to pos. Given this normal, calculate all
     // incoming radiance of the environment. The result of this radiance
     // is the radiance of light coming from -Normal direction, which is what
     // we use in the PBR shader to sample irradiance.
-    vec3 N = normalize(world_pos);
+    vec3 N = normalize(pos);
 
     vec3 irradiance = vec3(0.0);   
     

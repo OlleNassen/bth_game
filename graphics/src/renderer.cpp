@@ -16,6 +16,8 @@ Renderer::Renderer(GameScene* scene)
 	, game_camera{glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f}
 	, scene{scene}
 	, irradiance_buffer{irradiance, skybox}
+	, prefilter_buffer{pre_filter, skybox, true}
+	, brdf_buffer{brdf, skybox, 3.f}
 {
 	db_camera.position.z = 20.0f;
 	glViewport(0, 0, 1280, 720); // don't forget to configure the viewport to the capture dimensions.
@@ -48,10 +50,10 @@ void Renderer::render(
 			game_camera, light, scene->models, player_count);
 		render_type(pbr, game_camera, light, scene->models);
 
-		skybox_shader.use();
-		//irradiance_buffer.bind_texture(2);
+		//skybox_shader.use();
+		//prefilter_buffer.bind_texture(3);
 		//skybox.irradiance_render(skybox_shader, db_camera);
-		skybox.render(skybox_shader, db_camera);
+		//skybox.render(skybox_shader, db_camera);
 
 		fx_dust.use();
 		fx_dust.uniform("particle_texture", 0);
@@ -93,7 +95,7 @@ void Renderer::render(
 		render_type(pbr, db_camera, light, scene->models);
 
 		skybox_shader.use();
-		//irradiance_buffer.bind_texture(2);
+		//prefilter_buffer.bind_texture(3);
 		//skybox.irradiance_render(skybox_shader, db_camera);
 		skybox.render(skybox_shader, db_camera);
 

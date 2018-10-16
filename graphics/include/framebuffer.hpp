@@ -14,6 +14,9 @@ class Framebuffer
 public:
 	Framebuffer();
 	Framebuffer(const Shader& shader, const Skybox& skybox); //Irradiance buffer
+	Framebuffer(const Shader& shader, const Skybox& skybox, bool temp); //Pre_Filter buffer
+	Framebuffer(const Shader& shader, const Skybox& skybox, float temp); //BRDF Something buffer
+
 	~Framebuffer();
 
 	void bind_framebuffer() const;
@@ -24,7 +27,8 @@ private:
 	unsigned int fbo_texture;
 	unsigned int depth_texture;
 	unsigned int irradiance_map;
-
+	unsigned int prefilter_map;
+	unsigned int brdfLUTTexture;
 };
 
 }
