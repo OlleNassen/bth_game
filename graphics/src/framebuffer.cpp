@@ -171,6 +171,9 @@ Framebuffer::Framebuffer(const Shader & shader, const Skybox & skybox, float tem
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	glGenFramebuffers(1, &fbo);
+	glGenRenderbuffers(1, &fbo_texture);
+
 	// then re-configure capture framebuffer object and render screen-space quad with BRDF shader.
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, fbo_texture);

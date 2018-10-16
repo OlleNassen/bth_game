@@ -35,9 +35,9 @@ public:
 		glDepthFunc(GL_LESS);
 	}
 
-	void bind_texture()const
+	void bind_texture(int offset = 0)const
 	{
-		texture.bind(0, GL_TEXTURE_CUBE_MAP);
+		texture.bind(offset, GL_TEXTURE_CUBE_MAP);
 	}
 
 private:

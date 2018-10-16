@@ -96,10 +96,13 @@ void Renderer::render(
 		pbr.uniform("brdf_lut", 6);
 		pbr.uniform("irradiance_map", 7);
 		pbr.uniform("prefilter_map", 8);
+		pbr.uniform("skybox", 9);
+
 
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
+		skybox.bind_texture(9);
 
 		if(debug)
 			render_character(pbr, 

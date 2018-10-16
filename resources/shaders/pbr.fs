@@ -25,6 +25,7 @@ uniform vec3 light_color;
 uniform sampler2D   brdf_lut;
 uniform samplerCube irradiance_map;
 uniform samplerCube prefilter_map;
+uniform samplerCube skybox;
 
 const float PI = 3.14159265359;
 
@@ -88,8 +89,8 @@ void main()
 	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
-    float metallic  = 0.9;//texture(metallic_map, fs_in.tex_coord).r;
-    float roughness = 0.0;//texture(roughness_map, fs_in.tex_coord).r;
+    float metallic  = texture(metallic_map, fs_in.tex_coord).r;
+    float roughness = texture(roughness_map, fs_in.tex_coord).r;
     float ao        = texture(ao_map, fs_in.tex_coord).r;
 
 	vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
@@ -101,7 +102,6 @@ void main()
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 	
-	//vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
@@ -161,13 +161,15 @@ void main()
     vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
 
     vec3 ambient = (kD * diffuse + specular) * ao;
+
+	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
     
-    vec3 color = ambient + Lo; //emissive here?
+    vec3 color = ambient + Lo + emission; //emissive here?
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
-    frag_color = vec4(color, 1.0);
+    frag_color = vec4(texture(skybox, R).rgb, 1.0);
 }
