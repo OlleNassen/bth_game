@@ -31,7 +31,7 @@ public:
 	uint32 sequence = 0;
 };
 
-class queue
+class Queue
 {
 public:
 	bool empty() const;

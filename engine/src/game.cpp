@@ -105,15 +105,12 @@ void Game::update(std::chrono::milliseconds delta)
 
 	net.update(net_state, str);
 
-	if (net_state.input)
+	for (int i = 0; i < 4; ++i)
 	{
-		for (int i = 0; i < 4; ++i)
-		{
-			player_inputs[i] = logic::input
-			{
-				static_cast<logic::uint16>(net_state.input << 16)
-			};
-		}
+		using logic::uint16;
+		uint16 in = static_cast<uint16>(net_state.input << 16);
+		if (in)
+			player_inputs[i] = logic::input{in};
 	}
 
 	local_input = &player_inputs[net.id()];

@@ -4,18 +4,18 @@
 namespace network
 {
 
-bool queue::empty() const
+bool Queue::empty() const
 {
 	return front == back;
 }
 
-void queue::enqueue(const GameState& value)
+void Queue::enqueue(const GameState& value)
 {
 	data[back] = value;
 	back = ++back % size;
 }
 
-const GameState& queue::dequeue()
+const GameState& Queue::dequeue()
 {
 	front = ++front % size;
 	return data[front - 1];

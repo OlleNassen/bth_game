@@ -51,7 +51,7 @@ void Renderer::render(
 		skybox_shader.use();
 		//irradiance_buffer.bind_texture(2);
 		//skybox.irradiance_render(skybox_shader, db_camera);
-		skybox.render(skybox_shader, db_camera);
+		skybox.render(skybox_shader, game_camera);
 
 		fx_dust.use();
 		fx_dust.uniform("particle_texture", 0);
