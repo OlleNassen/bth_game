@@ -37,13 +37,19 @@ Host::Host(const Host& other)
 {
 	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
 	address = other.address;
+	peers[0] = enet_host_connect(enet_host, &address, 2, 0);
 }
 
 Host& Host::operator=(const Host& other)
 {
 	enet_host_destroy(enet_host);
 	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
-	address = other.address;	
+	address = other.address;
+	for (auto& peer : peers)
+		peer = nullptr;
+
+	peers[0] = enet_host_connect(enet_host, &address, 2, 0);
+
 	return *this;
 }
 
