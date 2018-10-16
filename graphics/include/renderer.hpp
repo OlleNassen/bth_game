@@ -123,7 +123,6 @@ private:
 template <typename T>
 void render_type(const Shader& shader, const Camera& camera, const PointLight& light, const T& data)
 {
-	shader.use();
 	for (auto i = 4u; i < data.size(); ++i)
 	{
 		const auto& renderable = data[i];
@@ -134,7 +133,6 @@ void render_type(const Shader& shader, const Camera& camera, const PointLight& l
 template <typename T>
 void render_character(const Shader& shader, const Camera& camera, const PointLight& light, const T& data, int num_players)
 {
-	shader.use();
 	for (auto i = 0; i < num_players; ++i)
 	{
 		const auto& renderable = data[i];
