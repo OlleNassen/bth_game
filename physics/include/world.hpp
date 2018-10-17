@@ -38,6 +38,11 @@ public:
 	std::vector<Box> static_box_colliders;
 	std::vector<glm::vec2> static_positions;
 
+
+	//Static Placed Objects // lucas test
+	std::vector<int> placed_objects_index;
+
+
 	//void update(std::chrono::milliseconds delta);
 	std::vector<glm::vec2> update(std::chrono::milliseconds delta);
 

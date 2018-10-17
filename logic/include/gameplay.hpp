@@ -59,6 +59,7 @@ private:
 
 	int model_id{ -1 };
 	int physics_id{ -1 };
+	int index{ 0 };
 
 	float give_up_timer{ 0.0f };
 	void give_up(Input input);

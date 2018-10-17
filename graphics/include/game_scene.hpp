@@ -38,6 +38,11 @@ public:
 	glm::mat4 placeable_object_model;
 	bool build_mode_active = false;
 
+
+//Placed Objects // lucas test
+	std::vector<int> placed_objects_model_index;
+
+
 	void inititate_object(CustomLevel& level, MeshLib* mesh_lib, int model_id);
 	int add_object(collision_data& physics_data);
 	void rotate_object(int model_id);
