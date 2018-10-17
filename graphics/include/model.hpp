@@ -64,7 +64,11 @@ public:
 
 
 	}
-
+	
+	float get_y_position() const
+	{
+		return this->model[3][1];
+	}
 	void render(const Shader & shader, const Camera& camera, const PointLight& light)const;
 	void update_animation(float time);
 

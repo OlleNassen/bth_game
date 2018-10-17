@@ -14,6 +14,7 @@
 #include "fx.hpp"
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
+#include "minimap.hpp"
 
 namespace graphics
 {
@@ -123,6 +124,8 @@ private:
 	Texture* dust_texture;
 	FX* dust_particles;
 	int randomizer;
+	bool debug_active{ false };
+	Minimap minimap;
 };
 
 

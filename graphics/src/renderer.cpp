@@ -89,6 +89,8 @@ void Renderer::render(
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
+		minimap.render(shaders[7]);
+
 	}
 	else if (!is_menu)
 	{
@@ -149,7 +151,9 @@ void Renderer::render(
 			s.uniform("line_color", glm::vec3(1.0, 0.0, 0.0));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
+
 		}
+
 	}
 
 
@@ -261,6 +265,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	light.position += glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
 	light_box.set_position(light.position);
+	minimap.update(scene->models, player_count);
+
 }
 
 }
