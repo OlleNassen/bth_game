@@ -26,14 +26,12 @@ public:
 
 	bool connected() const;
 
-	void update(GameState& state);
-
-	
-
-private:
+	void send(uint16 input);
 	void send(GameState& state);
+	void receive(uint64& input);
 	void receive(GameState& state);
 
+private:
 	void connect(const ENetEvent& event);
 	void disconnect(const ENetEvent& event);
 

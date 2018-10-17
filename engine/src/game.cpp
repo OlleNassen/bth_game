@@ -126,7 +126,7 @@ void Game::update(std::chrono::milliseconds delta)
 			if (player_inputs[i][logic::button::jump] == logic::button_state::pressed)
 				physics.dynamic_rigidbodies[net.id()].add_force(glm::vec2{ 0.0f, 50.0f });
 
-			physics.dynamic_rigidbodies[i].add_force(logic_out.velocities[i]);
+			physics.dynamic_rigidbodies[i].add_force(logic_out.directions[i]);
 			level.v[i] = physics.dynamic_positions[i];
 			level.models[i].set_position(physics.dynamic_positions[i]);
 		}
@@ -142,10 +142,17 @@ void Game::update(std::chrono::milliseconds delta)
 
 void Game::pack_data()
 {
+	
+	
 	network::uint64 input_int = 0;
-	for (const auto& in : player_inputs)
-		input_int = (input_int | static_cast<logic::uint16>(in));
+	for (int i = 0; i < 4; ++i)
+	{
+		network::uint64 input64 = 0;
+		input64 = static_cast<logic::uint16>(player_inputs[i]);
+		input_int = (input_int | (input64 << (i * 16)));
+	}
 	net_state.input = input_int;
+
 
 	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
 	{
@@ -155,18 +162,22 @@ void Game::pack_data()
 
 void Game::unpack_data()
 {
+	for (int i = 0; i < 4; ++i)
+	{
+		using logic::uint16;
+		uint16 in = static_cast<uint16>(net_state.input >> (i * 16));
+		if (i != net.id())
+		{
+			player_inputs[i] = logic::input{ in };
+		}		
+	}
+
+	std::cout << static_cast<logic::uint16>(net_state.input >> 16) << '\n';
+	
 	if (state_sequence != net_state.sequence)
 	{
 		state_sequence = net_state.sequence;
 		player_count = net_state.player_count;
-
-		for (int i = 0; i < 4; ++i)
-		{
-			using logic::uint16;
-			uint16 in = static_cast<uint16>(net_state.input << 16);
-			if (i != net.id())
-				player_inputs[i] = logic::input{ in };
-		}
 
 		for (int i = 0; i < physics.dynamic_positions.size(); ++i)
 		{
