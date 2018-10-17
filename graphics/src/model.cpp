@@ -28,18 +28,15 @@ void Model::render(const Shader & shader, const Camera& camera, const PointLight
 
 	shader.uniform("albedo_map", 0);
 	shader.uniform("normal_map", 1);
-	shader.uniform("metallic_map", 2);
-	shader.uniform("roughness_map", 3);
-	shader.uniform("ao_map", 4);
-	shader.uniform("emissive_map", 5);
+	shader.uniform("roughness_metallic_ao_map", 2);
+	shader.uniform("emissive_map", 3);
 	shader.uniform("player_color", emissive_color);
 
 	mesh->textures[0].bind(0);
 	mesh->textures[1].bind(1);
 	mesh->textures[2].bind(2);
 	mesh->textures[3].bind(3);
-	mesh->textures[4].bind(4);
-	mesh->textures[5].bind(5);
+
 	mesh->render();
 }
 
