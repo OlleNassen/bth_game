@@ -20,7 +20,7 @@ void MeshLib::create_mesh_list()
 	{
 		"robot.ssp",						//0
 		"door.ssp",							//1
-		"door.ssp",							//2
+		"floor.ssp",						//2
 		"fence.ssp",						//3
 		"surveillencecamera.ssp",			//4
 		"plank.ssp",						//5
