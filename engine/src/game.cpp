@@ -171,8 +171,6 @@ void Game::unpack_data()
 			player_inputs[i] = logic::input{ in };
 		}		
 	}
-
-	std::cout << static_cast<logic::uint16>(net_state.input >> 16) << '\n';
 	
 	if (state_sequence != net_state.sequence)
 	{
