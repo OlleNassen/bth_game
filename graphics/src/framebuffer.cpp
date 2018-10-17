@@ -125,6 +125,7 @@ Framebuffer::Framebuffer(const Shader& shader, const Skybox& skybox, bool temp)
 	glGenFramebuffers(1, &fbo);
 	glGenRenderbuffers(1, &fbo_texture);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
 	//glBindRenderbuffer(GL_RENDERBUFFER, fbo_texture);
 	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 128, 128);
 
@@ -173,6 +174,7 @@ Framebuffer::Framebuffer(const Shader & shader, const Skybox & skybox, float tem
 
 	glGenFramebuffers(1, &fbo);
 	glGenRenderbuffers(1, &fbo_texture);
+	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, fbo_texture);
 
 	// then re-configure capture framebuffer object and render screen-space quad with BRDF shader.
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
