@@ -51,10 +51,10 @@ Output Gameplay::update(Input inputs)
 		scripts[0].update(inputs.delta, inputs.directions[i], velocities[i]);
 	}
 
-	glm::vec2 updated_player_pos = luaLoad.process_input(*inputs.local_input, inputs.delta);
+	glm::vec2 updated_player_pos = luaLoad.process_input(inputs.player_inputs[0], inputs.delta);
 	  
 	//Object placing \Vincent & Lucas S
-	if ((*inputs.local_input)[logic::button::build_mode] == logic::button_state::pressed)
+	if (inputs.player_inputs[0][logic::button::build_mode] == logic::button_state::pressed)
 	{
 		inputs.scene->build_mode_active = !inputs.scene->build_mode_active;
 	}
@@ -63,7 +63,7 @@ Output Gameplay::update(Input inputs)
 		collision_data data;
 
 		
-		if ((*inputs.local_input)[logic::button::place_object] == logic::button_state::pressed)
+		if (inputs.player_inputs[0][logic::button::place_object] == logic::button_state::pressed)
 		{
 			glm::vec2 position = glm::vec2(0.0f, 5.0f);
 			model_id = inputs.scene->add_object(data);
@@ -75,16 +75,16 @@ Output Gameplay::update(Input inputs)
 
 		if (model_id != -1)
 		{
-			inputs.physics->static_positions[physics_id] += glm::vec2(direction.x, direction.y);
-			inputs.scene->models[model_id].move(glm::vec2(direction.x, direction.y));
+			inputs.physics->static_positions[physics_id] += glm::vec2(inputs.directions[0].x, inputs.directions[0].z);
+			inputs.scene->models[model_id].move(glm::vec2(inputs.directions[0].x, inputs.directions[0].z));
 
-			if ((*inputs.local_input)[logic::button::rotate] == logic::button_state::pressed)
+			if (inputs.player_inputs[0][logic::button::rotate] == logic::button_state::pressed)
 			{
 				inputs.scene->rotate_object(model_id);
 				inputs.physics->rotate_static_box(physics_id);
 			}
 
-			if ((*inputs.local_input)[logic::button::switch_object] == logic::button_state::pressed)
+			if (inputs.player_inputs[0][logic::button::switch_object] == logic::button_state::pressed)
 			{
 				if (inputs.scene->placed_objects_model_index.size() != 0)
 				{
@@ -103,7 +103,7 @@ Output Gameplay::update(Input inputs)
 				}
 			}
 
-			if ((*inputs.local_input)[logic::button::remove_object] == logic::button_state::pressed)
+			if (inputs.player_inputs[0][logic::button::remove_object] == logic::button_state::pressed)
 			{
 				std::swap(inputs.physics->static_positions[physics_id], inputs.physics->static_positions[inputs.physics->static_positions.size() - 1]);
 				std::swap(inputs.physics->static_box_colliders[physics_id], inputs.physics->static_box_colliders[inputs.physics->static_box_colliders.size() - 1]);
@@ -142,13 +142,13 @@ Output Gameplay::update(Input inputs)
 	//Give up \Vincent
 	give_up(inputs);
 
-	return Output{ updated_player_pos, velocities, inputs.directions };
+	return Output{ velocities, inputs.directions };
 }
 
 void Gameplay::give_up(Input input)
 {
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(input.delta).count();
-	if ((*input.local_input)[button::remove_object] == button_state::held)
+	if (input.player_inputs[0][button::remove_object] == button_state::held)
 	{
 		give_up_timer += dt;
 		if (give_up_timer >= 5.0f)
