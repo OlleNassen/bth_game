@@ -24,6 +24,7 @@ uniform sampler2D ao_map;
 uniform vec3 player_color;
 uniform vec3 light_color;
 
+uniform vec3 light_pos;
 uniform vec3 view_pos;
 
 //IBL
@@ -106,7 +107,7 @@ void main()
 
 	for(int i = 0; i < 4; i++)
 	{
-		lightPositions[i] = fs_in.tangent_light_pos;
+		lightPositions[i] = light_pos;
 		lightColors[i] = light_color;
 	}
 
