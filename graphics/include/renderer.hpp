@@ -54,7 +54,7 @@ public:
 		int id);
 
 	bool debug_active{ false };
-private:
+
 	static void line_debug(const std::vector<glm::vec2>& lines)
 	{
 		VertexArray vao;
@@ -88,6 +88,8 @@ private:
 	"../resources/shaders/pre_filter.fs" };
 	Shader brdf{ "../resources/shaders/brdf.vs",
 	"../resources/shaders/brdf.fs" };
+	Shader minimap_shader{ "../resources/shaders/minimap.vs",
+"../resources/shaders/minimap.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -124,7 +126,6 @@ private:
 	Texture* dust_texture;
 	FX* dust_particles;
 	int randomizer;
-	bool debug_active{ false };
 	Minimap minimap;
 };
 
