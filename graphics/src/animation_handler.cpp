@@ -189,8 +189,7 @@ void Animation_handler::update_keyframe_transform(float time, int index)
 
 		glm::mat4 temp_mat = glm::mat4(1);
 
-		if (index == 6)
-			int a = 0;
+	
 
 		temp_mat *= glm::translate(glm::mat4(1), glm::vec3(temp3));
 		//temp_mat *= rotation;
@@ -199,7 +198,7 @@ void Animation_handler::update_keyframe_transform(float time, int index)
 		//temp_mat *= glm::rotate(temp4.y, glm::vec3(1.0, 1.0, 1.0));
 		//temp_mat *= glm::rotate(temp4.z, glm::vec3(1.0, 1.0, 1.0));
 		
-		temp_mat *= glm::scale(glm::mat4(1), glm::vec3(temp2));
+		temp_mat *= glm::scale(glm::mat4(1), glm::vec3(1));
 
 
 
