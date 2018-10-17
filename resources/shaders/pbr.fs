@@ -11,8 +11,6 @@ in VS_OUT{
 	vec3 tangent_fragment_pos;
 } fs_in;
 
-
-
 // material parameters
 uniform sampler2D emissive_map;
 

@@ -10,8 +10,8 @@
 #include "texture.hpp"
 #include "lights.hpp"
 #include <GLFW/glfw3.h>
+#include "animation_handler.hpp"
 
-//TEMP MODEL CLASS, TECHNICAL ARTISTS FEEL FREE TO CHANGE THIS
 
 namespace graphics
 {
@@ -21,6 +21,15 @@ class Model
 public:
 	Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh);
 	~Model();
+	bool is_animated = false;
+
+
+
+	void create_animation_data(const std::string & file_path)
+	{
+		this->animation_handler.create_animation_data(file_path);
+		is_animated = true;
+	}
 
 	void move(glm::vec2 offset)
 	{
@@ -33,9 +42,11 @@ public:
 	}
 
 	void render(const Shader & shader, const Camera& camera, const PointLight& light)const;
+	void update_animation(float time);
 
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
+	Animation_handler animation_handler;
 	glm::mat4 model;
 	glm::vec3 emissive_color;
 	glm::vec3 light_pos{ 0, 3, 1 };

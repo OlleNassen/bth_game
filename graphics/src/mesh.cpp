@@ -19,6 +19,7 @@ Mesh::Mesh(const std::string& meshfile)
 	custom_mesh->vertices->ty;
 	custom_mesh->vertices->tz;
 
+
 	name = custom_mesh->transform->meshName;
 
 	textures.reserve(sizeof(Texture) * 6);

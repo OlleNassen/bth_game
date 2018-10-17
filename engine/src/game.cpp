@@ -68,6 +68,12 @@ void Game::run()
 			
 			update(timestep);
 		}
+		for (unsigned int i = 0; i < level.models.size(); i++)
+		{
+		}
+
+		if (level.models[0].is_animated)
+			level.models[0].update_animation((float)timestep.count());
 
 		render();
 		window.swap_buffers();
@@ -132,6 +138,8 @@ void Game::update(std::chrono::milliseconds delta)
 			physics.dynamic_rigidbodies[i].add_force(logic_out.velocities[i]);
 		level.v[i] = physics.dynamic_positions[i];
 		level.models[i].set_position(physics.dynamic_positions[i]);
+
+
 	}		
 
 	renderer.update(delta,

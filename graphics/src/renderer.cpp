@@ -151,6 +151,8 @@ void Renderer::render(
 		}
 	}
 
+
+
 	// Text
 	gui.use();
 	if (is_chat_visible)
@@ -248,6 +250,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
+
+
 
 	light.position += glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
 	light_box.set_position(light.position);
