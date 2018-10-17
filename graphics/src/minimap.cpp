@@ -5,31 +5,43 @@ namespace graphics
 
 Minimap::Minimap()
 {
-	glGenVertexArrays(1, &vao_id);
+	map_elements.fill({ {0.9f, 0.0f}, {0.0, 0.0, 1.0}, { 0.03f, 0.03f } });
+	map_elements.front() = { { 0.9f, -0.4f }, {1.0, 1.0, 1.0}, { 0.01f, 1.0f } };
+
 	glBindVertexArray(vao_id);
-	glGenBuffers(1, &vbo_id);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 2, &primitives::quad[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
 	glEnableVertexAttribArray(0);
+
+	
 }
 
 void Minimap::update(const std::vector<Model>& models, int players)
 {
-	for (int i = 0; i < players; i++)
+	player_count = players;
+	for (int i = 1; i <= player_count; i++)
 	{
-		this->positions[i] = models[i].get_y_position();
-		std::cout << positions[i] << std::endl;
+		this->map_elements[i].position.y = models[i-1].get_y_position()/50 -0.9;
+
+		//std::cout << positions[i] << std::endl;
+
 	}
 }
 
 void Minimap::render(const Shader& shader) const
 {
-
 	shader.use();
-	glBindVertexArray(vao_id);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
+
+	for (int i = 0; i <= player_count; i++)
+	{	
+		shader.uniform("player_pos", map_elements[i].position);		
+		shader.uniform("scale", map_elements[i].scale);
+		shader.uniform("color", map_elements[i].color);
+		glBindVertexArray(vao_id);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
+	}
 }
 
 }

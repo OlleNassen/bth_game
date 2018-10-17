@@ -79,6 +79,8 @@ void Renderer::render(
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
+		minimap.render(shaders[7]);
+
 	}
 	else if (!is_menu)
 	{
@@ -103,7 +105,6 @@ void Renderer::render(
 			glEnable(GL_DEPTH_TEST);
 
 		}
-		minimap.render(shaders[7]);
 
 	}
 
