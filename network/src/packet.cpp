@@ -6,17 +6,21 @@ namespace network
 
 Vec2::Vec2(glm::vec2 other)
 {
-	x = static_cast<char>(other.x * conversion);
-	y = static_cast<char>(other.y * conversion);
+	/*x = static_cast<int16>(other.x * conversion);
+	y = static_cast<int16>(other.y * conversion);*/
+	x = other.x;
+	y = other.y;
 }
 
 Vec2::operator glm::vec2() const
 {
-	return
+	/*return
 	{
 		static_cast<float>(x) / conversion,
 		static_cast<float>(y) / conversion
-	};
+	};*/
+
+	return { x, y };
 }
 
 bool Queue::empty() const
