@@ -25,10 +25,10 @@ public:
 	void update(const std::vector<Model>& models, int players);
 	void render(const Shader& shader) const;
 	std::array<GuiElement, 10> map_elements;
-	//float positions[8];
+	
 
 private:
-	//Shader minimap_shader;
+	
 	VertexArray vao_id;
 	Buffer vbo_id;
 	glm::mat4 transform = glm::mat4(1.0f);
