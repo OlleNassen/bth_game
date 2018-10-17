@@ -3,6 +3,7 @@
 out vec4 frag_color;
 
 in VS_OUT{
+	vec3 world_normal;
 	vec3 frag_pos;
 	vec2 tex_coord;
 	vec3 tangent_light_pos;
@@ -20,6 +21,8 @@ uniform sampler2D roughness_map;
 uniform sampler2D ao_map;
 uniform vec3 player_color;
 uniform vec3 light_color;
+
+uniform vec3 view_pos;
 
 //IBL
 uniform sampler2D   brdf_lut;
@@ -76,8 +79,8 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 void main()
 {
-	vec3 WorldPos = fs_in.tangent_fragment_pos;
-	vec3 camPos = fs_in.tangent_view_pos;
+	vec3 WorldPos = fs_in.frag_pos;
+	vec3 camPos = view_pos;
 
 	vec3 lightPositions[4];
 	vec3 lightColors[4];
@@ -95,9 +98,9 @@ void main()
 
 	vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
     // transform normal vector to range [-1,1]
-    N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
+    //N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
 	vec3 V = normalize(camPos - WorldPos);
-	vec3 R = reflect(-V, N);
+	vec3 R = reflect(-V, fs_in.world_normal);
 
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
@@ -172,6 +175,9 @@ void main()
     color = pow(color, vec3(1.0/2.2)); 
 
     frag_color = vec4(color, 1.0);
+	//R.x *= -1;
+	//R.y *= -1;
+
     //frag_color = texture(skybox, R);    
 
 }

@@ -15,6 +15,7 @@ uniform vec3 light_pos;
 uniform vec3 view_pos;
 
 out VS_OUT{
+	vec3 world_normal;
 	vec3 frag_pos;
 	vec2 tex_coord;
 	vec3 tangent_light_pos;
@@ -24,6 +25,7 @@ out VS_OUT{
 
 void main()
 {
+	vs_out.world_normal = (model * vec4(normal, 0)).xyz;
 	vs_out.frag_pos = vec3(model * vec4(position, 1.0));
     vs_out.tex_coord = uv;
 
