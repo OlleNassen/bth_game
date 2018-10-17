@@ -105,6 +105,7 @@ Output Gameplay::update(Input inputs)
 				std::swap(inputs.physics->static_positions[physics_id], inputs.physics->static_positions[inputs.physics->static_positions.size() - 1]);
 				std::swap(inputs.physics->static_box_colliders[physics_id], inputs.physics->static_box_colliders[inputs.physics->static_box_colliders.size() - 1]);
 				std::swap(inputs.physics->placed_objects_index[index], inputs.physics->placed_objects_index[inputs.physics->placed_objects_index.size() - 1]);
+				inputs.physics->placed_objects_index[index] = physics_id;
 
 				inputs.physics->static_positions.pop_back();
 				inputs.physics->static_box_colliders.pop_back();
@@ -113,6 +114,7 @@ Output Gameplay::update(Input inputs)
 
 				std::swap(inputs.scene->models[model_id], inputs.scene->models[inputs.scene->models.size() - 1]);
 				std::swap(inputs.scene->placed_objects_model_index[index], inputs.scene->placed_objects_model_index[inputs.scene->placed_objects_model_index.size() - 1]);
+				inputs.scene->placed_objects_model_index[index] = model_id;
 
 				inputs.scene->models.pop_back();
 				inputs.scene->placed_objects_model_index.pop_back();
