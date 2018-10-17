@@ -11,6 +11,8 @@ in VS_OUT{
 	vec3 tangent_fragment_pos;
 } fs_in;
 
+
+
 // material parameters
 uniform sampler2D emissive_map;
 
@@ -31,6 +33,23 @@ uniform samplerCube prefilter_map;
 uniform samplerCube skybox;
 
 const float PI = 3.14159265359;
+
+vec3 getNormalFromMap()
+{
+    vec3 tangentNormal = texture(normal_map, fs_in.tex_coord).xyz * 2.0 - 1.0;
+
+    vec3 Q1  = dFdx(fs_in.frag_pos);
+    vec3 Q2  = dFdy(fs_in.frag_pos);
+    vec2 st1 = dFdx(fs_in.tex_coord);
+    vec2 st2 = dFdy(fs_in.tex_coord);
+
+    vec3 N   = normalize(fs_in.world_normal);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
+}
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
@@ -96,11 +115,12 @@ void main()
     float roughness = texture(roughness_map, fs_in.tex_coord).r;
     float ao        = texture(ao_map, fs_in.tex_coord).r;
 
-	vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
+	//vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
     // transform normal vector to range [-1,1]
     //N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
+	vec3 N = getNormalFromMap();
 	vec3 V = normalize(camPos - WorldPos);
-	vec3 R = reflect(-V, fs_in.world_normal);
+	vec3 R = reflect(-V, N);
 
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
