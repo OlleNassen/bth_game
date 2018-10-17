@@ -24,12 +24,12 @@ enum class button
 	glow,
 	refresh,
 	menu,
-	switch_camera,
+	switch_object,
 	rotate,
 	build_mode,
 	place_object,
 
-	give_up,
+	remove_object,
 	quit
 };
 

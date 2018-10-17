@@ -67,6 +67,7 @@ Output Gameplay::update(Input inputs)
 			physics_id = inputs.physics->add_static_body(data.position, glm::vec2(0.0, 0.0), data.width, data.height, data.trigger);
 			inputs.scene->placed_objects_model_index.emplace_back(model_id);
 			inputs.physics->placed_objects_index.emplace_back(physics_id);
+			index = inputs.scene->placed_objects_model_index.size() - 1;
 		}
 
 		if (model_id != -1)
@@ -80,20 +81,53 @@ Output Gameplay::update(Input inputs)
 				inputs.physics->rotate_static_box(physics_id);
 			}
 
-			if ((*inputs.local_input)[logic::button::give_up] == logic::button_state::pressed)
+			if ((*inputs.local_input)[logic::button::switch_object] == logic::button_state::pressed)
 			{
 				if (inputs.scene->placed_objects_model_index.size() != 0)
 				{
-					model_id = inputs.scene->placed_objects_model_index[index];
-					physics_id = inputs.physics->placed_objects_index[index++];
+					index++;
 
 					if (index >= inputs.scene->placed_objects_model_index.size())
 						index = 0;
+
+					model_id = inputs.scene->placed_objects_model_index[index];
+					physics_id = inputs.physics->placed_objects_index[index];
 				}
 				else
 				{
 					model_id = -1;
 					physics_id = -1;
+				}
+			}
+
+			if ((*inputs.local_input)[logic::button::remove_object] == logic::button_state::pressed)
+			{
+				std::swap(inputs.physics->static_positions[physics_id], inputs.physics->static_positions[inputs.physics->static_positions.size() - 1]);
+				std::swap(inputs.physics->static_box_colliders[physics_id], inputs.physics->static_box_colliders[inputs.physics->static_box_colliders.size() - 1]);
+				std::swap(inputs.physics->placed_objects_index[index], inputs.physics->placed_objects_index[inputs.physics->placed_objects_index.size() - 1]);
+
+				inputs.physics->static_positions.pop_back();
+				inputs.physics->static_box_colliders.pop_back();
+				inputs.physics->placed_objects_index.pop_back();
+
+
+				std::swap(inputs.scene->models[model_id], inputs.scene->models[inputs.scene->models.size() - 1]);
+				std::swap(inputs.scene->placed_objects_model_index[index], inputs.scene->placed_objects_model_index[inputs.scene->placed_objects_model_index.size() - 1]);
+
+				inputs.scene->models.pop_back();
+				inputs.scene->placed_objects_model_index.pop_back();
+
+				if (inputs.scene->placed_objects_model_index.size() != 0)
+				{
+					model_id = inputs.scene->placed_objects_model_index[inputs.scene->placed_objects_model_index.size() - 1];
+					physics_id = inputs.physics->placed_objects_index[inputs.physics->placed_objects_index.size() - 1];
+					index = inputs.physics->placed_objects_index.size() - 1;
+				}
+				else
+				{
+					model_id = -1;
+					physics_id = -1;
+					index = -1;
 				}
 			}
 		}
@@ -109,7 +143,7 @@ Output Gameplay::update(Input inputs)
 void Gameplay::give_up(Input input)
 {
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(input.delta).count();
-	if ((*input.local_input)[button::give_up] == button_state::held)
+	if ((*input.local_input)[button::remove_object] == button_state::held)
 	{
 		give_up_timer += dt;
 		if (give_up_timer >= 5.0f)
