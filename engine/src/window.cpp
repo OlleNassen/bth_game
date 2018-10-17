@@ -64,11 +64,14 @@ Window::Window(const glm::ivec2& window_size, const std::string& title)
 	}
 
 	glEnable(GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	//glCullFace(GL_TRUE);
+
+	//glEnable(GL_CULL_FACE);
+
 	//glFrontFace(GL_CW);
 
 }

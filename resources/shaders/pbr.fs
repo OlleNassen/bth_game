@@ -172,4 +172,6 @@ void main()
     color = pow(color, vec3(1.0/2.2)); 
 
     frag_color = vec4(color, 1.0);
+    //frag_color = texture(skybox, R);    
+
 }

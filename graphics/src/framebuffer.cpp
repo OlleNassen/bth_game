@@ -50,7 +50,7 @@ Framebuffer::Framebuffer(const Shader& shader, const Skybox& skybox)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f);
 	glm::mat4 captureViews[] =
 	{
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
@@ -105,7 +105,7 @@ Framebuffer::Framebuffer(const Shader& shader, const Skybox& skybox, bool temp)
 
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f);
 	glm::mat4 captureViews[] =
 	{
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
@@ -161,8 +161,9 @@ Framebuffer::Framebuffer(const Shader& shader, const Skybox& skybox, bool temp)
 
 Framebuffer::Framebuffer(const Shader & shader, const Skybox & skybox, float temp)
 {
-	glGenTextures(1, &brdf_lut);
+	create_quad();
 
+	glGenTextures(1, &brdf_lut);
 	// pre-allocate enough memory for the LUT texture.
 	glBindTexture(GL_TEXTURE_2D, brdf_lut);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
@@ -182,13 +183,16 @@ Framebuffer::Framebuffer(const Shader & shader, const Skybox & skybox, float tem
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdf_lut, 0);
 
+	glDisable(GL_BLEND);
+
 	glViewport(0, 0, 512, 512);
 	shader.use();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	create_quad();
 	render_quad();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glEnable(GL_BLEND);
+
 }
 
 Framebuffer::~Framebuffer()
