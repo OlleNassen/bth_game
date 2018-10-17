@@ -27,20 +27,20 @@ Output Gameplay::update(Input inputs)
 	auto& direction = inputs.directions[inputs.player_id];
 	direction = { 0.0f, 0.0f, 0.0f };
 
-	if ((*input.local_input)[button::up] >= button_state::pressed)
+	if ((*inputs.local_input)[button::up] >= button_state::pressed)
 		direction.y += 0.25f;
-	if ((*input.local_input)[button::left] >= button_state::pressed)
+	if ((*inputs.local_input)[button::left] >= button_state::pressed)
 		direction.x -= 0.25f;
-	if ((*input.local_input)[button::down] >= button_state::pressed)
+	if ((*inputs.local_input)[button::down] >= button_state::pressed)
 		direction.y -= 0.25f;
-	if ((*input.local_input)[button::right] >= button_state::pressed)
+	if ((*inputs.local_input)[button::right] >= button_state::pressed)
 		direction.x += 0.25f;
 		
 	std::array<glm::vec2, 4> velocities;
 	
 	/*for (auto& entity : entities)
 	{
-		scripts[entity].update(input.delta, input.directions[0], velocities[0]);
+		scripts[entity].update(inputs.delta, inputs.directions[0], velocities[0]);
 	}*/
 	// TEMP!!!
 	for (auto i = 0; i < 4; ++i)
@@ -48,46 +48,46 @@ Output Gameplay::update(Input inputs)
 		scripts[0].update(inputs.delta, inputs.directions[i], velocities[i]);
 	}
 
-	glm::vec2 updated_player_pos = luaLoad.process_input(*input.local_input, input.delta);
+	glm::vec2 updated_player_pos = luaLoad.process_input(*inputs.local_input, inputs.delta);
 	  
 	//Object placing \Vincent & Lucas S
-	if ((*input.local_input)[logic::button::build_mode] == logic::button_state::pressed)
+	if ((*inputs.local_input)[logic::button::build_mode] == logic::button_state::pressed)
 	{
-		input.scene->build_mode_active = !input.scene->build_mode_active;
+		inputs.scene->build_mode_active = !inputs.scene->build_mode_active;
 	}
-	if (input.scene->build_mode_active)
+	if (inputs.scene->build_mode_active)
 	{
 		collision_data data;
 
 		
-		if ((*input.local_input)[logic::button::place_object] == logic::button_state::pressed)
+		if ((*inputs.local_input)[logic::button::place_object] == logic::button_state::pressed)
 		{
 			glm::vec2 position = glm::vec2(0.0f, 5.0f);
-			model_id = input.scene->add_object(data);
-			physics_id = input.physics->add_static_body(data.position, glm::vec2(0.0, 0.0), data.width, data.height, data.trigger);
-			input.scene->placed_objects_model_index.emplace_back(model_id);
-			input.physics->placed_objects_index.emplace_back(physics_id);
+			model_id = inputs.scene->add_object(data);
+			physics_id = inputs.physics->add_static_body(data.position, glm::vec2(0.0, 0.0), data.width, data.height, data.trigger);
+			inputs.scene->placed_objects_model_index.emplace_back(model_id);
+			inputs.physics->placed_objects_index.emplace_back(physics_id);
 		}
 
 		if (model_id != -1)
 		{
-			input.physics->static_positions[physics_id] += glm::vec2(direction.x, direction.y);
-			input.scene->models[model_id].move(glm::vec2(direction.x, direction.y));
+			inputs.physics->static_positions[physics_id] += glm::vec2(direction.x, direction.y);
+			inputs.scene->models[model_id].move(glm::vec2(direction.x, direction.y));
 
-			if ((*input.local_input)[logic::button::rotate] == logic::button_state::pressed)
+			if ((*inputs.local_input)[logic::button::rotate] == logic::button_state::pressed)
 			{
-				input.scene->rotate_object(model_id);
-				input.physics->rotate_static_box(physics_id);
+				inputs.scene->rotate_object(model_id);
+				inputs.physics->rotate_static_box(physics_id);
 			}
 
-			if ((*input.local_input)[logic::button::give_up] == logic::button_state::pressed)
+			if ((*inputs.local_input)[logic::button::give_up] == logic::button_state::pressed)
 			{
-				if (input.scene->placed_objects_model_index.size() != 0)
+				if (inputs.scene->placed_objects_model_index.size() != 0)
 				{
-					model_id = input.scene->placed_objects_model_index[index];
-					physics_id = input.physics->placed_objects_index[index++];
+					model_id = inputs.scene->placed_objects_model_index[index];
+					physics_id = inputs.physics->placed_objects_index[index++];
 
-					if (index >= input.scene->placed_objects_model_index.size())
+					if (index >= inputs.scene->placed_objects_model_index.size())
 						index = 0;
 				}
 				else
@@ -101,9 +101,9 @@ Output Gameplay::update(Input inputs)
 	
 
 	//Give up \Vincent
-	give_up(input);
+	give_up(inputs);
 
-	return Output{ updated_player_pos, velocities, input.directions };
+	return Output{ updated_player_pos, velocities, inputs.directions };
 }
 
 void Gameplay::give_up(Input input)

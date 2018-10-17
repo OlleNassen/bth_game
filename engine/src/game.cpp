@@ -98,7 +98,7 @@ void Game::update(std::chrono::milliseconds delta)
 		level.build_mode_active = !level.build_mode_active;
 	}*/
 
-	auto& direction = net_out.directions[net_out.player_id];
+	/*auto& direction = net_out.directions[net_out.player_id];
 	direction = { 0.0f, 0.0f, 0.0f };
 
 	if (!level.build_mode_active)
@@ -111,7 +111,7 @@ void Game::update(std::chrono::milliseconds delta)
 			direction.z -= 1.0f;
 		if ((*local_input)[logic::button::right] >= logic::button_state::pressed)
 			direction.x += 1.0f;
-	}
+	}*/
 
 
 	/*if (level.build_mode_active && (*local_input)[logic::button::place_object] == logic::button_state::pressed)

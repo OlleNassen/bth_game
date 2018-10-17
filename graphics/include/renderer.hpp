@@ -52,6 +52,7 @@ public:
 		Camera& camera,
 		int id);
 
+	bool debug_active{ false };
 private:
 	static void line_debug(const std::vector<glm::vec2>& lines)
 	{
@@ -69,7 +70,6 @@ private:
 		glBindVertexArray(0);
 	}
 
-	bool debug_active{ false };
 private:
 	Shader pbr{ "../resources/shaders/pbr.vs", "../resources/shaders/pbr.fs" };
 	Shader text_shader{ "../resources/shaders/text.vs", "../resources/shaders/text.fs" };
@@ -114,7 +114,6 @@ private:
 	glm::vec2 v[4];
 
 	bool show_start{false};
-	bool debug_active{ false };
 	Texture* dust_texture;
 	FX* dust_particles;
 	int randomizer;
