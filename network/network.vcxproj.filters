@@ -18,10 +18,13 @@
     <ClInclude Include="include\host.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\serialize.hpp">
+    <ClInclude Include="include\network.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\network.hpp">
+    <ClInclude Include="include\range.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\packet.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -29,10 +32,10 @@
     <ClCompile Include="src\host.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\serialize.cpp">
+    <ClCompile Include="src\network.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\network.cpp">
+    <ClCompile Include="src\packet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -131,13 +131,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\host.hpp" />
-    <ClInclude Include="include\serialize.hpp" />
+    <ClInclude Include="include\range.hpp" />
     <ClInclude Include="include\network.hpp" />
+    <ClInclude Include="include\packet.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\packet.cpp" />
     <ClCompile Include="src\network.cpp" />
     <ClCompile Include="src\host.cpp" />
-    <ClCompile Include="src\serialize.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

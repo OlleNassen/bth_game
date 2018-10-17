@@ -1,11 +1,14 @@
 #ifndef INPUT_HPP
 #define INPUT_HPP
 
+#include <cstdint>
 #include <map>
 #include <glm/glm.hpp>
 
 namespace logic
 {
+
+using uint16 = std::uint16_t;
 
 enum class button
 {
@@ -44,6 +47,30 @@ public:
 	static constexpr int indices = 12;
 	int index = 0;
 	glm::vec2 cursor;
+
+	input() = default;
+
+	explicit input(uint16 in)
+	{
+		for (int i = 0; i < static_cast<int>(button::quit) + 1; ++i)
+		{
+			if (in & (1 << i))
+				data[i] = button_state::held;
+		}
+	}
+
+	explicit operator uint16() const
+	{
+		uint16 result = 0;
+
+		for (int i = 0; i < static_cast<int>(button::quit) + 1; ++i)
+		{
+			if (data[i] == button_state::held)
+				result = (result | (1 << i));
+		}
+
+		return result;
+	}
 
 	const button_state& operator[](button b)const
 	{

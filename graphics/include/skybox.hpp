@@ -14,9 +14,36 @@ public:
 	~Skybox() = default;
 
 	void render(const Shader& shader, const Camera& camera)const;
+
+	void init_irradiance()const
+	{
+		glBindVertexArray(vao_id);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+	}
+
+	void irradiance_render(const Shader& shader, const Camera& camera)const
+	{
+		shader.uniform("skybox", 6);
+		shader.uniform("view", glm::mat4(glm::mat3(camera.view())));
+		shader.uniform("projection", camera.projection);
+
+		glDepthFunc(GL_LEQUAL);
+		glBindVertexArray(vao_id);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS);
+	}
+
+	void bind_texture()const
+	{
+		texture.bind(0, GL_TEXTURE_CUBE_MAP);
+	}
+
 private:
 	unsigned int vao_id;
 	unsigned int vbo_id;
+
 	SkyboxTexture texture;
 };
 

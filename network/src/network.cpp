@@ -3,49 +3,37 @@
 namespace network
 {
 
-Messenger::Messenger()
+int Messenger::connected_players() const
 {
-	enet_initialize();
-}
-Messenger::~Messenger()
-{
-	enet_deinitialize();
+	return num_players;
 }
 
-Output Messenger::update(Input input)
+int Messenger::id() const
+{
+	return player_id;
+}
+
+bool Messenger::connected() const 
+{ 
+	return player_host.connected(); 
+}
+
+void Messenger::update(GameState& state, const char* ip_address)
 {	
-	std::array<glm::vec2, 4> pos;
-	std::array<glm::vec2, 4> vel;
+	if (ip_address)
+		player_host = Host{ip_address};
 
-	for (auto i = 0; i < 4; ++i)
+	if (player_host.num_players > num_players)
 	{
-		pos[i] = input.positions[i];
-		vel[i] = input.velocities[i];
+		++player_id;
 	}
-		
-	
-	player_data net_data = { 0, 1, input.directions, pos, vel };
-
-	if (!host && !input.chat.empty())
+	else if (player_host.num_players < num_players)
 	{
-		if (input.chat == "server")
-		{
-			host = std::make_unique<Server>();
-		}
-		else
-		{
-			host = std::make_unique<Client>(input.chat);
-		}
+		--player_id;
 	}
-	else if (host)
-	{
-		host->update(&net_data);
-	}
+	num_players = player_host.num_players;
 
-	net_data.positions[net_data.player_id] = input.positions[net_data.player_id];
-	net_data.velocities[net_data.player_id] = input.velocities[net_data.player_id];
-
-	return { net_data.player_id, net_data.player_count, net_data.directions, net_data.positions, net_data.velocities };
+	player_host.update(state);
 }
 
 }

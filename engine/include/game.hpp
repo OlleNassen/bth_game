@@ -33,6 +33,9 @@ public:
 private:
 	void render();
 	void update(std::chrono::milliseconds delta);
+
+	void pack_data();
+	void unpack_data();
 	
 	Window window; //PUT BELOW WINDOW IF OPENGL RELATED
 	
@@ -42,11 +45,11 @@ private:
 
 	logic::Output logic_out;
 	logic::Gameplay gameplay;
-	//logic::input player_input;
 	logic::input player_inputs[4];
 	logic::input* local_input{ &player_inputs[0] };
 	
-	network::Output net_out;
+	network::uint32 state_sequence = 0;
+	network::GameState net_state;
 	network::Messenger net;
 
 	physics::World physics;	

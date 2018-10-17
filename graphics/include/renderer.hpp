@@ -2,6 +2,7 @@
 #define RENDERER_HPP
 
 #include <chrono>
+#include <time.h>
 #include <vector>
 #include "game_scene.hpp"
 #include "camera.hpp"
@@ -10,6 +11,7 @@
 #include "post_processing_effects.hpp"
 #include "user_interface.hpp"
 #include "lights.hpp"
+#include "fx.hpp"
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
 
@@ -43,6 +45,14 @@ public:
 		bool is_on,
 		bool move_char);
 
+	void update_particles(
+		Texture& texture,
+		Shader& shader,
+		std::string texture_name,
+		Camera& camera,
+		int id);
+
+private:
 	static void line_debug(const std::vector<glm::vec2>& lines)
 	{
 		VertexArray vao;
@@ -61,14 +71,29 @@ public:
 
 	bool debug_active{ false };
 private:
+	Shader pbr{ "../resources/shaders/pbr.vs", "../resources/shaders/pbr.fs" };
+	Shader text_shader{ "../resources/shaders/text.vs", "../resources/shaders/text.fs" };
+	Shader gui{ "../resources/shaders/gui.vs","../resources/shaders/gui.fs" };
+	Shader post_proccessing{ "../resources/shaders/post_processing_effects.vs",
+		"../resources/shaders/post_processing_effects.fs" };
+	Shader lines{ "../resources/shaders/lines.vs", "../resources/shaders/lines.fs" };
+	Shader skybox_shader{ "../resources/shaders/skybox.vs",
+		"../resources/shaders/skybox.fs" };
+	Shader irradiance{ "../resources/shaders/irradiance.vs",
+		"../resources/shaders/irradiance.fs" };
+	Shader fx_dust{ "../resources/shaders/fx_dust.vs",
+	"../resources/shaders/fx_dust.fs" };
+
 	GameScene* scene;
 	DebugCamera db_camera;
 	GameCamera game_camera;
 	std::vector<Model> models;
 	std::vector<Shader> shaders;
 
-	Box light_box;
 	Skybox skybox;
+
+
+	Box light_box;
 
 	Text text;
 	UserInterface ui;
@@ -79,6 +104,8 @@ private:
 	std::string log;
 
 	Framebuffer scene_texture;
+	Framebuffer irradiance_buffer;
+
 	PostProcessingEffects post_processing_effects;
 
 	PointLight light{ glm::vec3(0,2,4), glm::vec3(1,1,1) };
@@ -87,13 +114,16 @@ private:
 	glm::vec2 v[4];
 
 	bool show_start{false};
+	bool debug_active{ false };
+	Texture* dust_texture;
+	FX* dust_particles;
+	int randomizer;
 };
 
 
 template <typename T>
 void render_type(const Shader& shader, const Camera& camera, const PointLight& light, const T& data)
 {
-	shader.use();
 	for (auto i = 4u; i < data.size(); ++i)
 	{
 		const auto& renderable = data[i];
@@ -104,7 +134,6 @@ void render_type(const Shader& shader, const Camera& camera, const PointLight& l
 template <typename T>
 void render_character(const Shader& shader, const Camera& camera, const PointLight& light, const T& data, int num_players)
 {
-	shader.use();
 	for (auto i = 0; i < num_players; ++i)
 	{
 		const auto& renderable = data[i];
