@@ -57,7 +57,10 @@
     <ClCompile Include="src\skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\minimap.cpp">
+    <ClCompile Include="src\fx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,7 +119,10 @@
     <ClInclude Include="include\skybox.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\minimap.hpp">
+    <ClInclude Include="include\fx.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\animation_handler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

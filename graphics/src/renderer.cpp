@@ -9,37 +9,22 @@ namespace graphics
 
 using namespace std::chrono_literals;
 
+
+
 Renderer::Renderer(GameScene* scene)
-	: db_camera(glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f)
-	, game_camera(glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f)
-	, scene { scene }
+	: db_camera{glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f}
+	, game_camera{glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f}
+	, scene{scene}
+	, irradiance_buffer{irradiance, skybox}
+	, prefilter_buffer{pre_filter, skybox, true}
+	, brdf_buffer{brdf, skybox, 3.f}
 {
-	shaders.reserve(sizeof(Shader) * 10);
-	shaders.emplace_back(
-		"../resources/shaders/pbr.vs",
-		"../resources/shaders/pbr.fs");
-	shaders.emplace_back(
-		"../resources/shaders/text.vs",
-		"../resources/shaders/text.fs");
-	shaders.emplace_back(
-		"../resources/shaders/gui.vs",
-		"../resources/shaders/gui.fs");
-	shaders.emplace_back(
-		"../resources/shaders/post_processing_effects.vs",
-		"../resources/shaders/post_processing_effects.fs");
-	shaders.emplace_back(
-		"../resources/shaders/temp.vs",
-		"../resources/shaders/temp.fs");
-	shaders.emplace_back(
-		"../resources/shaders/lines.vs",
-		"../resources/shaders/lines.fs");
-	shaders.emplace_back(
-		"../resources/shaders/ibl.vs",
-		"../resources/shaders/ibl.fs");
-
 	db_camera.position.z = 20.0f;
-}
+	glViewport(0, 0, 1280, 720); // don't forget to configure the viewport to the capture dimensions.
 
+	dust_texture = new Texture("../resources/textures/dust_texture_1.png");
+	dust_particles = new FX(*dust_texture);
+}
 
 void Renderer::render(
 	const std::string* begin,
@@ -48,7 +33,7 @@ void Renderer::render(
 	const std::vector<glm::vec2>& debug_positions,
 	bool is_menu,
 	bool connected,
-	bool debug)const
+	bool debug)
 {
 	glClearColor(1.0f, 0.8f, 0.0f, 0.f);
 		
@@ -58,15 +43,44 @@ void Renderer::render(
 
 	if (!is_menu && connected)
 	{
-		render_character(shaders[0], 
-			game_camera, light, scene->models, player_count);
-		render_type(shaders[0], game_camera, light, scene->models);
+		pbr.use();
+		pbr.uniform("brdf_lut", 6);
+		//pbr.uniform("irradiance_map", 7);
+		//pbr.uniform("prefilter_map", 8);
 
-		shaders[6].use();
-		skybox.render(shaders[6], game_camera);
+		brdf_buffer.bind_texture(6);
+		//irradiance_buffer.bind_texture(7);
+		//prefilter_buffer.bind_texture(8);
+
+		render_character(pbr, 
+			game_camera, light, scene->models, player_count);
+		render_type(pbr, game_camera, light, scene->models);
+
+		//skybox_shader.use();
+		//prefilter_buffer.bind_texture(3);
+		//skybox.irradiance_render(skybox_shader, db_camera);
+		skybox.render(skybox_shader, game_camera);
+
+		fx_dust.use();
+		fx_dust.uniform("particle_texture", 0);
+		dust_texture->bind(0);
+
+		//Get and set matrices
+		glm::vec3 start_point = glm::vec3(0, 0, 0);
+		glm::mat4 view_matrix = game_camera.view();
+		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
+		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
+		fx_dust.uniform("camera_right_worldspace", camera_right_vector);
+		fx_dust.uniform("camera_up_worldspace", camera_up_vector);
+		fx_dust.uniform("view", game_camera.view());
+		fx_dust.uniform("projection", game_camera.projection);
+		fx_dust.uniform("view_position", scene->v[0]);
+		fx_dust.uniform("particle_pivot", start_point);
+
+		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 
 		glDisable(GL_DEPTH_TEST);
-		auto& s = shaders[5];
+		auto& s = lines;
 		if (debug_active)
 		{
 			s.use();
@@ -78,20 +92,57 @@ void Renderer::render(
 	}
 	else if (!is_menu)
 	{
-		if(debug)
-			render_character(shaders[0], 
-				db_camera, light, scene->models, 4);
-		render_type(shaders[0], db_camera, light, scene->models);
+		pbr.use();
+		pbr.uniform("brdf_lut", 6);
+		pbr.uniform("irradiance_map", 7);
+		pbr.uniform("prefilter_map", 8);
+		pbr.uniform("skybox", 9);
 
-		shaders[6].use();
-		skybox.render(shaders[6], db_camera);
+
+		brdf_buffer.bind_texture(6);
+		irradiance_buffer.bind_texture(7);
+		prefilter_buffer.bind_texture(8);
+		skybox.bind_texture(9);
+
+		if(debug)
+			render_character(pbr, 
+				db_camera, light, scene->models, 4);
+		render_type(pbr, db_camera, light, scene->models);
+
+		skybox_shader.use();
+		//prefilter_buffer.bind_texture(8);
+		//skybox.irradiance_render(skybox_shader, db_camera);
+		skybox.render(skybox_shader, db_camera);
+		
+		//brdf.use();
+		//brdf_buffer.bind_texture(6);
+		//brdf_buffer.render_quad();
+
+		//Dust
+		fx_dust.use();
+		fx_dust.uniform("particle_texture", 0);
+		dust_texture->bind(0);
+
+		//Get and set matrices
+		glm::vec3 start_point = glm::vec3(0);
+		glm::mat4 view_matrix = db_camera.view();
+		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
+		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
+		fx_dust.uniform("camera_right_worldspace", camera_right_vector);
+		fx_dust.uniform("camera_up_worldspace", camera_up_vector);
+		fx_dust.uniform("view", db_camera.view());
+		fx_dust.uniform("projection", db_camera.projection);
+		fx_dust.uniform("view_position", scene->v[0]);
+		fx_dust.uniform("particle_pivot", start_point);
+		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
+
 
 		light_box.render(db_camera);
 
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
-			auto& s = shaders[5];
+			auto& s = lines;
 			s.use();
 			s.uniform("projection", db_camera.projection);
 			s.uniform("view", db_camera.view());
@@ -100,17 +151,19 @@ void Renderer::render(
 		}
 	}
 
+
+
 	// Text
-	shaders[2].use();
+	gui.use();
 	if (is_chat_visible)
 	{
 		ui.render();
 	}
 
-	shaders[1].use();
+	text_shader.use();
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
-	shaders[1].uniform("projection", projection);
-	shaders[1].uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
+	text_shader.uniform("projection", projection);
+	text_shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
 
 	auto offset = 0.0f;
 
@@ -133,16 +186,16 @@ void Renderer::render(
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	shaders[3].use();
-	shaders[3].uniform("scene_texture", 0);
-	shaders[3].uniform("depth_texture", 1);
-	shaders[3].uniform("screen_warning", 2);
+	post_proccessing.use();
+	post_proccessing.uniform("scene_texture", 0);
+	post_proccessing.uniform("depth_texture", 1);
+	post_proccessing.uniform("screen_warning", 2);
 
 	scene_texture.bind_texture(0);
 	scene_texture.bind_texture(1);
 	post_processing_effects.texture.bind(2);
 
-	shaders[3].uniform("pulse", post_processing_effects.glow_value);
+	post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
 }
 
@@ -155,6 +208,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	bool is_on,
 	bool move_char)
 {
+
 	using namespace std::chrono_literals;
 	time = data != log ? 0ms : time + delta;
 	log = data;
@@ -164,6 +218,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_on)
 	{
+		//Dust Particles
+		randomizer = rand() % 100;
+		if (randomizer <= 40)
+		{
+			dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
+		}
+
+		//update_particles(*dust_texture, fx_dust, "dust_texture", db_camera, id);
 		/*if (begin[0][button::glow] == button_state::pressed)
 		{
 			want_glow = !want_glow;
@@ -188,6 +250,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
+
+
 
 	light.position += glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
 	light_box.set_position(light.position);

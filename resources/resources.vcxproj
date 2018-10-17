@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{CF7F7B0A-754E-428D-8DA8-EBBEEB76B85E}</ProjectGuid>
     <RootNamespace>resources</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -124,10 +124,15 @@
     <None Include="shaders\blinn_phong.vs" />
     <None Include="shaders\box.fs" />
     <None Include="shaders\box.vs" />
+    <None Include="shaders\brdf.fs" />
+    <None Include="shaders\brdf.vs" />
+    <None Include="shaders\fx_dust.fs" />
+    <None Include="shaders\fx_dust.vs" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
-    <None Include="shaders\ibl.fs" />
-    <None Include="shaders\ibl.vs" />
+    <None Include="shaders\pre_filter.fs" />
+    <None Include="shaders\skybox.fs" />
+    <None Include="shaders\skybox.vs" />
     <None Include="shaders\lines.fs" />
     <None Include="shaders\lines.vs" />
     <None Include="shaders\pbr.fs" />

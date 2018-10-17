@@ -14,15 +14,13 @@ namespace logic
 
 struct Input
 {
-	int player_id;
 	std::chrono::milliseconds delta;
-	const input* local_input;
+	const input* player_inputs; //4
 	std::array<glm::vec3, 4> directions;
 };
 
 struct Output
 {
-	glm::vec2 updated_player_pos;
 	std::array<glm::vec2, 4> velocities;
 	std::array<glm::vec3, 4> directions;
 };
@@ -37,7 +35,7 @@ public:
 
 	void refresh();
 
-	Output update(Input input);
+	Output update(Input inputs);
 
 private:
 	script_array<int> entities;

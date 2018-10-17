@@ -21,9 +21,6 @@ Game::Game()
 	window.assign_key(logic::button::reset, GLFW_KEY_R);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
 
-	net_out.player_id = 0;
-	net_out.player_count = 1;
-	net_out.directions.fill({ 0.0f, 0.0f, 0.0f });
 	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
 
 	physics.add_dynamic_body(level.v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
@@ -71,6 +68,12 @@ void Game::run()
 			
 			update(timestep);
 		}
+		for (unsigned int i = 0; i < level.models.size(); i++)
+		{
+		}
+
+		if (level.models[0].is_animated)
+			level.models[0].update_animation((float)timestep.count());
 
 		render();
 		window.swap_buffers();
@@ -93,43 +96,98 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	net_out.directions = logic_out.directions;
-
 	if (!menu.on())
 		window.hide_cursor();
 
-	std::vector<glm::vec2> forces = physics.get_forces();
-
-	net_out = net.update({ chat[1], net_out.directions, physics.dynamic_positions, forces });
-	local_input = &player_inputs[net_out.player_id];
-
-	//for (auto i = 0; i < 4; ++i)
-		//physics.dynamic_positions[i] = net_out.positions[i];
-
 	chat.update(delta);
 	menu.update(delta, *local_input);
+		
+	const char* str = nullptr;
+	if (!chat[1].empty() && !is_client)
+	{
+		str = chat[1].c_str();
+		is_client = true;
+	}
 
-	logic_out = gameplay.update({net_out.player_id, delta, local_input, net_out.directions});
-	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
+	pack_data();
+	net.update(net_state, str);
+	unpack_data();
+
+	std::array<glm::vec3, 4> directions
+	{ 
+		glm::vec3{0.0f}, 
+		glm::vec3{0.0f},
+		glm::vec3{0.0f}, 
+		glm::vec3{0.0f} 
+	};
+	
+	logic_out = gameplay.update({ delta, player_inputs, directions });
 	
 	physics.update(delta);
 
-	if ((*local_input)[logic::button::jump] == logic::button_state::pressed && net.connected())
-		physics.dynamic_rigidbodies[net_out.player_id].add_force(glm::vec2{ 0.0f, 50.0f });
+	if (net.connected())
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			if (player_inputs[i][logic::button::jump] == logic::button_state::pressed)
+				physics.dynamic_rigidbodies[net.id()].add_force(glm::vec2{ 0.0f, 50.0f });
 
-	for (int i = 0; i < 4; ++i)
-	{	
-		if (net.connected())
-			physics.dynamic_rigidbodies[i].add_force(logic_out.velocities[i]);
-		level.v[i] = physics.dynamic_positions[i];
-		level.models[i].set_position(physics.dynamic_positions[i]);
-	}		
+			physics.dynamic_rigidbodies[i].add_force(logic_out.directions[i]);
+			level.v[i] = physics.dynamic_positions[i];
+			level.models[i].set_position(physics.dynamic_positions[i]);
+		}
+	}
 
 	renderer.update(delta,
-		player_inputs[net_out.player_id].cursor,
-		net_out.directions,
-		chat[1], net_out.player_count,
-		net_out.player_id, chat.is_on(),
+		player_inputs[net.id()].cursor,
+		logic_out.directions,
+		chat[1], player_count,
+		net.id(), chat.is_on(),
 		net.connected());
+}
 
+void Game::pack_data()
+{
+	
+	
+	network::uint64 input_int = 0;
+	for (int i = 0; i < 4; ++i)
+	{
+		network::uint64 input64 = 0;
+		input64 = static_cast<logic::uint16>(player_inputs[i]);
+		input_int = (input_int | (input64 << (i * 16)));
+	}
+	net_state.input = input_int;
+
+
+	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+	{
+		net_state.game_objects[i].position = physics.dynamic_positions[i];
+	}
+}
+
+void Game::unpack_data()
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		using logic::uint16;
+		uint16 in = static_cast<uint16>(net_state.input >> (i * 16));
+		if (i != net.id())
+		{
+			player_inputs[i] = logic::input{ in };
+		}		
+	}
+	
+	if (state_sequence != net_state.sequence)
+	{
+		state_sequence = net_state.sequence;
+		player_count = net_state.player_count;
+
+		for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+		{
+			physics.dynamic_positions[i] = net_state.game_objects[i].position;
+		}
+
+		local_input = &player_inputs[net.id()];
+	}
 }

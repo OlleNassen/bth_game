@@ -27,6 +27,11 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }), vec3{ 0.1f, 0.1f, 0.9f}, mesh_lib->get_mesh(0));
 	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }), vec3{ 0.9f, 0.8f, 0.1f}, mesh_lib->get_mesh(0));
 
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		models[i].create_animation_data("Robot_run.sspAnim");
+	}
+
 	for (unsigned int i = 0; i < level.counterReader.levelObjectCount; i++)
 	{
 		glm::mat4 model{ 1.0f };
