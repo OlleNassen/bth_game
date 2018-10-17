@@ -24,7 +24,7 @@ public:
 
 	void irradiance_render(const Shader& shader, const Camera& camera)const
 	{
-		shader.uniform("skybox", 6);
+		shader.uniform("skybox", 8);
 		shader.uniform("view", glm::mat4(glm::mat3(camera.view())));
 		shader.uniform("projection", camera.projection);
 
@@ -35,9 +35,9 @@ public:
 		glDepthFunc(GL_LESS);
 	}
 
-	void bind_texture()const
+	void bind_texture(int offset = 0)const
 	{
-		texture.bind(0, GL_TEXTURE_CUBE_MAP);
+		texture.bind(offset, GL_TEXTURE_CUBE_MAP);
 	}
 
 private:
