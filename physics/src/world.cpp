@@ -21,10 +21,12 @@ void World::add_dynamic_body(glm::vec2 start_position = glm::vec2(0.0, 0.0), glm
 	dynamic_box_colliders.push_back(Box(width, height, offset, false));
 }
 
-void World::add_static_body(glm::vec2 start_position = glm::vec2(0.0, 0.0), glm::vec2 offset = glm::vec2(0.0, 0.0), float width = 1.0f, float height = 1.0f, bool _is_trigger = false)
+int World::add_static_body(glm::vec2 start_position = glm::vec2(0.0, 0.0), glm::vec2 offset = glm::vec2(0.0, 0.0), float width = 1.0f, float height = 1.0f, bool _is_trigger = false)
 {
 	static_positions.push_back(start_position);
 	static_box_colliders.push_back(Box(width, height, offset, _is_trigger));
+
+	return static_positions.size() - 1;
 }
 
 //void World::update(std::chrono::milliseconds delta)
@@ -139,6 +141,11 @@ std::vector<glm::vec2> World::get_all_debug() const
 	}
 
 	return out_position;
+}
+
+void World::rotate_static_box(int id)
+{
+	static_box_colliders[id].rotate_colliders();
 }
 
 void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index)

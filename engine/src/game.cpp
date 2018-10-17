@@ -16,9 +16,12 @@ Game::Game()
 	window.assign_key(logic::button::glow, GLFW_KEY_G);
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
-	window.assign_key(logic::button::debug, GLFW_KEY_F3);
-	window.assign_key(logic::button::switch_camera, GLFW_KEY_F4);
-	window.assign_key(logic::button::reset, GLFW_KEY_R);
+	window.assign_key(logic::button::debug, GLFW_KEY_R);
+	window.assign_key(logic::button::switch_object, GLFW_KEY_F4);
+	window.assign_key(logic::button::remove_object, GLFW_KEY_O);
+	window.assign_key(logic::button::rotate, GLFW_KEY_F3);	
+	window.assign_key(logic::button::build_mode, GLFW_KEY_B);
+	window.assign_key(logic::button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
 
 	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
@@ -96,6 +99,11 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
+	if ((*local_input)[logic::button::debug] == logic::button_state::pressed)
+	{
+		renderer.debug_active = !renderer.debug_active;
+	}
+
 	if (!menu.on())
 		window.hide_cursor();
 
@@ -122,6 +130,8 @@ void Game::update(std::chrono::milliseconds delta)
 	};
 	
 	logic_out = gameplay.update({ delta, player_inputs, directions });
+	logic_out = gameplay.update({ net.id(), delta, local_input, directions, &level, &physics });
+	glm::vec2 updated_player_pos = logic_out.updated_player_pos;
 	
 	physics.update(delta);
 

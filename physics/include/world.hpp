@@ -27,7 +27,7 @@ public:
 
 	//void add_dynamic_body(glm::vec2 start_force, float width, float height, glm::vec2 offset, glm::vec2 start_position);
 	void add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force);
-	void add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
+	int add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
 
 	//Dynamic
 	std::vector<Rigidbody> dynamic_rigidbodies;
@@ -37,6 +37,11 @@ public:
 	//Static
 	std::vector<Box> static_box_colliders;
 	std::vector<glm::vec2> static_positions;
+
+
+	//Static Placed Objects // lucas test
+	std::vector<int> placed_objects_index;
+
 
 	//void update(std::chrono::milliseconds delta);
 	std::vector<glm::vec2> update(std::chrono::milliseconds delta);
@@ -48,6 +53,8 @@ public:
 	bool intersects(const int box_id, const int target_box_id);
 
 	std::vector<glm::vec2> get_all_debug()const;
+
+	void rotate_static_box(int id);
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 
