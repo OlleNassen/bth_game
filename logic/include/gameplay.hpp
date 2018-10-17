@@ -31,7 +31,6 @@ struct Output
 	*/
 	
 	glm::vec2 force;
-
 };
 
 template <typename T>
@@ -57,6 +56,8 @@ private:
 
 	float give_up_timer{ 0.0f };
 	void give_up(Input input);
+	bool everyone_reached_goal();
+
 };
 
 }

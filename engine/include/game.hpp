@@ -58,10 +58,9 @@ private:
 	gui::Chat chat;
 	gui::Menu menu;	
 
-
 	//Temp leaderboards
-	std::vector<int> leader_board;
-	std::vector<int> current_gameboard;
+	/*std::vector<int> leader_board;
+	std::vector<int> current_gameboard;*/
 };
 
 

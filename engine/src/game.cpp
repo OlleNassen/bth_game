@@ -44,8 +44,8 @@ Game::Game()
 	physics.add_static_body({7.0f, 11.0f}, glm::vec2{ 0.0f, 0.0f }, 2, 2, true);
 	
 	//Temporary leaderboard in the game4
-	leader_board.push_back(net_out.player_count);
-	current_gameboard.push_back(net_out.player_count);
+	/*leader_board.push_back(net_out.player_count);
+	current_gameboard.push_back(net_out.player_count);*/
 }
 
 void Game::run()
@@ -160,11 +160,13 @@ void Game::update(std::chrono::milliseconds delta)
 	std::vector<glm::vec2> dynamic_pos = physics.update(delta);
 	physics.update(delta);
 
-	//Temp test
+	//Temp test for leaderboard stuff
 	for (int i = 0; i < net_out.player_count; i++)
 	{
 		if (physics.dynamic_rigidbodies[i].get_reached_goal())
-			gameplay.set_player_status(i, true);	//Should change the status on players who reached goal
+		{
+			gameplay.set_player_status(i, false);	//Should change the status on players who reached goal
+		}
 	}
 
 	for (int i = 0; i < 4; ++i)

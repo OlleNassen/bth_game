@@ -48,7 +48,7 @@ void LuaScript::update(std::chrono::milliseconds delta, const glm::vec3& directi
 	stack.clear();
 }
 
-void LuaScript::goal_reached(bool value)
+void LuaScript::set_player_status(bool value)
 {
 	stack.getglobal("reached_goal");
 	stack.push(value);

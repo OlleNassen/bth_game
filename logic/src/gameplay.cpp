@@ -104,7 +104,19 @@ void Gameplay::give_up(Input input)
  
 void Gameplay::set_player_status(int i, bool status)
 {
-	
+	scripts[0].set_player_status(status);
+	//check if all players are "get_player_status == false"
+	//function for that?!? ->true == stop match round and had out points to players
+	//function return -> false== continue as usual, but with one less player playing a the moment
+}
+
+bool Gameplay::everyone_reached_goal()
+{
+	bool value = true;
+
+	//for(int i=0; i< )
+
+	return value;
 }
 
 }

@@ -23,7 +23,7 @@ public:
 	void setup(int entity);
 	void update(std::chrono::milliseconds delta, const glm::vec3& direction, glm::vec2& velocity);
 
-	void goal_reached(bool value);
+	void set_player_status(bool value);
 
 	lua_State* getLuaState();
 
