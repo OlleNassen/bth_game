@@ -93,33 +93,6 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	/*if ((*local_input)[logic::button::build_mode] == logic::button_state::pressed)
-	{
-		level.build_mode_active = !level.build_mode_active;
-	}*/
-
-	/*auto& direction = net_out.directions[net_out.player_id];
-	direction = { 0.0f, 0.0f, 0.0f };
-
-	if (!level.build_mode_active)
-	{
-		if ((*local_input)[logic::button::up] >= logic::button_state::pressed)
-			direction.z += 1.0f;
-		if ((*local_input)[logic::button::left] >= logic::button_state::pressed)
-			direction.x -= 1.0f;
-		if ((*local_input)[logic::button::down] >= logic::button_state::pressed)
-			direction.z -= 1.0f;
-		if ((*local_input)[logic::button::right] >= logic::button_state::pressed)
-			direction.x += 1.0f;
-	}*/
-
-
-	/*if (level.build_mode_active && (*local_input)[logic::button::place_object] == logic::button_state::pressed)
-	{
-		level.add_object(glm::vec2(15.0f, 0.0f));
-	}*/
-
-
 	if ((*local_input)[logic::button::debug] == logic::button_state::pressed)
 	{
 		renderer.debug_active = !renderer.debug_active;
