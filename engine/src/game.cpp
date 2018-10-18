@@ -175,14 +175,17 @@ void Game::unpack_data()
 		}		
 	}
 	
-	if (state_sequence != net_state.sequence && net.id())
+	if (state_sequence != net_state.sequence)
 	{
 		state_sequence = net_state.sequence;
 		player_count = net_state.player_count;
 
-		for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+		if (net.id())
 		{
-			physics.dynamic_positions[i] = net_state.game_objects[i].position;
+			for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+			{
+				physics.dynamic_positions[i] = net_state.game_objects[i].position;
+			}
 		}
 
 		local_input = &player_inputs[net.id()];
