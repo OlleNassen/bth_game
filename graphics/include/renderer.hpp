@@ -59,6 +59,8 @@ public:
 		glBindVertexArray(0);
 	}
 
+	void show_leaderboard();
+
 private:
 	GameScene* scene;
 	DebugCamera db_camera;

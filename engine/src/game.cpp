@@ -167,9 +167,8 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			leader_board.at(i) += gameplay.set_player_status(i, false);	//Should change the status on players who reached goal
 			
-			std::cout << leader_board.at(i) << std::endl;
 			//add show leaderboard here
-			//render.show_leaderboard();
+			renderer.show_leaderboard();
 		}
 	}
 

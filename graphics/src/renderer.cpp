@@ -140,7 +140,11 @@ void Renderer::render(
 	}*/
 
 
-		
+	//test
+	for (int i = 0; i < 3; i++)
+	{
+		text.render_text("GAME OVER!\n\n\n\n", 1280 / 2.f, 720 / 2.f, 2.0f);
+	}
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -209,10 +213,18 @@ void Renderer::update(std::chrono::milliseconds delta,
 		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	}
 
+
+	
+
 	ui.update();
 
 	light.position += glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
 	light_box.set_position(light.position);
+}
+
+void Renderer::show_leaderboard()
+{
+	
 }
 
 }
