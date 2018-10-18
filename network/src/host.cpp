@@ -121,9 +121,12 @@ void Host::receive(uint64& input)
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
 			{
-				uint64 in = 0;
-				in = *reinterpret_cast<uint16*>(event.packet->data);
-				input = (input | (in << 16));
+				uint64 in64 = 0;			
+				in64 = *reinterpret_cast<uint16*>(event.packet->data);
+				uint16 in16 = in64;
+				in64 = 0;
+				in64 = in16;
+				input = (input | (in64 << 16));
 				break;
 			}			
 			case ENET_EVENT_TYPE_CONNECT: connect(event); break;

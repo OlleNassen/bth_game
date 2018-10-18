@@ -152,9 +152,7 @@ void Game::update(std::chrono::milliseconds delta)
 }
 
 void Game::pack_data()
-{
-	
-	
+{	
 	network::uint64 input_int = 0;
 	for (int i = 0; i < 4; ++i)
 	{
