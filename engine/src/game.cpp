@@ -158,7 +158,6 @@ void Game::pack_data()
 		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
 	}
 
-
 	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
 	{
 		net_state.game_objects[i].position = physics.dynamic_positions[i];
@@ -172,6 +171,8 @@ void Game::unpack_data()
 		if (i != net.id())
 		{
 			player_inputs[i] = logic::input{net_state.inputs[i]};
+			if (i == 1)
+				std::cout << (player_inputs[i][logic::button::right] == logic::button_state::held) << '\n';
 		}		
 	}
 	

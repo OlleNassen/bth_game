@@ -142,16 +142,7 @@ void Host::receive(GameState& state)
 			switch (event.type)
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
-			{
-				auto* new_state = reinterpret_cast<GameState*>(event.packet->data);
-				state.sequence = new_state->sequence;
-				state.player_count = new_state->player_count;
-				for (int i = 0; i < 4; ++i)
-					state.inputs[i] = new_state->inputs[i];
-
-				for (int i = 0; i < 100; ++i)
-					state.game_objects[i] = new_state->game_objects[i];
-			}
+				state = *reinterpret_cast<GameState*>(event.packet->data);
 				break;
 			case ENET_EVENT_TYPE_CONNECT: connect(event); break;
 			case ENET_EVENT_TYPE_DISCONNECT: disconnect(event); break;
