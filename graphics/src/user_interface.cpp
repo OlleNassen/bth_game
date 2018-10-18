@@ -35,15 +35,15 @@ void UserInterface::render()const
 
 	glBindBuffer(GL_ARRAY_BUFFER, gui_buffer);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(gui_element),
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
 		nullptr);
 													
 	glEnableVertexAttribArray(2);					
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(gui_element),
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
 		(void*)sizeof(glm::vec2));
 													
 	glEnableVertexAttribArray(3);					
-	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(gui_element),
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
 		(void*)(sizeof(glm::vec2) * 2));
 	
 	glVertexAttribDivisor(0, 0);
@@ -67,13 +67,13 @@ void UserInterface::rebind_buffers()
 	gl_buffer_data(GL_ARRAY_BUFFER, elements, GL_STREAM_DRAW);
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(gui_element), nullptr);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement), nullptr);
 
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(gui_element),(void*)sizeof(glm::vec2));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement),(void*)sizeof(glm::vec2));
 
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(gui_element), (void*)(sizeof(glm::vec2) * 2));
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement), (void*)(sizeof(glm::vec2) * 2));
 }
 
 }

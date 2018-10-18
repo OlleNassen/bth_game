@@ -1,41 +1,25 @@
 #ifndef NETWORK_HPP
 #define NETWORK_HPP
 
-#include <memory>
-#include <string>
-#include <array>
-#include <glm/glm.hpp>
-
 #include "host.hpp"
+#include "packet.hpp"
 
 namespace network
 {
 
-struct Input
-{
-	const std::string& chat;
-	const std::array<glm::vec3, 4>& directions;
-};
-
-struct Output
-{
-	int player_id;
-	int player_count;
-	std::array<glm::vec3, 4> directions;
-};
-
 class Messenger
 {
 public:
-	Messenger();
-	~Messenger();
+	Messenger() : init{}, player_host{} {}
 
-	bool connected() const { return static_cast<bool>(host); }
-	
-	Output update(Input input);
+	int id() const;
+	bool connected() const;
+	void update(GameState& state, const char* ip_address);
 
 private:
-	std::unique_ptr<Host> host;
+	EnetInit init;
+	Host player_host;
+	int player_id = 0;
 };
 
 }

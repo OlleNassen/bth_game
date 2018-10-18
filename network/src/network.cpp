@@ -1,38 +1,38 @@
 #include "network.hpp"
+#include <iostream>
 
 namespace network
 {
 
-Messenger::Messenger()
+int Messenger::id() const
 {
-	enet_initialize();
-}
-Messenger::~Messenger()
-{
-	enet_deinitialize();
+	return player_id;
 }
 
-Output Messenger::update(Input input)
-{
-	player_data net_data = { 0, 1, input.directions };
+bool Messenger::connected() const 
+{ 
+	return player_host.connected(); 
+}
 
-	if (!host && !input.chat.empty())
+void Messenger::update(GameState& state, const char* ip_address)
+{	
+	if (ip_address)
 	{
-		if (input.chat == "server")
-		{
-			host = std::make_unique<Server>();
-		}
-		else
-		{
-			host = std::make_unique<Client>(input.chat);
-		}
-	}
-	else if (host)
-	{
-		host->update(&net_data);
+		player_host = Host{ip_address};
+		++player_id;
 	}
 
-	return { net_data.player_id, net_data.player_count, net_data.directions };
+	if (player_id)
+	{
+		uint16 player_unput = state.inputs[player_id];
+		player_host.send(player_unput);
+		player_host.receive(state);
+	}
+	else
+	{
+		player_host.send(state);
+		player_host.receive(state.inputs[1]);	
+	}
 }
 
 }

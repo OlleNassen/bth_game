@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{36AE2814-2DC7-4C15-A717-D5722002110F}</ProjectGuid>
     <RootNamespace>network</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -131,13 +131,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\host.hpp" />
-    <ClInclude Include="include\serialize.hpp" />
+    <ClInclude Include="include\range.hpp" />
     <ClInclude Include="include\network.hpp" />
+    <ClInclude Include="include\packet.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\packet.cpp" />
     <ClCompile Include="src\network.cpp" />
     <ClCompile Include="src\host.cpp" />
-    <ClCompile Include="src\serialize.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

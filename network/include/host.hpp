@@ -1,86 +1,49 @@
 #ifndef HOST_HPP
 #define HOST_HPP
 
-#include <array>
-#include <functional>
-#include <iostream>
-#include <chrono>
-#include <string>
-#include <glm/glm.hpp>
 #include <enet/enet.h>
+#include "packet.hpp"
 
-struct player_data
+namespace network
 {
-	int player_id = 0;
-	int player_count = 1;
-	std::array<glm::vec3, 4> directions;
+
+class EnetInit
+{
+public:
+	EnetInit();
+	~EnetInit();
 };
-
-template <typename F1, typename F2, typename F3>
-void host_service(std::chrono::milliseconds time, ENetHost* h,
-	F1 recieve,
-	F2 connect,
-	F3 disconnect)
-{
-	ENetEvent event;
-	while (enet_host_service(h, &event, static_cast<enet_uint32>(time.count())) > 0)
-	{
-		switch (event.type)
-		{
-		case ENET_EVENT_TYPE_RECEIVE: recieve(event); enet_packet_destroy(event.packet); break;
-		case ENET_EVENT_TYPE_CONNECT: connect(event); break;
-		case ENET_EVENT_TYPE_DISCONNECT: disconnect(event); break;
-		}
-	}
-}
 
 class Host
 {
 public:
-	virtual ~Host() = default;
-	virtual void update(player_data* data) = 0;
+	Host(const char* ip_address);
+	Host();
+	~Host();
 
-	bool connected = false;
-};
+	Host(const Host& other);
+	Host& operator=(const Host& other);
 
+	bool connected() const;
 
-class Client : public Host
-{
-public:
-	Client(const std::string& ip_address);
-	~Client();
-
-	void update(player_data* data) override;
-	
+	void send(uint16& input);
+	void send(GameState& state);
+	void receive(uint16& input);
+	void receive(GameState& state);
 
 private:
-	void recieve(const ENetEvent& event, player_data* data);
 	void connect(const ENetEvent& event);
-	void disconnect(const ENetEvent& event);	
+	void disconnect(const ENetEvent& event);
 
+	uint8 player_count = 1;
+	uint32 sequence = 0;
+	
 	ENetAddress address;
 	ENetHost* enet_host;
-	ENetPeer* peer = nullptr;
+	ENetPeer* peers[4] = {nullptr};	
 };
 
-class Server : public Host
-{
-public:
-	Server();
-	~Server();
-
-	void update(player_data* data) override;
-
-private:	
-	void recieve(const ENetEvent& event, player_data* data);
-	void connect(const ENetEvent& event);
-	void disconnect(const ENetEvent& event);	
-
-	ENetAddress address;
-	ENetHost* enet_host;
-	ENetPeer* peers[10] = { nullptr };
-	int num_peers = 0;
-};
+}
 
 #endif
 

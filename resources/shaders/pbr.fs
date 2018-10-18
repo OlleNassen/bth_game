@@ -3,6 +3,7 @@
 out vec4 frag_color;
 
 in VS_OUT{
+	vec3 world_normal;
 	vec3 frag_pos;
 	vec2 tex_coord;
 	vec3 tangent_light_pos;
@@ -15,13 +16,37 @@ uniform sampler2D emissive_map;
 
 uniform sampler2D albedo_map;
 uniform sampler2D normal_map;
-uniform sampler2D metallic_map;
-uniform sampler2D roughness_map;
-uniform sampler2D ao_map;
+uniform sampler2D roughness_metallic_ao_map;
 uniform vec3 player_color;
 uniform vec3 light_color;
 
+uniform vec3 light_pos;
+uniform vec3 view_pos;
+
+//IBL
+uniform sampler2D   brdf_lut;
+uniform samplerCube irradiance_map;
+uniform samplerCube prefilter_map;
+uniform samplerCube skybox;
+
 const float PI = 3.14159265359;
+
+vec3 getNormalFromMap()
+{
+    vec3 tangentNormal = texture(normal_map, fs_in.tex_coord).xyz * 2.0 - 1.0;
+
+    vec3 Q1  = dFdx(fs_in.frag_pos);
+    vec3 Q2  = dFdy(fs_in.frag_pos);
+    vec2 st1 = dFdx(fs_in.tex_coord);
+    vec2 st2 = dFdy(fs_in.tex_coord);
+
+    vec3 N   = normalize(fs_in.world_normal);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
+}
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
@@ -63,35 +88,40 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}   
+
 void main()
 {
-	vec3 WorldPos = fs_in.tangent_fragment_pos;
-	vec3 camPos = fs_in.tangent_view_pos;
+	vec3 WorldPos = fs_in.frag_pos;
+	vec3 camPos = view_pos;
 
 	vec3 lightPositions[4];
 	vec3 lightColors[4];
 
 	for(int i = 0; i < 4; i++)
 	{
-		lightPositions[i] = fs_in.tangent_light_pos;
+		lightPositions[i] = light_pos;
 		lightColors[i] = light_color;
 	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
-    float metallic  = texture(metallic_map, fs_in.tex_coord).r;
-    float roughness = texture(roughness_map, fs_in.tex_coord).r;
-    float ao        = texture(ao_map, fs_in.tex_coord).r;
+    float metallic  = texture(roughness_metallic_ao_map, fs_in.tex_coord).r;
+    float roughness = texture(roughness_metallic_ao_map, fs_in.tex_coord).g;
+    float ao        = texture(roughness_metallic_ao_map, fs_in.tex_coord).b;
 
-	vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
+	//vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
     // transform normal vector to range [-1,1]
-    N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
-
+    //N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
+	vec3 N = getNormalFromMap();
 	vec3 V = normalize(camPos - WorldPos);
+	vec3 R = reflect(-V, N);
 
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 	
-	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
@@ -133,14 +163,38 @@ void main()
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * albedo * ao;
+	
+    // ambient lighting (we now use IBL as the ambient term)
+	
+    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+
+    vec3 kS = F;
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - metallic;	
+	
+    vec3 irradiance = texture(irradiance_map, N).rgb;
+    vec3 diffuse      = irradiance * albedo;
+
+	const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(prefilter_map, R,  roughness * MAX_REFLECTION_LOD).rgb;    
+    vec2 brdf  = texture(brdf_lut, vec2(max(dot(N, V), 0.0), roughness)).rg;
+    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+
+    vec3 ambient = (kD * diffuse + specular) * ao;
+
+	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
     
-    vec3 color = ambient + Lo;
+    vec3 color = ambient + Lo + emission; //emissive here?
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
-    frag_color = vec4(color + emission, 1.0);
+    frag_color = vec4(color, 1.0);
+	//R.x *= -1;
+	//R.y *= -1;
+
+    //frag_color = texture(skybox, R);    
+
 }

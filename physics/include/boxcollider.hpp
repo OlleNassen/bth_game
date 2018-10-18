@@ -32,6 +32,8 @@ public:
 
 	bool get_trigger()const;
 
+	void rotate_colliders();
+
 private:
 	glm::vec2 top_left;
 

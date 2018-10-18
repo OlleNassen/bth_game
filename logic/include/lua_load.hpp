@@ -2,9 +2,11 @@
 #define LUA_LOAD_HPP
 
 #include "lua_script.hpp"
-#include "../../engine/include/input.hpp"
+#include "input.hpp"
 #include <chrono>
 
+namespace logic
+{
 
 class LuaLoad
 {
@@ -25,5 +27,7 @@ private:
 	glm::vec2 position = { 0.f, 0.f };
 		//LuaScript lua_input2;
 };
+
+}
 
 #endif

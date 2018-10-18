@@ -23,7 +23,7 @@
     <ProjectGuid>{4B25CCE6-0448-482C-8E2E-A2F4A234FDF5}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>engine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -152,19 +152,15 @@
   <ItemGroup>
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\gui.cpp" />
-    <ClCompile Include="src\lua_stack.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\ecs.hpp" />
     <ClInclude Include="include\game.hpp" />
     <ClInclude Include="include\gui.hpp" />
-    <ClInclude Include="include\lua_stack.hpp" />
     <ClInclude Include="include\timer.hpp" />
     <ClInclude Include="include\window.hpp" />
-    <ClInclude Include="include\input.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
