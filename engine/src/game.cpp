@@ -165,10 +165,7 @@ void Game::pack_data()
 }
 
 void Game::unpack_data()
-{
-	if (net_state.inputs[1] == 4)
-		std::cout << "Working" << '\n';
-	
+{	
 	for (int i = 0; i < 4; ++i)
 	{
 		if (i != net.id())
