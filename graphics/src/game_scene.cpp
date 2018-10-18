@@ -29,7 +29,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 
 	for (unsigned int i = 0; i < 4; i++)
 	{
-		models[i].create_animation_data("Robot_run.sspAnim");
+		models[i].create_animation_data("robot_run.sspAnim");
 	}
 
 	for (unsigned int i = 0; i < level.counterReader.levelObjectCount; i++)
