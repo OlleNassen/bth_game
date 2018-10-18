@@ -169,11 +169,9 @@ void Game::unpack_data()
 {
 	for (int i = 0; i < 4; ++i)
 	{
-		using logic::uint16;
-		uint16 in = net_state.inputs[i];
 		if (i != net.id())
 		{
-			player_inputs[i] = logic::input{ in };
+			player_inputs[i] = logic::input{net_state.inputs[i]};
 		}		
 	}
 	

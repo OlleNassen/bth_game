@@ -32,7 +32,10 @@ void Messenger::update(GameState& state, const char* ip_address)
 	else
 	{
 		player_host.send(state);
-		player_host.receive(state.inputs, 1);
+		for (auto& input : state.inputs)
+		{
+			player_host.receive(input);
+		}		
 	}
 }
 

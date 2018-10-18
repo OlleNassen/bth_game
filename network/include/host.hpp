@@ -28,7 +28,7 @@ public:
 
 	void send(uint16 input);
 	void send(GameState& state);
-	void receive(uint16* input, int id);
+	void receive(uint16& input);
 	void receive(GameState& state);
 
 private:
