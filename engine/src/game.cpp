@@ -153,14 +153,10 @@ void Game::update(std::chrono::milliseconds delta)
 
 void Game::pack_data()
 {	
-	network::uint64 input_int = 0;
 	for (int i = 0; i < 4; ++i)
 	{
-		network::uint64 input64 = 0;
-		input64 = static_cast<logic::uint16>(player_inputs[i]);
-		input_int = (input_int | (input64 << (i * 16)));
+		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
 	}
-	net_state.input = input_int;
 
 
 	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
@@ -174,7 +170,7 @@ void Game::unpack_data()
 	for (int i = 0; i < 4; ++i)
 	{
 		using logic::uint16;
-		uint16 in = static_cast<uint16>(net_state.input >> (i * 16));
+		uint16 in = net_state.inputs[i];
 		if (i != net.id())
 		{
 			player_inputs[i] = logic::input{ in };

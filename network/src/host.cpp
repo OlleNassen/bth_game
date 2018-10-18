@@ -110,7 +110,7 @@ void Host::send(GameState& state)
 	}
 }
 
-void Host::receive(uint64& input)
+void Host::receive(uint16* input, int id)
 {
 	if (enet_host)
 	{
@@ -120,13 +120,8 @@ void Host::receive(uint64& input)
 			switch (event.type)
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
-			{
-				uint64 in64 = 0;			
-				in64 = *reinterpret_cast<uint16*>(event.packet->data);
-				uint16 in16 = in64;
-				in64 = 0;
-				in64 = in16;
-				input = (input | (in64 << 16));
+			{			
+				input[id] = *reinterpret_cast<uint16*>(event.packet->data);
 				break;
 			}			
 			case ENET_EVENT_TYPE_CONNECT: connect(event); break;

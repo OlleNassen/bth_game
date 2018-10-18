@@ -24,17 +24,15 @@ void Messenger::update(GameState& state, const char* ip_address)
 
 	if (player_id)
 	{
-		uint16 input = static_cast<uint16>(state.input >> (player_id * 16));
-		player_host.send(input);
+		uint16 player_input = state.inputs[player_id];
+		player_host.send(player_input);
 		player_host.receive(state);
-		uint64 input64 = 0;
-		input64 = input;
-		state.input = (state.input | (input64 << (player_id * 16)));
+		state.inputs[player_id] = player_input;
 	}
 	else
 	{
 		player_host.send(state);
-		player_host.receive(state.input);
+		player_host.receive(state.inputs, 1);
 	}
 }
 
