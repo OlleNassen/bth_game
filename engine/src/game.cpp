@@ -166,13 +166,14 @@ void Game::pack_data()
 
 void Game::unpack_data()
 {
+	if (net_state.inputs[1] == 4)
+		std::cout << "Working" << '\n';
+	
 	for (int i = 0; i < 4; ++i)
 	{
 		if (i != net.id())
 		{
 			player_inputs[i] = logic::input{net_state.inputs[i]};
-			if (i == 1)
-				std::cout << (player_inputs[i][logic::button::right] == logic::button_state::held) << '\n';
 		}		
 	}
 	
