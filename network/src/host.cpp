@@ -71,7 +71,7 @@ bool Host::connected() const
 	return false;
 }
 
-void Host::send(uint16 input)
+void Host::send(uint16& input)
 {	
 	if (enet_host)
 	{
