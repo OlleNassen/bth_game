@@ -175,7 +175,7 @@ void Game::unpack_data()
 		}		
 	}
 	
-	if (state_sequence != net_state.sequence)
+	if (state_sequence != net_state.sequence && net.id())
 	{
 		state_sequence = net_state.sequence;
 		player_count = net_state.player_count;
