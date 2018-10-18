@@ -26,13 +26,11 @@ namespace graphics
 		shader.uniform("light_pos", light.position);
 		shader.uniform("light_color", light.color);
 
-		shader.uniform("albedo_map", 0);
-		shader.uniform("normal_map", 1);
-		shader.uniform("metallic_map", 2);
-		shader.uniform("roughness_map", 3);
-		shader.uniform("ao_map", 4);
-		shader.uniform("emissive_map", 5);
-		shader.uniform("player_color", emissive_color);
+	shader.uniform("albedo_map", 0);
+	shader.uniform("normal_map", 1);
+	shader.uniform("roughness_metallic_ao_map", 2);
+	shader.uniform("emissive_map", 3);
+	shader.uniform("player_color", emissive_color);
 
 		shader.uniform("animated", is_animated);
 

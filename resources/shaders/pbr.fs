@@ -16,9 +16,7 @@ uniform sampler2D emissive_map;
 
 uniform sampler2D albedo_map;
 uniform sampler2D normal_map;
-uniform sampler2D metallic_map;
-uniform sampler2D roughness_map;
-uniform sampler2D ao_map;
+uniform sampler2D roughness_metallic_ao_map;
 uniform vec3 player_color;
 uniform vec3 light_color;
 
@@ -110,9 +108,9 @@ void main()
 	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
-    float metallic  = texture(metallic_map, fs_in.tex_coord).r;
-    float roughness = texture(roughness_map, fs_in.tex_coord).r;
-    float ao        = texture(ao_map, fs_in.tex_coord).r;
+    float metallic  = texture(roughness_metallic_ao_map, fs_in.tex_coord).r;
+    float roughness = texture(roughness_metallic_ao_map, fs_in.tex_coord).g;
+    float ao        = texture(roughness_metallic_ao_map, fs_in.tex_coord).b;
 
 	//vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
     // transform normal vector to range [-1,1]
