@@ -196,7 +196,8 @@ void Renderer::render(
 		for (auto i = 0u; i < buttons.size(); ++i)
 			text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
 
-		minimap.render(minimap_shader);
+		if (!is_menu)
+			minimap.render(minimap_shader);
 
 		glEnable(GL_DEPTH_TEST);
 	}
