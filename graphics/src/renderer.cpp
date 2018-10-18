@@ -100,7 +100,6 @@ void Renderer::render(
 		pbr.uniform("prefilter_map", 8);
 		pbr.uniform("skybox", 9);
 
-
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
@@ -138,7 +137,6 @@ void Renderer::render(
 		fx_dust.uniform("particle_pivot", start_point);
 		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 
-
 		light_box.render(db_camera);
 
 		if (debug_active)
@@ -156,38 +154,6 @@ void Renderer::render(
 
 	}
 
-
-
-	// Text
-	gui.use();
-	if (is_chat_visible)
-	{
-		ui.render();
-	}
-
-	text_shader.use();
-	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
-	text_shader.uniform("projection", projection);
-	text_shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
-
-	auto offset = 0.0f;
-
-	glDisable(GL_DEPTH_TEST);
-
-	std::for_each(begin, end,
-		[this, &offset, begin](const auto& s)
-	{
-		if (&s == begin || is_chat_visible)
-			text.render_text(s.c_str(), 10.0f, (offset += 25.0f), 0.5f);
-	});
-
-	constexpr float size_y = static_cast<int>(720 / 12);
-
-	for (auto i = 0u; i < buttons.size(); ++i)
-		text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
-
-	glEnable(GL_DEPTH_TEST);
-
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -202,6 +168,38 @@ void Renderer::render(
 
 	post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 	post_processing_effects.render();
+
+	{
+		glDisable(GL_DEPTH_TEST);
+
+		// Text
+		gui.use();
+		if (is_chat_visible)
+		{
+			ui.render();
+		}
+
+		text_shader.use();
+		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
+
+		auto offset = 0.0f;
+
+		std::for_each(begin, end,
+			[this, &offset, begin](const auto& s)
+		{
+			if (&s == begin || is_chat_visible)
+				text.render_text(s.c_str(), 10.0f, (offset += 25.0f), 0.5f);
+		});
+
+		constexpr float size_y = static_cast<int>(720 / 12);
+
+		for (auto i = 0u; i < buttons.size(); ++i)
+			text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
+
+		glEnable(GL_DEPTH_TEST);
+	}
 }
 
 void Renderer::update(std::chrono::milliseconds delta,

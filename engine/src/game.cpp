@@ -71,12 +71,6 @@ void Game::run()
 			
 			update(timestep);
 		}
-		for (unsigned int i = 0; i < level.models.size(); i++)
-		{
-		}
-
-		if (level.models[0].is_animated)
-			level.models[0].update_animation((float)timestep.count());
 
 		render();
 		window.swap_buffers();
@@ -98,6 +92,9 @@ void Game::update(std::chrono::milliseconds delta)
 {
 	using std::cout;
 	constexpr char nl = '\n';
+
+	if (level.models[0].is_animated)
+		level.models[0].update_animation((float)delta.count());
 
 	if ((*local_input)[logic::button::debug] == logic::button_state::pressed)
 	{
