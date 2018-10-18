@@ -128,8 +128,6 @@ void Game::update(std::chrono::milliseconds delta)
 	
 	logic_out = gameplay.update({ delta, player_inputs, directions, &level, &physics });
 	
-	physics.update(delta);
-
 	if (net.connected())
 	{
 		for (int i = 0; i < 4; ++i)
@@ -138,6 +136,15 @@ void Game::update(std::chrono::milliseconds delta)
 				physics.dynamic_rigidbodies[i].add_force(glm::vec2{ 0.0f, 50.0f });
 
 			physics.dynamic_rigidbodies[i].add_force(logic_out.directions[i]);
+		}
+	}
+	
+	physics.update(delta);
+
+	if (net.connected())
+	{
+		for (int i = 0; i < 4; ++i)
+		{
 			level.v[i] = physics.dynamic_positions[i];
 			level.models[i].set_position(physics.dynamic_positions[i]);
 		}
