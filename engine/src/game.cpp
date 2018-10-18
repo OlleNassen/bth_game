@@ -133,7 +133,7 @@ void Game::update(std::chrono::milliseconds delta)
 		for (int i = 0; i < 4; ++i)
 		{
 			if (player_inputs[i][logic::button::jump] == logic::button_state::held)
-				physics.dynamic_rigidbodies[i].add_force(glm::vec2{ 0.0f, 50.0f });
+				physics.dynamic_rigidbodies[i].add_force(glm::vec2{ 0.0f, 10.0f });
 
 			physics.dynamic_rigidbodies[i].add_force(logic_out.directions[i]);
 		}
