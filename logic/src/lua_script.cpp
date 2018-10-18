@@ -73,4 +73,23 @@ bool LuaScript::player_status()
 	return player_alive;
 }
 
+void LuaScript::add_points(int points)
+{
+	stack.getglobal("add_points");
+	stack.push(points);
+	stack.call(1, 0);
+	stack.clear();
+}
+
+int LuaScript::get_player_points()
+{
+	stack.getglobal("get_player_points");
+	stack.call(0, 1);
+
+	player_points = stack.tonumber(-1);
+	stack.clear();
+
+	return player_points;
+}
+
 }

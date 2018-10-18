@@ -128,6 +128,7 @@ void Renderer::render(
 	for (auto i = 0u; i < buttons.size(); ++i)
 		text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
 
+
 	/*if (game_over)
 	{
 		text.render_text("GAME OVER!", 1280 / 2.f, 720 / 2.f, 2.0f);

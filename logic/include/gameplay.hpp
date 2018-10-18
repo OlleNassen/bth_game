@@ -44,8 +44,8 @@ public:
 	void refresh();
 
 	Output update(Input input);
-	void set_player_status(int i, bool status);
-
+	int set_player_status(int i, bool status);
+	bool get_player_status();
 private:
 	script_array<int> entities;
 	script_array<LuaScript> scripts;
@@ -58,6 +58,8 @@ private:
 	void give_up(Input input);
 	bool everyone_reached_goal();
 
+	int points = 0;
+	std::vector<int> current_gameboard;
 };
 
 }

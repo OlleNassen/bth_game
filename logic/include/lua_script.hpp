@@ -24,14 +24,17 @@ public:
 	void update(std::chrono::milliseconds delta, const glm::vec3& direction, glm::vec2& velocity);
 
 	void set_player_status(bool value);
+	void add_points(int points);
 
 	lua_State* getLuaState();
 
 	bool player_status();
+	int get_player_points();
 private:
 	lua_State* L = nullptr;
 	LuaStack stack;
 	bool player_alive = true;
+	int player_points = 0;
 };
 
 }

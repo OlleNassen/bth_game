@@ -44,8 +44,8 @@ Game::Game()
 	physics.add_static_body({7.0f, 11.0f}, glm::vec2{ 0.0f, 0.0f }, 2, 2, true);
 	
 	//Temporary leaderboard in the game4
-	/*leader_board.push_back(net_out.player_count);
-	current_gameboard.push_back(net_out.player_count);*/
+	leader_board.resize(8);
+	
 }
 
 void Game::run()
@@ -163,9 +163,13 @@ void Game::update(std::chrono::milliseconds delta)
 	//Temp test for leaderboard stuff
 	for (int i = 0; i < net_out.player_count; i++)
 	{
-		if (physics.dynamic_rigidbodies[i].get_reached_goal())
+		if (physics.dynamic_rigidbodies[i].get_reached_goal() && gameplay.get_player_status())
 		{
-			gameplay.set_player_status(i, false);	//Should change the status on players who reached goal
+			leader_board.at(i) += gameplay.set_player_status(i, false);	//Should change the status on players who reached goal
+			
+			std::cout << leader_board.at(i) << std::endl;
+			//add show leaderboard here
+			//render.show_leaderboard();
 		}
 	}
 

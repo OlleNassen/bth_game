@@ -7,6 +7,8 @@ Gameplay::Gameplay()
 {
 	entities.fill(0);
 	refresh();
+
+	current_gameboard.clear();
 }
 
 void Gameplay::refresh()
@@ -102,12 +104,49 @@ void Gameplay::give_up(Input input)
 		give_up_timer = 0.0f;
 }
  
-void Gameplay::set_player_status(int i, bool status)
+int Gameplay::set_player_status(int i, bool status)
 {
-	scripts[0].set_player_status(status);
-	//check if all players are "get_player_status == false"
-	//function for that?!? ->true == stop match round and had out points to players
-	//function return -> false== continue as usual, but with one less player playing a the moment
+	if (std::find(current_gameboard.begin(), current_gameboard.end(), i) != current_gameboard.end())
+	{
+		scripts[0].set_player_status(status);
+		points = 0;
+	}
+	else
+	{
+		if (current_gameboard.empty())
+		{
+			points = 3;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+		}
+		else if (current_gameboard.size() == 1)
+		{
+			points = 2;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+		}
+		else if (current_gameboard.size() == 2)
+		{
+			points = 1;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+		}
+		else
+		{
+			points = 0;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+		}
+	}
+	
+	
+	return points;
+	
+}
+
+bool Gameplay::get_player_status()
+{
+	return scripts[0].player_status();
 }
 
 bool Gameplay::everyone_reached_goal()

@@ -18,3 +18,11 @@ end
 function get_playable()
 	return player_playable
 end
+
+function add_points(points)
+	player_points = player_points + points
+end
+
+function get_player_points()
+	return player_points
+end
