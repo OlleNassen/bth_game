@@ -89,8 +89,6 @@ void Renderer::render(
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
-		minimap.render(minimap_shader);
-
 	}
 	else if (!is_menu)
 	{
@@ -197,6 +195,8 @@ void Renderer::render(
 
 		for (auto i = 0u; i < buttons.size(); ++i)
 			text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
+
+		minimap.render(minimap_shader);
 
 		glEnable(GL_DEPTH_TEST);
 	}
