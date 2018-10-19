@@ -29,6 +29,10 @@ public:
 	glm::vec3 calc_interpolated_rotation(float time, int index);
 	glm::vec3 calc_interpolated_scale(float time, int index);
 
+	glm::vec3 calc_switching_translation(float time, int index);
+	glm::quat calc_switching_quaternion(float time, int index);
+	glm::vec3 calc_switching_scale(float time, int index);
+
 	unsigned int find_switching_keyframe(float time, int index);
 	unsigned int find_current_keyframe(float time, int index);
 	void update_keyframe_transform(float time, int index);
@@ -49,7 +53,9 @@ public:
 	glm::mat4 getMatrices(int index);
 
 	std::vector<Animation*> animations;
-	std::vector<glm::mat4> bone_mat_vector, switch_bone_mat_vector, linkMatricies, offsetMatrices, parentTransforms;
+	std::vector<glm::mat4> bone_mat_vector, switch_bone_mat_vector, link_matricies, offset_matrices, parent_transforms;
+	glm::vec3 switch_translations, switch_scales;
+	glm::quat switch_quat;
 	std::vector<MODEL_STATE> animation_states;
 	std::vector<Joint> joints;
 	int current_animation;
@@ -57,5 +63,7 @@ public:
 	float time_seconds;
 	int nr_of_animations;
 	float switch_time, time_at_switch;
+	std::vector<std::vector<glm::mat4>> animation_offset, animation_link;
+
 };
 #endif 

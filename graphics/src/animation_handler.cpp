@@ -3,11 +3,17 @@
 Animation_handler::Animation_handler()
 {
 	this->animations.clear();
-	this->linkMatricies.clear();
+	this->link_matricies.clear();
 	this->time_seconds = 0.0f;
 	this->switch_time = 0.0f;
 	this->time_at_switch = 0.0f;
 	this->nr_of_animations = 0;
+	this->bone_mat_vector.clear();
+
+	for (int i = 0; i < 19; i++)
+	{
+		this->bone_mat_vector.push_back(glm::mat4(1));
+	}
 }
 
 
@@ -155,6 +161,48 @@ glm::vec3 Animation_handler::calc_interpolated_scale(float time, int index)
 	return val;
 }
 
+glm::vec3 Animation_handler::calc_switching_translation(float time, int index)
+{
+	return glm::vec3();
+}
+
+glm::quat Animation_handler::calc_switching_quaternion(float time, int index)
+{
+	unsigned int scaleIndex = find_current_keyframe(time, index);
+	unsigned int nextScale = scaleIndex + 1;
+
+
+	float deltaTime = animations[previous_animation]->joints[index].keyFrames[nextScale].time - animations[previous_animation]->joints[index].keyFrames[scaleIndex].time;
+	if (deltaTime < 0.001)
+	{
+		deltaTime = 0.1;
+	}
+
+	float factor = (time - animations[previous_animation]->joints[index].keyFrames[scaleIndex].time) / deltaTime;
+	if (factor < 0)
+		factor = 0.0;
+	if (factor > 1.0)
+		factor = 1.0;
+
+	glm::vec3 s1(animations[previous_animation]->joints[index].keyFrames[scaleIndex].scaling[0],
+		animations[previous_animation]->joints[index].keyFrames[scaleIndex].scaling[1],
+		animations[previous_animation]->joints[index].keyFrames[scaleIndex].scaling[2]);
+	glm::vec3 s2(animations[previous_animation]->joints[index].keyFrames[nextScale].scaling[0],
+		animations[previous_animation]->joints[index].keyFrames[nextScale].scaling[1],
+		animations[previous_animation]->joints[index].keyFrames[nextScale].scaling[2]);
+
+	glm::vec3 val = glm::mix(s1, s2, factor);
+	//}
+
+
+	return val;
+}
+
+glm::vec3 Animation_handler::calc_switching_scale(float time, int index)
+{
+	return glm::vec3();
+}
+
 
 unsigned int Animation_handler::find_current_keyframe(float time, int index)
 {
@@ -188,24 +236,23 @@ void Animation_handler::update_keyframe_transform(float time, int index)
 		glm::mat4 temp_mat = glm::mat4(1);
 
 
+		if (animations[current_animation]->switching)
+		{
+		
+			float delta = time_at_switch / switch_time;
+			glm::mat4 switch_mat = switch_bone_mat_vector[index];
+		
+	
+			temp = glm::slerp(temp, switch_quat, delta);
+			temp2 = glm::mix(temp2, switch_scales, delta);
+			temp3 = glm::mix(temp3, switch_translations, delta);
+		}
+
 
 		temp_mat *= glm::translate(glm::mat4(1), glm::vec3(temp3));
 		temp_mat *= mat4_cast(temp);
 		temp_mat *= glm::scale(glm::mat4(1), glm::vec3(1));
-
-		if (animations[current_animation]->switching)
-		{
-			glm::mat4 switch_mat = glm::mat4(1);
-
-			float delta = switch_time / time_at_switch;
-			switch_mat *= (switch_bone_mat_vector[index] * (1.0f - delta));
-
-
-			temp_mat *= delta;
-
-			temp_mat = temp_mat * switch_mat;
-		}
-
+		
 
 		set_local_matrix(temp_mat, index);
 	}
@@ -239,24 +286,24 @@ void Animation_handler::get_parent_transform()
 	//concatenated_transforms *= mat_to_GLM(joint.local_transform_matrix);
 	//return concatenated_transforms;
 
-	this->parentTransforms.clear();
+	this->parent_transforms.clear();
 
 	std::vector<glm::mat4> global_joint_transforms, finalTransforms;
 	for (int i = 0; i < this->joints.size(); i++)
 	{
 		global_joint_transforms.push_back(glm::mat4(1));
-		this->parentTransforms.push_back(glm::mat4(1));
+		this->parent_transforms.push_back(glm::mat4(1));
 	}
 
 	global_joint_transforms[0] = mat_to_GLM(this->joints[0].local_transform_matrix);
-	this->parentTransforms[0] = global_joint_transforms[0];
+	this->parent_transforms[0] = global_joint_transforms[0];
 
 	for (int i = 1; i < this->joints.size(); i++)
 	{
 		global_joint_transforms[i] = global_joint_transforms[this->joints[i].parent_id] *
 			mat_to_GLM(this->joints[i].local_transform_matrix);
 
-		this->parentTransforms[i] = global_joint_transforms[i];
+		this->parent_transforms[i] = global_joint_transforms[i];
 	}
 }
 
@@ -273,7 +320,7 @@ void Animation_handler::update_bone_mat_vector()
 		else
 		{
 
-			glm::mat4 final_transform = this->parentTransforms[i] * glm::inverse(this->linkMatricies[i]);
+			glm::mat4 final_transform = this->parent_transforms[i] * glm::inverse(this->animation_link[current_animation][i]);
 
 
 			bone_mat_vector.push_back(final_transform);
@@ -287,7 +334,7 @@ bool Animation_handler::switch_animation(MODEL_STATE state, float interpolation_
 {
 	bool foundAnimation = false;
 	int animationIndex;
-	for (unsigned int i = 0; i < this->nr_of_animations; i++)
+	for (unsigned int i = 0; i < this->animations.size(); i++)
 	{
 		if (animation_states[i] == state)
 		{
@@ -295,11 +342,19 @@ bool Animation_handler::switch_animation(MODEL_STATE state, float interpolation_
 			animationIndex = i;
 
 			previous_animation = current_animation;
-			current_animation = i;
 			current_state = state;
 			time_at_switch = 0.0;
+			time_seconds = 0.0f;
 			switch_time = interpolation_time;
 			switch_bone_mat_vector = bone_mat_vector;
+			for (int i = 0; i < this->joints.size(); i++)
+			{
+				switch_translations = calc_interpolated_translation(this->time_seconds, i);
+				switch_quat = calc_interpolated_quaternion(this->time_seconds, i);
+				switch_scales = calc_interpolated_scale(this->time_seconds, i);
+
+			}
+			current_animation = i;
 			animations[current_animation]->switching = true;
 		}
 
@@ -320,6 +375,11 @@ void Animation_handler::update_animation(float delta)
 			animations[current_animation]->switching = false;
 	}
 
+	if (animations[current_animation]->max_time <= this->time_seconds)
+	{
+		this->time_seconds = 0.0;
+		current_animation = 0;
+	}
 
 	for (unsigned int i = 0; i < this->joints.size(); i++)
 	{
@@ -338,7 +398,7 @@ void Animation_handler::get_time(float delta)
 }
 void Animation_handler::fixInverseBindPoses()
 {
-	this->offsetMatrices.clear();
+	this->offset_matrices.clear();
 	std::vector<glm::mat4> LM, GM, IBP;
 	for (int i = 0; i < this->joints.size(); i++)
 	{
@@ -347,20 +407,20 @@ void Animation_handler::fixInverseBindPoses()
 		IBP.push_back(glm::mat4(1));
 	}
 
-	LM[0] = (this->linkMatricies[0]);
+	LM[0] = (this->animation_link[current_animation][0]);
 	GM[0] = (LM[0]);
 	IBP[0] = (glm::inverse(LM[0]));
-	offsetMatrices.push_back(IBP[0]);
+	offset_matrices.push_back(IBP[0]);
 
 	for (int i = 1; i < this->joints.size(); i++)
 	{
-		LM[i] = this->linkMatricies[i];
+		LM[i] = this->animation_link[current_animation][i];
 		GM[i] = GM[joints[i].parent_id] * LM[i];
 		IBP[i] = glm::inverse(GM[i]);
 
-		this->offsetMatrices.push_back(IBP[i]);
+		this->offset_matrices.push_back(IBP[i]);
 	}
-
+	animation_offset.push_back(this->offset_matrices);
 
 }
 glm::mat4 Animation_handler::mat_to_GLM(float mat[4][4])
@@ -417,14 +477,18 @@ void Animation_handler::create_animation_data(const std::string & file_path, MOD
 	if (animations.size() > 0)
 	{
 		this->current_animation = 0;
-		this->joints = custom_anim->animation->joints;
+		
+		if(animations.size() == 1)
+			this->joints = custom_anim->animation->joints;
+		
 		this->animation_states.push_back(enm);
 
 
 		for (int i = 0; i < this->joints.size(); i++)
 		{
-			this->linkMatricies.push_back(mat_to_GLM(joints[i].local_transform_matrix));
+			this->link_matricies.push_back(mat_to_GLM(joints[i].local_transform_matrix));
 		}
+		animation_link.push_back(this->link_matricies);
 		fixInverseBindPoses();
 	}
 	delete custom_anim;

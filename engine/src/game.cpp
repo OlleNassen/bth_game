@@ -130,9 +130,13 @@ void Game::update(std::chrono::milliseconds delta)
 		for (int i = 0; i < 4; ++i)
 		{
 			if (player_inputs[i][logic::button::jump] == logic::button_state::held)
+			{
 				physics.dynamic_rigidbodies[i].add_force(glm::vec2{ 0.0f, 10.0f });
+				level.models[i].switch_animation(MODEL_STATE::START_JUMP, 0.7f);
 
+			}
 			physics.dynamic_rigidbodies[i].add_force(logic_out.directions[i]);
+
 		}
 	}
 	
@@ -155,12 +159,14 @@ void Game::update(std::chrono::milliseconds delta)
 			level.models[i].set_position(physics.dynamic_positions[i]);			
 		}		
 	}
-	level.models[0].update_animation((float)delta.count());
+
+
+		level.models[0].update_animation((float)delta.count());
 
 	renderer.update(delta,
 		player_inputs[net.id()].cursor,
 		logic_out.directions,
-		chat[1], player_count,
+		chat[1], 4,
 		net.id(), chat.is_on(),
 		true);
 }

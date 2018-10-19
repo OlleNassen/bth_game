@@ -24,11 +24,14 @@ public:
 	bool is_animated = false;
 
 
-
-	void create_animation_data(const std::string & file_path)
+	void create_animation_data(const std::string & file_path, MODEL_STATE enm)
 	{
-		this->animation_handler.create_animation_data(file_path);
+		this->animation_handler.create_animation_data(file_path, enm);
 		is_animated = true;
+	}
+	void switch_animation(MODEL_STATE enm, float switch_time)
+	{
+		this->animation_handler.switch_animation(enm, switch_time);
 	}
 
 	void move(glm::vec2 offset)
