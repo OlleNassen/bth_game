@@ -46,13 +46,6 @@ public:
 		bool is_on,
 		bool move_char);
 
-	void update_particles(
-		Texture& texture,
-		Shader& shader,
-		std::string texture_name,
-		Camera& camera,
-		int id);
-
 	bool debug_active{ false };
 
 	static void line_debug(const std::vector<glm::vec2>& lines)
@@ -84,6 +77,8 @@ private:
 		"../resources/shaders/irradiance.fs" };
 	Shader fx_dust{ "../resources/shaders/fx_dust.vs",
 	"../resources/shaders/fx_dust.fs" };
+	Shader fx_spark{ "../resources/shaders/fx_spark.vs",
+	"../resources/shaders/fx_spark.fs" };
 	Shader pre_filter{ "../resources/shaders/irradiance.vs",
 	"../resources/shaders/pre_filter.fs" };
 	Shader brdf{ "../resources/shaders/brdf.vs",
@@ -98,7 +93,6 @@ private:
 	std::vector<Shader> shaders;
 
 	Skybox skybox;
-
 
 	Box light_box;
 
@@ -123,10 +117,14 @@ private:
 	glm::vec2 v[4];
 
 	bool show_start{false};
-	Texture* dust_texture;
-	FX* dust_particles;
 	int randomizer;
 	Minimap minimap;
+	
+	//FX
+	Texture* dust_texture;
+	Texture* spark_texture;
+	FX* dust_particles;
+	FX* spark_particles;
 };
 
 

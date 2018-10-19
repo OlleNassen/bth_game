@@ -45,5 +45,7 @@
     <None Include="shaders\pre_filter.fs" />
     <None Include="shaders\brdf.vs" />
     <None Include="shaders\brdf.fs" />
+    <None Include="shaders\fx_spark.fs" />
+    <None Include="shaders\fx_spark.vs" />
   </ItemGroup>
 </Project>

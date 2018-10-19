@@ -140,7 +140,7 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 			//Create a random position here
 			data.random_x = rand() % 40 - 20.0f;
 			data.random_y = rand() % 60;
-			data.random_z = rand() % 20;
+			data.random_z = rand() % 20 - 12.0f;
 
 			//Find and update the last used particle
 			last_used_particle = find_unused_particle(data.particle_container, last_used_particle);
@@ -149,7 +149,7 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 			//Set default values for the particles, first off life and position.
 			data.particle_container[particle_index].random_amp = rand() % 3;
 			data.particle_container[particle_index].life = 1.0f;
-			data.particle_container[particle_index].pos = glm::vec3(-15 + data.random_x, -7 + data.random_y, -12 + data.random_z);
+			data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 			
 			//Create a direction for the particles to travel
 			//glm::vec3 main_dir = glm::vec3(0);
@@ -267,6 +267,10 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 	glBindBuffer(GL_ARRAY_BUFFER, data.color_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, total_particle_count * 4 * sizeof(GLubyte), data.color_data);
+}
+
+void FX::calculate_spark_data(FXdata & data, glm::vec2 * model_position_2d, std::chrono::milliseconds delta, Camera camera)
+{
 }
 
 void FX::set_texture(Texture & texture)

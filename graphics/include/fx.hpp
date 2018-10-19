@@ -49,6 +49,7 @@ public:
 
 	void render_particles(FXdata& data)const;
 	void calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera);
+	void calculate_spark_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera);
 
 	void set_texture(Texture& texture);
 	FXdata* fx;
