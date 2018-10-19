@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClCompile Include="src\animation_handler.cpp" />
     <ClCompile Include="src\fx.cpp" />
+    <ClCompile Include="src\minimap.cpp" />
     <ClCompile Include="src\game_scene.cpp" />
     <ClCompile Include="src\mesh_lib.cpp" />
     <ClCompile Include="src\post_processing_effects.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="include\lights.hpp" />
     <ClInclude Include="include\mesh.hpp" />
     <ClInclude Include="include\mesh_lib.hpp" />
+    <ClInclude Include="include\minimap.hpp" />
     <ClInclude Include="include\model.hpp" />
     <ClInclude Include="include\post_processing_effects.hpp" />
     <ClInclude Include="include\primitives.hpp" />

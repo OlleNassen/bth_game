@@ -33,13 +33,39 @@ public:
 
 	void move(glm::vec2 offset)
 	{
-		model = glm::translate(model, glm::vec3{ offset, 0.0f });
+		//model = glm::translate(model, glm::vec3{ offset, 0.0f });
+		model[3][0] += offset.x;
+		model[3][1] += offset.y;
 	}
 
 	void set_position(glm::vec2 position)
 	{
-		model = glm::translate(glm::mat4(1.f), glm::vec3{ position, 0.0f });
+		//model = glm::translate(glm::mat4(1.f), glm::vec3{ position, 0.0f });
+		model[3][0] = position.x;
+		model[3][1] = position.y;
+		//model[3][2] = 0.0f;
 	}
+
+	void rotate(float degree, glm::vec2 center_pivot)
+	{
+		/*glm::mat3 rotation{ model };
+		glm::vec3 translation{ model[3][0], model[3][1], model[3][2] };
+
+		model = glm::mat4{ 1.0f };
+		model = glm::translate(model, translation);
+		model = glm::rotate(model, glm::radians(degree), {0.0f, 0.0f, 1.0f});
+		model = model * glm::mat4{rotation};*/
+
+		
+		//Works but not for all
+		model = glm::translate(model, { 0.0, center_pivot.x / 2, 0.0 });
+		model = glm::rotate(model, glm::radians(degree), { 1,0,0 });
+		model = glm::translate(model, { 0.0, -center_pivot.x / 2, 0.0 });
+
+
+	}
+
+	void rotate(const glm::vec3 axis, float angle);
 	
 	float get_y_position() const
 	{

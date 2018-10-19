@@ -26,9 +26,9 @@ public:
 
 	bool connected() const;
 
-	void send(uint16 input);
+	void send(uint16& input);
 	void send(GameState& state);
-	void receive(uint64& input);
+	void receive(uint16& input);
 	void receive(GameState& state);
 
 private:

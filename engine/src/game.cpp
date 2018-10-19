@@ -16,9 +16,12 @@ Game::Game()
 	window.assign_key(logic::button::glow, GLFW_KEY_G);
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
-	window.assign_key(logic::button::debug, GLFW_KEY_F3);
-	window.assign_key(logic::button::switch_camera, GLFW_KEY_F4);
-	window.assign_key(logic::button::reset, GLFW_KEY_R);
+	window.assign_key(logic::button::debug, GLFW_KEY_R);
+	window.assign_key(logic::button::switch_object, GLFW_KEY_F4);
+	window.assign_key(logic::button::remove_object, GLFW_KEY_O);
+	window.assign_key(logic::button::rotate, GLFW_KEY_F3);	
+	window.assign_key(logic::button::build_mode, GLFW_KEY_B);
+	window.assign_key(logic::button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
 
 	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
@@ -68,12 +71,6 @@ void Game::run()
 			
 			update(timestep);
 		}
-		for (unsigned int i = 0; i < level.models.size(); i++)
-		{
-		}
-
-		if (level.models[0].is_animated)
-			level.models[0].update_animation((float)timestep.count());
 
 		render();
 		window.swap_buffers();
@@ -95,6 +92,11 @@ void Game::update(std::chrono::milliseconds delta)
 {
 	using std::cout;
 	constexpr char nl = '\n';
+
+	if ((*local_input)[logic::button::debug] == logic::button_state::pressed)
+	{
+		renderer.debug_active = !renderer.debug_active;
+	}
 
 	if (!menu.on())
 		window.hide_cursor();
@@ -121,7 +123,18 @@ void Game::update(std::chrono::milliseconds delta)
 		glm::vec3{0.0f} 
 	};
 	
-	logic_out = gameplay.update({ delta, player_inputs, directions });
+	logic_out = gameplay.update({ delta, player_inputs, directions, &level, &physics });
+	
+	if (net.connected())
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			if (player_inputs[i][logic::button::jump] == logic::button_state::held)
+				physics.dynamic_rigidbodies[i].add_force(glm::vec2{ 0.0f, 10.0f });
+
+			physics.dynamic_rigidbodies[i].add_force(logic_out.directions[i]);
+		}
+	}
 	
 	physics.update(delta);
 
@@ -129,14 +142,20 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			if (player_inputs[i][logic::button::jump] == logic::button_state::pressed)
-				physics.dynamic_rigidbodies[net.id()].add_force(glm::vec2{ 0.0f, 50.0f });
-
-			physics.dynamic_rigidbodies[i].add_force(logic_out.directions[i]);
+			if (logic_out.directions[i].x > 0.0f)
+			{
+				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+			}
+			else if (logic_out.directions[i].x < 0.0f)
+			{
+				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
+			}
+			
 			level.v[i] = physics.dynamic_positions[i];
-			level.models[i].set_position(physics.dynamic_positions[i]);
-		}
+			level.models[i].set_position(physics.dynamic_positions[i]);			
+		}		
 	}
+	level.models[0].update_animation((float)delta.count());
 
 	renderer.update(delta,
 		player_inputs[net.id()].cursor,
@@ -147,18 +166,11 @@ void Game::update(std::chrono::milliseconds delta)
 }
 
 void Game::pack_data()
-{
-	
-	
-	network::uint64 input_int = 0;
+{	
 	for (int i = 0; i < 4; ++i)
 	{
-		network::uint64 input64 = 0;
-		input64 = static_cast<logic::uint16>(player_inputs[i]);
-		input_int = (input_int | (input64 << (i * 16)));
+		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
 	}
-	net_state.input = input_int;
-
 
 	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
 	{
@@ -167,14 +179,12 @@ void Game::pack_data()
 }
 
 void Game::unpack_data()
-{
+{	
 	for (int i = 0; i < 4; ++i)
 	{
-		using logic::uint16;
-		uint16 in = static_cast<uint16>(net_state.input >> (i * 16));
 		if (i != net.id())
 		{
-			player_inputs[i] = logic::input{ in };
+			player_inputs[i] = logic::input{net_state.inputs[i]};
 		}		
 	}
 	
@@ -183,9 +193,12 @@ void Game::unpack_data()
 		state_sequence = net_state.sequence;
 		player_count = net_state.player_count;
 
-		for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+		if (net.id())
 		{
-			physics.dynamic_positions[i] = net_state.game_objects[i].position;
+			for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+			{
+				physics.dynamic_positions[i] = net_state.game_objects[i].position;
+			}
 		}
 
 		local_input = &player_inputs[net.id()];

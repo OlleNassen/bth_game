@@ -42,7 +42,7 @@ class GameState
 public:
 
 	GameObject game_objects[100];
-	uint64 input = 0;
+	uint16 inputs[4] = {0};
 	uint32 sequence = 0;
 	uint8 player_count = 1;
 };

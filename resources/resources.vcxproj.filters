@@ -36,6 +36,8 @@
     <None Include="shaders\pbr.fs" />
     <None Include="shaders\box.vs" />
     <None Include="shaders\box.fs" />
+    <None Include="shaders\minimap.vs" />
+    <None Include="shaders\minimap.fs" />
     <None Include="shaders\skybox.fs" />
     <None Include="shaders\skybox.vs" />
     <None Include="shaders\fx_dust.fs" />

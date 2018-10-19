@@ -53,7 +53,8 @@ public:
 		Camera& camera,
 		int id);
 
-private:
+	bool debug_active{ false };
+
 	static void line_debug(const std::vector<glm::vec2>& lines)
 	{
 		VertexArray vao;
@@ -87,6 +88,8 @@ private:
 	"../resources/shaders/pre_filter.fs" };
 	Shader brdf{ "../resources/shaders/brdf.vs",
 	"../resources/shaders/brdf.fs" };
+	Shader minimap_shader{ "../resources/shaders/minimap.vs",
+"../resources/shaders/minimap.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -120,7 +123,6 @@ private:
 	glm::vec2 v[4];
 
 	bool show_start{false};
-	bool debug_active{ false };
 	Texture* dust_texture;
 	FX* dust_particles;
 	int randomizer;
