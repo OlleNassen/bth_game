@@ -6,9 +6,6 @@ in VS_OUT{
 	vec3 world_normal;
 	vec3 frag_pos;
 	vec2 tex_coord;
-	vec3 tangent_light_pos;
-	vec3 tangent_view_pos;
-	vec3 tangent_fragment_pos;
 } fs_in;
 
 // material parameters
@@ -20,7 +17,7 @@ uniform sampler2D roughness_metallic_ao_map;
 uniform vec3 player_color;
 uniform vec3 light_color;
 
-uniform vec3 light_pos;
+uniform vec3 light_pos[4];
 uniform vec3 view_pos;
 
 //IBL
@@ -103,7 +100,7 @@ void main()
 
 	for(int i = 0; i < 4; i++)
 	{
-		lightPositions[i] = light_pos;
+		lightPositions[i] = light_pos[i];
 		lightColors[i] = light_color;
 	}
 

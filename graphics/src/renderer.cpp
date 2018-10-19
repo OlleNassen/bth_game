@@ -24,6 +24,11 @@ Renderer::Renderer(GameScene* scene)
 
 	dust_texture = new Texture("../resources/textures/dust_texture_1.png");
 	dust_particles = new FX(*dust_texture);
+	for (int i = 0; i < 4; ++i)
+	{
+		lights[i].position = glm::vec3{0,0,0};
+		lights[i].color = glm::vec3{1,1,1};
+	}
 }
 
 void Renderer::render(
@@ -33,7 +38,7 @@ void Renderer::render(
 	const std::vector<glm::vec2>& debug_positions,
 	bool is_menu,
 	bool connected,
-	bool debug)
+	bool debug)const
 {
 	glClearColor(1.0f, 0.8f, 0.0f, 0.f);
 		
@@ -45,20 +50,20 @@ void Renderer::render(
 	{
 		pbr.use();
 		pbr.uniform("brdf_lut", 6);
-		//pbr.uniform("irradiance_map", 7);
-		//pbr.uniform("prefilter_map", 8);
+		pbr.uniform("irradiance_map", 7);
+		pbr.uniform("prefilter_map", 8);
+		pbr.uniform("skybox", 9);
 
 		brdf_buffer.bind_texture(6);
-		//irradiance_buffer.bind_texture(7);
-		//prefilter_buffer.bind_texture(8);
+		irradiance_buffer.bind_texture(7);
+		prefilter_buffer.bind_texture(8);
+		skybox.bind_texture(9);
 
 		render_character(pbr, 
-			game_camera, light, scene->models, player_count);
-		render_type(pbr, game_camera, light, scene->models);
+			game_camera, lights, scene->models, player_count);
+		render_type(pbr, game_camera, lights, scene->models);
 
-		//skybox_shader.use();
-		//prefilter_buffer.bind_texture(3);
-		//skybox.irradiance_render(skybox_shader, db_camera);
+		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
 
 		fx_dust.use();
@@ -105,17 +110,11 @@ void Renderer::render(
 
 		if(debug)
 			render_character(pbr, 
-				db_camera, light, scene->models, 4);
-		render_type(pbr, db_camera, light, scene->models);
+				db_camera, lights, scene->models, 4);
+		render_type(pbr, db_camera, lights, scene->models);
 
 		skybox_shader.use();
-		//prefilter_buffer.bind_texture(8);
-		//skybox.irradiance_render(skybox_shader, db_camera);
 		skybox.render(skybox_shader, db_camera);
-		
-		//brdf.use();
-		//brdf_buffer.bind_texture(6);
-		//brdf_buffer.render_quad();
 
 		//Dust
 		fx_dust.use();
@@ -134,8 +133,6 @@ void Renderer::render(
 		fx_dust.uniform("view_position", scene->v[0]);
 		fx_dust.uniform("particle_pivot", start_point);
 		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
-
-		light_box.render(db_camera);
 
 		if (debug_active)
 		{
@@ -262,9 +259,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 
 
-	light.position += glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
-	light_box.set_position(light.position);
 	minimap.update(scene->models, player_count);
+
+	for (int i = 0; i < 4; ++i)
+	{
+		lights[i].position = scene->models[i].get_position();
+	}
 
 }
 
