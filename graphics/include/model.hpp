@@ -65,13 +65,18 @@ public:
 
 	}
 
+	glm::vec3 get_position()const
+	{
+		return glm::vec3(model[3][0], model[3][1] + 3, model[3][2]);
+	}
+
 	void rotate(const glm::vec3 axis, float angle);
 	
 	float get_y_position() const
 	{
 		return this->model[3][1];
 	}
-	void render(const Shader & shader, const Camera& camera, const PointLight& light)const;
+	void render(const Shader & shader, const Camera& camera, const std::array<PointLight, 4>&  lights)const;
 	void update_animation(float time);
 
 private:

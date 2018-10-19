@@ -35,7 +35,7 @@ public:
 		const std::vector<glm::vec2>& debug_positions,
 		bool is_menu,
 		bool connected,
-		bool debug) ;
+		bool debug)const;
 
 	void update(std::chrono::milliseconds delta,
 		const glm::vec2& cursor,
@@ -117,7 +117,7 @@ private:
 
 	PostProcessingEffects post_processing_effects;
 
-	PointLight light{ glm::vec3(0,2,4), glm::vec3(1,1,1) };
+	std::array<PointLight, 4> lights;
 
 	int player_count{0};
 	glm::vec2 v[4];
@@ -131,22 +131,22 @@ private:
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const PointLight& light, const T& data)
+void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T& data)
 {
 	for (auto i = 4u; i < data.size(); ++i)
 	{
 		const auto& renderable = data[i];
-		renderable.render(shader, camera, light);
+		renderable.render(shader, camera, lights);
 	}
 }
 
 template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const PointLight& light, const T& data, int num_players)
+void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T& data, int num_players)
 {
 	for (auto i = 0; i < num_players; ++i)
 	{
 		const auto& renderable = data[i];
-		renderable.render(shader, camera, light);
+		renderable.render(shader, camera, lights);
 	}
 }
 

@@ -21,15 +21,20 @@ void Model::rotate(const glm::vec3 axis, float angle)
 	model = glm::rotate(glm::mat4{ 1.0f }, angle, axis);
 }
 
-void Model::render(const Shader & shader, const Camera& camera, const PointLight& light)const
+void Model::render(const Shader & shader, const Camera& camera, const std::array<PointLight, 4>& lights)const
 {
 	shader.uniform("model", model);
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
 	shader.uniform("view_pos", glm::vec3{ camera.position });
-	shader.uniform("light_pos", light.position);
-	shader.uniform("light_color", light.color);
+	
+	shader.uniform("light_pos[0]", lights[0].position);
+	shader.uniform("light_pos[1]", lights[1].position);
+	shader.uniform("light_pos[2]", lights[2].position);
+	shader.uniform("light_pos[3]", lights[3].position);
+	
+	shader.uniform("light_color", lights[0].color);
 
 	shader.uniform("albedo_map", 0);
 	shader.uniform("normal_map", 1);
