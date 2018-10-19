@@ -60,7 +60,7 @@ private:
 
 	//Temp leaderboards
 	std::vector<int> leader_board;
-	
+	bool showleaderboard = false;
 };
 
 

@@ -32,7 +32,7 @@ public:
 		const std::vector<glm::vec2>& debug_positions,
 		bool is_menu,
 		bool connected,
-		bool debug) const;
+		bool debug, std::vector<int> leaderboard, bool show_leaderboard) const;
 
 	void update(std::chrono::milliseconds delta,
 		const glm::vec2& cursor,

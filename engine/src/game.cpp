@@ -44,7 +44,7 @@ Game::Game()
 	physics.add_static_body({7.0f, 11.0f}, glm::vec2{ 0.0f, 0.0f }, 2, 2, true);
 	
 	//Temporary leaderboard in the game4
-	leader_board.resize(8);
+	leader_board.resize(4);
 	
 }
 
@@ -97,7 +97,7 @@ void Game::render()
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, menu.on(),
-		net.connected(), menu.debug());
+		net.connected(), menu.debug(), leader_board, showleaderboard);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -167,8 +167,9 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			leader_board.at(i) += gameplay.set_player_status(i, false);	//Should change the status on players who reached goal
 			
+			showleaderboard = true;
 			//add show leaderboard here
-			renderer.show_leaderboard();
+			//renderer.show_leaderboard();
 		}
 	}
 

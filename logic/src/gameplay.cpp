@@ -105,39 +105,36 @@ void Gameplay::give_up(Input input)
 }
  
 int Gameplay::set_player_status(int i, bool status)
-{
-	if (std::find(current_gameboard.begin(), current_gameboard.end(), i) != current_gameboard.end())
-	{
-		scripts[0].set_player_status(status);
-		points = 0;
-	}
-	else
-	{
+{		
 		if (current_gameboard.empty())
 		{
 			points = 3;
 			current_gameboard.push_back(i);
 			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
 		}
 		else if (current_gameboard.size() == 1)
 		{
 			points = 2;
 			current_gameboard.push_back(i);
 			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
 		}
 		else if (current_gameboard.size() == 2)
 		{
 			points = 1;
 			current_gameboard.push_back(i);
 			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
 		}
 		else
 		{
 			points = 0;
 			current_gameboard.push_back(i);
 			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
 		}
-	}
+	
 	
 	
 	return points;
