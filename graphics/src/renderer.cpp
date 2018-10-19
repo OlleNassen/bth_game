@@ -180,6 +180,28 @@ void Renderer::render(
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
 
+
+		//leaderboard
+		if (show_leaderboard)
+		{
+			std::stringstream test;
+			float pos[4] = { 480, 400, 320, 240 };
+			text_shader.uniform("text_color", glm::vec3(0.1f, 0.9f, 0.1f));
+
+			for (int i = 0; i < leaderboard.size(); i++)
+			{
+				test << "Player " << i + 1 << ": " << leaderboard.at(i) << "pt";
+				text.render_text(test.str(), 1280 / 3.f, pos[i], 1.3f);
+
+				test.str("");
+			}
+		}
+		else
+		{
+			//text.render_text(t.to_string(), 0, 700, 0.5f);
+		}
+
+
 		auto offset = 0.0f;
 
 		std::for_each(begin, end,
@@ -203,24 +225,7 @@ void Renderer::render(
 
 	/*text.render_text("GAME OVER!\n\n\n\n", 1280 / 2.f, 720 / 2.f, 2.0f);*/
 
-	if (show_leaderboard)
-	{
-		std::stringstream test;
-		float pos[4] = { 480, 400, 320, 240 };
-		text_shader.uniform("text_color", glm::vec3(0.1f, 0.9f, 0.1f));
-
-		for (int i = 0; i < leaderboard.size(); i++)
-		{
-			test << "Player " << i+1 << ": " << leaderboard.at(i) << "pt";
-			text.render_text(test.str(), 1280 / 3.f, pos[i], 1.3f);
-			
-			test.str("");
-		} 
-	}
-	else
-	{
-		//text.render_text(t.to_string(), 0, 700, 0.5f);
-	}
+	
 
 
 	

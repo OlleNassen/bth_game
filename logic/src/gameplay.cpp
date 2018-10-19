@@ -28,21 +28,26 @@ Output Gameplay::update(Input inputs)
 {
 	for (int i = 0; i < 4; ++i)
 	{
+
 		const auto& in = inputs.player_inputs[i];
 		auto& direction = inputs.directions[i];
 		direction = { 0.0f, 0.0f, 0.0f };
 
-		if (in[button::up] >= button_state::pressed)
-			direction.z += 1.0f;
-		if (in[button::left] >= button_state::pressed)
-			direction.x -= 1.0f;
-		if (in[button::down] >= button_state::pressed)
-			direction.z -= 1.0f;
-		if (in[button::right] >= button_state::pressed)
-			direction.x += 1.0f;
+		if (scripts[0].player_status() == true)
+		{
+			if (in[button::up] >= button_state::pressed)
+				direction.z += 1.0f;
+			if (in[button::left] >= button_state::pressed)
+				direction.x -= 1.0f;
+			if (in[button::down] >= button_state::pressed)
+				direction.z -= 1.0f;
+			if (in[button::right] >= button_state::pressed)
+				direction.x += 1.0f;
+		}
 	}
 		
-	std::array<glm::vec2, 4> velocities;	
+	std::array<glm::vec2, 4> velocities;
+	
 	/*for (auto& entity : entities)
 	{
 		scripts[entity].update(inputs.delta, inputs.directions[0], velocities[0]);
@@ -53,10 +58,12 @@ Output Gameplay::update(Input inputs)
 	for (auto i = 0; i < 4; ++i)
 	{
 		if(scripts[0].player_status() == true)
-			scripts[0].update(input.delta, input.directions[i], velocities[i]);
+			scripts[0].update(inputs.delta, inputs.directions[i], velocities[i]);
+		else
+			velocities.fill(glm::vec2(0, 0));
 	}
-
-	glm::vec2 updated_player_pos = luaLoad.process_input(inputs.player_inputs[0], inputs.delta);
+	if (scripts[0].player_status() == true)
+		glm::vec2 updated_player_pos = luaLoad.process_input(inputs.player_inputs[0], inputs.delta);
 	  
 	//Object placing \Vincent & Lucas S
 	if (inputs.player_inputs[0][logic::button::build_mode] == logic::button_state::pressed)
@@ -147,6 +154,7 @@ Output Gameplay::update(Input inputs)
 	//Give up \Vincent
 	give_up(inputs);
 
+	
 	return Output{ velocities, inputs.directions };
 }
 

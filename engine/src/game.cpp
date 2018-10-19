@@ -181,7 +181,7 @@ void Game::pack_data()
 	}
 
 	//Temp test for leaderboard stuff
-	for (int i = 0; i < net_out.player_count; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		if (physics.dynamic_rigidbodies[i].get_reached_goal() && gameplay.get_player_status())
 		{
