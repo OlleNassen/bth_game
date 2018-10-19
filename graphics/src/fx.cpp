@@ -130,7 +130,7 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 	data.default_x = 0.0f;
 	data.default_y = 0.0f;
 	data.default_z = 0.0f;
-	data.nr_of_particles = 5;
+	data.nr_of_particles = 10;
 
 	//Update data for particles
 	if (total_particle_count <= MAX_DUST_PARTICLES)
@@ -138,17 +138,18 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 		for (int i = 0; i < data.nr_of_particles; i++)
 		{
 			//Create a random position here
-			data.random_x = rand() % 24 - 12.0f;
-			data.random_y = rand() % 35;
-			data.random_z = rand() % 20 - 10.0f;
+			data.random_x = rand() % 40 - 20.0f;
+			data.random_y = rand() % 60;
+			data.random_z = rand() % 60 - 40.0f;
 
 			//Find and update the last used particle
 			last_used_particle = find_unused_particle(data.particle_container, last_used_particle);
 			int particle_index = last_used_particle;
 
 			//Set default values for the particles, first off life and position.
+			data.particle_container[particle_index].random_amp = rand() % 3;
 			data.particle_container[particle_index].life = 1.0f;
-			data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+			data.particle_container[particle_index].pos = glm::vec3(-15 + data.random_x, -7 + data.random_y, -12 + data.random_z);
 			
 			//Create a direction for the particles to travel
 			//glm::vec3 main_dir = glm::vec3(0);
@@ -218,7 +219,8 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 	for (int i = 0; i < MAX_DUST_PARTICLES; i++)
 	{
 		//Update life with delta time
-		data.particle_container[i].life -= seconds.count() / 3.0f;
+		data.particle_container[i].life -= (seconds.count() / data.particle_container[i].random_amp);
+		//data.particle_container[i].life -= (seconds.count() / 3.0f);
 
 		if (data.particle_container[i].life > 0.0f)
 		{

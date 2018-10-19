@@ -25,6 +25,7 @@ public:
 		float size, angle, weight;
 		float life;
 		float camera_distance;
+		float random_amp;
 	};
 
 	struct FXdata {
