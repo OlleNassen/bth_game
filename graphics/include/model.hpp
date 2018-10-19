@@ -64,6 +64,8 @@ public:
 
 
 	}
+
+	void rotate(const glm::vec3 axis, float angle);
 	
 	float get_y_position() const
 	{
