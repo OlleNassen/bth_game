@@ -153,9 +153,9 @@ void Game::update(std::chrono::milliseconds delta)
 			
 			level.v[i] = physics.dynamic_positions[i];
 			level.models[i].set_position(physics.dynamic_positions[i]);			
-		}
-		level.models[0].update_animation((float)delta.count());
+		}		
 	}
+	level.models[0].update_animation((float)delta.count());
 
 	renderer.update(delta,
 		player_inputs[net.id()].cursor,
