@@ -108,8 +108,8 @@ void main()
 	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
-    float metallic  = texture(roughness_metallic_ao_map, fs_in.tex_coord).r;
-    float roughness = texture(roughness_metallic_ao_map, fs_in.tex_coord).g;
+    float roughness = texture(roughness_metallic_ao_map, fs_in.tex_coord).r;
+    float metallic  = texture(roughness_metallic_ao_map, fs_in.tex_coord).g;
     float ao        = texture(roughness_metallic_ao_map, fs_in.tex_coord).b;
 
 	//vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
