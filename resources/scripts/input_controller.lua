@@ -5,8 +5,8 @@ function start()
 	player.x = 0
 	player.y = 0
 	player.is_dead = false
-	WALK_SPEED = 200
-	JUMP_FORCE = 65
+	WALK_SPEED = 85
+	JUMP_FORCE = 50
 
 end
 
@@ -49,7 +49,7 @@ end
 
 function walk(dt)
 	--print(player.x)
-	player.x = (dt/1000) * WALK_SPEED -- + fysik
+	player.x = (dt/1000) * WALK_SPEED
 end
 
 function jump(can_jump)

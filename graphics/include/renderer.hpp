@@ -35,7 +35,7 @@ public:
 		const std::vector<glm::vec2>& debug_positions,
 		bool is_menu,
 		bool connected,
-		bool debug)const;
+		bool debug, std::vector<int> leaderboard, bool show_leaderboard) const;
 
 	void update(std::chrono::milliseconds delta,
 		const glm::vec2& cursor,
@@ -70,6 +70,8 @@ public:
 		glDrawArrays(GL_LINES, 0, lines.size());
 		glBindVertexArray(0);
 	}
+
+	void show_leaderboard();
 
 private:
 	Shader pbr{ "../resources/shaders/pbr.vs", "../resources/shaders/pbr.fs" };

@@ -43,12 +43,16 @@ std::vector<glm::vec2> World::update(std::chrono::milliseconds delta)
 		{
 			if (intersects(i, j))
 			{	
-				//if (!static_box_colliders[j].get_trigger()) //&& !dynamic_box_colliders[i].is_trigger();
-				collision_handling(previous_position, i, j);
-				//else
-				//{
-				//	//dynamic_box_colliders[i].set_is_trigger(true);
-				//}
+				if (!static_box_colliders[j].get_trigger()) //&& !dynamic_box_colliders[i].is_trigger();
+				{
+					collision_handling(previous_position, i, j);
+				}
+				else
+				{
+					//Ändra här vad "Målgång" innebär
+					dynamic_rigidbodies[i].set_reached_goal(true);
+					//dynamic_box_colliders[i].set_is_trigger(true);
+				}
 			}
 		}
 	}

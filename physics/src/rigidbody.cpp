@@ -63,12 +63,26 @@ void Rigidbody::cancel_force_y()
 
 void Rigidbody::add_force(glm::vec2 force_direction)
 {
+	if (force_direction.y > 0.0)
+		can_jump = false;
+
 	this->force += force_direction;
 }
 
 glm::vec2 Rigidbody::get_force() const
 {
 	return force;
+}
+
+
+void Rigidbody::set_reached_goal(bool value)
+{
+	this->reached_goal = value;
+}
+
+bool Rigidbody::get_reached_goal()const
+{
+	return this->reached_goal;
 }
 
 }

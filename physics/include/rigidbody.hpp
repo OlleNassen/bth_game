@@ -28,6 +28,10 @@ public:
 	bool gravity_active;
 	bool can_jump;
 
+	//function used for detecting if a player has reached goal
+	void set_reached_goal(bool value);
+	bool get_reached_goal()const;
+
 private:
 	float mass;				//Massa är i kilo.
 	float drag;				//Luftmotstånd.
@@ -39,6 +43,8 @@ private:
 	float converter;
 
 	Box box_collider;
+
+	bool reached_goal = false;
 };
 
 }

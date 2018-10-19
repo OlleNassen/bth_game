@@ -7,6 +7,8 @@ Gameplay::Gameplay()
 {
 	entities.fill(0);
 	refresh();
+
+	current_gameboard.clear();
 }
 
 void Gameplay::refresh()
@@ -45,10 +47,13 @@ Output Gameplay::update(Input inputs)
 	{
 		scripts[entity].update(inputs.delta, inputs.directions[0], velocities[0]);
 	}*/
+
+
 	// TEMP!!!
 	for (auto i = 0; i < 4; ++i)
 	{
-		scripts[0].update(inputs.delta, inputs.directions[i], velocities[i]);
+		if(scripts[0].player_status() == true)
+			scripts[0].update(input.delta, input.directions[i], velocities[i]);
 	}
 
 	glm::vec2 updated_player_pos = luaLoad.process_input(inputs.player_inputs[0], inputs.delta);
@@ -159,6 +164,57 @@ void Gameplay::give_up(Input input)
 	}
 	else if (give_up_timer != 0.0f)
 		give_up_timer = 0.0f;
+}
+ 
+int Gameplay::set_player_status(int i, bool status)
+{		
+		if (current_gameboard.empty())
+		{
+			points = 3;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
+		}
+		else if (current_gameboard.size() == 1)
+		{
+			points = 2;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
+		}
+		else if (current_gameboard.size() == 2)
+		{
+			points = 1;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
+		}
+		else
+		{
+			points = 0;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
+		}
+	
+	
+	
+	return points;
+	
+}
+
+bool Gameplay::get_player_status()
+{
+	return scripts[0].player_status();
+}
+
+bool Gameplay::everyone_reached_goal()
+{
+	bool value = true;
+
+	//for(int i=0; i< )
+
+	return value;
 }
 
 }

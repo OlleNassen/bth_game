@@ -34,6 +34,14 @@ Game::Game()
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
+
+
+	//A Temporary goal-object
+	physics.add_static_body({7.0f, 11.0f}, glm::vec2{ 0.0f, 0.0f }, 2, 2, true);
+	
+	//Temporary leaderboard in the game4
+	leader_board.resize(4);
+	
 }
 
 void Game::run()
@@ -85,7 +93,7 @@ void Game::render()
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, menu.on(),
-		net.connected(), menu.debug());
+		net.connected(), menu.debug(), leader_board, showleaderboard);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -172,6 +180,18 @@ void Game::pack_data()
 		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
 	}
 
+	//Temp test for leaderboard stuff
+	for (int i = 0; i < net_out.player_count; i++)
+	{
+		if (physics.dynamic_rigidbodies[i].get_reached_goal() && gameplay.get_player_status())
+		{
+			leader_board.at(i) += gameplay.set_player_status(i, false);	//Should change the status on players who reached goal
+			
+			showleaderboard = true;
+			//add show leaderboard here
+			//renderer.show_leaderboard();
+		}
+	}
 	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
 	{
 		net_state.game_objects[i].position = physics.dynamic_positions[i];
