@@ -105,25 +105,25 @@ void Renderer::render(
 		//Render spark
 		spark_particles->render_particles(*spark_particles->fx);*/
 
-		//FX - Steam
-		fx_steam.use();
-		fx_steam.uniform("particle_texture", 0);
-		steam_texture->bind(0);
+		////FX - Steam
+		//fx_steam.use();
+		//fx_steam.uniform("particle_texture", 0);
+		//steam_texture->bind(0);
 
-		//Get and set matrices
-		glm::vec3 start_point = glm::vec3(0, 0, 0);
-		glm::mat4 view_matrix = game_camera.view();
-		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
-		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
-		fx_steam.uniform("camera_right_worldspace", camera_right_vector);
-		fx_steam.uniform("camera_up_worldspace", camera_up_vector);
-		fx_steam.uniform("view", game_camera.view());
-		fx_steam.uniform("projection", game_camera.projection);
-		fx_steam.uniform("view_position", scene->v[0]);
-		fx_steam.uniform("particle_pivot", start_point);
+		////Get and set matrices
+		//glm::vec3 start_point = glm::vec3(0, 0, 0);
+		//glm::mat4 view_matrix = game_camera.view();
+		//glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
+		//glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
+		//fx_steam.uniform("camera_right_worldspace", camera_right_vector);
+		//fx_steam.uniform("camera_up_worldspace", camera_up_vector);
+		//fx_steam.uniform("view", game_camera.view());
+		//fx_steam.uniform("projection", game_camera.projection);
+		//fx_steam.uniform("view_position", scene->v[0]);
+		//fx_steam.uniform("particle_pivot", start_point);
 
-		//Render steam
-		steam_particles->render_particles(*steam_particles->fx);
+		////Render steam
+		//steam_particles->render_particles(*steam_particles->fx);
 
 		glDisable(GL_DEPTH_TEST);
 		auto& s = lines;
@@ -202,7 +202,7 @@ void Renderer::render(
 		spark_particles->render_particles(*spark_particles->fx);*/
 
 		//FX - Steam
-		fx_steam.use();
+		/*fx_steam.use();
 		fx_steam.uniform("particle_texture", 0);
 		steam_texture->bind(0);
 
@@ -217,6 +217,8 @@ void Renderer::render(
 		fx_steam.uniform("projection", game_camera.projection);
 		fx_steam.uniform("view_position", scene->v[0]);
 		fx_steam.uniform("particle_pivot", start_point);
+
+		steam_particles->render_particles(*steam_particles->fx);*/
 
 		light_box.render(db_camera);
 
@@ -317,10 +319,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Spark Particles
 
 		//Steam Particles
-		if (randomizer <= 80)
+		/*if (randomizer <= 80)
 		{
 			steam_particles->calculate_steam_data(*steam_particles->fx, scene->v, delta, db_camera);
-		}
+		}*/
 
 		db_camera.update(delta, directions[0], cursor);
 	}
