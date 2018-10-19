@@ -85,7 +85,7 @@ void Game::render()
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, menu.on(),
-		net.connected(), menu.debug());
+		true, false);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -125,7 +125,7 @@ void Game::update(std::chrono::milliseconds delta)
 	
 	logic_out = gameplay.update({ delta, player_inputs, directions, &level, &physics });
 	
-	if (net.connected())
+	//if (net.connected())
 	{
 		for (int i = 0; i < 4; ++i)
 		{
@@ -138,7 +138,7 @@ void Game::update(std::chrono::milliseconds delta)
 	
 	physics.update(delta);
 
-	if (net.connected())
+	//if (net.connected())
 	{
 		for (int i = 0; i < 4; ++i)
 		{
@@ -162,7 +162,7 @@ void Game::update(std::chrono::milliseconds delta)
 		logic_out.directions,
 		chat[1], player_count,
 		net.id(), chat.is_on(),
-		net.connected());
+		true);
 }
 
 void Game::pack_data()
