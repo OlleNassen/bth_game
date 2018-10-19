@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace graphics
@@ -38,7 +39,7 @@ void Renderer::render(
 	const std::vector<glm::vec2>& debug_positions,
 	bool is_menu,
 	bool connected,
-	bool debug)const
+	bool debug, std::vector<int> leaderboard, bool show_leaderboard)const
 {
 	glClearColor(1.0f, 0.8f, 0.0f, 0.f);
 		
@@ -179,6 +180,28 @@ void Renderer::render(
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
 
+
+		//leaderboard
+		if (show_leaderboard)
+		{
+			std::stringstream test;
+			float pos[4] = { 480, 400, 320, 240 };
+			text_shader.uniform("text_color", glm::vec3(0.1f, 0.9f, 0.1f));
+
+			for (int i = 0; i < leaderboard.size(); i++)
+			{
+				test << "Player " << i + 1 << ": " << leaderboard.at(i) << "pt";
+				text.render_text(test.str(), 1280 / 3.f, pos[i], 1.3f);
+
+				test.str("");
+			}
+		}
+		else
+		{
+			//text.render_text(t.to_string(), 0, 700, 0.5f);
+		}
+
+
 		auto offset = 0.0f;
 
 		std::for_each(begin, end,
@@ -198,6 +221,15 @@ void Renderer::render(
 
 		glEnable(GL_DEPTH_TEST);
 	}
+	
+
+	/*text.render_text("GAME OVER!\n\n\n\n", 1280 / 2.f, 720 / 2.f, 2.0f);*/
+
+	
+
+
+	
+
 }
 
 void Renderer::update(std::chrono::milliseconds delta,
@@ -216,6 +248,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 	is_chat_visible = is_on || time < 3s;
 
 	player_count = num_players;
+
+
+	
+	//test
+	/*for (int i = 0; i < 3; i++)
+	{*/
+		
+	//}
 
 	if (!is_on)
 	{
@@ -244,6 +284,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 		db_camera.update(delta, directions[0], cursor);
 	}
 
+	
+
 	if (scene->build_mode_active)
 	{
 		glm::vec2 build_pos[2];
@@ -254,6 +296,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	}
+
+
+	
 
 	ui.update();
 
@@ -266,6 +311,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 		lights[i].position = scene->models[i].get_position();
 	}
 
+}
+
+void Renderer::show_leaderboard()
+{
+	
 }
 
 }

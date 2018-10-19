@@ -7,6 +7,8 @@ Gameplay::Gameplay()
 {
 	entities.fill(0);
 	refresh();
+
+	current_gameboard.clear();
 }
 
 void Gameplay::refresh()
@@ -26,32 +28,42 @@ Output Gameplay::update(Input inputs)
 {
 	for (int i = 0; i < 4; ++i)
 	{
+
 		const auto& in = inputs.player_inputs[i];
 		auto& direction = inputs.directions[i];
 		direction = { 0.0f, 0.0f, 0.0f };
 
-		if (in[button::up] >= button_state::pressed)
-			direction.z += 1.0f;
-		if (in[button::left] >= button_state::pressed)
-			direction.x -= 1.0f;
-		if (in[button::down] >= button_state::pressed)
-			direction.z -= 1.0f;
-		if (in[button::right] >= button_state::pressed)
-			direction.x += 1.0f;
+		if (scripts[0].player_status() == true)
+		{
+			if (in[button::up] >= button_state::pressed)
+				direction.z += 1.0f;
+			if (in[button::left] >= button_state::pressed)
+				direction.x -= 1.0f;
+			if (in[button::down] >= button_state::pressed)
+				direction.z -= 1.0f;
+			if (in[button::right] >= button_state::pressed)
+				direction.x += 1.0f;
+		}
 	}
 		
-	std::array<glm::vec2, 4> velocities;	
+	std::array<glm::vec2, 4> velocities;
+	
 	/*for (auto& entity : entities)
 	{
 		scripts[entity].update(inputs.delta, inputs.directions[0], velocities[0]);
 	}*/
+
+
 	// TEMP!!!
 	for (auto i = 0; i < 4; ++i)
 	{
-		scripts[0].update(inputs.delta, inputs.directions[i], velocities[i]);
+		if(scripts[0].player_status() == true)
+			scripts[0].update(inputs.delta, inputs.directions[i], velocities[i]);
+		else
+			velocities.fill(glm::vec2(0, 0));
 	}
-
-	glm::vec2 updated_player_pos = luaLoad.process_input(inputs.player_inputs[0], inputs.delta);
+	if (scripts[0].player_status() == true)
+		glm::vec2 updated_player_pos = luaLoad.process_input(inputs.player_inputs[0], inputs.delta);
 	  
 	//Object placing \Vincent & Lucas S
 	if (inputs.player_inputs[0][logic::button::build_mode] == logic::button_state::pressed)
@@ -142,6 +154,7 @@ Output Gameplay::update(Input inputs)
 	//Give up \Vincent
 	give_up(inputs);
 
+	
 	return Output{ velocities, inputs.directions };
 }
 
@@ -159,6 +172,57 @@ void Gameplay::give_up(Input input)
 	}
 	else if (give_up_timer != 0.0f)
 		give_up_timer = 0.0f;
+}
+ 
+int Gameplay::set_player_status(int i, bool status)
+{		
+		if (current_gameboard.empty())
+		{
+			points = 3;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
+		}
+		else if (current_gameboard.size() == 1)
+		{
+			points = 2;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
+		}
+		else if (current_gameboard.size() == 2)
+		{
+			points = 1;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
+		}
+		else
+		{
+			points = 0;
+			current_gameboard.push_back(i);
+			scripts[0].add_points(points);
+			scripts[0].set_player_status(status);
+		}
+	
+	
+	
+	return points;
+	
+}
+
+bool Gameplay::get_player_status()
+{
+	return scripts[0].player_status();
+}
+
+bool Gameplay::everyone_reached_goal()
+{
+	bool value = true;
+
+	//for(int i=0; i< )
+
+	return value;
 }
 
 }
