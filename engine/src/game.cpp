@@ -93,9 +93,6 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	if (level.models[0].is_animated)
-		level.models[0].update_animation((float)delta.count());
-
 	if ((*local_input)[logic::button::debug] == logic::button_state::pressed)
 	{
 		renderer.debug_active = !renderer.debug_active;
@@ -145,10 +142,20 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
+			if (logic_out.directions[i].x > 0.0f)
+			{
+				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+			}
+			else if (logic_out.directions[i].x < 0.0f)
+			{
+				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
+			}
+			
 			level.v[i] = physics.dynamic_positions[i];
-			level.models[i].set_position(physics.dynamic_positions[i]);
-		}
+			level.models[i].set_position(physics.dynamic_positions[i]);			
+		}		
 	}
+	level.models[0].update_animation((float)delta.count());
 
 	renderer.update(delta,
 		player_inputs[net.id()].cursor,

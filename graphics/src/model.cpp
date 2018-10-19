@@ -16,6 +16,11 @@ Model::~Model()
 {
 }
 
+void Model::rotate(const glm::vec3 axis, float angle)
+{
+	model = glm::rotate(glm::mat4{ 1.0f }, angle, axis);
+}
+
 void Model::render(const Shader & shader, const Camera& camera, const PointLight& light)const
 {
 	shader.uniform("model", model);
