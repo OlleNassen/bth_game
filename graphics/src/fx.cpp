@@ -140,7 +140,7 @@ void FX::calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::ch
 			//Create a random position here
 			data.random_x = rand() % 40 - 20.0f;
 			data.random_y = rand() % 60;
-			data.random_z = rand() % 60 - 40.0f;
+			data.random_z = rand() % 20;
 
 			//Find and update the last used particle
 			last_used_particle = find_unused_particle(data.particle_container, last_used_particle);
