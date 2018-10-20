@@ -31,6 +31,14 @@ Game::Game()
 	physics.add_dynamic_body(level.v[2], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 	physics.add_dynamic_body(level.v[3], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 
+	for (int i = 0; i < 4; ++i)
+	{
+		dynamics.positions[i] = level.v[i];
+		dynamics.velocities[i] = {0.0f, 0.0f};
+		dynamics.sizes[i] = {1.0f, 3.5f};
+	}
+		
+
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
@@ -133,18 +141,38 @@ void Game::update(std::chrono::milliseconds delta)
 	
 	logic_out = gameplay.update({ delta, player_inputs, directions, &level, &physics });
 	
+	std::array<glm::vec2, 100> forces;
+	forces.fill({0.0f, 0.0f});
+
+	static std::chrono::milliseconds jump_timers[4];
+	static bool jumping[4];
+	
 	if (net.connected())
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			if (player_inputs[i][logic::button::jump] == logic::button_state::held)
-				physics.dynamic_rigidbodies[i].add_force(glm::vec2{ 0.0f, 10.0f });
-
-			physics.dynamic_rigidbodies[i].add_force(logic_out.directions[i]);
+			if (!jumping[i] && player_inputs[i][logic::button::jump] == logic::button_state::held)
+			{
+				jumping[i] = true;
+				jump_timers[i] = 1000ms;
+			}
+			
+			if (jump_timers[i] > 0ms)
+			{
+				forces[i].y = 2000.0f;
+				jump_timers[i] -= delta;
+			}
+			else
+			{	
+				jumping[i] = false;
+				forces[i].y = -500.0f;
+			}
+			
+			forces[i].x = logic_out.directions[i].x * 1000.0f;						
 		}
 	}
-	
-	physics.update(delta);
+
+	physics.update(delta, dynamics, forces);
 
 	if (net.connected())
 	{
@@ -152,7 +180,7 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			if (logic_out.directions[i].x > 0.0f)
 			{
-				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+				level.models[i].rotate({0.0f, 1.0f, 0.0f}, glm::radians(180.0f));
 			}
 			else if (logic_out.directions[i].x < 0.0f)
 			{
@@ -180,21 +208,10 @@ void Game::pack_data()
 		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
 	}
 
-	//Temp test for leaderboard stuff
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < dynamics.positions.size(); ++i)
 	{
-		if (physics.dynamic_rigidbodies[i].get_reached_goal() && gameplay.get_player_status())
-		{
-			leader_board.at(i) += gameplay.set_player_status(i, false);	//Should change the status on players who reached goal
-			
-			showleaderboard = true;
-			//add show leaderboard here
-			//renderer.show_leaderboard();
-		}
-	}
-	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
-	{
-		net_state.game_objects[i].position = physics.dynamic_positions[i];
+		net_state.game_objects[i].position = dynamics.positions[i];
+		net_state.game_objects[i].velocity = dynamics.velocities[i];
 	}
 }
 
@@ -215,9 +232,10 @@ void Game::unpack_data()
 
 		if (net.id())
 		{
-			for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+			for (int i = 0; i < dynamics.positions.size(); ++i)
 			{
-				physics.dynamic_positions[i] = net_state.game_objects[i].position;
+				dynamics.positions[i] = net_state.game_objects[i].position;
+				dynamics.velocities[i] = net_state.game_objects[i].velocity;
 			}
 		}
 

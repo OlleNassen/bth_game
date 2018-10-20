@@ -3,16 +3,6 @@
 namespace physics
 {
 
-World::World()
-{
-
-}
-
-World::World(int nr_of_players)
-{
-	this->nr_of_players = nr_of_players;
-}
-
 void World::add_dynamic_body(glm::vec2 start_position = glm::vec2(0.0, 0.0), glm::vec2 offset = glm::vec2(0.0, 0.0),
 	float width = 1.0f, float height = 3.5f, glm::vec2 start_force = glm::vec2(0.0, 0.0))
 {
@@ -21,7 +11,7 @@ void World::add_dynamic_body(glm::vec2 start_position = glm::vec2(0.0, 0.0), glm
 	dynamic_box_colliders.push_back(Box(width, height, offset, false));
 }
 
-int World::add_static_body(glm::vec2 start_position = glm::vec2(0.0, 0.0), glm::vec2 offset = glm::vec2(0.0, 0.0), float width = 1.0f, float height = 1.0f, bool _is_trigger = false)
+int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger)
 {
 	static_positions.push_back(start_position);
 	static_box_colliders.push_back(Box(width, height, offset, _is_trigger));
@@ -29,54 +19,51 @@ int World::add_static_body(glm::vec2 start_position = glm::vec2(0.0, 0.0), glm::
 	return static_positions.size() - 1;
 }
 
-//void World::update(std::chrono::milliseconds delta)
-std::vector<glm::vec2> World::update(std::chrono::milliseconds delta)
+void World::update(
+	std::chrono::milliseconds delta, 
+	object_arrays& dynamics, 
+	const std::array<glm::vec2, 100>& forces)
 {
-	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(delta).count();
-	for (int i = 0; i < dynamic_positions.size(); i++)
+	std::chrono::duration<float> delta_seconds = delta;	
+
+	for (int i = 0; i < dynamic_positions.size(); ++i)
 	{
+		auto& body = dynamic_rigidbodies[i];
+		body.cancel_forces();
+		body.add_force(forces[i]);
+	}
+	
+	for (int i = 0; i < dynamic_positions.size(); ++i)
+	{
+		auto& box = dynamic_box_colliders[i];
+		auto& body = dynamic_rigidbodies[i];
+		
+		dynamic_positions[i] = dynamics.positions[i];	
 		glm::vec2 previous_position = dynamic_positions[i];
-		dynamic_rigidbodies[i].update();
-		dynamic_positions[i] += dynamic_rigidbodies[i].get_force() * dt;
-		int j = 0;
-		for (int j = 0; j < static_box_colliders.size(); j++)
+		body.update();
+		
+		dynamics.sizes[i] = {box.get_width(), box.get_height()};
+		dynamics.velocities[i] = body.acceleration() * delta_seconds.count();
+		dynamics.positions[i] += dynamics.velocities[i] * delta_seconds.count();
+		
+		dynamic_positions[i] += dynamics.velocities[i] * delta_seconds.count();
+		
+		for (int j = 0; j < static_box_colliders.size(); ++j)
 		{
 			if (intersects(i, j))
 			{	
-				if (!static_box_colliders[j].get_trigger()) //&& !dynamic_box_colliders[i].is_trigger();
+				if (!static_box_colliders[j].get_trigger())
 				{
 					collision_handling(previous_position, i, j);
 				}
-				else
-				{
-					//Ändra här vad "Målgång" innebär
-					dynamic_rigidbodies[i].set_reached_goal(true);
-					//dynamic_box_colliders[i].set_is_trigger(true);
-				}
 			}
 		}
-	}
 
-	return dynamic_positions;
-}
-
-void World::load_players(std::vector<glm::vec2> player_pos)
-{
-	for (int i = 0; i < nr_of_players; i++)
-	{
-		add_dynamic_body(player_pos[i]);
+		dynamics.positions[i] = dynamic_positions[i];
 	}
 }
 
-void World::load_static_bodies(std::vector<Static_collider> static_bodies)
-{
-	for (int i = 0; i < static_bodies.size(); i++)
-	{
-		add_static_body(static_bodies[i].start_pos, static_bodies[i].offset, static_bodies[i].width, static_bodies[i].height);
-	}
-}
-
-std::vector<glm::vec2> World::get_forces()const
+std::vector<glm::vec2> World::get_forces() const
 {
 	std::vector<glm::vec2> forces;
 	for (auto& bodies : dynamic_rigidbodies)
@@ -195,7 +182,6 @@ void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int s
 			dynamic_positions[dynamic_index].y = (static_box_colliders[static_index].get_height() / 2) + static_box_colliders[static_index].get_offset().y + static_positions[static_index].y +
 				(-dynamic_box_colliders[dynamic_index].get_offset().y) + (dynamic_box_colliders[dynamic_index].get_height() / 2); //Moving the player to the floor of the static object
 			dynamic_rigidbodies[dynamic_index].cancel_force_y();
-			dynamic_rigidbodies[dynamic_index].can_jump = true;
 		}
 	}
 }

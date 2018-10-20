@@ -7,43 +7,37 @@ namespace physics
 
 Rigidbody::Rigidbody(glm::vec2 start_force)
 {
-	this->converter = 0.2;
+	converter = 0.2;
 
 	//Massa är i kilo.
-	this->mass = 1.0f;
+	mass = 1.0f;
 	//Drag i float.
-	this->drag = 0.002f;
+	drag = 0.002f;
 	//Friktion i float
-	this->floor_drag = 0.1f;
+	floor_drag = 0.1f;
 
 	//Gravitation i float.
-	this->gravity = 9.82 * converter; //(9.82f * 9.82f);// *converter;
+	gravity = 9.82 * converter; //(9.82f * 9.82f);// *converter;
 	gravity_active = true;
-	can_jump = false;
 
 	//Start kraft.
-	this->force = start_force;// *converter;
+	force = start_force;// *converter;
 }
 
-Rigidbody::~Rigidbody()
-{
-
-}
 
 void Rigidbody::update()
 {
 	if (gravity_active)
-		this->force.y += -this->gravity;
+		force.y += -gravity;
 
-	force.y += -this->force.y * this->drag;
+	force.y += -force.y * drag;
 
 	if (force.x != 0)
 	{
-		force.x += -this->force.x * this->floor_drag;
+		force.x += -force.x * floor_drag;
 	}
 
-	/*std::cout << "F.x " << force.x << " F.y " << force.y << std::endl;*/
-	this->force = (this->force * this->mass);
+	force = (force * mass);
 }
 
 void Rigidbody::cancel_forces()
@@ -63,10 +57,7 @@ void Rigidbody::cancel_force_y()
 
 void Rigidbody::add_force(glm::vec2 force_direction)
 {
-	if (force_direction.y > 0.0)
-		can_jump = false;
-
-	this->force += force_direction;
+	force += force_direction;
 }
 
 glm::vec2 Rigidbody::get_force() const
@@ -74,15 +65,9 @@ glm::vec2 Rigidbody::get_force() const
 	return force;
 }
 
-
-void Rigidbody::set_reached_goal(bool value)
+glm::vec2 Rigidbody::acceleration() const
 {
-	this->reached_goal = value;
-}
-
-bool Rigidbody::get_reached_goal()const
-{
-	return this->reached_goal;
+	return force / mass;
 }
 
 }

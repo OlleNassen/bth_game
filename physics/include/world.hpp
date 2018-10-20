@@ -8,24 +8,36 @@
 #include <chrono>
 #include <array>
 #include <vector>
-#include <math.h>
+#include <cmath>
 
-
-#include "static_collision.hpp"
 #include "rigidbody.hpp"
 #include "boxcollider.hpp"
 
 namespace physics
 {
 
-//template <typename T>
+struct StaticCollider
+{
+public:
+	glm::vec2 start_pos;
+	glm::vec2 offset;
+	float width;
+	float height;
+};
+
+class object_arrays
+{
+public:
+	using vec2_array = std::array<glm::vec2, 100>;	
+	vec2_array positions;
+	vec2_array velocities;
+	vec2_array sizes;
+};
+
+
 class World
 {
 public:
-	World();
-	World(int nr_of_players);
-
-	//void add_dynamic_body(glm::vec2 start_force, float width, float height, glm::vec2 offset, glm::vec2 start_position);
 	void add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force);
 	int add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
 
@@ -38,27 +50,23 @@ public:
 	std::vector<Box> static_box_colliders;
 	std::vector<glm::vec2> static_positions;
 
-
 	//Static Placed Objects // lucas test
 	std::vector<int> placed_objects_index;
 
+	void update(
+		std::chrono::milliseconds delta,
+		object_arrays& dynamics,
+		const std::array<glm::vec2, 100>& forces);
 
-	//void update(std::chrono::milliseconds delta);
-	std::vector<glm::vec2> update(std::chrono::milliseconds delta);
-
-	void load_players(std::vector<glm::vec2> player_pos);
-	void load_static_bodies(std::vector<Static_collider> static_bodies);
-
-	std::vector<glm::vec2> get_forces()const;
+	std::vector<glm::vec2> get_forces() const;
 	bool intersects(const int box_id, const int target_box_id);
 
 	std::vector<glm::vec2> get_all_debug()const;
 
 	void rotate_static_box(int id);
+
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
-
-	int nr_of_players = 0;
 };
 
 }
