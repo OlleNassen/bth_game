@@ -51,22 +51,20 @@ void World::update(
 		dynamics.positions[i] += dynamics.velocities[i] * delta_seconds.count();
 		
 		dynamic_positions[i] = dynamics.positions[i];
+
+		Object left{dynamics.positions[i], dynamics.sizes[i], 100.0f};
 		
 		for (int j = 0; j < static_box_colliders.size(); ++j)
 		{
-			if (intersects(i, j))
-			{	
-				if (!static_box_colliders[j].get_trigger())
-				{
-					/*rect left = { dynamics.positions[i], dynamics.sizes[i] };
-					rect right = rect{ static_positions[j],glm::vec2{static_box_colliders[j].get_width(), static_box_colliders[j].get_height()}};
-					dynamic_positions[i] = collision(left, right);*/
-					collision_handling(previous_position, i, j);
-				}
-			}
+			auto& box = dynamic_box_colliders[i];
+			glm::vec2 size{box.get_width(),box.get_height()};
+			Object right{static_positions[j], size};
+				
+			Collision{left, right};
 		}
 
-		dynamics.positions[i] = dynamic_positions[i];
+		dynamics.positions[i] = left.position;
+		dynamics.velocities[i] = left.velocity;
 		forces[i] = body.get_force();
 	}
 }

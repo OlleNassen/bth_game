@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\collision.hpp" />
     <ClInclude Include="include\boxcollider.hpp" />
     <ClInclude Include="include\rigidbody.hpp" />
     <ClInclude Include="include\world.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\collision.cpp" />
     <ClCompile Include="src\boxcollider.cpp" />
     <ClCompile Include="src\rigidbody.cpp" />
     <ClCompile Include="src\world.cpp" />

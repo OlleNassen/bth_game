@@ -11,58 +11,10 @@
 
 #include "rigidbody.hpp"
 #include "boxcollider.hpp"
+#include "collision.hpp"
 
 namespace physics
 {
-
-class rect
-{
-public:
-	glm::vec2 pos;
-	glm::vec2 size;
-
-	bool contains(const glm::vec2 point) const
-	{
-		using namespace glm;
-		float min_x = min(pos.x, pos.x + size.x);
-		float max_x = max(pos.x, pos.x + size.x);
-		float min_y = min(pos.y, pos.y + size.y);
-		float max_y = max(pos.y, pos.y + size.y);
-		return (point.x >= min_x) && (point.x < max_y) && (point.y >= min_y) && (point.y < max_y);
-	}
-
-};
-
-static glm::vec2 collision(const rect& left, const rect& right)
-{
-	using namespace glm;
-
-	vec2 half_size = right.size / 2.0f;
-
-	if (left.contains(right.pos - half_size))
-	{
-		return right.pos - half_size;
-	}
-
-	if (left.contains(right.pos + half_size))
-	{
-		return right.pos + half_size;
-	}
-
-	half_size.x = -half_size.x;
-
-	if (left.contains(right.pos - half_size))
-	{
-		return right.pos - half_size;
-	}
-
-	if (left.contains(right.pos + half_size))
-	{
-		return right.pos + half_size;
-	}
-		
-	return left.pos;
-}
 
 struct StaticCollider
 {

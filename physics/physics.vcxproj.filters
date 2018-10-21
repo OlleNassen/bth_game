@@ -24,6 +24,9 @@
     <ClInclude Include="include\world.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\collision.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\boxcollider.cpp">
@@ -33,6 +36,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\world.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
