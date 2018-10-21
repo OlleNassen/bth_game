@@ -41,7 +41,7 @@ void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::
 
 	std::chrono::duration<float> delta_seconds = delta;
 	position = glm::mix(position, { desired_position, desired_distance }, delta_seconds.count() * 2.0f);
-	
+
 	forward = vec3{ desired_position - vec2{0,2}, 0.0f } -position;
 	forward = glm::normalize(forward);
 }

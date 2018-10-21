@@ -20,9 +20,9 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 }
 
 void World::update(
-	std::chrono::milliseconds delta, 
-	object_arrays& dynamics, 
-	const std::array<glm::vec2, 100>& forces)
+	std::chrono::milliseconds delta,
+	object_arrays& dynamics,
+	std::array<glm::vec2, 100>& forces)
 {
 	std::chrono::duration<float> delta_seconds = delta;	
 
@@ -31,6 +31,11 @@ void World::update(
 		auto& body = dynamic_rigidbodies[i];
 		body.cancel_forces();
 		body.add_force(forces[i]);
+		if (glm::abs(forces[i].x) > 0.1f)
+			dynamics.velocities[i].x = body.acceleration().x * delta_seconds.count();
+
+		if (glm::abs(forces[i].y) > 0.1f)
+			dynamics.velocities[i].y = body.acceleration().y * delta_seconds.count();
 	}
 	
 	for (int i = 0; i < dynamic_positions.size(); ++i)
@@ -40,13 +45,12 @@ void World::update(
 		
 		dynamic_positions[i] = dynamics.positions[i];	
 		glm::vec2 previous_position = dynamic_positions[i];
-		body.update();
 		
 		dynamics.sizes[i] = {box.get_width(), box.get_height()};
-		dynamics.velocities[i] = body.acceleration() * delta_seconds.count();
+		dynamics.velocities[i] *= 0.9f;
 		dynamics.positions[i] += dynamics.velocities[i] * delta_seconds.count();
 		
-		dynamic_positions[i] += dynamics.velocities[i] * delta_seconds.count();
+		dynamic_positions[i] = dynamics.positions[i];
 		
 		for (int j = 0; j < static_box_colliders.size(); ++j)
 		{
@@ -54,12 +58,16 @@ void World::update(
 			{	
 				if (!static_box_colliders[j].get_trigger())
 				{
+					/*rect left = { dynamics.positions[i], dynamics.sizes[i] };
+					rect right = rect{ static_positions[j],glm::vec2{static_box_colliders[j].get_width(), static_box_colliders[j].get_height()}};
+					dynamic_positions[i] = collision(left, right);*/
 					collision_handling(previous_position, i, j);
 				}
 			}
 		}
 
 		dynamics.positions[i] = dynamic_positions[i];
+		forces[i] = body.get_force();
 	}
 }
 
@@ -141,10 +149,12 @@ void World::rotate_static_box(int id)
 
 void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index)
 {
-	glm::vec2 dynamic_world_pos = prev_position + dynamic_box_colliders[dynamic_index].get_offset();
-	glm::vec2 static_world_pos = static_positions[static_index] + static_box_colliders[static_index].get_offset();
+	using namespace glm;
+	
+	vec2 dynamic_world_pos = prev_position + dynamic_box_colliders[dynamic_index].get_offset();
+	vec2 static_world_pos = static_positions[static_index] + static_box_colliders[static_index].get_offset();
 
-	glm::vec2 direction = (dynamic_world_pos)-(static_world_pos);
+	vec2 direction = (dynamic_world_pos)-(static_world_pos);
 
 	float total_width = (dynamic_box_colliders[dynamic_index].get_width() + static_box_colliders[static_index].get_width()) / 2;
 	float total_height = (dynamic_box_colliders[dynamic_index].get_height() + static_box_colliders[static_index].get_height()) / 2;

@@ -154,21 +154,21 @@ void Game::update(std::chrono::milliseconds delta)
 			if (!jumping[i] && player_inputs[i][logic::button::jump] == logic::button_state::held)
 			{
 				jumping[i] = true;
-				jump_timers[i] = 1000ms;
+				jump_timers[i] = 200ms;
 			}
 			
 			if (jump_timers[i] > 0ms)
 			{
-				forces[i].y = 2000.0f;
+				forces[i].y += 3000.0f;
 				jump_timers[i] -= delta;
 			}
 			else
 			{	
 				jumping[i] = false;
-				forces[i].y = -500.0f;
+				forces[i].y = -1500.0f;
 			}
 			
-			forces[i].x = logic_out.directions[i].x * 1000.0f;						
+			forces[i].x = logic_out.directions[i].x * 2000.0f;						
 		}
 	}
 
@@ -187,8 +187,8 @@ void Game::update(std::chrono::milliseconds delta)
 				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 			}
 			
-			level.v[i] = physics.dynamic_positions[i];
-			level.models[i].set_position(physics.dynamic_positions[i]);			
+			level.v[i] = dynamics.positions[i];
+			level.models[i].set_position(dynamics.positions[i]);			
 		}		
 	}
 	level.models[0].update_animation((float)delta.count());
