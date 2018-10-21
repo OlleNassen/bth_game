@@ -1,25 +1,47 @@
 #include "collision.hpp"
-
 #include <glm/glm.hpp>
+
+#include <iostream>
 
 namespace physics
 {
 
-Object::Object(const glm::vec2& position, const glm::vec2& size)
-	: Object{position, size, 0.0f}
+Object::Object(
+	const glm::vec2& position, 
+	const glm::vec2& size)
+	: Object{position, size, glm::vec2{0.0f, 0.0f}}
 {
 
 }
 
-Object::Object(const glm::vec2& position, const glm::vec2& size, float mass)
-	: Object{position, size, mass, 0.1f}
+Object::Object(
+	const glm::vec2& position, 
+	const glm::vec2& size, 
+	const glm::vec2& velocity)
+	: Object{position, size, velocity, 0.0f}
 {
 
 }
 
-Object::Object(const glm::vec2& position, const glm::vec2& size, float mass, float restitution)
+Object::Object(
+	const glm::vec2& position, 
+	const glm::vec2& size, 
+	const glm::vec2& velocity, 
+	float mass)
+	: Object{position, size, velocity, mass, 0.1f}
+{
+
+}
+
+Object::Object(
+	const glm::vec2& position, 
+	const glm::vec2& size, 
+	const glm::vec2& velocity, 
+	float mass, 
+	float restitution)
 	: position{position}
 	, size{size}
+	, velocity{velocity}
 	, mass{mass}
 	, inverse_mass{mass ? 1.0f / mass : 0.0f}
 	, restitution{restitution}
@@ -51,18 +73,20 @@ bool Collision::intersects(const Object& left, const Object& right)
 		abs(direction)
 	};
 
-	if (overlap.x > overlap.y)
+	if (overlap.x > 0.0f && overlap.x > overlap.y)
 	{
 		normal.x = direction.x < 0.0f ? -1.0f : 1.0f;
 		penetration = overlap.x;
+		return true;
 	}
 	else if (overlap.y > 0.0f)
 	{
 		normal.y = direction.y < 0.0f ? -1.0f : 1.0f;
 		penetration = overlap.y;
+		return true;
 	}
 
-	return penetration > 0.0f;
+	return false;
 }
 
 void Collision::resolve_collision(Object& left, Object& right)

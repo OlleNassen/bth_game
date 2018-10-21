@@ -52,20 +52,20 @@ void World::update(
 		
 		dynamic_positions[i] = dynamics.positions[i];
 
-		Object left{dynamics.positions[i], dynamics.sizes[i], 100.0f};
+		Object left{dynamics.positions[i], dynamics.sizes[i], 
+			dynamics.velocities[i], 100.0f};
 		
 		for (int j = 0; j < static_box_colliders.size(); ++j)
 		{
 			auto& box = dynamic_box_colliders[i];
-			glm::vec2 size{box.get_width(),box.get_height()};
-			Object right{static_positions[j], size};
+			Object right{static_positions[j], 
+				{box.get_width(), box.get_height()}};
 				
 			Collision{left, right};
 		}
 
 		dynamics.positions[i] = left.position;
 		dynamics.velocities[i] = left.velocity;
-		forces[i] = body.get_force();
 	}
 }
 

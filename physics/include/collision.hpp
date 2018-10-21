@@ -10,16 +10,31 @@ class Object
 {
 public:
 	Object() = default;
-	Object(const glm::vec2& position, const glm::vec2& size);
-	Object(const glm::vec2& position, const glm::vec2& size, float mass);
-	Object(const glm::vec2& position, const glm::vec2& size, float mass, float restitution);
+	Object(
+		const glm::vec2& position, 
+		const glm::vec2& size);
+	Object(
+		const glm::vec2& position, 
+		const glm::vec2& size, 
+		const glm::vec2& velocity);
+	Object(
+		const glm::vec2& position, 
+		const glm::vec2& size, 
+		const glm::vec2& velocity, 
+		float mass);
+	Object(
+		const glm::vec2& position, 
+		const glm::vec2& size, 
+		const glm::vec2& velocity, 
+		float mass, 
+		float restitution);
 
-	glm::vec2 size;
 	glm::vec2 position;
-	glm::vec2 velocity;	
+	glm::vec2 size;
+	glm::vec2 velocity;
 	float mass;
-	float inverse_mass;	
-	float restitution;	
+	float inverse_mass;
+	float restitution;
 };
 
 class Collision
