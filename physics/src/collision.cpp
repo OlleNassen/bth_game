@@ -52,13 +52,12 @@ Object::Object(
 Collision::Collision(Object& left, Object& right)
 {
 	if (intersects(left, right))
-	{
-		normal = {0.0f, 0.0f};
+	{	
 		percent = 0.2f;
 		slop = 0.01f;
 		
 		resolve_collision(left, right);
-		position_correction(left, right);
+		//position_correction(left, right);
 	}
 }
 
@@ -73,19 +72,32 @@ bool Collision::intersects(const Object& left, const Object& right)
 		abs(direction)
 	};
 
-	if (overlap.x > 0.0f && overlap.x > overlap.y)
+	if (overlap.x > 0)
 	{
-		normal.x = direction.x < 0.0f ? -1.0f : 1.0f;
-		penetration = overlap.x;
-		return true;
-	}
-	else if (overlap.y > 0.0f)
-	{
-		normal.y = direction.y < 0.0f ? -1.0f : 1.0f;
-		penetration = overlap.y;
-		return true;
-	}
+		if (overlap.y > 0)
+		{
+			if (overlap.x > overlap.y)
+			{
+				if (direction.x < 0)
+					normal = vec2(-1, 0);
+				else
+					normal = vec2(1, 0);
 
+					penetration = overlap.x;
+					return true;
+			}
+			else
+			{
+				if (direction.y < 0)
+					normal = vec2(0, -1);
+				else
+					normal = vec2(0, 1);
+
+					penetration = overlap.y;
+					return true;
+			}
+		}
+	}
 	return false;
 }
 

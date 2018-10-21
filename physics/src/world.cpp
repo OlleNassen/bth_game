@@ -53,14 +53,14 @@ void World::update(
 		dynamic_positions[i] = dynamics.positions[i];
 
 		Object left{dynamics.positions[i], dynamics.sizes[i], 
-			dynamics.velocities[i], 100.0f};
+			dynamics.velocities[i], 1.0f};
 		
 		for (int j = 0; j < static_box_colliders.size(); ++j)
 		{
-			auto& box = dynamic_box_colliders[i];
-			Object right{static_positions[j], 
-				{box.get_width(), box.get_height()}};
-				
+			auto& s_box = static_box_colliders[j];
+			Object right{ static_positions[j],
+				{s_box.get_width(), s_box.get_height()}};
+
 			Collision{left, right};
 		}
 
