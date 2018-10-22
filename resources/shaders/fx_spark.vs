@@ -21,7 +21,8 @@ void main()
 	vec3 particle_center_worldspace = center.xyz;
 
 	//Edit here so it won't rotate around the Y-Axis
-	vec3 vertex_position_worldspace = particle_center_worldspace + camera_right_worldspace * square_vertices.x * particle_size + camera_up_worldspace * square_vertices.y * particle_size;
+	//vec3 vertex_position_worldspace = particle_center_worldspace + camera_right_worldspace * square_vertices.x * particle_size + camera_up_worldspace * square_vertices.y * particle_size;
+	vec3 vertex_position_worldspace = particle_center_worldspace + vec3(-0.8,0,0) * square_vertices.x * particle_size + camera_up_worldspace * square_vertices.y * particle_size;
 
 	// Output position of the vertex test 2
 	gl_Position = projection * view * vec4(vertex_position_worldspace, 1.0f);

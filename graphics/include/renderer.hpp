@@ -136,7 +136,6 @@ private:
 	glm::vec2 v[4];
 
 	bool show_start{false};
-	int randomizer;
 	Minimap minimap;
 	
 	//FX

@@ -183,19 +183,19 @@ void Renderer::render(
 		dust_particles->render_particles(*dust_particles->fx);
 
 		//FX - Spark
-		fx_spark.use();
-		fx_spark.uniform("particle_texture", 0);
-		spark_texture->bind(0);
+		//fx_spark.use();
+		//fx_spark.uniform("particle_texture", 0);
+		//spark_texture->bind(0);
 
-		//Get and set matrices
-		fx_spark.uniform("camera_right_worldspace", camera_right_vector);
-		fx_spark.uniform("camera_up_worldspace", camera_up_vector);
-		fx_spark.uniform("view", db_camera.view());
-		fx_spark.uniform("projection", db_camera.projection);
-		fx_spark.uniform("view_position", scene->v[0]);
-		fx_spark.uniform("particle_pivot", start_point);
-		//Render spark
-		spark_particles->render_particles(*spark_particles->fx);
+		////Get and set matrices
+		//fx_spark.uniform("camera_right_worldspace", camera_right_vector);
+		//fx_spark.uniform("camera_up_worldspace", camera_up_vector);
+		//fx_spark.uniform("view", db_camera.view());
+		//fx_spark.uniform("projection", db_camera.projection);
+		//fx_spark.uniform("view_position", scene->v[0]);
+		//fx_spark.uniform("particle_pivot", start_point);
+		////Render spark
+		//spark_particles->render_particles(*spark_particles->fx);
 
 		//FX - Steam
 		fx_steam.use();
@@ -298,24 +298,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_on)
 	{
-		//Randomizer controls how often the particles appear
-		randomizer = rand() % 100;
 		
 		//Dust Particles
-		if (randomizer <= 40)
-		{
-			dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
-		}
-
-		//Spark Particles
-		if (randomizer <= 40)
-			spark_particles->calculate_spark_data(*spark_particles->fx, scene->v, delta, db_camera);
+		dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
 
 		//Steam Particles
-		if (randomizer <= 80)
-		{
-			steam_particles->calculate_steam_data(*steam_particles->fx, scene->v, delta, db_camera);
-		}
+		steam_particles->calculate_steam_data(*steam_particles->fx, scene->v, delta, db_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 	}
