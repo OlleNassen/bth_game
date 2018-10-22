@@ -42,15 +42,10 @@ void World::update(
 	{
 		auto& box = dynamic_box_colliders[i];
 		auto& body = dynamic_rigidbodies[i];
-		
-		dynamic_positions[i] = dynamics.positions[i];	
-		glm::vec2 previous_position = dynamic_positions[i];
-		
+			
 		dynamics.sizes[i] = {box.get_width(), box.get_height()};
 		dynamics.velocities[i] *= 0.9f;
 		dynamics.positions[i] += dynamics.velocities[i] * delta_seconds.count();
-		
-		dynamic_positions[i] = dynamics.positions[i];
 
 		Object left{dynamics.positions[i], dynamics.sizes[i], 
 			dynamics.velocities[i], 1.0f};
