@@ -47,5 +47,7 @@
     <None Include="shaders\brdf.fs" />
     <None Include="shaders\fx_spark.fs" />
     <None Include="shaders\fx_spark.vs" />
+    <None Include="shaders\fx_steam.fs" />
+    <None Include="shaders\fx_steam.vs" />
   </ItemGroup>
 </Project>
