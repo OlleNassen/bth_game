@@ -19,14 +19,8 @@
     <None Include="shaders\text.fs" />
     <None Include="scripts\input.lua" />
     <None Include="scripts\bindkey.lua" />
-    <None Include="shaders\blinn_phong.vs" />
-    <None Include="shaders\uber.fs" />
-    <None Include="shaders\uber.vs" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
-    <None Include="shaders\template.fs" />
-    <None Include="shaders\template.gs" />
-    <None Include="shaders\template.vs" />
     <None Include="shaders\post_processing_effects.fs" />
     <None Include="shaders\post_processing_effects.vs" />
     <None Include="shaders\lines.fs" />
