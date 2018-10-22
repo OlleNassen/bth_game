@@ -24,10 +24,10 @@
     <ClInclude Include="include\world.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\collision.hpp">
+    <ClInclude Include="include\obb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\obb.hpp">
+    <ClInclude Include="include\geometry3d.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,10 +41,10 @@
     <ClCompile Include="src\world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\collision.cpp">
+    <ClCompile Include="src\obb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\obb.cpp">
+    <ClCompile Include="src\geometry3d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

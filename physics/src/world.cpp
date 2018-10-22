@@ -56,11 +56,6 @@ void World::update(
 			glm::vec2 s_half_extent{s_box.get_width() / 2.0f, s_box.get_height() / 2.0f};
 			Rectangle2D right{static_positions[j] + s_half_extent, s_half_extent, 0.0f};
 			
-			if (oriented_rectangle_oriented_rectangle(left, right))
-			{
-				static int nr;
-				std::cout << "collision nr: " << ++nr <<'\n';
-			}
 		}
 		dynamic_positions[i] = dynamics.positions[i];
 	}
