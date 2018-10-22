@@ -31,27 +31,6 @@ void FX::gen_particle_buffer(FXdata & particle)
 	glGenBuffers(1, &particle.color_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, particle.color_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
-
-	/*particle.width = 0;
-	particle.height = 0;
-	particle.nr_of_channels = 0;
-	particle.texture_data = stbi_load(texture_name, &particle.width, &particle.height, &particle.nr_of_channels, 0);
-	glGenTextures(1, &particle.texture_buffer);
-	glBindTexture(GL_TEXTURE_2D, particle.texture_buffer);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	if (particle.texture_data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, particle.width, particle.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, particle.texture_data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Failed to load Billboard Texture from path" << std::endl;
-	}
-	stbi_image_free(particle.texture_data);*/
 }
 
 void FX::render_particles(FXdata& data) const
@@ -295,11 +274,11 @@ void FX::calculate_spark_data(FXdata & data, glm::vec2 * model_position_2d, std:
 			//Set default values for the particles, first off life and position.
 			data.particle_container[particle_index].random_amp = rand() % 3;
 			data.particle_container[particle_index].life = 1.0f;
-			data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+			data.particle_container[particle_index].pos = glm::vec3(0.0f, 0.0f, 0.0f); //data.random_x, data.random_y, data.random_z
 
 			//Create a direction for the particles to travel
 			//glm::vec3 main_dir = glm::vec3(0);
-			glm::vec3 random_dir_up = glm::vec3(0, 10, 0);
+			glm::vec3 random_dir_up = glm::vec3(0, 1, 0);
 			glm::vec3 random_dir_down = glm::vec3(0, -10, 0);
 			glm::vec3 random_dir_right = glm::vec3(10, 0, 0);
 			glm::vec3 random_dir_left = glm::vec3(-10, 0, 0);
@@ -309,9 +288,9 @@ void FX::calculate_spark_data(FXdata & data, glm::vec2 * model_position_2d, std:
 			float spread_y = (rand() % 100 / 100.0f);
 			float spread_z = (rand() % 100 / 100.0f);
 
+			data.particle_container[particle_index].speed = random_dir_up;
 
-			int randomizer = rand() % 8;
-
+			/*int randomizer = rand() % 8;
 			if (randomizer == 0)
 				data.particle_container[particle_index].speed = (random_dir_up   * spread_y) + (random_dir_right * spread_x) + (random_dir_forward * spread_z);
 			else if (randomizer == 1)
@@ -327,7 +306,7 @@ void FX::calculate_spark_data(FXdata & data, glm::vec2 * model_position_2d, std:
 			else if (randomizer == 6)
 				data.particle_container[particle_index].speed = (random_dir_down * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
 			else if (randomizer == 7)
-				data.particle_container[particle_index].speed = (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
+				data.particle_container[particle_index].speed = (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);*/
 
 			//Set colors, if you want color from texture, don't change the color
 			int rand_color = rand() % 3;
@@ -350,17 +329,18 @@ void FX::calculate_spark_data(FXdata & data, glm::vec2 * model_position_2d, std:
 				data.particle_container[particle_index].g = 22.0f;
 				data.particle_container[particle_index].b = 16.0f;
 			}*/
+
 			data.particle_container[particle_index].r = 200.0f;
-			data.particle_container[particle_index].g = 200.0f;
-			data.particle_container[particle_index].b = 200.0f;
+			data.particle_container[particle_index].g = 0.0f;
+			data.particle_container[particle_index].b = 0.0f;
 
 			data.particle_container[particle_index].a = rand() % 255;
-			data.particle_container[particle_index].size = 0;
+			data.particle_container[particle_index].size = 1;
 		}
 
 	}
-
 	total_particle_count = 0;
+
 	//Update movement
 	for (int i = 0; i < MAX_DUST_PARTICLES; i++)
 	{
@@ -371,15 +351,17 @@ void FX::calculate_spark_data(FXdata & data, glm::vec2 * model_position_2d, std:
 		if (data.particle_container[i].life > 0.0f)
 		{
 			//data.particle_container[i].speed += * seconds.count();
-			data.particle_container[i].pos += data.particle_container[i].speed / 70.0f * seconds.count();
+			data.particle_container[i].pos += glm::vec3(0.0f, 1.0f, 0.0f); //data.particle_container[i].speed / 70.0f * seconds.count()
 			data.particle_container[i].camera_distance = glm::length(data.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
 			data.position_data[4 * total_particle_count + 0] = data.particle_container[i].pos.x;
 			data.position_data[4 * total_particle_count + 1] = data.particle_container[i].pos.y;
 			data.position_data[4 * total_particle_count + 2] = data.particle_container[i].pos.z;
+			data.position_data[4 * total_particle_count + 3] = data.particle_container[i].size;
 
-			if (data.particle_container[i].life >= 0.5f)
+
+			/*if (data.particle_container[i].life >= 0.5f)
 			{
 				data.particle_container[i].size = abs(data.particle_container[i].life - 1) / DF;
 				data.position_data[4 * total_particle_count + 3] = data.particle_container[i].size;
@@ -388,7 +370,7 @@ void FX::calculate_spark_data(FXdata & data, glm::vec2 * model_position_2d, std:
 			{
 				data.particle_container[i].size = data.particle_container[i].life / DF;
 				data.position_data[4 * total_particle_count + 3] = data.particle_container[i].size;
-			}
+			}*/
 
 			//Set colors in the color data
 			data.color_data[4 * total_particle_count + 0] = data.particle_container[i].r;
@@ -441,11 +423,11 @@ void FX::calculate_steam_data(FXdata & data, glm::vec2 * model_position_2d, std:
 			//Set default values for the particles, first off life and position.
 			data.particle_container[particle_index].random_amp = rand() % 3;
 			data.particle_container[particle_index].life = 1.0f;
-			data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+			//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 			data.particle_container[particle_index].pos = glm::vec3(0, 0, 0);
 
 			//Create a direction for the particles to travel
-			glm::vec3 main_dir = glm::vec3(0, 1, 0);
+			glm::vec3 main_dir = glm::vec3(1, 1, 0);
 			glm::vec3 random_dir_up = glm::vec3(0, 10, 0);
 			glm::vec3 random_dir_down = glm::vec3(0, -10, 0);
 			glm::vec3 random_dir_right = glm::vec3(10, 0, 0);
@@ -498,12 +480,12 @@ void FX::calculate_steam_data(FXdata & data, glm::vec2 * model_position_2d, std:
 				data.particle_container[particle_index].g = 22.0f;
 				data.particle_container[particle_index].b = 16.0f;
 			}*/
-			data.particle_container[particle_index].r = 0.0f;
+			data.particle_container[particle_index].r = 200.0f;
 			data.particle_container[particle_index].g = 0.0f;
-			data.particle_container[particle_index].b = 0.0f;
+			data.particle_container[particle_index].b = 200.0f;
 
-			data.particle_container[particle_index].a = 0.0f;
-			data.particle_container[particle_index].size = 2.0f;
+			data.particle_container[particle_index].a = 255.0f;
+			data.particle_container[particle_index].size = 20.0f;
 		}
 
 	}
@@ -526,8 +508,10 @@ void FX::calculate_steam_data(FXdata & data, glm::vec2 * model_position_2d, std:
 			data.position_data[4 * total_particle_count + 0] = data.particle_container[i].pos.x;
 			data.position_data[4 * total_particle_count + 1] = data.particle_container[i].pos.y;
 			data.position_data[4 * total_particle_count + 2] = data.particle_container[i].pos.z;
+			data.position_data[4 * total_particle_count + 3] = data.particle_container[i].size;
 
-			if (data.particle_container[i].life >= 0.5f)
+
+			/*if (data.particle_container[i].life >= 0.5f)
 			{
 				data.particle_container[i].size = abs(data.particle_container[i].life - 1) / DF;
 				data.position_data[4 * total_particle_count + 3] = data.particle_container[i].size;
@@ -536,7 +520,7 @@ void FX::calculate_steam_data(FXdata & data, glm::vec2 * model_position_2d, std:
 			{
 				data.particle_container[i].size = data.particle_container[i].life / DF;
 				data.position_data[4 * total_particle_count + 3] = data.particle_container[i].size;
-			}
+			}*/
 
 			//Set colors in the color data
 			data.color_data[4 * total_particle_count + 0] = data.particle_container[i].r;

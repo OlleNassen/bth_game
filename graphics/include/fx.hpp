@@ -7,7 +7,7 @@
 #include "camera.hpp"
 #include <chrono>
 #define MAX_PARTICLES 1000
-#define MAX_DUST_PARTICLES 500
+#define MAX_DUST_PARTICLES 200
 #define DF 3.0f
 
 namespace graphics
@@ -53,6 +53,7 @@ public:
 	void calculate_steam_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera);
 
 	void set_texture(Texture& texture);
+
 	FXdata* fx;
 
 private:
