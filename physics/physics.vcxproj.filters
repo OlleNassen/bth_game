@@ -27,6 +27,9 @@
     <ClInclude Include="include\collision.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\obb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\boxcollider.cpp">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\collision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\obb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

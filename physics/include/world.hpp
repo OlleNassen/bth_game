@@ -12,6 +12,7 @@
 #include "rigidbody.hpp"
 #include "boxcollider.hpp"
 #include "collision.hpp"
+#include "obb.hpp"
 
 namespace physics
 {

@@ -47,20 +47,22 @@ void World::update(
 		dynamics.velocities[i] *= 0.9f;
 		dynamics.positions[i] += dynamics.velocities[i] * delta_seconds.count();
 
-		Object left{dynamics.positions[i], dynamics.sizes[i], 
-			dynamics.velocities[i], 1.0f};
+		glm::vec2 half_extent{box.get_width() / 2.0f, box.get_height() / 2.0f};
+		Rectangle2D left{dynamics.positions[i] + half_extent, half_extent, 0.0f};
 		
 		for (int j = 0; j < static_box_colliders.size(); ++j)
 		{
 			auto& s_box = static_box_colliders[j];
-			Object right{ static_positions[j],
-				{s_box.get_width(), s_box.get_height()}};
-
-			Collision{left, right};
+			glm::vec2 s_half_extent{s_box.get_width() / 2.0f, s_box.get_height() / 2.0f};
+			Rectangle2D right{static_positions[j] + half_extent, s_half_extent, 0.0f};
+			
+			if (oriented_rectangle_oriented_rectangle(left, right))
+			{
+				static int nr;
+				std::cout << "collision nr: " << ++nr <<'\n';
+			}
 		}
-
-		dynamics.positions[i] = left.position;
-		dynamics.velocities[i] = left.velocity;
+		dynamic_positions[i] = dynamics.positions[i];
 	}
 }
 
@@ -188,5 +190,6 @@ void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int s
 		}
 	}
 }
+
 }
 
