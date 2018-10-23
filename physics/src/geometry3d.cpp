@@ -241,4 +241,234 @@ Point closest_point(const Ray& ray, const Point& point)
 	return Point{ray.origin + ray.direction * t};
 }
 
+bool sphere_sphere(const Sphere& left, const Sphere& right)
+{
+	float rad_sum = left.radius + right.radius;
+	float squared_distance = 
+		magnitude_squared(left.position + right.position);
+
+	return squared_distance < rad_sum * rad_sum;
+}
+
+bool sphere_aabb(const Sphere& sphere, const AABB& aabb)
+{
+	Point closest = closest_point(aabb, sphere.position);
+	float distance_squared = 
+		magnitude_squared(sphere.position - closest);
+
+	float radius_squared = sphere.radius * sphere.radius;
+	return distance_squared < radius_squared;
+}
+
+bool sphere_obb(const Sphere& sphere, const OBB& obb)
+{
+	Point closest = closest_point(obb, sphere.position);
+	float distance_squared =
+		magnitude_squared(sphere.position - closest);
+
+	float radius_squared = sphere.radius * sphere.radius;
+	return distance_squared < radius_squared;
+}
+
+bool sphere_plane(const Sphere& sphere, const Plane& plane)
+{
+	Point closest = closest_point(plane, sphere.position);
+	float distance_squared =
+		magnitude_squared(sphere.position - closest);
+
+	float radius_squared = sphere.radius * sphere.radius;
+	return distance_squared < radius_squared;
+
+}
+
+Interval get_interval(const AABB& rect, const glm::vec3& axis)
+{
+	glm::vec3 i = get_min(rect);
+	glm::vec3 a = get_max(rect);
+
+	glm::vec3 vertex[]
+	{
+		glm::vec3{i.x, a.y, a.z},
+		glm::vec3{i.x, a.y, i.z},
+		glm::vec3{i.x, i.y, a.z},
+		glm::vec3{i.x, i.y, i.z},
+		glm::vec3{a.x, a.y, a.z},
+		glm::vec3{a.x, a.y, i.z},
+		glm::vec3{a.x, i.y, a.z},
+		glm::vec3{a.x, i.y, i.z}
+	};
+
+	Interval result;
+	result.min = glm::dot(axis, vertex[0]);
+	result.max = result.min;
+
+	for (int i = 0; i < 8; ++i)
+	{
+		float projection = glm::dot(axis, vertex[i]);
+		result.min = projection < result.min ? projection : result.min;
+		result.max = projection > result.max ? projection : result.max;
+	}
+
+	return result;
+}
+
+Interval get_interval(const OBB& rect, const glm::vec3& axis)
+{
+	glm::vec3 vertex[8];
+
+	glm::vec3 center = rect.position;
+	glm::vec3 extents = rect.size;
+
+	const glm::mat3& o = rect.orientation;
+	glm::vec3 a[]//axis
+	{
+		glm::vec3{o[0][0], o[1][0], o[2][0]}, 
+		glm::vec3{o[0][1], o[1][1], o[2][1]},
+		glm::vec3{o[0][2], o[1][2], o[2][2]}
+	};
+
+	vertex[0] = center + a[0] * extents[0] + a[1] * extents[1] + a[2] * extents[2];
+	vertex[1] = center - a[0] * extents[0] + a[1] * extents[1] + a[2] * extents[2];
+	vertex[2] = center + a[0] * extents[0] - a[1] * extents[1] + a[2] * extents[2];
+	vertex[3] = center + a[0] * extents[0] + a[1] * extents[1] - a[2] * extents[2];
+	vertex[4] = center - a[0] * extents[0] - a[1] * extents[1] - a[2] * extents[2];
+	vertex[5] = center + a[0] * extents[0] - a[1] * extents[1] - a[2] * extents[2];
+	vertex[6] = center - a[0] * extents[0] + a[1] * extents[1] - a[2] * extents[2];
+	vertex[7] = center - a[0] * extents[0] - a[1] * extents[1] + a[2] * extents[2];
+	
+	Interval result;
+	result.min = glm::dot(axis, vertex[0]);
+	result.max = result.min;
+
+	for (int i = 0; i < 8; ++i)
+	{
+		float projection = glm::dot(axis, vertex[i]);
+		result.min = projection < result.min ? projection : result.min;
+		result.max = projection > result.max ? projection : result.max;
+	}
+
+	return result;
+}
+
+bool overlap_on_axis(const AABB& aabb, const OBB& obb, const glm::vec3 axis)
+{
+	Interval a = get_interval(aabb, axis);
+	Interval b = get_interval(obb, axis);
+	return b.min <= a.max && a.min <= b.max;
+}
+
+bool overlap_on_axis(const OBB& left, const OBB& right, const glm::vec3 axis)
+{
+	Interval a = get_interval(left, axis);
+	Interval b = get_interval(right, axis);
+	return b.min <= a.max && a.min <= b.max;
+}
+
+bool aabb_aabb(const AABB& left, const AABB& right)
+{
+	Point left_min = get_min(left);
+	Point left_max = get_max(left);
+	Point right_min = get_min(right);
+	Point right_max = get_max(right);
+
+	return
+		left_min.x <= right_max.x && left_max.x >= right_min.x &&
+		left_min.y <= right_max.y && left_max.y >= right_min.y &&
+		left_min.z <= right_max.z && left_max.z >= right_min.z;
+}
+
+bool aabb_obb(const AABB& aabb, const OBB& obb)
+{
+	const glm::mat3& o = obb.orientation;
+	glm::vec3 test[15]
+	{
+		glm::vec3{1.0f, 0.0f, 0.0f},
+		glm::vec3{0.0f, 1.0f, 0.0f},
+		glm::vec3{0.0f, 0.0f, 1.0f},
+		glm::vec3{o[0][0], o[1][0], o[2][0]},
+		glm::vec3{o[0][1], o[1][1], o[2][1]},
+		glm::vec3{o[0][2], o[1][2], o[2][2]}
+	};
+
+	for (int i = 0; i < 3; ++i)
+	{
+		test[6 + i * 3 + 0] = glm::cross(test[i], test[0]);
+		test[6 + i * 3 + 1] = glm::cross(test[i], test[1]);
+		test[6 + i * 3 + 2] = glm::cross(test[i], test[2]);
+	}
+
+	for (int i = 0; i < 15; ++i)
+	{
+		if (!overlap_on_axis(aabb, obb, test[i]))
+			return false;
+	}
+
+	return true;
+}
+
+bool aabb_plane(const AABB& aabb, const Plane& plane)
+{
+	float p_length =
+		aabb.size.x * glm::abs(plane.normal.x) +
+		aabb.size.y * glm::abs(plane.normal.y) +
+		aabb.size.z * glm::abs(plane.normal.z);
+
+	float dot = glm::dot(plane.normal, aabb.position);
+	float distance = dot - plane.distance;
+
+	return glm::abs(distance) <= p_length;
+}
+
+bool obb_obb(const OBB& left, const OBB& right)
+{
+	const glm::mat3& o1 = left.orientation;
+	const glm::mat3& o2 = right.orientation;
+	glm::vec3 test[15]
+	{
+		glm::vec3{o1[0][0], o1[1][0], o1[2][0]},
+		glm::vec3{o1[0][1], o1[1][1], o1[2][1]},
+		glm::vec3{o1[0][2], o1[1][2], o1[2][2]},
+		glm::vec3{o2[0][0], o2[1][0], o2[2][0]},
+		glm::vec3{o2[0][1], o2[1][1], o2[2][1]},
+		glm::vec3{o2[0][2], o2[1][2], o2[2][2]}
+	};
+
+	for (int i = 0; i < 3; ++i)
+	{
+		test[6 + i * 3 + 0] = glm::cross(test[i], test[0]);
+		test[6 + i * 3 + 1] = glm::cross(test[i], test[1]);
+		test[6 + i * 3 + 2] = glm::cross(test[i], test[2]);
+	}
+
+	for (int i = 0; i < 15; ++i)
+	{
+		if (!overlap_on_axis(left, right, test[i]))
+			return false;
+	}
+
+	return true;
+}
+
+bool obb_plane(const OBB& obb, const Plane& plane)
+{
+	const glm::mat3& o = obb.orientation;
+	glm::vec3 rot[]
+	{
+		glm::vec3{o[0][0], o[1][0], o[2][0]},
+		glm::vec3{o[0][1], o[1][1], o[2][1]},
+		glm::vec3{o[0][2], o[1][2], o[2][2]}
+	};
+	glm::vec3 normal = plane.normal;
+
+	float p_length =
+		obb.size.x * glm::abs(glm::dot(normal, rot[0])) +
+		obb.size.y * glm::abs(glm::dot(normal, rot[1])) +
+		obb.size.z * glm::abs(glm::dot(normal, rot[2]));
+
+	float dot = glm::dot(plane.normal, obb.position);
+	float distance = dot - plane.distance;
+
+	return glm::abs(distance) <= p_length;
+}
+
 }

@@ -75,10 +75,17 @@ public:
 	};
 };
 
+class Interval
+{
+public:
+	float min;
+	float max;
+};
+
 float length(const Line& line);
 float length_squared(const Line& line);
 
-Ray from_to(const Point& from, const Point& to);
+Ray from_points(const Point& from, const Point& to);
 
 glm::vec3 get_min(const AABB& aabb);
 glm::vec3 get_max(const AABB& aabb);
@@ -104,6 +111,23 @@ Point closest_point(const Line& line, const Point& point);
 
 bool point_on_ray(const Point& point, const Ray& ray);
 Point closest_point(const Ray& ray, const Point& point);
+
+bool sphere_sphere(const Sphere& left, const Sphere& right);
+bool sphere_aabb(const Sphere& sphere, const AABB& aabb);
+bool sphere_obb(const Sphere& sphere, const OBB& obb);
+bool sphere_plane(const Sphere& sphere, const Plane& plane);
+
+Interval get_interval(const AABB& rect, const glm::vec3& axis);
+Interval get_interval(const OBB& rect, const glm::vec3& axis);
+bool overlap_on_axis(const AABB& aabb, const OBB& obb, const glm::vec3 axis);
+bool overlap_on_axis(const OBB& left, const OBB& right, const glm::vec3 axis);
+
+bool aabb_aabb(const AABB& left, const AABB& right);
+bool aabb_obb(const AABB& aabb, const OBB& obb);
+bool aabb_plane(const AABB& aabb, const Plane& plane);
+
+bool obb_obb(const OBB& left, const OBB& right);
+bool obb_plane(const OBB& obb, const Plane& plane);
 
 }
 
