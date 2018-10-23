@@ -168,12 +168,12 @@ void LuaStack::push(const glm::vec4& value)
 
 void LuaStack::pop()
 {
-	lua_pop(lua_state, -1);
+	lua_pop(lua_state, 1);
 }
 
 void LuaStack::clear()
 {
-	lua_pop(lua_state, 1);
+	lua_pop(lua_state, top());
 }
 
 static void stack_dump(lua_State* lua_state) 
