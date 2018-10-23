@@ -7,23 +7,7 @@ end
 function update(delta_seconds, entity)
 	--print(entity.points)
 	entity.velocity.x = delta_seconds * 100 * entity.direction.x
-	entity.velocity.y = delta_seconds * 100 * entity.direction.z	
+	entity.velocity.y = delta_seconds * 100 * entity.direction.z
+
 	return entity.velocity.x, entity.velocity.y
-end
-
-function reached_goal(value)
-	--print("You reached the goal")
-	player_playable = value
-end
-
-function get_playable()
-	return player_playable
-end
-
-function add_points(points)
-	player_points = player_points + points
-end
-
-function get_player_points()
-	return player_points
 end
