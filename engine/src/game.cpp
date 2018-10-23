@@ -24,6 +24,16 @@ Game::Game()
 	window.assign_key(logic::button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
 
+	window.assign_button(logic::button::up, controller_buttons::up);
+	window.assign_button(logic::button::left, controller_buttons::left);
+	window.assign_button(logic::button::down, controller_buttons::down);
+	window.assign_button(logic::button::right, controller_buttons::right);
+	window.assign_button(logic::button::jump, controller_buttons::a);
+	window.assign_button(logic::button::quit, controller_buttons::b);
+
+	window.assign_axis_neg(logic::button::left, controller_axis::ls_right);
+	window.assign_axis_pos(logic::button::right, controller_axis::ls_right);
+
 	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
 
 	physics.add_dynamic_body(level.v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
@@ -54,7 +64,7 @@ void Game::run()
 
 	while (window.is_open() && 
 		!menu.exit() &&
-		(*local_input)[logic::button::quit] != logic::button_state::pressed)
+		(*local_input)[logic::button::quit] != logic::button_state::held)
 	{
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();
