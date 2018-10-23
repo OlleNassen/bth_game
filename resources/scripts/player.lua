@@ -9,6 +9,4 @@ function update(delta_seconds, entity)
 	--print(entity.points)
 	entity.velocity.x = delta_seconds * 100 * entity.direction.x
 	entity.velocity.y = delta_seconds * 100 * entity.direction.z
-
-	return entity.velocity.x, entity.velocity.y
 end
