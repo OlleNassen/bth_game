@@ -1,6 +1,6 @@
 settings =
 {
-	window_settings = 
+	window = 
 	{
 		fullscreen = false
 		width = 1280
