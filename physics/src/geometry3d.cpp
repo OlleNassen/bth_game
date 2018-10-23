@@ -478,4 +478,185 @@ bool plane_plane(const Plane& left, const Plane& right)
 	//return glm::dot(d, d) != 0;
 }
 
+float raycast(const Sphere& sphere, const Ray& ray)
+{
+	glm::vec3 e = sphere.position - ray.origin;
+
+	float radius_squared = sphere.radius * sphere.radius;
+	float e_sq = magnitude_squared(e);
+
+	float a = glm::dot(e, ray.direction);
+
+	float b_sq = e_sq - (a * a);
+	float f = glm::sqrt(radius_squared - b_sq);
+
+	if (radius_squared - (e_sq - (a * a)) < 0.0f)
+	{
+		return -1;
+	}
+	else if (e_sq < radius_squared)
+	{
+		return a + f;
+	}
+
+	return a - f;
+}
+
+float raycast(const AABB& aabb, const Ray& ray)
+{
+	glm::vec3 min = get_min(aabb);
+	glm::vec3 max = get_max(aabb);
+
+	float t1 = (min.x - ray.origin.x) / ray.direction.x;
+	float t2 = (max.x - ray.origin.x) / ray.direction.x;
+	float t3 = (min.y - ray.origin.y) / ray.direction.y;
+	float t4 = (max.y - ray.origin.y) / ray.direction.y;
+	float t5 = (min.z - ray.origin.z) / ray.direction.z;
+	float t6 = (max.z - ray.origin.z) / ray.direction.z;
+
+	float t_min = glm::max(
+		glm::max(glm::min(t1, t2), glm::min(t3, t4)),
+		glm::min(t5, t6));
+
+	float t_max = glm::min(
+		glm::min(glm::max(t1, t2), glm::max(t3, t4)),
+		glm::max(t5, t6));
+
+	if (t_max < 0.0f)
+		return -1;
+
+	if (t_min > t_max)
+		return -1;
+
+
+	if (t_min < 0.0f)
+		return t_max;
+
+	return t_min;
+}
+
+float raycast(const OBB& obb, const Ray& ray)
+{
+	const glm::mat3& o = obb.orientation;
+	const glm::vec3& size = obb.size;
+
+	glm::vec3 x{o[0][0], o[1][0], o[2][0]};
+	glm::vec3 y{o[0][1], o[1][1], o[2][1]};
+	glm::vec3 z{o[0][2], o[1][2], o[2][2]};
+
+	glm::vec3 p = obb.position - ray.origin;
+
+	glm::vec3 f
+	{
+		glm::dot(x, ray.direction),
+		glm::dot(y, ray.direction),
+		glm::dot(z, ray.direction)
+	};
+
+	glm::vec3 e
+	{
+		glm::dot(x, p),
+		glm::dot(y, p),
+		glm::dot(z, p)
+	};
+
+	float t[] 
+	{ 
+		0.0f, 
+		0.0f, 
+		0.0f, 
+		0.0f, 
+		0.0f, 
+		0.0f 
+	};
+
+	for (int i = 0; i < 3; ++i)
+	{
+		if (glm::abs(f[i]) > glm::epsilon<float>()) //kanske fel
+		{
+			if (-e[i] - size[i] > 0.0f || -e[i] + size[i] > 0.0f)
+			{
+				return -1;
+			}
+			f[i] = 0.00001f;
+		}
+		t[i * 2 + 0] = (e[i] + size[i]) / f[i];
+		t[i * 2 + 1] = (e[i] - size[i]) / f[i];
+	}
+
+	float t_min = glm::max(
+		glm::max(glm::min(t[0], t[1]), glm::min(t[2], t[3])),
+		glm::min(t[3], t[4]));
+
+	float t_max = glm::min(
+		glm::min(glm::max(t[0], t[1]), glm::max(t[2], t[3])),
+		glm::max(t[3], t[4]));
+
+	if (t_max < 0.0f)
+		return -1;
+
+	if (t_min > t_max)
+		return -1;
+
+
+	if (t_min < 0.0f)
+		return t_max;
+
+	return t_min;
+}
+
+float raycast(const Plane& plane, const Ray& ray)
+{
+	float nd = glm::dot(ray.direction, plane.normal);
+	float pn = glm::dot(ray.origin, plane.normal);
+
+	if (nd >= 0.0f)
+		return -1;
+
+	float t = (plane.distance - pn) / nd;
+
+	if (t >= 0.0f)
+		return t;
+
+	return -1;
+}
+
+bool linetest(const Sphere& sphere, const Line& line)
+{
+	Point closest = closest_point(line, sphere.position);
+	float distance_squared = magnitude_squared(sphere.position - closest);
+	return distance_squared <= sphere.radius * sphere.radius;
+}
+
+bool linetest(const AABB& aabb, const Line& line)
+{
+	Ray ray;
+	ray.origin = line.start;
+	ray.direction = glm::normalize(line.end - line.start);
+	float t = raycast(aabb, ray);
+
+	return t >= 0.0f && t * t <= length_squared(line);
+}
+
+bool linetest(const OBB& obb, const Line& line)
+{
+	Ray ray;
+	ray.origin = line.start;
+	ray.direction = glm::normalize(line.end - line.start);
+	float t = raycast(obb, ray);
+
+	return t >= 0.0f && t * t <= length_squared(line);
+}
+
+bool linetest(const Plane& plane, const Line& line)
+{
+	glm::vec3 ab = line.end - line.start;
+
+	float n_a = glm::dot(plane.normal, line.start);
+	float n_ab = glm::dot(plane.normal, ab);
+
+	float t = (plane.distance - n_a) / n_ab;
+	return t >= 0.0f && t <= 1.0f;
+}
+
 }

@@ -131,6 +131,16 @@ bool obb_plane(const OBB& obb, const Plane& plane);
 
 bool plane_plane(const Plane& left, const Plane& right);
 
+float raycast(const Sphere& sphere, const Ray& ray);
+float raycast(const AABB& aabb, const Ray& ray);
+float raycast(const OBB& obb, const Ray& ray);
+float raycast(const Plane& plane, const Ray& ray);
+
+bool linetest(const Sphere& sphere, const Line& line);
+bool linetest(const AABB& aabb, const Line& line);
+bool linetest(const OBB& obb, const Line& line);
+bool linetest(const Plane& plane, const Line& line);
+
 }
 
 #endif
