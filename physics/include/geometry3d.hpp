@@ -129,6 +129,8 @@ bool aabb_plane(const AABB& aabb, const Plane& plane);
 bool obb_obb(const OBB& left, const OBB& right);
 bool obb_plane(const OBB& obb, const Plane& plane);
 
+bool plane_plane(const Plane& left, const Plane& right);
+
 }
 
 #endif

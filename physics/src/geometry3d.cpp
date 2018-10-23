@@ -471,4 +471,11 @@ bool obb_plane(const OBB& obb, const Plane& plane)
 	return glm::abs(distance) <= p_length;
 }
 
+bool plane_plane(const Plane& left, const Plane& right)
+{
+	glm::vec3 d = glm::cross(left.normal, right.normal);
+	return glm::abs(glm::dot(d, d)) > glm::epsilon<float>();
+	//return glm::dot(d, d) != 0;
+}
+
 }
