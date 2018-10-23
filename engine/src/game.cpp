@@ -180,18 +180,6 @@ void Game::pack_data()
 		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
 	}
 
-	//Temp test for leaderboard stuff
-	for (int i = 0; i < 4; i++)
-	{
-		if (physics.dynamic_rigidbodies[i].get_reached_goal() && gameplay.get_player_status())
-		{
-			leader_board.at(i) += gameplay.set_player_status(i, false);	//Should change the status on players who reached goal
-			
-			showleaderboard = true;
-			//add show leaderboard here
-			//renderer.show_leaderboard();
-		}
-	}
 	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
 	{
 		net_state.game_objects[i].position = physics.dynamic_positions[i];

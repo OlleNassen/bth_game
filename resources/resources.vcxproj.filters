@@ -17,15 +17,12 @@
   <ItemGroup>
     <None Include="shaders\text.vs" />
     <None Include="shaders\text.fs" />
-    <None Include="scripts\input.lua" />
-    <None Include="scripts\bindkey.lua" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
     <None Include="shaders\post_processing_effects.fs" />
     <None Include="shaders\post_processing_effects.vs" />
     <None Include="shaders\lines.fs" />
     <None Include="shaders\lines.vs" />
-    <None Include="scripts\test.lua" />
     <None Include="shaders\pbr.vs" />
     <None Include="shaders\pbr.fs" />
     <None Include="shaders\box.vs" />

@@ -5,7 +5,6 @@
 #include <array>
 #include <glm/glm.hpp>
 
-#include "lua_load.hpp"
 #include "lua_script.hpp"
 #include "input.hpp"
 #include "../../graphics/include/game_scene.hpp"
@@ -53,8 +52,6 @@ public:
 private:
 	script_array<int> entities;
 	script_array<LuaScript> scripts;
-
-	LuaLoad luaLoad; //Test
 
 	int model_id{ -1 };
 	int physics_id{ -1 };

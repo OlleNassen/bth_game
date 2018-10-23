@@ -118,9 +118,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="scripts\bindkey.lua" />
-    <None Include="scripts\input.lua" />
-    <None Include="scripts\test.lua" />
     <None Include="shaders\box.fs" />
     <None Include="shaders\box.vs" />
     <None Include="shaders\brdf.fs" />
