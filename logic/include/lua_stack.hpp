@@ -28,6 +28,12 @@ public:
 	void getglobal(const char* value);
 	void setglobal(const char* value);
 
+	void setfield(int index, const char* name);
+
+	void settable(int index);
+	void gettable(int index);
+
+
 	int top() const;
 	lua_CFunction tofunction(int index) const;
 	const char* tostring(int index) const;
@@ -48,8 +54,8 @@ public:
 	void pop();
 	void clear();
 
-private:
 	lua_State* lua_state;
+private:
 };
 
 }
