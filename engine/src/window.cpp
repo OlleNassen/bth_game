@@ -155,14 +155,32 @@ void Window::update_input(logic::input& input)
 	if (input.index >= logic::input::indices) input.index = logic::input::indices - 1;
 	
 	input.cursor = { x, y };
-	int count = 0;
-	//const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
-	const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 
-	for (int i = 0; i < count; ++i)
 	{
-		if (axes[i] == GLFW_PRESS)
-			std::cout << "Button " << i << " pressed!" << '\n';
+		int count = 0;
+		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+		for (int i = 0; i < count; ++i)
+		{
+			if (static_cast<controller_axis>(i) == controller_axis::ls_right)
+			{
+				if (axes[i] < -0.5f)
+					input[logic::button::left] = logic::button_state::held;
+				else if (axes[i] > 0.5f)
+					input[logic::button::right] = logic::button_state::held;
+			}
+		}
+	}
+	
+	{
+		int count = 0;
+		const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+		for (int i = 0; i < count; ++i)
+		{
+			if (axes[i] == GLFW_PRESS && static_cast<controller_buttons>(i) == controller_buttons::a)
+			{
+				input[logic::button::jump] = logic::button_state::held;
+			}
+		}
 	}
 }
 

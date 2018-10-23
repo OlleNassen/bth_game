@@ -177,6 +177,8 @@ private:
 	GLFWwindow* glfw_window;
 
 	std::map<int, logic::button> keybinds;
+
+	//std::map<int, logic::button> keybinds;
 };
 
 #endif
