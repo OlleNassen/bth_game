@@ -3,35 +3,6 @@
 
 using std::cout;
 
-enum class controller_buttons
-{
-	a,
-	b,
-	x,
-	y,
-	lb,
-	rb,
-	select,
-	start,
-	ls,
-	rs,
-	up,
-	right,
-	down,
-	left
-
-};
-
-enum class controller_axis
-{
-	ls_right,
-	ls_up,
-	rs_right,
-	rs_up,
-	lt,
-	rt,
-};
-
 Window::Window(const glm::ivec2& window_size, const std::string& title)
 {
 	if (!glfwInit())
@@ -122,6 +93,7 @@ void Window::update_input(logic::input& input)
 			button = logic::button_state::none;
 		}				
 	}
+	
 	auto button_state = glfwGetMouseButton(glfw_window, GLFW_MOUSE_BUTTON_LEFT);
 	auto& button = input[logic::button::select];
 
@@ -161,12 +133,17 @@ void Window::update_input(logic::input& input)
 		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
 		for (int i = 0; i < count; ++i)
 		{
-			if (static_cast<controller_axis>(i) == controller_axis::ls_right)
+			auto& neg = axis_neg[static_cast<controller_axis>(i)];
+			auto& pos = axis_pos[static_cast<controller_axis>(i)];
+			
+			if (axes[i] < -0.5f)
 			{
-				if (axes[i] < -0.5f)
-					input[logic::button::left] = logic::button_state::held;
-				else if (axes[i] > 0.5f)
-					input[logic::button::right] = logic::button_state::held;
+				input[neg] = logic::button_state::held;
+			}
+				
+			else if (axes[i] > 0.5f)
+			{
+				input[pos] = logic::button_state::held;
 			}
 		}
 	}
@@ -176,9 +153,11 @@ void Window::update_input(logic::input& input)
 		const unsigned char* axes = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
 		for (int i = 0; i < count; ++i)
 		{
-			if (axes[i] == GLFW_PRESS && static_cast<controller_buttons>(i) == controller_buttons::a)
+			auto& b = buttons[static_cast<controller_buttons>(i)];
+			
+			if (axes[i] == GLFW_PRESS)
 			{
-				input[logic::button::jump] = logic::button_state::held;
+				input[b] = logic::button_state::held;
 			}
 		}
 	}
