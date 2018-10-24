@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\player_arrows.cpp" />
     <ClCompile Include="src\animation_handler.cpp" />
     <ClCompile Include="src\fx.cpp" />
     <ClCompile Include="src\minimap.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="include\mesh_lib.hpp" />
     <ClInclude Include="include\minimap.hpp" />
     <ClInclude Include="include\model.hpp" />
+    <ClInclude Include="include\player_arrows.hpp" />
     <ClInclude Include="include\post_processing_effects.hpp" />
     <ClInclude Include="include\primitives.hpp" />
     <ClInclude Include="include\renderer.hpp" />

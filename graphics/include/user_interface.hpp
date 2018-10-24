@@ -1,5 +1,5 @@
 #ifndef USER_INTERFACE_HPP
-#define USER_IINTERFACE_HPP
+#define USER_INTERFACE_HPP
 
 #include <array>
 #include <glm/glm.hpp>
@@ -24,7 +24,7 @@ public:
 	void update();
 
 	void render()const;
-private:
+protected:
 
 	void rebind_buffers();
 
