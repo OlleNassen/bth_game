@@ -8,7 +8,7 @@ GameScene::GameScene()
 {
 }
 
-GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
+GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_lib)
 {
 	//Create players
 	CustomLevel level(file_name);
