@@ -3,9 +3,22 @@
 namespace physics
 {
 
-void World::add_dynamic_body(glm::vec2 start_position = glm::vec2(0.0, 0.0), glm::vec2 offset = glm::vec2(0.0, 0.0),
-	float width = 1.0f, float height = 3.5f, glm::vec2 start_force = glm::vec2(0.0, 0.0))
+void World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
+	float width, float height, glm::vec2 start_force)
 {
+	colliders1.reserve(100);
+	colliders2.reserve(100);
+	results.reserve(100);
+
+	glm::vec3 position{start_position.x, start_position.y, 0.0f};
+	glm::vec3 size{width / 2.0f, height / 2.0f, 1.0f};
+	glm::mat3 orientation{ 1.0f };
+
+	Rigidbody body;
+	body.box = OBB{ position, size, orientation };
+	body.position = position;
+	bodies.push_back(body);
+	
 	dynamic_positions.push_back(start_position);
 	dynamic_rigidbodies.push_back(start_force);
 	dynamic_box_colliders.push_back(Box(width, height, offset, false));
@@ -16,6 +29,13 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 	static_positions.push_back(start_position);
 	static_box_colliders.push_back(Box(width, height, offset, _is_trigger));
 
+	glm::vec3 position{ start_position.x, start_position.y, 0.0f };
+	glm::vec3 size{width / 2.0f, height / 2.0f, 1.0f};
+	glm::mat3 orientation{1.0f};
+
+	OBB box{position, size, orientation};
+	constraints.push_back(box);
+
 	return static_positions.size() - 1;
 }
 
@@ -25,15 +45,78 @@ void World::update(
 	std::array<glm::vec2, 100>& forces)
 {
 	std::chrono::duration<float> delta_seconds = delta;	
+	
+	colliders1.clear();
+	colliders2.clear();
+	results.clear();
+	
+	for (int i = 0, size = bodies.size(); i < size; ++i)
+	{
+		for (int j = i, size = bodies.size(); j < size; ++j)
+		{
+			if (i == j)
+				continue;
 
+			CollisionManifold result;
+			reset_collison_manifold(result);
+
+			Rigidbody& left = bodies[i];
+			Rigidbody& right = bodies[j];
+
+			result = find_collision_features(left, right);
+
+			if (result.colliding)
+			{
+				colliders1.push_back(&bodies[i]);
+				colliders2.push_back(&bodies[j]);
+				results.push_back(result);
+			}
+		}
+	}
+	
 	for (auto& body : bodies)
 	{
 		body.apply_forces();
 	}
 
+	for (int k = 0; k < impulse_iteration; ++k)
+	{
+		for (int i = 0; i < results.size(); ++i)
+		{
+			int j_size = results[i].contacts.size();
+			for (int j = 0; j < j_size; ++j)
+			{
+				Rigidbody& left = *colliders1[i];
+				Rigidbody& right = *colliders2[i];
+				apply_impulse(left, right, results[i], j);
+			}
+		}
+	}
+
 	for (auto& body : bodies)
 	{
 		body.update(delta_seconds.count());
+	}
+
+	for (int i = 0, size = bodies.size(); i < size; ++i) // BOOM
+	{
+		Rigidbody* left = colliders1[i];
+		Rigidbody* right = colliders2[i];
+		float total_mass = left->inverse_mass() + right->inverse_mass();
+
+		if (total_mass == 0.0f)
+			continue;
+
+		float depth = glm::max(results[i].depth - penetration_slack, 0.0f);
+		float scalar = depth / total_mass;
+		glm::vec3 correction = 
+			results[i].normal * scalar * linear_projection_percent;
+
+		left->position = left->position - correction * left->inverse_mass();
+		right->position = right->position - correction * right->inverse_mass();
+
+		left->synch_collision_volumes();
+		right->synch_collision_volumes();
 	}
 
 	for (auto& body : bodies)
@@ -42,7 +125,7 @@ void World::update(
 	}
 
 
-	for (int i = 0; i < dynamic_positions.size(); ++i)
+	/*for (int i = 0; i < dynamic_positions.size(); ++i)
 	{
 		auto& body = dynamic_rigidbodies[i];
 		body.cancel_forces();
@@ -74,7 +157,7 @@ void World::update(
 			
 		}
 		dynamic_positions[i] = dynamics.positions[i];
-	}
+	}*/
 }
 
 std::vector<glm::vec2> World::get_forces() const

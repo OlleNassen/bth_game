@@ -73,6 +73,16 @@ private:
 
 	std::vector<Rigidbody> bodies;
 	std::vector<OBB> constraints;
+
+	std::vector<Rigidbody*> colliders1;
+	std::vector<Rigidbody*> colliders2;
+	std::vector<CollisionManifold> results;
+
+	float linear_projection_percent = 0.45f;
+	float penetration_slack = 0.01f;
+	int impulse_iteration = 5;
+
+
 };
 
 }
