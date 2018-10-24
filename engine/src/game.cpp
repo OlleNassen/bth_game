@@ -159,16 +159,15 @@ void Game::update(std::chrono::milliseconds delta)
 			
 			if (jump_timers[i] > 0ms)
 			{
-				forces[i].y += 3000.0f;
+				forces[i].y += 100.0f;
 				jump_timers[i] -= delta;
 			}
 			else
 			{	
 				jumping[i] = false;
-				forces[i].y = -1500.0f;
 			}
 			
-			forces[i].x = logic_out.directions[i].x * 2000.0f;						
+			forces[i].x = logic_out.directions[i].x * 50.0f;						
 		}
 	}
 

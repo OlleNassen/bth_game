@@ -11,12 +11,14 @@ void World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	results.reserve(100);
 
 	glm::vec3 position{start_position.x, start_position.y, 0.0f};
-	glm::vec3 size{width / 2.0f, height / 2.0f, 1.0f};
-	glm::mat3 orientation{ 1.0f };
+	glm::vec3 size{width / 2.0f, height / 2.0f, 10.0f};
+	glm::mat3 orientation{1.0f};
 
 	Rigidbody body;
 	body.box = OBB{ position, size, orientation };
 	body.position = position;
+	body.velocity = glm::vec3{0.0f};
+	body.forces = glm::vec3{0.0f};
 	bodies.push_back(body);
 	
 	dynamic_positions.push_back(start_position);
@@ -29,12 +31,17 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 	static_positions.push_back(start_position);
 	static_box_colliders.push_back(Box(width, height, offset, _is_trigger));
 
-	glm::vec3 position{ start_position.x, start_position.y, 0.0f };
-	glm::vec3 size{width / 2.0f, height / 2.0f, 1.0f};
+	glm::vec3 position{start_position.x, start_position.y, 0.0f};
+	glm::vec3 size{width / 2.0f, height / 2.0f, 10.0f};
 	glm::mat3 orientation{1.0f};
 
-	OBB box{position, size, orientation};
-	constraints.push_back(box);
+	Rigidbody body;
+	body.box = OBB{ position, size, orientation };
+	body.position = position;
+	body.velocity = glm::vec3{ 0.0f };
+	body.forces = glm::vec3{ 0.0f };
+	body.mass = 0.0f;
+	statics.push_back(body);
 
 	return static_positions.size() - 1;
 }
@@ -50,9 +57,9 @@ void World::update(
 	colliders2.clear();
 	results.clear();
 	
-	for (int i = 0, size = bodies.size(); i < size; ++i)
+	for (int i = 0, size = bodies.size(); i < 1; ++i) // < size
 	{
-		for (int j = i, size = bodies.size(); j < size; ++j)
+		for (int j = i, size = statics.size(); j < size; ++j)//bodies
 		{
 			if (i == j)
 				continue;
@@ -61,22 +68,24 @@ void World::update(
 			reset_collison_manifold(result);
 
 			Rigidbody& left = bodies[i];
-			Rigidbody& right = bodies[j];
+			Rigidbody& right = statics[j];//bodies
 
 			result = find_collision_features(left, right);
 
 			if (result.colliding)
 			{
-				colliders1.push_back(&bodies[i]);
-				colliders2.push_back(&bodies[j]);
+				colliders1.push_back(&left);
+				colliders2.push_back(&right);
 				results.push_back(result);
 			}
 		}
 	}
-	
+	int index = 0;
 	for (auto& body : bodies)
-	{
+	{	
 		body.apply_forces();
+		body.forces.x += forces[index].x;
+		body.forces.y += forces[index++].y;
 	}
 
 	for (int k = 0; k < impulse_iteration; ++k)
@@ -98,7 +107,7 @@ void World::update(
 		body.update(delta_seconds.count());
 	}
 
-	for (int i = 0, size = bodies.size(); i < size; ++i) // BOOM
+	for (int i = 0, size = results.size(); i < size; ++i)
 	{
 		Rigidbody* left = colliders1[i];
 		Rigidbody* right = colliders2[i];
@@ -122,6 +131,13 @@ void World::update(
 	for (auto& body : bodies)
 	{
 		body.solve_constraints(constraints);
+	}
+
+	for (int i = 0; i < bodies.size(); ++i)
+	{
+		dynamics.positions[i] = { bodies[i].position.x, bodies[i].position.y };
+		dynamics.velocities[i] = { bodies[i].velocity.x, bodies[i].velocity.y };
+		dynamic_positions[i] = dynamics.positions[i];
 	}
 
 
@@ -208,23 +224,23 @@ std::vector<glm::vec2> World::get_all_debug() const
 {
 	std::vector<glm::vec2> out_position;
 
-	for (int i = 0; i < dynamic_positions.size(); i++)
+	for (int i = 0; i < bodies.size(); i++)
 	{
 		std::array<glm::vec2, 8> corners = dynamic_box_colliders[i].get_vertices_in_series();
 
 		for (int j = 0; j < corners.size(); j++)
 		{
-			out_position.push_back(dynamic_positions[i] + corners[j]);
+			out_position.push_back(glm::vec2{bodies[i].position.x, bodies[i].position.y} + corners[j]);
 		}
 	}
 
-	for (int i = 0; i < static_positions.size(); i++)
+	for (int i = 0; i < statics.size(); i++)
 	{
 		std::array<glm::vec2, 8> corners = static_box_colliders[i].get_vertices_in_series();
 
 		for (int j = 0; j < corners.size(); j++)
 		{
-			out_position.push_back(static_positions[i] + corners[j]);
+			out_position.push_back(glm::vec2{ statics[i].position.x, statics[i].position.y } + corners[j]);
 		}
 	}
 
