@@ -70,6 +70,7 @@ public:
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 
+public:	
 	std::vector<Rigidbody> statics;
 	std::vector<Rigidbody> bodies;
 	std::vector<OBB> constraints;

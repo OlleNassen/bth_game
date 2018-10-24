@@ -143,31 +143,19 @@ void Game::update(std::chrono::milliseconds delta)
 	
 	std::array<glm::vec2, 100> forces;
 	forces.fill({0.0f, 0.0f});
-
-	static std::chrono::milliseconds jump_timers[4];
-	static bool jumping[4];
 	
 	if (net.connected())
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			if (!jumping[i] && player_inputs[i][logic::button::jump] == logic::button_state::held)
+			if (jump_timers[i] <= 0ms && player_inputs[i][logic::button::jump] == logic::button_state::held)
 			{
-				jumping[i] = true;
-				jump_timers[i] = 200ms;
+				jump_timers[i] = 3s;
+				physics.bodies[i].add_linear_impulse(glm::vec3{ 0.0f, 25.0f, 0.0f });
 			}
 			
-			if (jump_timers[i] > 0ms)
-			{
-				forces[i].y += 100.0f;
-				jump_timers[i] -= delta;
-			}
-			else
-			{	
-				jumping[i] = false;
-			}
-			
-			forces[i].x = logic_out.directions[i].x * 50.0f;						
+			jump_timers[i] -= delta;		
+			forces[i].x = logic_out.directions[i].x * 2000.0f;
 		}
 	}
 

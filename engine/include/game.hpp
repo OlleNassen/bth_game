@@ -60,6 +60,8 @@ private:
 	gui::Chat chat;
 	gui::Menu menu;	
 
+	std::chrono::milliseconds jump_timers[4];
+
 	//Temp leaderboards
 	std::vector<int> leader_board;
 	bool showleaderboard = false;

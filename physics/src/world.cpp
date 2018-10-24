@@ -19,6 +19,7 @@ void World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	body.position = position;
 	body.velocity = glm::vec3{0.0f};
 	body.forces = glm::vec3{0.0f};
+	body.mass = 100.0f;
 	bodies.push_back(body);
 	
 	dynamic_positions.push_back(start_position);
