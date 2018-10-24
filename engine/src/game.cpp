@@ -62,7 +62,7 @@ void Game::run()
 
 	while (window.is_open() && 
 		!menu.exit() &&
-		(*local_input)[logic::button::quit] != logic::button_state::pressed)
+		(*local_input)[logic::button::quit] != logic::button_state::held)
 	{
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();

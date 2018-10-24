@@ -135,7 +135,7 @@ void World::update(
 
 	for (int i = 0; i < bodies.size(); ++i)
 	{
-		dynamics.positions[i] = { bodies[i].position.x, bodies[i].position.y };
+		dynamics.positions[i] = { bodies[i].position.x - bodies[i].box.size.x, bodies[i].position.y - bodies[i].box.size.y };
 		dynamics.velocities[i] = { bodies[i].velocity.x, bodies[i].velocity.y };
 		dynamic_positions[i] = dynamics.positions[i];
 	}
