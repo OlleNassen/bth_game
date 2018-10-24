@@ -5,6 +5,7 @@
 #include "stb_image.h"
 #include "texture.hpp"
 #include "camera.hpp"
+#include "shader.hpp"
 #include <chrono>
 #define MAX_PARTICLES 10000
 #define MAX_DUST_PARTICLES 200
@@ -17,8 +18,7 @@ namespace graphics
 class FX {
 public:
 	FX();
-	FX(Texture& texture);
-	~FX();
+	~FX() = default;
 
 	struct Particle {
 		glm::vec3 pos, speed;
@@ -30,6 +30,9 @@ public:
 	};
 
 	struct FXdata {
+		unsigned int last_used_particle = 0;
+		unsigned int total_particle_count = 0;
+
 		unsigned int vao, vbo;
 		unsigned int position_buffer, color_buffer;
 		unsigned int nr_of_particles;
@@ -38,27 +41,33 @@ public:
 		float default_x, default_y, default_z;
 		float random_x, random_y, random_z;
 		float offset;
-		GLfloat* position_data = new GLfloat[MAX_PARTICLES * 4];
-		GLubyte* color_data = new GLubyte[MAX_PARTICLES * 4];
+		float position_data[MAX_PARTICLES * 4];
+		GLubyte color_data[MAX_PARTICLES * 4];
 		Particle particle_container[MAX_PARTICLES];
 	};
 
-	Texture* texture;
+	Texture dust;
+	Texture spark;
+	Texture steam;
 
-	unsigned int last_used_particle = 0;
-	unsigned int total_particle_count = 0;
+	
 	unsigned int randomizer = 0;
 
-	void render_particles(FXdata& data)const;
-	void calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera);
-	void calculate_spark_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera);
-	void calculate_steam_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera);
+	void render_particles(const Shader& dust,
+		const Shader& spark,
+		const Shader& steam, 
+		const Camera& camera) const;
+	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_spark_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_steam_data(std::chrono::milliseconds delta, const Camera& camera);
 
-	void set_texture(Texture& texture);
-
-	FXdata* fx;
+	FXdata* fx_dust_ptr = new FXdata{};
+	FXdata* fx_spark_ptr = new FXdata{};
+	FXdata* fx_steam_ptr = new FXdata{};
 
 private:
+	void render_particles(const FXdata& data) const;
+
 	void gen_particle_buffer(FXdata& particle);
 	void particle_linear_sort(Particle* arr, int size);
 	int find_unused_particle(Particle* container, int lastUsedParticle);

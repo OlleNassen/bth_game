@@ -139,14 +139,9 @@ private:
 
 	bool show_start{false};
 	Minimap minimap;
-	
-	//FX
-	Texture* dust_texture;
-	Texture* spark_texture;
-	Texture* steam_texture;
-	FX* dust_particles;
-	FX* spark_particles;
-	FX* steam_particles;
+
+	FX fx_emitter;
+
 };
 
 
