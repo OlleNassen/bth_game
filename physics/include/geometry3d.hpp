@@ -1,6 +1,7 @@
 #ifndef GEOMETRY3D_HPP
 #define GEOMETRY3D_HPP
 
+#include <vector>
 #include <glm/glm.hpp>
 
 namespace physics
@@ -82,6 +83,18 @@ public:
 	float max;
 };
 
+class CollisionManifold
+{
+public:
+	bool colliding;
+	glm::vec3 normal;
+	float depth;
+	std::vector<glm::vec3> contacts;
+};
+
+float magnitude(const glm::vec3& v);
+float magnitude_squared(const glm::vec3& v);
+
 float length(const Line& line);
 float length_squared(const Line& line);
 
@@ -140,6 +153,10 @@ bool linetest(const Sphere& sphere, const Line& line);
 bool linetest(const AABB& aabb, const Line& line);
 bool linetest(const OBB& obb, const Line& line);
 bool linetest(const Plane& plane, const Line& line);
+
+void reset_collison_manifold(CollisionManifold& result);
+CollisionManifold find_collision_features(const Sphere& left, const Sphere& right);
+CollisionManifold find_collision_features(const OBB& obb, const Sphere& sphere);
 
 }
 

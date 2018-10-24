@@ -26,6 +26,22 @@ void World::update(
 {
 	std::chrono::duration<float> delta_seconds = delta;	
 
+	for (auto& body : bodies)
+	{
+		body.apply_forces();
+	}
+
+	for (auto& body : bodies)
+	{
+		body.update(delta_seconds.count());
+	}
+
+	for (auto& body : bodies)
+	{
+		body.solve_constraints(constraints);
+	}
+
+
 	for (int i = 0; i < dynamic_positions.size(); ++i)
 	{
 		auto& body = dynamic_rigidbodies[i];

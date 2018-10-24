@@ -23,6 +23,7 @@
     <ClInclude Include="include\geometry3d.hpp" />
     <ClInclude Include="include\obb.hpp" />
     <ClInclude Include="include\rigidbody.hpp" />
+    <ClInclude Include="include\rigidbody_old.hpp" />
     <ClInclude Include="include\world.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +31,7 @@
     <ClCompile Include="src\geometry3d.cpp" />
     <ClCompile Include="src\obb.cpp" />
     <ClCompile Include="src\rigidbody.cpp" />
+    <ClCompile Include="src\rigidbody_old.cpp" />
     <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

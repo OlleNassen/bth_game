@@ -9,7 +9,9 @@
 #include <array>
 #include <vector>
 
+#include "rigidbody_old.hpp"
 #include "rigidbody.hpp"
+#include "geometry3d.hpp"
 #include "boxcollider.hpp"
 #include "obb.hpp"
 
@@ -42,7 +44,7 @@ public:
 	int add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
 
 	//Dynamic
-	std::vector<Rigidbody> dynamic_rigidbodies;
+	std::vector<Rigidbody_old> dynamic_rigidbodies;
 	std::vector<Box> dynamic_box_colliders;
 	std::vector<glm::vec2> dynamic_positions;
 
@@ -67,6 +69,10 @@ public:
 
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
+
+
+	std::vector<Rigidbody> bodies;
+	std::vector<OBB> constraints;
 };
 
 }

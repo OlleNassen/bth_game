@@ -192,7 +192,7 @@ Point closest_point(const OBB& obb, const Point& point)
 bool point_on_plane(const Point& point, const Plane& plane)
 {
 	float dot = glm::dot(point, plane.normal);	
-	return glm::abs(dot - plane.distance) > glm::epsilon<float>();
+	return glm::abs(dot - plane.distance) < glm::epsilon<float>();
 	//return dot - plane.distance == 0.0f;
 }
 
@@ -207,7 +207,7 @@ bool point_on_line(const Point& point, const Line& line)
 {
 	Point closest = closest_point(line, point);
 	float distance_squared = magnitude_squared(closest - point);
-	return glm::abs(distance_squared) > glm::epsilon<float>();
+	return glm::abs(distance_squared) < glm::epsilon<float>();
 	//return distance_squared == 0.0f;
 }
 
@@ -474,7 +474,7 @@ bool obb_plane(const OBB& obb, const Plane& plane)
 bool plane_plane(const Plane& left, const Plane& right)
 {
 	glm::vec3 d = glm::cross(left.normal, right.normal);
-	return glm::abs(glm::dot(d, d)) > glm::epsilon<float>();
+	return glm::abs(glm::dot(d, d)) < glm::epsilon<float>();
 	//return glm::dot(d, d) != 0;
 }
 
@@ -657,6 +657,76 @@ bool linetest(const Plane& plane, const Line& line)
 
 	float t = (plane.distance - n_a) / n_ab;
 	return t >= 0.0f && t <= 1.0f;
+}
+
+void reset_collison_manifold(CollisionManifold& result)
+{
+	result.colliding = false;
+	result.normal = glm::vec3{ 0.0f, 0.0f, 0.0f };
+	result.depth = FLT_MAX;
+	result.contacts.clear();
+}
+
+CollisionManifold find_collision_features(const Sphere& left, const Sphere& right)
+{
+	CollisionManifold result;
+	reset_collison_manifold(result);
+
+	float r = left.radius + right.radius;
+	glm::vec3 d = right.position - left.position;
+
+	if (magnitude_squared(d) - r * r > 0.0f || magnitude_squared(d) == 0.0f)
+		return result;
+
+	d = glm::normalize(d);
+
+	result.colliding = true;
+	result.normal = d;
+	result.depth = glm::abs(magnitude(d) - r) * 0.5f;
+
+	float dtp = left.radius - result.depth;
+	Point contact = left.position + d * dtp;
+	result.contacts.push_back(contact);
+
+	return result;
+}
+
+CollisionManifold find_collision_features(const OBB& obb, const Sphere& sphere)
+{
+	CollisionManifold result;
+	reset_collison_manifold(result);
+
+	Point closest = closest_point(obb, sphere.position);
+
+	float distance_squared = magnitude_squared(closest - sphere.position);
+
+	if (distance_squared > sphere.radius * sphere.radius)
+		return result;
+
+	
+	glm::vec3 normal;
+	if (glm::abs(distance_squared) < glm::epsilon<float>())
+	{
+		float m_squared = magnitude_squared(closest - obb.position);
+		if (glm::abs(m_squared) < glm::epsilon<float>())
+			return result;
+
+		normal = glm::normalize(closest - obb.position);
+	}
+	else
+	{
+		normal = glm::normalize(sphere.position - closest);
+	}
+		
+	Point outside = sphere.position - normal * sphere.radius;
+	float distance = magnitude(closest - outside);
+
+	result.colliding = true;
+	result.contacts.push_back(closest + (outside - closest) * 0.5f);
+	result.normal = normal;
+	result.depth = distance * 0.5f;
+
+	return result;	
 }
 
 }
