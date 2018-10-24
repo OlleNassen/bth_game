@@ -66,8 +66,8 @@ public:
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
 
-		glLineWidth(1.0f);
-		glDrawArrays(GL_LINES, 0, lines.size());
+		glPointSize(5.0f);
+		glDrawArrays(GL_POINTS, 0, lines.size());
 		glBindVertexArray(0);
 	}
 
