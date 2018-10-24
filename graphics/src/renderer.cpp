@@ -275,7 +275,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	}
 
-	ui.update();
+	ui.update(scene->models, player_count);
 
 	minimap.update(scene->models, player_count);
 
