@@ -16,10 +16,10 @@ Game::Game()
 	window.assign_key(logic::button::glow, GLFW_KEY_G);
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
-	window.assign_key(logic::button::debug, GLFW_KEY_R);
+	window.assign_key(logic::button::debug, GLFW_KEY_F3);
 	window.assign_key(logic::button::switch_object, GLFW_KEY_F4);
 	window.assign_key(logic::button::remove_object, GLFW_KEY_O);
-	window.assign_key(logic::button::rotate, GLFW_KEY_F3);	
+	window.assign_key(logic::button::rotate, GLFW_KEY_R);	
 	window.assign_key(logic::button::build_mode, GLFW_KEY_B);
 	window.assign_key(logic::button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);

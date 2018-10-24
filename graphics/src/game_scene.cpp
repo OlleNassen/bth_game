@@ -55,7 +55,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib)
 	}
 
 	// Lucas/Vincent Test för placering av object.
-	inititate_object(level, mesh_lib, 1);
+	inititate_object(level, mesh_lib, 27);
 }
 
 GameScene::~GameScene()
