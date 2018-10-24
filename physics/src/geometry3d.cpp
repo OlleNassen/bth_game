@@ -729,4 +729,230 @@ CollisionManifold find_collision_features(const OBB& obb, const Sphere& sphere)
 	return result;	
 }
 
+std::vector<Point> get_vertices(const OBB& obb)
+{
+	std::vector<Point> v;
+	v.resize(8);
+
+	glm::vec3 c = obb.position;
+	glm::vec3 e = obb.size;
+	const glm::mat3& o = obb.orientation;
+
+	glm::vec3 a[]
+	{
+		glm::vec3{o[0][0], o[1][0], o[2][0]},
+		glm::vec3{o[0][1], o[1][1], o[2][1]},
+		glm::vec3{o[0][2], o[1][2], o[2][2]}
+	};
+
+	v[0] = c + a[0] * e[0] + a[1] * e[1] + a[2] * e[2];
+	v[1] = c - a[0] * e[0] + a[1] * e[1] + a[2] * e[2];
+	v[2] = c + a[0] * e[0] - a[1] * e[1] + a[2] * e[2];
+	v[3] = c + a[0] * e[0] + a[1] * e[1] - a[2] * e[2];
+	v[4] = c - a[0] * e[0] - a[1] * e[1] - a[2] * e[2];
+	v[5] = c + a[0] * e[0] - a[1] * e[1] - a[2] * e[2];
+	v[6] = c - a[0] * e[0] + a[1] * e[1] - a[2] * e[2];
+	v[7] = c - a[0] * e[0] - a[1] * e[1] + a[2] * e[2];
+
+	return v;
+}
+
+std::vector<Line> get_edges(const OBB& obb)
+{
+	std::vector<Line> result;
+	result.reserve(12);
+
+	std::vector<Point> v = get_vertices(obb);
+
+	int index[][2] 
+	{
+		{6,1}, {6,3}, {6,4}, {2,7}, {2,5}, {2,0},
+		{0,1}, {0,3}, {7,1}, {7,4}, {4,5}, {5,3}
+	};
+
+	for (int j = 0; j < 12; ++j)
+	{
+		result.push_back(Line{v[index[j][0]], v[index[j][1]]});
+	}
+
+	return result;
+}
+
+std::vector<Plane> get_planes(const OBB& obb)
+{
+	std::vector<Plane> result;
+	result.resize(6);
+
+	glm::vec3 c = obb.position;
+	glm::vec3 e = obb.size;
+	const glm::mat3& o = obb.orientation;
+
+	glm::vec3 a[]
+	{
+		glm::vec3{o[0][0], o[1][0], o[2][0]},
+		glm::vec3{o[0][1], o[1][1], o[2][1]},
+		glm::vec3{o[0][2], o[1][2], o[2][2]}
+	};
+
+	result[0] = Plane(a[0], glm::dot(a[0], (c + a[0] * e.x)));
+	result[1] = Plane(a[0] * -1.0f, -glm::dot(a[0], (c - a[0] * e.x)));
+	result[2] = Plane(a[1], glm::dot(a[1], (c + a[1] * e.y)));
+	result[3] = Plane(a[1] * -1.0f, -glm::dot(a[1], (c - a[1] * e.y)));
+	result[4] = Plane(a[2], glm::dot(a[2], (c + a[2] * e.z)));
+	result[5] = Plane(a[2] * -1.0f, -glm::dot(a[2], (c - a[2] * e.z)));
+
+	return result;
+}
+
+bool clip_to_plane(const Plane& plane, const Line& line, Point* out)
+{
+	glm::vec3 ab = line.end - line.start;
+	float n_ab = glm::dot(plane.normal, ab);
+
+	if (glm::abs(n_ab) < glm::epsilon<float>())
+		return false;
+
+	float n_a = glm::dot(plane.normal, line.start);
+	float t = (plane.distance - n_a) / n_ab;
+
+	if (t >= 0.0f && t <= 1.0f)
+	{
+		if (out != nullptr)
+		{
+			*out = line.start + ab * t;
+		}
+		return true;
+	}
+
+	return false;
+}
+
+std::vector<Point> clip_edges_obb(const std::vector<Line>& edges, const OBB& obb)
+{
+	std::vector<Point> result;
+	result.reserve(edges.size());
+
+	Point intersection;
+
+	std::vector<Plane> planes = get_planes(obb);
+
+	for (int i = 0; i < planes.size(); ++i)
+	{
+		for (int j = 0; j < edges.size(); ++j)
+		{
+			if (clip_to_plane(planes[i], edges[j], &intersection))
+			{
+				if (point_in_obb(intersection, obb))
+				{
+					result.push_back(intersection);
+				}
+			}
+		}
+	}
+
+	return result;
+}
+
+float penetration_depth(const OBB& left, const OBB& right, const glm::vec3 axis, bool* should_flip)
+{
+	Interval i1 = get_interval(left, glm::normalize(axis));
+	Interval i2 = get_interval(right, glm::normalize(axis));
+
+	if (!(i2.min <= i1.max && i1.min <= i2.max))
+		return 0.0f;
+
+	float len1 = i1.max - i1.min;
+	float len2 = i2.max - i2.min;
+
+	float min = glm::min(i1.min, i2.min);
+	float max = glm::max(i1.max, i2.max);
+
+	float length = max - min;
+
+	if (should_flip != nullptr)
+		*should_flip = i2.min < i1.min;
+
+	return len1 + len2 - length;
+}
+
+CollisionManifold find_collision_features(const OBB& left, const OBB& right)
+{
+	CollisionManifold result;
+	reset_collison_manifold(result);
+
+	const glm::mat3& o1 = left.orientation;
+	const glm::mat3& o2 = right.orientation;
+
+	glm::vec3 test[15] 
+	{ 
+		glm::vec3(o1[0][0], o1[1][0], o1[2][0]),
+		glm::vec3(o1[0][1], o1[1][1], o1[2][1]),
+		glm::vec3(o1[0][2], o1[1][2], o1[2][2]),
+
+		glm::vec3(o2[0][0], o2[1][0], o2[2][0]),
+		glm::vec3(o2[0][1], o2[1][1], o2[2][1]),
+		glm::vec3(o2[0][2], o2[1][2], o2[2][2])
+	};
+	
+	for (int i = 0; i < 3; ++i) 
+	{
+		test[6 + i * 3 + 0] = glm::cross(test[i], test[0]);
+		test[6 + i * 3 + 1] = glm::cross(test[i], test[1]);
+		test[6 + i * 3 + 2] = glm::cross(test[i], test[2]);
+	}
+
+	glm::vec3* hit_normal = nullptr;
+	bool should_flip = false;
+
+	for (int i = 0; i < 15; ++i)
+	{
+		if (magnitude_squared(test[i]) < 0.001f)
+			continue;
+
+		float depth = penetration_depth(left, right, test[i], &should_flip);
+
+		if (depth <= 0.0f)
+		{
+			return result;
+		}
+		else if (depth < result.depth)
+		{
+			if (should_flip)
+				test[i] = test[i] * -1.0f;
+
+			result.depth = depth;
+			hit_normal = &test[i];
+		}
+			
+	}
+
+	if (hit_normal == nullptr)
+		return result;
+
+	glm::vec3 axis = glm::normalize(*hit_normal);
+
+	std::vector<Point> c1 = clip_edges_obb(get_edges(right), left);
+	std::vector<Point> c2 = clip_edges_obb(get_edges(left), right);
+
+	result.contacts.reserve(c1.size() + c2.size());
+
+	result.contacts.insert(result.contacts.end(), c1.begin(), c1.end());
+	result.contacts.insert(result.contacts.end(), c2.begin(), c2.end());
+
+	Interval i = get_interval(left, axis);
+	float distance = (i.max - i.min) * 0.5f - result.depth * 0.5f;
+	glm::vec3 point_on_plane = left.position + axis * distance;
+
+	for (int i = result.contacts.size() - 1; i >= 0; --i)
+	{
+		glm::vec3 contact = result.contacts[i];
+		result.contacts[i] = contact + axis * glm::dot(axis, point_on_plane - contact);
+	}
+
+	result.colliding = true;
+	result.normal = axis;
+
+	return result;
+}
+
 }

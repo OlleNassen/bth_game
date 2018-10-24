@@ -158,6 +158,14 @@ void reset_collison_manifold(CollisionManifold& result);
 CollisionManifold find_collision_features(const Sphere& left, const Sphere& right);
 CollisionManifold find_collision_features(const OBB& obb, const Sphere& sphere);
 
+std::vector<Point> get_vertices(const OBB& obb);
+std::vector<Line> get_edges(const OBB& obb);
+std::vector<Plane> get_planes(const OBB& obb);
+bool clip_to_plane(const Plane& plane, const Line& line, Point* out);
+std::vector<Point> clip_edges_obb(const std::vector<Line>& edges, const OBB& obb);
+float penetration_depth(const OBB& left, const OBB& right, const glm::vec3 axis, bool* should_flip);
+CollisionManifold find_collision_features(const OBB& left, const OBB& right);
+
 }
 
 #endif
