@@ -86,14 +86,15 @@ void MeshLib::create_object_list()
 	{
 		"spike_trap.ssp",					//0
 		"saw.ssp",							//1
-		"oil_puddle.ssp",					//2
-		"sticky_puddle.ssp",				//3
+		"platform_oil.ssp",					//2
+		"sticky_platform.ssp",				//3
 		"shock_trap.ssp",					//4
 		"treadmill.ssp",					//5
-		"wood_board.ssp",					//6
+		"standard_platform.ssp",			//6
 		"speed_boost.ssp",					//7
 		"steam_boost.ssp",					//8
 		"trampolin.ssp",					//9
+		"turret.ssp"						//10
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)

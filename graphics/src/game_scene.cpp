@@ -12,6 +12,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 {
 	//Create players
 	CustomLevel level(file_name);
+	CustomLevel objects("../resources/level/objects.ssp");
 	models.reserve(sizeof(Model) * (level.counterReader.levelObjectCount + 4));
 
 	using glm::vec3;
