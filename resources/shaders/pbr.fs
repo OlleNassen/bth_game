@@ -4,7 +4,7 @@ out vec4 frag_color;
 
 in VS_OUT{
 	vec3 world_normal;
-	vec3 frag_pos;
+	vec3 world_pos;
 	vec2 tex_coord;
 } fs_in;
 
@@ -18,13 +18,12 @@ uniform vec3 player_color;
 uniform vec3 light_color;
 
 uniform vec3 light_pos[4];
-uniform vec3 view_pos;
+uniform vec3 cam_pos;
 
 //IBL
 uniform sampler2D   brdf_lut;
 uniform samplerCube irradiance_map;
 uniform samplerCube prefilter_map;
-uniform samplerCube skybox;
 
 const float PI = 3.14159265359;
 
@@ -32,8 +31,8 @@ vec3 getNormalFromMap()
 {
     vec3 tangentNormal = texture(normal_map, fs_in.tex_coord).xyz * 2.0 - 1.0;
 
-    vec3 Q1  = dFdx(fs_in.frag_pos);
-    vec3 Q2  = dFdy(fs_in.frag_pos);
+    vec3 Q1  = dFdx(fs_in.world_pos);
+    vec3 Q2  = dFdy(fs_in.world_pos);
     vec2 st1 = dFdx(fs_in.tex_coord);
     vec2 st2 = dFdy(fs_in.tex_coord);
 
@@ -92,15 +91,10 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 void main()
 {
-	vec3 WorldPos = fs_in.frag_pos;
-	vec3 camPos = view_pos;
-
-	vec3 lightPositions[4];
 	vec3 lightColors[4];
 
 	for(int i = 0; i < 4; i++)
 	{
-		lightPositions[i] = light_pos[i];
 		lightColors[i] = light_color;
 	}
 
@@ -113,21 +107,20 @@ void main()
     // transform normal vector to range [-1,1]
     //N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
 	vec3 N = getNormalFromMap();
-	vec3 V = normalize(camPos - WorldPos);
+	vec3 V = normalize(cam_pos - fs_in.world_pos);
 	vec3 R = reflect(-V, N);
 
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
-	
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
     for(int i = 0; i < 4; ++i) 
     {
         // calculate per-light radiance
-        vec3 L = normalize(lightPositions[i] - WorldPos);
+        vec3 L = normalize(light_pos[i] - fs_in.world_pos);
         vec3 H = normalize(V + L);
-        float distance = length(lightPositions[i] - WorldPos);
+        float distance = length(light_pos[i] - fs_in.world_pos);
         float attenuation = 1.0 / (distance * distance);
         vec3 radiance = lightColors[i] * attenuation;
 
@@ -189,9 +182,4 @@ void main()
     color = pow(color, vec3(1.0/2.2)); 
 
     frag_color = vec4(color, 1.0);
-	//R.x *= -1;
-	//R.y *= -1;
-
-    //frag_color = texture(skybox, R);    
-
 }

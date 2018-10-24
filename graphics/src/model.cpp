@@ -27,7 +27,7 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
-	shader.uniform("view_pos", glm::vec3{ camera.position });
+	shader.uniform("cam_pos", camera.position);
 	
 	shader.uniform("light_pos[0]", lights[0].position);
 	shader.uniform("light_pos[1]", lights[1].position);

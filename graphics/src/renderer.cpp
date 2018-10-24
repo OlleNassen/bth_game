@@ -53,12 +53,10 @@ void Renderer::render(
 		pbr.uniform("brdf_lut", 6);
 		pbr.uniform("irradiance_map", 7);
 		pbr.uniform("prefilter_map", 8);
-		pbr.uniform("skybox", 9);
 
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
-		skybox.bind_texture(9);
 
 		render_character(pbr, 
 			game_camera, lights, scene->models, player_count);
@@ -86,12 +84,11 @@ void Renderer::render(
 		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 
 		glDisable(GL_DEPTH_TEST);
-		auto& s = lines;
 		if (debug_active)
 		{
-			s.use();
-			s.uniform("projection", game_camera.projection);
-			s.uniform("view", game_camera.view());
+			lines.use();
+			lines.uniform("projection", game_camera.projection);
+			lines.uniform("view", game_camera.view());
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -102,12 +99,10 @@ void Renderer::render(
 		pbr.uniform("brdf_lut", 6);
 		pbr.uniform("irradiance_map", 7);
 		pbr.uniform("prefilter_map", 8);
-		pbr.uniform("skybox", 9);
 
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
-		skybox.bind_texture(9);
 
 		if(debug)
 			render_character(pbr, 
@@ -138,11 +133,10 @@ void Renderer::render(
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
-			auto& s = lines;
-			s.use();
-			s.uniform("projection", db_camera.projection);
-			s.uniform("view", db_camera.view());
-			s.uniform("line_color", glm::vec3(1.0, 0.0, 0.0));
+			lines.use();
+			lines.uniform("projection", db_camera.projection);
+			lines.uniform("view", db_camera.view());
+			lines.uniform("line_color", glm::vec3(1.0, 0.0, 0.0));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 
@@ -221,14 +215,8 @@ void Renderer::render(
 
 		glEnable(GL_DEPTH_TEST);
 	}
-	
 
 	/*text.render_text("GAME OVER!\n\n\n\n", 1280 / 2.f, 720 / 2.f, 2.0f);*/
-
-	
-
-
-	
 
 }
 
@@ -248,14 +236,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 	is_chat_visible = is_on || time < 3s;
 
 	player_count = num_players;
-
-
-	
-	//test
-	/*for (int i = 0; i < 3; i++)
-	{*/
-		
-	//}
 
 	if (!is_on)
 	{
@@ -284,8 +264,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		db_camera.update(delta, directions[0], cursor);
 	}
 
-	
-
 	if (scene->build_mode_active)
 	{
 		glm::vec2 build_pos[2];
@@ -297,12 +275,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	}
 
-
-	
-
 	ui.update();
-
-
 
 	minimap.update(scene->models, player_count);
 
