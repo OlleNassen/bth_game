@@ -46,13 +46,6 @@ public:
 		bool is_on,
 		bool move_char);
 
-	void update_particles(
-		Texture& texture,
-		Shader& shader,
-		std::string texture_name,
-		Camera& camera,
-		int id);
-
 	bool debug_active{ false };
 
 	static void line_debug(const std::vector<glm::vec2>& lines)
@@ -74,24 +67,45 @@ public:
 	void show_leaderboard();
 
 private:
-	Shader pbr{ "../resources/shaders/pbr.vs", "../resources/shaders/pbr.fs" };
-	Shader text_shader{ "../resources/shaders/text.vs", "../resources/shaders/text.fs" };
-	Shader gui{ "../resources/shaders/gui.vs","../resources/shaders/gui.fs" };
-	Shader post_proccessing{ "../resources/shaders/post_processing_effects.vs",
+	Shader pbr{ 
+		"../resources/shaders/pbr.vs", 
+		"../resources/shaders/pbr.fs" };
+	Shader text_shader{ 
+		"../resources/shaders/text.vs", 
+		"../resources/shaders/text.fs" };
+	Shader gui{ 
+		"../resources/shaders/gui.vs",
+		"../resources/shaders/gui.fs" };
+	Shader post_proccessing{ 
+		"../resources/shaders/post_processing_effects.vs",
 		"../resources/shaders/post_processing_effects.fs" };
-	Shader lines{ "../resources/shaders/lines.vs", "../resources/shaders/lines.fs" };
-	Shader skybox_shader{ "../resources/shaders/skybox.vs",
+	Shader lines{ 
+		"../resources/shaders/lines.vs", 
+		"../resources/shaders/lines.fs" };
+	Shader skybox_shader{ 
+		"../resources/shaders/skybox.vs",
 		"../resources/shaders/skybox.fs" };
-	Shader irradiance{ "../resources/shaders/irradiance.vs",
+	Shader irradiance{ 
+		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/irradiance.fs" };
-	Shader fx_dust{ "../resources/shaders/fx_dust.vs",
-	"../resources/shaders/fx_dust.fs" };
-	Shader pre_filter{ "../resources/shaders/irradiance.vs",
-	"../resources/shaders/pre_filter.fs" };
-	Shader brdf{ "../resources/shaders/brdf.vs",
-	"../resources/shaders/brdf.fs" };
-	Shader minimap_shader{ "../resources/shaders/minimap.vs",
-"../resources/shaders/minimap.fs" };
+	Shader fx_dust{ 
+		"../resources/shaders/fx_dust.vs",
+		"../resources/shaders/fx_dust.fs" };
+	Shader fx_spark{ 
+		"../resources/shaders/fx_spark.vs",
+		"../resources/shaders/fx_spark.fs" };
+	Shader fx_steam{ 
+		"../resources/shaders/fx_steam.vs",
+		"../resources/shaders/fx_steam.fs" };
+	Shader pre_filter{ 
+		"../resources/shaders/irradiance.vs",
+		"../resources/shaders/pre_filter.fs" };
+	Shader brdf{ 
+		"../resources/shaders/brdf.vs",
+		"../resources/shaders/brdf.fs" };
+	Shader minimap_shader{ 
+		"../resources/shaders/minimap.vs",
+		"../resources/shaders/minimap.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -100,7 +114,6 @@ private:
 	std::vector<Shader> shaders;
 
 	Skybox skybox;
-
 
 	Box light_box;
 
@@ -125,10 +138,15 @@ private:
 	glm::vec2 v[4];
 
 	bool show_start{false};
-	Texture* dust_texture;
-	FX* dust_particles;
-	int randomizer;
 	Minimap minimap;
+	
+	//FX
+	Texture* dust_texture;
+	Texture* spark_texture;
+	Texture* steam_texture;
+	FX* dust_particles;
+	FX* spark_particles;
+	FX* steam_particles;
 };
 
 

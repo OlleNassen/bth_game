@@ -23,8 +23,13 @@ Renderer::Renderer(GameScene* scene)
 	db_camera.position.z = 20.0f;
 	glViewport(0, 0, 1280, 720); // don't forget to configure the viewport to the capture dimensions.
 
-	dust_texture = new Texture("../resources/textures/dust_texture_1.png");
+	dust_texture = new Texture( "../resources/textures/dust_texture.png");
+	spark_texture = new Texture("../resources/textures/spark_texture.png");
+	steam_texture = new Texture("../resources/textures/steam_texture.png");
 	dust_particles = new FX(*dust_texture);
+	spark_particles = new FX(*spark_texture);
+	steam_particles = new FX(*steam_texture);
+
 	for (int i = 0; i < 4; ++i)
 	{
 		lights[i].position = glm::vec3{0,0,0};
@@ -65,12 +70,13 @@ void Renderer::render(
 		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
 
-		fx_dust.use();
+		//FX Dust
+		/*fx_dust.use();
 		fx_dust.uniform("particle_texture", 0);
-		dust_texture->bind(0);
+		dust_texture->bind(0);*/
 
-		//Get and set matrices
-		glm::vec3 start_point = glm::vec3(0, 0, 0);
+		//FX Dust: Get and set matrices
+		/*glm::vec3 start_point = glm::vec3(0, 0, 0);
 		glm::mat4 view_matrix = game_camera.view();
 		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
 		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
@@ -79,9 +85,50 @@ void Renderer::render(
 		fx_dust.uniform("view", game_camera.view());
 		fx_dust.uniform("projection", game_camera.projection);
 		fx_dust.uniform("view_position", scene->v[0]);
-		fx_dust.uniform("particle_pivot", start_point);
+		fx_dust.uniform("particle_pivot", start_point);*/
 
-		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
+		//Render FX Dust
+		//dust_particles->render_particles(*dust_particles->fx);
+
+		//FX Spark
+		/*fx_spark.use();
+		fx_spark.uniform("particle_texture", 0);
+		spark_texture->bind(0);
+
+		//FX Spark: Get and set matrices
+		glm::vec3 start_point = glm::vec3(0, 0, 0);
+		glm::mat4 view_matrix = game_camera.view();
+		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
+		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
+		fx_spark.uniform("camera_right_worldspace", camera_right_vector);
+		fx_spark.uniform("camera_up_worldspace", camera_up_vector);
+		fx_spark.uniform("view", game_camera.view());
+		fx_spark.uniform("projection", game_camera.projection);
+		fx_spark.uniform("view_position", scene->v[0]);
+		fx_spark.uniform("particle_pivot", start_point);
+
+		//Render FX Spark
+		spark_particles->render_particles(*spark_particles->fx);*/
+
+		////FX - Steam
+		//fx_steam.use();
+		//fx_steam.uniform("particle_texture", 0);
+		//steam_texture->bind(0);
+
+		////Get and set matrices
+		//glm::vec3 start_point = glm::vec3(0, 0, 0);
+		//glm::mat4 view_matrix = game_camera.view();
+		//glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
+		//glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
+		//fx_steam.uniform("camera_right_worldspace", camera_right_vector);
+		//fx_steam.uniform("camera_up_worldspace", camera_up_vector);
+		//fx_steam.uniform("view", game_camera.view());
+		//fx_steam.uniform("projection", game_camera.projection);
+		//fx_steam.uniform("view_position", scene->v[0]);
+		//fx_steam.uniform("particle_pivot", start_point);
+
+		////Render steam
+		//steam_particles->render_particles(*steam_particles->fx);
 
 		glDisable(GL_DEPTH_TEST);
 		if (debug_active)
@@ -111,24 +158,58 @@ void Renderer::render(
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, db_camera);
+		
+		//brdf.use();
+		//brdf_buffer.bind_texture(6);
+		//brdf_buffer.render_quad();
 
-		//Dust
+
+		glm::vec3 start_point = glm::vec3(0, 0, 0);
+		glm::mat4 view_matrix = db_camera.view();
+		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
+		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
+		//Dust Render
 		fx_dust.use();
 		fx_dust.uniform("particle_texture", 0);
 		dust_texture->bind(0);
 
-		//Get and set matrices
-		glm::vec3 start_point = glm::vec3(0);
-		glm::mat4 view_matrix = db_camera.view();
-		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
-		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
+		//Get and set matrices for dust
 		fx_dust.uniform("camera_right_worldspace", camera_right_vector);
 		fx_dust.uniform("camera_up_worldspace", camera_up_vector);
 		fx_dust.uniform("view", db_camera.view());
 		fx_dust.uniform("projection", db_camera.projection);
 		fx_dust.uniform("view_position", scene->v[0]);
 		fx_dust.uniform("particle_pivot", start_point);
-		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
+		dust_particles->render_particles(*dust_particles->fx);
+
+		//FX - Spark
+		//fx_spark.use();
+		//fx_spark.uniform("particle_texture", 0);
+		//spark_texture->bind(0);
+
+		////Get and set matrices
+		//fx_spark.uniform("camera_right_worldspace", camera_right_vector);
+		//fx_spark.uniform("camera_up_worldspace", camera_up_vector);
+		//fx_spark.uniform("view", db_camera.view());
+		//fx_spark.uniform("projection", db_camera.projection);
+		//fx_spark.uniform("view_position", scene->v[0]);
+		//fx_spark.uniform("particle_pivot", start_point);
+		////Render spark
+		//spark_particles->render_particles(*spark_particles->fx);
+
+		//FX - Steam
+		fx_steam.use();
+		fx_steam.uniform("particle_texture", 0);
+		steam_texture->bind(0);
+
+		//Get and set matrices
+		fx_steam.uniform("camera_right_worldspace", camera_right_vector);
+		fx_steam.uniform("camera_up_worldspace", camera_up_vector);
+		fx_steam.uniform("view", db_camera.view());
+		fx_steam.uniform("projection", db_camera.projection);
+		fx_steam.uniform("view_position", scene->v[0]);
+		fx_steam.uniform("particle_pivot", start_point);
+		steam_particles->render_particles(*steam_particles->fx);
 
 		if (debug_active)
 		{
@@ -239,27 +320,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_on)
 	{
+		
 		//Dust Particles
-		randomizer = rand() % 100;
-		if (randomizer <= 40)
-		{
-			dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
-		}
+		dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
 
-		//update_particles(*dust_texture, fx_dust, "dust_texture", db_camera, id);
-		/*if (begin[0][button::glow] == button_state::pressed)
-		{
-			want_glow = !want_glow;
-		}
-
-		if (want_glow)
-		{
-			post_processing_effects.update(delta);
-		}
-		else
-		{
-			post_processing_effects.glow_value = 0;
-		}*/
+		//Steam Particles
+		steam_particles->calculate_steam_data(*steam_particles->fx, scene->v, delta, db_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 	}

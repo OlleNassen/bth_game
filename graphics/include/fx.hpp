@@ -6,8 +6,9 @@
 #include "texture.hpp"
 #include "camera.hpp"
 #include <chrono>
-#define MAX_PARTICLES 1000
-#define MAX_DUST_PARTICLES 500
+#define MAX_PARTICLES 10000
+#define MAX_DUST_PARTICLES 200
+#define MAX_STEAM_PARTICLES 100
 #define DF 3.0f
 
 namespace graphics
@@ -25,6 +26,7 @@ public:
 		float size, angle, weight;
 		float life;
 		float camera_distance;
+		float random_amp;
 	};
 
 	struct FXdata {
@@ -45,11 +47,15 @@ public:
 
 	unsigned int last_used_particle = 0;
 	unsigned int total_particle_count = 0;
+	unsigned int randomizer = 0;
 
 	void render_particles(FXdata& data)const;
 	void calculate_dust_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera);
+	void calculate_spark_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera);
+	void calculate_steam_data(FXdata& data, glm::vec2* model_position_2d, std::chrono::milliseconds delta, Camera camera);
 
 	void set_texture(Texture& texture);
+
 	FXdata* fx;
 
 private:
