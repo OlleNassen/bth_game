@@ -36,7 +36,7 @@ void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
 	const std::array<std::string, 12>& buttons,
-	const std::vector<glm::vec2>& debug_positions,
+	const std::vector<glm::vec3>& debug_positions,
 	bool is_menu,
 	bool connected,
 	bool debug, std::vector<int> leaderboard, bool show_leaderboard)const
@@ -92,6 +92,7 @@ void Renderer::render(
 			s.use();
 			s.uniform("projection", game_camera.projection);
 			s.uniform("view", game_camera.view());
+			s.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -142,7 +143,7 @@ void Renderer::render(
 			s.use();
 			s.uniform("projection", db_camera.projection);
 			s.uniform("view", db_camera.view());
-			s.uniform("line_color", glm::vec3(1.0, 0.0, 0.0));
+			s.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 

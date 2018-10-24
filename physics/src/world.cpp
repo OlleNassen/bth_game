@@ -11,7 +11,7 @@ void World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	results.reserve(100);
 
 	glm::vec3 position{start_position.x, start_position.y, 0.0f};
-	glm::vec3 size{width / 2.0f, height / 2.0f, 10.0f};
+	glm::vec3 size{width / 2.0f, height / 2.0f, 1.0f};
 	glm::mat3 orientation{1.0f};
 
 	Rigidbody body;
@@ -32,7 +32,7 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 	static_box_colliders.push_back(Box(width, height, offset, _is_trigger));
 
 	glm::vec3 position{start_position.x, start_position.y, 0.0f};
-	glm::vec3 size{width / 2.0f, height / 2.0f, 10.0f};
+	glm::vec3 size{width / 2.0f, height / 2.0f, 1.0f};
 	glm::mat3 orientation{1.0f};
 
 	Rigidbody body;
@@ -220,31 +220,33 @@ bool World::intersects(const int box_id, const int target_box_id)
 	return intersection;
 }
 
-std::vector<glm::vec2> World::get_all_debug() const
+std::vector<glm::vec3> World::get_all_debug() const
 {
-	std::vector<glm::vec2> out_position;
+	std::vector<glm::vec3> out_vertices;
 
 	for (int i = 0; i < bodies.size(); i++)
 	{
-		std::array<glm::vec2, 8> corners = dynamic_box_colliders[i].get_vertices_in_series();
+		std::vector<Point> vertices = get_vertices(bodies[i].box);
+		auto& b = bodies[i];
 
-		for (int j = 0; j < corners.size(); j++)
-		{
-			out_position.push_back(glm::vec2{bodies[i].position.x, bodies[i].position.y} + corners[j]);
+		for (auto& vertex : vertices)
+		{		
+			out_vertices.push_back(vertex);
 		}
 	}
 
 	for (int i = 0; i < statics.size(); i++)
 	{
-		std::array<glm::vec2, 8> corners = static_box_colliders[i].get_vertices_in_series();
-
-		for (int j = 0; j < corners.size(); j++)
+		std::vector<Point> vertices = get_vertices(statics[i].box);
+		auto& s = statics[i];
+		
+		for (auto& vertex : vertices)
 		{
-			out_position.push_back(glm::vec2{ statics[i].position.x, statics[i].position.y } + corners[j]);
+			out_vertices.push_back(vertex);
 		}
 	}
 
-	return out_position;
+	return out_vertices;
 }
 
 void World::rotate_static_box(int id)

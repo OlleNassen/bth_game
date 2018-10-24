@@ -32,7 +32,7 @@ public:
 		const std::string* begin,
 		const std::string* end,
 		const std::array<std::string, 12>& buttons,
-		const std::vector<glm::vec2>& debug_positions,
+		const std::vector<glm::vec3>& debug_positions,
 		bool is_menu,
 		bool connected,
 		bool debug, std::vector<int> leaderboard, bool show_leaderboard) const;
@@ -55,7 +55,7 @@ public:
 
 	bool debug_active{ false };
 
-	static void line_debug(const std::vector<glm::vec2>& lines)
+	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
 		VertexArray vao;
 		Buffer vertex_buffer;
@@ -64,7 +64,7 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 		gl_buffer_data(GL_ARRAY_BUFFER, lines, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
 
 		glLineWidth(1.0f);
 		glDrawArrays(GL_LINES, 0, lines.size());
