@@ -15,7 +15,7 @@ struct SoundSettings
 
 struct WindowSettings
 {
-	glm::vec2 resolution;
+	glm::ivec2 resolution;
 	bool fullscreen;
 };
 
@@ -24,6 +24,8 @@ class Settings
 public:
 	Settings();
 	~Settings();
+
+	void create();
 
 private:
 	lua_State* importer;

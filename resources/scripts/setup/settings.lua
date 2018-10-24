@@ -2,9 +2,9 @@ settings =
 {
 	window = 
 	{
-		fullscreen = false,
-		width = 1280.0,
-		height = 720.0,
+		fullscreen = true,
+		width = 1280,
+		height = 720,
 	},
 
 	sound = 

@@ -1,5 +1,7 @@
 #include "settings.hpp"
 #include <iostream>
+#include <fstream>
+
 Settings::Settings()
 {
 	importer = luaL_newstate();
@@ -8,21 +10,41 @@ Settings::Settings()
 	if (luaL_loadfile(importer, "../resources/scripts/setup/settings.lua") || lua_pcall(importer, 0, 0, 0))
 		std::cout << lua_tostring(importer, -1) << '\n';
 
+	create();
+
 	lua_getglobal(importer, "settings");
 	lua_getfield(importer, -1, "window");
 	lua_getfield(importer, -1, "width");
 	lua_getfield(importer, -2, "height");
 
-	//lua_tointeger
-	window.resolution.x = lua_tonumber(importer, -2);
-	window.resolution.y = lua_tonumber(importer, -1);
+	window.resolution.x = lua_tointeger(importer, -2);
+	window.resolution.y = lua_tointeger(importer, -1);
+
+	lua_getfield(importer, -3, "fullscreen");
+	window.fullscreen = lua_toboolean(importer, -1);
 
 	std::cout << window.resolution.x << " " << window.resolution.y << '\n';
+	std::cout << window.fullscreen << '\n';
 
+	//Clear stack
+	lua_pop(importer, lua_gettop(importer));
 }
 
 Settings::~Settings()
 {
 	lua_close(importer);
+}
+
+void Settings::create()
+{
+	std::ofstream out("../resources/scripts/setup/settings2.lua");
+
+	std::string tab = "    ";
+
+	out << "settings = \n" << "{\n" << "window = \n" << "{\n" << "fullscreen = false,\n"
+		<< "width = 1280,\n" << "height = 720,\n" << "},\n" << "sound =\n" << "{\n"
+		<< "quality = 9.0 -- 10 is max\n" << "},\n" << "graphics =\n"
+		<< "{\n" << "debug_fov = 90.0,\n" << "depth_of_field = true\n" << "}\n"
+		<< "}\n";
 }
 
