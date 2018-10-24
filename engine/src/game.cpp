@@ -8,6 +8,7 @@ Game::Game()
 	, level{"../resources/level/level.ssp", &mesh_lib}
 	, renderer{&level}
 {
+
 	window.assign_key(logic::button::up, GLFW_KEY_W);
 	window.assign_key(logic::button::left, GLFW_KEY_A);
 	window.assign_key(logic::button::down, GLFW_KEY_S);
