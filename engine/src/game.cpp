@@ -5,7 +5,9 @@ using namespace std::chrono_literals;
 
 Game::Game()
 	: window({1280, 720}, "Scrap Escape")
-	, level{"../resources/level/level.ssp", &mesh_lib}
+	, mesh_lib{0}
+	, object_lib{1}
+	, level{"../resources/level/level.ssp", &mesh_lib, &object_lib}
 	, renderer{&level}
 {
 

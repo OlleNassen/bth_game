@@ -40,6 +40,7 @@ private:
 	Window window; //PUT BELOW WINDOW IF OPENGL RELATED
 	
 	graphics::MeshLib mesh_lib;
+	graphics::MeshLib object_lib;
 	graphics::GameScene level;
 	graphics::Renderer renderer;
 

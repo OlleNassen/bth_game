@@ -3,9 +3,16 @@
 namespace graphics
 {
 
-MeshLib::MeshLib()
+MeshLib::MeshLib(const int listType)
 {
-	create_mesh_list();
+	if (listType == 0)
+	{
+		create_mesh_list();
+	}
+	else if (listType == 1)
+	{
+		create_object_list();
+	}
 }
 
 MeshLib::~MeshLib()
@@ -60,6 +67,34 @@ void MeshLib::create_mesh_list()
 		"cog_3.ssp",						//39
 		"machine_1.ssp",					//40
 		"machine_2.ssp"						//41
+	};
+
+	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
+	{
+		mesh_list.emplace_back(meshLoader[i]);
+	}
+
+	for (auto i = 0u; i < mesh_list.size(); ++i)
+	{
+		add_mesh(mesh_list[i]);
+	}
+}
+
+void MeshLib::create_object_list()
+{
+	std::string meshLoader[] =
+	{
+		"spike_trap.ssp",					//0
+		"saw.ssp",							//1
+		"platform_oil.ssp",					//2
+		"sticky_platform.ssp",				//3
+		"shock_trap.ssp",					//4
+		"treadmill.ssp",					//5
+		"standard_platform.ssp",			//6
+		"speed_boost.ssp",					//7
+		"steam_boost.ssp",					//8
+		"trampolin.ssp",					//9
+		"turret.ssp"						//10
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
