@@ -3,7 +3,7 @@
 
 using std::cout;
 
-Window::Window(const glm::ivec2& window_size, const std::string& title)
+Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string& title)
 {
 	if (!glfwInit())
 	{
@@ -13,8 +13,12 @@ Window::Window(const glm::ivec2& window_size, const std::string& title)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	glfw_window = glfwCreateWindow(window_size.x, window_size.y,
-		title.c_str(), nullptr, nullptr);
+	if(fullscreen)
+		glfw_window = glfwCreateWindow(window_size.x, window_size.y,
+			title.c_str(), glfwGetPrimaryMonitor(), nullptr);
+	else
+		glfw_window = glfwCreateWindow(window_size.x, window_size.y,
+			title.c_str(), nullptr, nullptr);
 
 	if (!glfw_window)
 	{

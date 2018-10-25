@@ -37,9 +37,9 @@ private:
 	void pack_data();
 	void unpack_data();
 	
+	Settings settings; // NEEDS TO BE ABOVE WINDOW
 	Window window; //PUT BELOW WINDOW IF OPENGL RELATED
 	
-	Settings settings;
 	graphics::MeshLib mesh_lib;
 	graphics::GameScene level;
 	graphics::Renderer renderer;

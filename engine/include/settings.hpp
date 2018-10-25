@@ -24,10 +24,14 @@ class Settings
 public:
 	Settings();
 	~Settings();
+	const WindowSettings& get_window_settings()const;
+	const GraphicsSettings& get_graphics_settings()const;
 
-	void create();
+	void set_fullscreen();
 
 private:
+	void create();
+
 	lua_State* importer;
 	GraphicsSettings graphics;
 	SoundSettings sound;
