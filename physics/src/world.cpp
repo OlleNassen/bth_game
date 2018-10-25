@@ -49,8 +49,7 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 
 void World::update(
 	std::chrono::milliseconds delta,
-	object_arrays& dynamics,
-	std::array<glm::vec2, 100>& forces)
+	objects_array& dynamics)
 {
 	std::chrono::duration<float> delta_seconds = delta;	
 	
@@ -58,18 +57,14 @@ void World::update(
 	colliders2.clear();
 	results.clear();
 	
-	for (int i = 0, size = bodies.size(); i < 1; ++i) // < size
+	//for (auto& left : bodies)
 	{
-		for (int j = i, size = statics.size(); j < size; ++j)//bodies
+		auto& left = bodies[0];
+		
+		for (auto& right : statics)
 		{
-			if (i == j)
-				continue;
-
 			CollisionManifold result;
 			reset_collison_manifold(result);
-
-			Rigidbody& left = bodies[i];
-			Rigidbody& right = statics[j];//bodies
 
 			result = find_collision_features(left, right);
 
@@ -81,12 +76,15 @@ void World::update(
 			}
 		}
 	}
+	
 	int index = 0;
 	for (auto& body : bodies)
 	{	
+		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
 		body.apply_forces();
-		body.forces.x += forces[index].x;
-		body.forces.y += forces[index++].y;
+		body.forces.x += dynamics[index].forces.x;
+		body.forces.y += dynamics[index].forces.y;
+		++index;
 	}
 
 	for (int k = 0; k < impulse_iteration; ++k)
@@ -136,45 +134,12 @@ void World::update(
 
 	for (int i = 0; i < bodies.size(); ++i)
 	{
-		dynamics.positions[i] = { bodies[i].position.x - bodies[i].box.size.x, bodies[i].position.y - bodies[i].box.size.y };
-		dynamics.velocities[i] = { bodies[i].velocity.x, bodies[i].velocity.y };
-		dynamic_positions[i] = dynamics.positions[i];
+		dynamics[i].position = { bodies[i].position.x - bodies[i].box.size.x, bodies[i].position.y - bodies[i].box.size.y };
+		dynamics[i].velocity = { bodies[i].velocity.x, bodies[i].velocity.y };
+		dynamics[i].size = { bodies[i].box.size.x, bodies[i].box.size.y };
+		dynamics[i].forces = { 0.0f, 0.0f };
+		dynamics[i].impulse = {0.0f, 0.0f};
 	}
-
-
-	/*for (int i = 0; i < dynamic_positions.size(); ++i)
-	{
-		auto& body = dynamic_rigidbodies[i];
-		body.cancel_forces();
-		body.add_force(forces[i]);
-		if (glm::abs(forces[i].x) > 0.1f)
-			dynamics.velocities[i].x = body.acceleration().x * delta_seconds.count();
-
-		if (glm::abs(forces[i].y) > 0.1f)
-			dynamics.velocities[i].y = body.acceleration().y * delta_seconds.count();
-	}
-	
-	for (int i = 0; i < dynamic_positions.size(); ++i)
-	{
-		auto& box = dynamic_box_colliders[i];
-		auto& body = dynamic_rigidbodies[i];
-			
-		dynamics.sizes[i] = {box.get_width(), box.get_height()};
-		dynamics.velocities[i] *= 0.9f;
-		dynamics.positions[i] += dynamics.velocities[i] * delta_seconds.count();
-
-		glm::vec2 half_extent{box.get_width() / 2.0f, box.get_height() / 2.0f};
-		Rectangle2D left{dynamics.positions[i] + half_extent, half_extent, 0.0f};
-		
-		for (int j = 0; j < static_box_colliders.size(); ++j)
-		{
-			auto& s_box = static_box_colliders[j];
-			glm::vec2 s_half_extent{s_box.get_width() / 2.0f, s_box.get_height() / 2.0f};
-			Rectangle2D right{static_positions[j] + s_half_extent, s_half_extent, 0.0f};
-			
-		}
-		dynamic_positions[i] = dynamics.positions[i];
-	}*/
 }
 
 std::vector<glm::vec2> World::get_forces() const

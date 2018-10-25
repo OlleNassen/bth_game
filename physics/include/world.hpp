@@ -27,14 +27,17 @@ public:
 	float height;
 };
 
-class object_arrays
+class objects
 {
 public:
-	using vec2_array = std::array<glm::vec2, 100>;	
-	vec2_array positions;
-	vec2_array velocities;
-	vec2_array sizes;
+	glm::vec2 position;
+	glm::vec2 velocity;
+	glm::vec2 size;
+	glm::vec2 forces;
+	glm::vec2 impulse;
 };
+
+using objects_array = std::array<objects, 100>;
 
 
 class World
@@ -57,8 +60,7 @@ public:
 
 	void update(
 		std::chrono::milliseconds delta,
-		object_arrays& dynamics,
-		std::array<glm::vec2, 100>& forces);
+		objects_array& dynamics);
 
 	std::vector<glm::vec2> get_forces() const;
 	bool intersects(const int box_id, const int target_box_id);
@@ -70,7 +72,6 @@ public:
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 
-public:	
 	std::vector<Rigidbody> statics;
 	std::vector<Rigidbody> bodies;
 	std::vector<OBB> constraints;

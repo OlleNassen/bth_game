@@ -33,23 +33,17 @@ Game::Game()
 
 	for (int i = 0; i < 4; ++i)
 	{
-		dynamics.positions[i] = level.v[i];
-		dynamics.velocities[i] = {0.0f, 0.0f};
-		dynamics.sizes[i] = {1.0f, 3.5f};
+		dynamics[i].position = level.v[i];
+		dynamics[i].velocity = {0.0f, 0.0f};
+		dynamics[i].size = {1.0f, 3.5f};
+		dynamics[i].forces = {0.0f, 0.0f};
+		dynamics[i].impulse = { 0.0f, 0.0f };
 	}
 		
 
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
-
-
-	//A Temporary goal-object
-	physics.add_static_body({7.0f, 11.0f}, glm::vec2{ 0.0f, 0.0f }, 2, 2, true);
-	
-	//Temporary leaderboard in the game4
-	leader_board.resize(4);
-	
 }
 
 void Game::run()
@@ -138,11 +132,29 @@ void Game::update(std::chrono::milliseconds delta)
 		glm::vec3{0.0f}, 
 		glm::vec3{0.0f} 
 	};
-	
-	logic_out = gameplay.update({ delta, player_inputs, directions, &level, &physics });
-	
-	std::array<glm::vec2, 100> forces;
-	forces.fill({0.0f, 0.0f});
+
+	{
+		logic::objects_array obj;
+		for (int i = 0; i < dynamics.size(); ++i)
+		{
+			obj[i].position = dynamics[i].position;
+			obj[i].velocity = dynamics[i].velocity;
+			obj[i].size = dynamics[i].size;
+			obj[i].forces = dynamics[i].forces;
+			obj[i].impulse = dynamics[i].impulse;
+		}
+		
+		logic_out = gameplay.update({ delta, obj, player_inputs, directions, &level, &physics });
+
+		for (int i = 0; i < dynamics.size(); ++i)
+		{
+			dynamics[i].position = obj[i].position;
+			dynamics[i].velocity = obj[i].velocity;
+			dynamics[i].size = obj[i].size;
+			dynamics[i].forces = obj[i].forces;
+			dynamics[i].impulse = obj[i].impulse;
+		}
+	}
 	
 	if (net.connected())
 	{
@@ -151,15 +163,15 @@ void Game::update(std::chrono::milliseconds delta)
 			if (jump_timers[i] <= 0ms && player_inputs[i][logic::button::jump] == logic::button_state::held)
 			{
 				jump_timers[i] = 3s;
-				physics.bodies[i].add_linear_impulse(glm::vec3{ 0.0f, 25.0f, 0.0f });
+				dynamics[i].impulse = glm::vec2{ 0.0f, 25.0f};
 			}
 			
 			jump_timers[i] -= delta;		
-			forces[i].x = logic_out.directions[i].x * 2000.0f;
+			dynamics[i].forces.x = logic_out.directions[i].x * 2000.0f;
 		}
 	}
 
-	physics.update(delta, dynamics, forces);
+	physics.update(delta, dynamics);
 
 	if (net.connected())
 	{
@@ -174,8 +186,8 @@ void Game::update(std::chrono::milliseconds delta)
 				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 			}
 			
-			level.v[i] = dynamics.positions[i];
-			level.models[i].set_position(dynamics.positions[i]);			
+			level.v[i] = dynamics[i].position;
+			level.models[i].set_position(dynamics[i].position);			
 		}		
 	}
 	level.models[0].update_animation((float)delta.count());
@@ -195,10 +207,10 @@ void Game::pack_data()
 		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
 	}
 
-	for (int i = 0; i < dynamics.positions.size(); ++i)
+	for (int i = 0; i < dynamics.size(); ++i)
 	{
-		net_state.game_objects[i].position = dynamics.positions[i];
-		net_state.game_objects[i].velocity = dynamics.velocities[i];
+		net_state.game_objects[i].position = dynamics[i].position;
+		net_state.game_objects[i].velocity = dynamics[i].velocity;
 	}
 }
 
@@ -219,10 +231,10 @@ void Game::unpack_data()
 
 		if (net.id())
 		{
-			for (int i = 0; i < dynamics.positions.size(); ++i)
+			for (int i = 0; i < dynamics.size(); ++i)
 			{
-				dynamics.positions[i] = net_state.game_objects[i].position;
-				dynamics.velocities[i] = net_state.game_objects[i].velocity;
+				dynamics[i].position = net_state.game_objects[i].position;
+				dynamics[i].velocity = net_state.game_objects[i].velocity;
 			}
 		}
 
