@@ -4,7 +4,10 @@
 using namespace std::chrono_literals;
 
 Game::Game()
-	: window({1280, 720}, "Scrap Escape")
+	: window(settings.get_window_settings().resolution
+	, settings.get_window_settings().fullscreen
+	, "Scrap Escape")
+
 	, mesh_lib{0}
 	, object_lib{1}
 	, level{"../resources/level/level.ssp", &mesh_lib, &object_lib}
