@@ -57,9 +57,9 @@ void World::update(
 	colliders2.clear();
 	results.clear();
 	
-	//for (auto& left : bodies)
+	for (int i = 0; i < 1; ++i)
 	{
-		auto& left = bodies[0];
+		auto& left = bodies[i];
 		
 		for (auto& right : statics)
 		{
@@ -74,6 +74,27 @@ void World::update(
 				colliders2.push_back(&right);
 				results.push_back(result);
 			}
+		}
+	}
+
+	for (auto& left : bodies)
+	{
+		for (auto& right : bodies)
+		{
+			if (&left != &right)
+			{
+				CollisionManifold result;
+				reset_collison_manifold(result);
+
+				result = find_collision_features(left, right);
+
+				if (result.colliding)
+				{
+					colliders1.push_back(&left);
+					colliders2.push_back(&right);
+					results.push_back(result);
+				}
+			}		
 		}
 	}
 	
