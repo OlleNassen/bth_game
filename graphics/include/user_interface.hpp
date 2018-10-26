@@ -17,6 +17,7 @@ struct GuiElement
 	glm::vec2 position;
 	glm::vec2 color;
 	glm::vec2 scale;
+	float rotation;
 };
 
 class PlayerArrows
@@ -30,6 +31,8 @@ public:
 private:
 	Texture arrow_texture;
 	std::array<glm::vec2, 4> player_positions;
+	std::array<glm::vec2, 4> player_vector;
+	std::array<bool, 4> visible;
 };
 
 class UserInterface

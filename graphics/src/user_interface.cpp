@@ -80,22 +80,26 @@ void UserInterface::rebind_buffers()
 }
 
 PlayerArrows::PlayerArrows()
-{}
+{
+	visible.fill(true);
+}
 
 void PlayerArrows::update(const std::vector<Model> &models, int players)
 {
 	for (int i = 0; i < players; i++)
 	{
 		player_positions[i] = glm::vec2(models.at(i).get_position());
-		//player_positions.at(i).y = models.at(i).get_position().y;
-		//std::cout << player_positions[0].x << "\t" << player_positions[0].y << std::endl;
 		if (i > 0)
 		{
-			if (abs(player_positions[i].x - player_positions[0].x) > 20 
+			if (abs(player_positions[i].x - player_positions[0].x) > 20
 				|| abs(player_positions[i].y - player_positions[0].y) > 10)
 			{
 				std::cout << "not visible" << std::endl;
+				visible[i] = false;
+				player_vector[i] = player_positions[i] - player_positions[0];
 			}
+			else
+				visible[i] = true;
 		}
 	}
 	
@@ -103,7 +107,11 @@ void PlayerArrows::update(const std::vector<Model> &models, int players)
 
 void PlayerArrows::render()
 {
-
+	//beräkna vektor mellan spelarna
+	//beräkna matrix för position, rotation, scale
+	//uppdatera attributes
+	//lägg in i array
+	//rita ut
 }
 
 }
