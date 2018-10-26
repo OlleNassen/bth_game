@@ -177,4 +177,30 @@ bool Menu::exit() const
 	return want_exit;
 }
 
+Options::Options()
+{
+	buttons[0][10] = { "Fullscreen", button_state::none };
+	buttons[1][6] = { "Back", button_state::none };
+}
+
+const std::array<std::string, 12>& Options::button_strings() const
+{
+	return strings;
+}
+
+bool Options::debug() const
+{
+	return is_debug;
+}
+
+bool Options::on() const
+{
+	return is_on;
+}
+
+bool Options::exit() const
+{
+	return want_exit;
+}
+
 }

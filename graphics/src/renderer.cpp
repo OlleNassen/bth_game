@@ -20,11 +20,10 @@ Renderer::Renderer(GameScene* scene)
 	, prefilter_buffer{pre_filter, skybox, true}
 	, brdf_buffer{brdf, skybox, 3.f}
 {
+
 	db_camera.position.z = 20.0f;
 	glViewport(0, 0, 1280, 720); // don't forget to configure the viewport to the capture dimensions.
 
-	dust_texture = new Texture("../resources/textures/dust_texture_1.png");
-	dust_particles = new FX(*dust_texture);
 	for (int i = 0; i < 4; ++i)
 	{
 		lights[i].position = glm::vec3{0,0,0};
@@ -65,23 +64,7 @@ void Renderer::render(
 		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
 
-		fx_dust.use();
-		fx_dust.uniform("particle_texture", 0);
-		dust_texture->bind(0);
-
-		//Get and set matrices
-		glm::vec3 start_point = glm::vec3(0, 0, 0);
-		glm::mat4 view_matrix = game_camera.view();
-		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
-		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
-		fx_dust.uniform("camera_right_worldspace", camera_right_vector);
-		fx_dust.uniform("camera_up_worldspace", camera_up_vector);
-		fx_dust.uniform("view", game_camera.view());
-		fx_dust.uniform("projection", game_camera.projection);
-		fx_dust.uniform("view_position", scene->v[0]);
-		fx_dust.uniform("particle_pivot", start_point);
-
-		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
 
 		glDisable(GL_DEPTH_TEST);
 		if (debug_active)
@@ -92,6 +75,7 @@ void Renderer::render(
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
+
 	}
 	else if (!is_menu)
 	{
@@ -112,23 +96,8 @@ void Renderer::render(
 		skybox_shader.use();
 		skybox.render(skybox_shader, db_camera);
 
-		//Dust
-		fx_dust.use();
-		fx_dust.uniform("particle_texture", 0);
-		dust_texture->bind(0);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
 
-		//Get and set matrices
-		glm::vec3 start_point = glm::vec3(0);
-		glm::mat4 view_matrix = db_camera.view();
-		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
-		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
-		fx_dust.uniform("camera_right_worldspace", camera_right_vector);
-		fx_dust.uniform("camera_up_worldspace", camera_up_vector);
-		fx_dust.uniform("view", db_camera.view());
-		fx_dust.uniform("projection", db_camera.projection);
-		fx_dust.uniform("view_position", scene->v[0]);
-		fx_dust.uniform("particle_pivot", start_point);
-		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
 
 		if (debug_active)
 		{
@@ -240,26 +209,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (!is_on)
 	{
 		//Dust Particles
-		randomizer = rand() % 100;
-		if (randomizer <= 40)
-		{
-			dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
-		}
+		fx_emitter.calculate_dust_data(delta, db_camera);
+		//dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
 
-		//update_particles(*dust_texture, fx_dust, "dust_texture", db_camera, id);
-		/*if (begin[0][button::glow] == button_state::pressed)
-		{
-			want_glow = !want_glow;
-		}
-
-		if (want_glow)
-		{
-			post_processing_effects.update(delta);
-		}
-		else
-		{
-			post_processing_effects.glow_value = 0;
-		}*/
+		//Steam Particles
+		//steam_particles->calculate_steam_data(*steam_particles->fx, scene->v, delta, db_camera);
+		fx_emitter.calculate_steam_data(delta, db_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 	}
