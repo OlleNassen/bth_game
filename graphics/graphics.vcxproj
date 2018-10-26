@@ -154,6 +154,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\animation_handler.cpp" />
+    <ClCompile Include="src\animation_logic.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\fx.cpp" />
     <ClCompile Include="src\minimap.cpp" />
     <ClCompile Include="src\game_scene.cpp" />
@@ -172,8 +175,11 @@
     <ClCompile Include="src\user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\fx.hpp" />
     <ClInclude Include="include\animation_handler.hpp" />
+    <ClInclude Include="include\animation_logic.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="include\fx.hpp" />
     <ClInclude Include="include\game_scene.hpp" />
     <ClInclude Include="include\helpers.hpp" />
     <ClInclude Include="include\camera.hpp" />

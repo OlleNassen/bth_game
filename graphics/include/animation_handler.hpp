@@ -1,19 +1,19 @@
 #ifndef ANIMATION_HANDLER_HPP
 #define ANIMATION_HANDLER_HPP
 
-
+//#include "animation_logic.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/vector_relational.hpp>
 #include <glm/trigonometric.hpp>
-#include <vector>
+
 #include "LeapImporter/LeapImporter/LeapMesh.h"
 #include "LeapImporter/LeapImporter/LeapAnimation.h"
 #include "LeapImporter/LeapImporter/LeapImporter.h"
-enum MODEL_STATE { START_JUMP, INVERSE_FALLING, FALLING, LANDING, START_WALLJUMP, CONNECT_WALL, JUMP_FROM_WALL, IDLE, RUNNING };
 
+enum MODEL_STATE { START_JUMP, IN_JUMP, FALLING, LANDING, HANGING_WALL, CONNECT_WALL, JUMP_FROM_WALL, IDLE, RUNNING, TURN };
 class Animation_handler
 {
 private:
@@ -23,6 +23,8 @@ public:
 	~Animation_handler();
 
 	MODEL_STATE current_state;
+	int current_keyframe;
+	//std::vector<Animation_logic> logic;
 
 	glm::vec3 calc_interpolated_translation(float time, int index);
 	glm::quat calc_interpolated_quaternion(float time, int index);
@@ -54,8 +56,8 @@ public:
 
 	std::vector<Animation*> animations;
 	std::vector<glm::mat4> bone_mat_vector, switch_bone_mat_vector, link_matricies, offset_matrices, parent_transforms;
-	glm::vec3 switch_translations, switch_scales;
-	glm::quat switch_quat;
+	std::vector<glm::vec3> switch_translations, switch_scales;
+	std::vector<glm::quat> switch_quat;
 	std::vector<MODEL_STATE> animation_states;
 	std::vector<Joint> joints;
 	int current_animation;
@@ -65,5 +67,7 @@ public:
 	float switch_time, time_at_switch;
 	std::vector<std::vector<glm::mat4>> animation_offset, animation_link;
 
+	bool get_animation_finished(MODEL_STATE state);
+	MODEL_STATE get_state();
 };
 #endif 
