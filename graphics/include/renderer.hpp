@@ -19,6 +19,15 @@
 namespace graphics
 {
 
+class objects
+{
+public:
+	glm::vec2 position;
+	glm::vec2 size;
+};
+
+using objects_array = std::array<objects, 100>;
+
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -38,6 +47,7 @@ public:
 		bool debug, std::vector<int> leaderboard, bool show_leaderboard) const;
 
 	void update(std::chrono::milliseconds delta,
+		const objects_array& dynamics,
 		const glm::vec2& cursor,
 		const std::array<glm::vec3, 4>& directions,
 		const std::string& data,

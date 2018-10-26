@@ -69,10 +69,10 @@ void Renderer::render(
 		glDisable(GL_DEPTH_TEST);
 		if (debug_active)
 		{
-			s.use();
-			s.uniform("projection", game_camera.projection);
-			s.uniform("view", game_camera.view());
-			s.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
+			lines.use();
+			lines.uniform("projection", game_camera.projection);
+			lines.uniform("view", game_camera.view());
+			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -103,11 +103,10 @@ void Renderer::render(
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
-			auto& s = lines;
-			s.use();
-			s.uniform("projection", db_camera.projection);
-			s.uniform("view", db_camera.view());
-			s.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
+			lines.use();
+			lines.uniform("projection", db_camera.projection);
+			lines.uniform("view", db_camera.view());
+			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 
@@ -192,6 +191,7 @@ void Renderer::render(
 }
 
 void Renderer::update(std::chrono::milliseconds delta,
+	const objects_array& dynamics,
 	const glm::vec2& cursor,
 	const std::array<glm::vec3, 4>& directions,
 	const std::string& data,

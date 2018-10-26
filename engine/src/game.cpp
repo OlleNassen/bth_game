@@ -208,12 +208,22 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	level.models[0].update_animation((float)delta.count());
 
-	renderer.update(delta,
-		player_inputs[net.id()].cursor,
-		logic_out.directions,
-		chat[1], player_count,
-		net.id(), chat.is_on(),
-		net.connected());
+	{
+		graphics::objects_array obj;
+		for (int i = 0; i < dynamics.size(); ++i)
+		{
+			obj[i].position = dynamics[i].position;
+			obj[i].size = dynamics[i].size;
+		}
+
+		renderer.update(delta,
+			obj,
+			player_inputs[net.id()].cursor,
+			logic_out.directions,
+			chat[1], player_count,
+			net.id(), chat.is_on(),
+			net.connected());
+	}
 }
 
 void Game::pack_data()
