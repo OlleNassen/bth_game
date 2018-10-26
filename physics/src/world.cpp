@@ -260,7 +260,7 @@ void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int s
 	{
 		if (direction.x < -0.001 && direction.x > -1)	//Walking left
 		{
-
+			
 			dynamic_positions[dynamic_index].x = (-static_box_colliders[static_index].get_width() / 2) + -static_box_colliders[static_index].get_offset().x + static_positions[static_index].x +
 				(dynamic_box_colliders[dynamic_index].get_offset().x) + (-dynamic_box_colliders[dynamic_index].get_width() / 2);	//Moving the player right of the static object
 			dynamic_rigidbodies[dynamic_index].cancel_force_x();
