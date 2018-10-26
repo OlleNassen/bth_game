@@ -4,10 +4,16 @@
 using namespace std::chrono_literals;
 
 Game::Game()
-	: window({1280, 720}, "Scrap Escape")
-	, level{"../resources/level/level.ssp", &mesh_lib}
+	: window(settings.get_window_settings().resolution
+	, settings.get_window_settings().fullscreen
+	, "Scrap Escape")
+
+	, mesh_lib{0}
+	, object_lib{1}
+	, level{"../resources/level/level.ssp", &mesh_lib, &object_lib}
 	, renderer{&level}
 {
+
 	window.assign_key(logic::button::up, GLFW_KEY_W);
 	window.assign_key(logic::button::left, GLFW_KEY_A);
 	window.assign_key(logic::button::down, GLFW_KEY_S);
@@ -23,6 +29,16 @@ Game::Game()
 	window.assign_key(logic::button::build_mode, GLFW_KEY_B);
 	window.assign_key(logic::button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
+
+	window.assign_button(logic::button::up, controller_buttons::up);
+	window.assign_button(logic::button::left, controller_buttons::left);
+	window.assign_button(logic::button::down, controller_buttons::down);
+	window.assign_button(logic::button::right, controller_buttons::right);
+	window.assign_button(logic::button::jump, controller_buttons::a);
+	window.assign_button(logic::button::quit, controller_buttons::b);
+
+	window.assign_axis_neg(logic::button::left, controller_axis::ls_right);
+	window.assign_axis_pos(logic::button::right, controller_axis::ls_right);
 
 	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
 
@@ -54,7 +70,7 @@ void Game::run()
 
 	while (window.is_open() && 
 		!menu.exit() &&
-		(*local_input)[logic::button::quit] != logic::button_state::pressed)
+		(*local_input)[logic::button::quit] != logic::button_state::held)
 	{
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();
@@ -180,18 +196,6 @@ void Game::pack_data()
 		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
 	}
 
-	//Temp test for leaderboard stuff
-	for (int i = 0; i < 4; i++)
-	{
-		if (physics.dynamic_rigidbodies[i].get_reached_goal() && gameplay.get_player_status())
-		{
-			leader_board.at(i) += gameplay.set_player_status(i, false);	//Should change the status on players who reached goal
-			
-			showleaderboard = true;
-			//add show leaderboard here
-			//renderer.show_leaderboard();
-		}
-	}
 	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
 	{
 		net_state.game_objects[i].position = physics.dynamic_positions[i];

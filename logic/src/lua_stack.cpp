@@ -66,6 +66,21 @@ void LuaStack::setglobal(const char* value)
 	lua_setglobal(lua_state, value);
 }
 
+void LuaStack::setfield(int index, const char * name)
+{
+	lua_setfield(lua_state, index, name);
+}
+
+void LuaStack::settable(int index)
+{
+	lua_settable(lua_state, index);
+}
+
+void LuaStack::gettable(int index)
+{
+	lua_gettable(lua_state, index);
+}
+
 int LuaStack::top() const
 {
 	return lua_gettop(lua_state);
@@ -168,12 +183,12 @@ void LuaStack::push(const glm::vec4& value)
 
 void LuaStack::pop()
 {
-	lua_pop(lua_state, -1);
+	lua_pop(lua_state, 1);
 }
 
 void LuaStack::clear()
 {
-	lua_pop(lua_state, 1);
+	lua_pop(lua_state, top());
 }
 
 static void stack_dump(lua_State* lua_state) 
