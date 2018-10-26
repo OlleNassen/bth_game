@@ -16,7 +16,7 @@
 #include "game_scene.hpp"
 #include "window.hpp"
 
-
+#include "settings.hpp"
 #include "gui.hpp"
 #include "timer.hpp"
 
@@ -37,9 +37,11 @@ private:
 	void pack_data();
 	void unpack_data();
 	
+	Settings settings; // NEEDS TO BE ABOVE WINDOW
 	Window window; //PUT BELOW WINDOW IF OPENGL RELATED
 	
 	graphics::MeshLib mesh_lib;
+	graphics::MeshLib object_lib;
 	graphics::GameScene level;
 	graphics::Renderer renderer;
 

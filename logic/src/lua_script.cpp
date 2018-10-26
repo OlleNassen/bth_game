@@ -61,7 +61,7 @@ void LuaScript::update(std::chrono::milliseconds delta, const glm::vec3& directi
 
 	stack.getglobal(name.c_str());
 	stack.push("velocity");
-	stack.gettable(-1);
+	stack.gettable(-2);
 
 	velocity.x = stack.tonumber(-2);
 	velocity.y = stack.tonumber(-1);

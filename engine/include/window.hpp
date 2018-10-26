@@ -188,7 +188,7 @@ class Window
 {
 public:
 	Window() = default;
-	Window(const glm::ivec2& window_size, const std::string& title);
+	Window(const glm::ivec2& window_size, bool fullscreen, const std::string& title);
 	~Window();
 
 	bool is_open() const;

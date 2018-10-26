@@ -4,10 +4,16 @@
 using namespace std::chrono_literals;
 
 Game::Game()
-	: window({1280, 720}, "Scrap Escape")
-	, level{"../resources/level/level.ssp", &mesh_lib}
+	: window(settings.get_window_settings().resolution
+	, settings.get_window_settings().fullscreen
+	, "Scrap Escape")
+
+	, mesh_lib{0}
+	, object_lib{1}
+	, level{"../resources/level/level.ssp", &mesh_lib, &object_lib}
 	, renderer{&level}
 {
+
 	window.assign_key(logic::button::up, GLFW_KEY_W);
 	window.assign_key(logic::button::left, GLFW_KEY_A);
 	window.assign_key(logic::button::down, GLFW_KEY_S);
@@ -16,10 +22,10 @@ Game::Game()
 	window.assign_key(logic::button::glow, GLFW_KEY_G);
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
-	window.assign_key(logic::button::debug, GLFW_KEY_R);
+	window.assign_key(logic::button::debug, GLFW_KEY_F3);
 	window.assign_key(logic::button::switch_object, GLFW_KEY_F4);
 	window.assign_key(logic::button::remove_object, GLFW_KEY_O);
-	window.assign_key(logic::button::rotate, GLFW_KEY_F3);	
+	window.assign_key(logic::button::rotate, GLFW_KEY_R);	
 	window.assign_key(logic::button::build_mode, GLFW_KEY_B);
 	window.assign_key(logic::button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);

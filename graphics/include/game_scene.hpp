@@ -23,7 +23,7 @@ private:
 
 public:
 	GameScene();
-	GameScene(const char* file_name, MeshLib* mesh_lib);
+	GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_lib);
 	~GameScene();
 
 	glm::vec2 v[4];
