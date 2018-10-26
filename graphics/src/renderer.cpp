@@ -35,7 +35,7 @@ void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
 	const std::array<std::string, 12>& buttons,
-	const std::vector<glm::vec2>& debug_positions,
+	const std::vector<glm::vec3>& debug_positions,
 	bool is_menu,
 	bool connected,
 	bool debug, std::vector<int> leaderboard, bool show_leaderboard)const
@@ -69,9 +69,10 @@ void Renderer::render(
 		glDisable(GL_DEPTH_TEST);
 		if (debug_active)
 		{
-			lines.use();
-			lines.uniform("projection", game_camera.projection);
-			lines.uniform("view", game_camera.view());
+			s.use();
+			s.uniform("projection", game_camera.projection);
+			s.uniform("view", game_camera.view());
+			s.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -102,10 +103,11 @@ void Renderer::render(
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
-			lines.use();
-			lines.uniform("projection", db_camera.projection);
-			lines.uniform("view", db_camera.view());
-			lines.uniform("line_color", glm::vec3(1.0, 0.0, 0.0));
+			auto& s = lines;
+			s.use();
+			s.uniform("projection", db_camera.projection);
+			s.uniform("view", db_camera.view());
+			s.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 
@@ -225,13 +227,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		//game_camera.update(delta, &scene->v[scene->placing_object_id], &scene->v[scene->placing_object_id + 1]);
 	}
-	else
-	{
-		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
-	}
 
+	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
-
 	minimap.update(scene->models, player_count);
 
 	for (int i = 0; i < 4; ++i)

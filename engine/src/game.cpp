@@ -47,17 +47,19 @@ Game::Game()
 	physics.add_dynamic_body(level.v[2], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 	physics.add_dynamic_body(level.v[3], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 
+	for (int i = 0; i < 4; ++i)
+	{
+		dynamics[i].position = level.v[i];
+		dynamics[i].velocity = {0.0f, 0.0f};
+		dynamics[i].size = {1.0f, 3.5f};
+		dynamics[i].forces = {0.0f, 0.0f};
+		dynamics[i].impulse = { 0.0f, 0.0f };
+	}
+		
+
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
-
-
-	//A Temporary goal-object
-	physics.add_static_body({7.0f, 11.0f}, glm::vec2{ 0.0f, 0.0f }, 2, 2, true);
-	
-	//Temporary leaderboard in the game4
-	leader_board.resize(4);
-	
 }
 
 void Game::run()
@@ -104,7 +106,7 @@ void Game::run()
 
 void Game::render()
 {	
-	std::vector<glm::vec2> db_coll = physics.get_all_debug();
+	std::vector<glm::vec3> db_coll = physics.get_all_debug();
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
@@ -146,21 +148,46 @@ void Game::update(std::chrono::milliseconds delta)
 		glm::vec3{0.0f}, 
 		glm::vec3{0.0f} 
 	};
-	
-	logic_out = gameplay.update({ delta, player_inputs, directions, &level, &physics });
+
+	{
+		logic::objects_array obj;
+		for (int i = 0; i < dynamics.size(); ++i)
+		{
+			obj[i].position = dynamics[i].position;
+			obj[i].velocity = dynamics[i].velocity;
+			obj[i].size = dynamics[i].size;
+			obj[i].forces = dynamics[i].forces;
+			obj[i].impulse = dynamics[i].impulse;
+		}
+		
+		logic_out = gameplay.update({ delta, obj, player_inputs, directions, &level, &physics });
+
+		for (int i = 0; i < dynamics.size(); ++i)
+		{
+			dynamics[i].position = obj[i].position;
+			dynamics[i].velocity = obj[i].velocity;
+			dynamics[i].size = obj[i].size;
+			dynamics[i].forces = obj[i].forces;
+			dynamics[i].impulse = obj[i].impulse;
+		}
+	}
 	
 	if (net.connected())
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			if (player_inputs[i][logic::button::jump] == logic::button_state::held)
-				physics.dynamic_rigidbodies[i].add_force(glm::vec2{ 0.0f, 10.0f });
-
-			physics.dynamic_rigidbodies[i].add_force(logic_out.directions[i]);
+			if (jump_timers[i] <= 0ms && player_inputs[i][logic::button::jump] == logic::button_state::held)
+			{
+				jump_timers[i] = 3s;
+				dynamics[i].impulse = glm::vec2{ 0.0f, 25.0f};
+			}
+			
+			jump_timers[i] -= delta;		
+			dynamics[i].forces.x = logic_out.directions[i].x * 2000.0f;
 		}
 	}
-	
-	physics.update(delta);
+
+	physics.update(delta, dynamics);
 
 	if (net.connected())
 	{
@@ -168,15 +195,15 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			if (logic_out.directions[i].x > 0.0f)
 			{
-				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+				level.models[i].rotate({0.0f, 1.0f, 0.0f}, glm::radians(180.0f));
 			}
 			else if (logic_out.directions[i].x < 0.0f)
 			{
 				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 			}
 			
-			level.v[i] = physics.dynamic_positions[i];
-			level.models[i].set_position(physics.dynamic_positions[i]);			
+			level.v[i] = dynamics[i].position;
+			level.models[i].set_position(dynamics[i].position);			
 		}		
 	}
 	level.models[0].update_animation((float)delta.count());
@@ -196,9 +223,10 @@ void Game::pack_data()
 		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
 	}
 
-	for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+	for (int i = 0; i < dynamics.size(); ++i)
 	{
-		net_state.game_objects[i].position = physics.dynamic_positions[i];
+		net_state.game_objects[i].position = dynamics[i].position;
+		net_state.game_objects[i].velocity = dynamics[i].velocity;
 	}
 }
 
@@ -219,9 +247,10 @@ void Game::unpack_data()
 
 		if (net.id())
 		{
-			for (int i = 0; i < physics.dynamic_positions.size(); ++i)
+			for (int i = 0; i < dynamics.size(); ++i)
 			{
-				physics.dynamic_positions[i] = net_state.game_objects[i].position;
+				dynamics[i].position = net_state.game_objects[i].position;
+				dynamics[i].velocity = net_state.game_objects[i].velocity;
 			}
 		}
 

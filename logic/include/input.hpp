@@ -12,7 +12,6 @@ using uint16 = std::uint16_t;
 
 enum class button
 {
-	
 	up,
 	left,
 	down,

@@ -20,10 +20,23 @@
 
 namespace logic
 {
+
+class objects
+{
+public:
+	glm::vec2 position;
+	glm::vec2 velocity;
+	glm::vec2 size;
+	glm::vec2 forces;
+	glm::vec2 impulse;
+};
+
+using objects_array = std::array<objects, 100>;
 	   
 struct Input
 {
 	std::chrono::milliseconds delta;
+	objects_array& dynamics;
 	const input* player_inputs; //4
 	std::array<glm::vec3, 4> directions;
 	graphics::GameScene* scene;

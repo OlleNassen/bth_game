@@ -3,23 +3,14 @@
 namespace physics
 {
 
-Box::Box()
+Box::Box(float width, float height, glm::vec2 offset, bool is_trigger)
+	: width{width}
+	, height{height}
+	, top_left{-width, height}
+	, offset{offset}
+	, is_trigger{is_trigger}
 {
 
-}
-
-Box::Box(float _width = 1.0f, float _height = 1.0f, glm::vec2 _offset = glm::vec2(0.0, 0.0), bool _is_trigger = false)
-{
-	width = _width / 2.0f;
-	height = _height / 2.0f;
-
-	top_left = glm::vec2(-width, height);
-
-	width = _width;
-	height = _height;
-
-	offset = _offset;
-	is_trigger = _is_trigger;
 }
 
 void Box::set_height(float to_height)
@@ -57,7 +48,7 @@ float Box::get_width() const
 	return this->width;
 }
 
-std::array<glm::vec2, 4> Box::get_vertices()const
+std::array<glm::vec2, 4> Box::get_vertices() const
 {
 	std::array<glm::vec2, 4> vertices = 
 	{
@@ -70,7 +61,7 @@ std::array<glm::vec2, 4> Box::get_vertices()const
 	return vertices;
 }
 
-std::array<glm::vec2, 8> Box::get_vertices_in_series()const
+std::array<glm::vec2, 8> Box::get_vertices_in_series() const
 {
 	std::array<glm::vec2, 8> vertices =
 	{
