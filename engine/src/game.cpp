@@ -69,7 +69,6 @@ void Game::run()
 	auto last_time = clock::now();
 	auto delta_time = 0ns;
 	auto frames = 0;
-	std::chrono::duration<float> seconds = 0s;
 
 	while (window.is_open() && 
 		!menu.exit() &&
@@ -77,19 +76,6 @@ void Game::run()
 	{
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();
-
-		seconds += delta_time;
-		auto fps = static_cast<int>(++frames / seconds.count());
-		if (seconds > 1s)
-		{
-			seconds = 0s;
-			frames = 0;
-			std::string title = 
-				"Scrap Escape | FPS: " 
-				+ std::to_string(fps);
-			
-			window.title(title.c_str());
-		}
 		
 		while (delta_time > timestep)
 		{
