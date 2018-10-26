@@ -91,8 +91,8 @@ void PlayerArrows::update(const std::vector<Model> &models, int players)
 		//std::cout << player_positions[0].x << "\t" << player_positions[0].y << std::endl;
 		if (i > 0)
 		{
-			if (abs(player_positions[i].x - player_positions[0].x) > 640 
-				|| abs(player_positions[i].y - player_positions[0].y) > 360)
+			if (abs(player_positions[i].x - player_positions[0].x) > 20 
+				|| abs(player_positions[i].y - player_positions[0].y) > 10)
 			{
 				std::cout << "not visible" << std::endl;
 			}
