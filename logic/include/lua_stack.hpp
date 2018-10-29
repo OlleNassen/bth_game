@@ -28,6 +28,7 @@ public:
 	void getglobal(const char* value);
 	void setglobal(const char* value);
 
+	void getfield(int index, const char * name);
 	void setfield(int index, const char* name);
 
 	void settable(int index);

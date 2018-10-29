@@ -8,6 +8,7 @@ Game::Game()
 	: window(settings.get_window_settings().resolution
 	, settings.get_window_settings().fullscreen
 	, "Scrap Escape")
+
 	, mesh_lib{0}
 	, object_lib{1}
 	, level{"../resources/level/level.ssp", &mesh_lib, &object_lib}
@@ -162,8 +163,7 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			dynamics[i].forces.x = logic_out.directions[i].x * 2000.0f;
-			
+			dynamics[i].forces.x = 2000.0f * logic_out.directions[i].x;
 			if (level.models[i].is_animated)
 				level.models[i].update_animation((float)delta.count());
 

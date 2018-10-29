@@ -66,6 +66,11 @@ void LuaStack::setglobal(const char* value)
 	lua_setglobal(lua_state, value);
 }
 
+void LuaStack::getfield(int index, const char * name)
+{
+	lua_getfield(lua_state, index, name);
+}
+
 void LuaStack::setfield(int index, const char * name)
 {
 	lua_setfield(lua_state, index, name);
@@ -147,7 +152,7 @@ void LuaStack::push(const glm::vec2& value)
 	{
 		push(member);
 		push(value[i++]);
-		rawset(top);
+		(-3);
 	}
 }
 
@@ -162,7 +167,7 @@ void LuaStack::push(const glm::vec3& value)
 	{
 		push(member);
 		push(value[i++]);
-		rawset(top);
+		rawset(-4);
 	}
 }
 
