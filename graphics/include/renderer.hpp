@@ -44,7 +44,7 @@ public:
 		const std::vector<glm::vec3>& debug_positions,
 		bool is_menu,
 		bool connected,
-		bool debug, std::vector<int> leaderboard, bool show_leaderboard) const;
+		bool debug) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,

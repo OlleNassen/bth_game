@@ -66,7 +66,6 @@ Output Gameplay::update(Input inputs)
 	if (inputs.scene->build_mode_active)
 	{
 		collision_data data;
-
 		
 		if (inputs.player_inputs[0][logic::button::place_object] == logic::button_state::pressed)
 		{
@@ -163,52 +162,6 @@ void Gameplay::give_up(Input input)
 	}
 	else if (give_up_timer != 0.0f)
 		give_up_timer = 0.0f;
-}
- 
-int Gameplay::set_player_status(int i, bool status)
-{		
-		if (current_gameboard.empty())
-		{
-			points = 3;
-			current_gameboard.push_back(i);
-			scripts[0].add_points(points);
-			scripts[0].set_player_status(status);
-		}
-		else if (current_gameboard.size() == 1)
-		{
-			points = 2;
-			current_gameboard.push_back(i);
-			scripts[0].add_points(points);
-			scripts[0].set_player_status(status);
-		}
-		else if (current_gameboard.size() == 2)
-		{
-			points = 1;
-			current_gameboard.push_back(i);
-			scripts[0].add_points(points);
-			scripts[0].set_player_status(status);
-		}
-		else
-		{
-			points = 0;
-			current_gameboard.push_back(i);
-			scripts[0].add_points(points);
-			scripts[0].set_player_status(status);
-		}
-	
-	return points;
-}
-
-bool Gameplay::get_player_status()
-{
-	return scripts[0].player_status();
-}
-
-bool Gameplay::everyone_reached_goal()
-{
-	bool value = true;
-
-	return value;
 }
 
 }

@@ -1,7 +1,7 @@
 //#pragma comment(linker, "/STACK:200000000")
 #include "game.hpp"
 #include <host.hpp>
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 int main()
 {

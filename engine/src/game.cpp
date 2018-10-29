@@ -8,7 +8,6 @@ Game::Game()
 	: window(settings.get_window_settings().resolution
 	, settings.get_window_settings().fullscreen
 	, "Scrap Escape")
-
 	, mesh_lib{0}
 	, object_lib{1}
 	, level{"../resources/level/level.ssp", &mesh_lib, &object_lib}
@@ -98,7 +97,7 @@ void Game::render()
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, menu.on(),
-		net.connected(), menu.debug(), leader_board, showleaderboard);
+		net.connected(), menu.debug());
 }
 
 void Game::update(std::chrono::milliseconds delta)

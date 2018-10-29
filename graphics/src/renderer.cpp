@@ -38,7 +38,7 @@ void Renderer::render(
 	const std::vector<glm::vec3>& debug_positions,
 	bool is_menu,
 	bool connected,
-	bool debug, std::vector<int> leaderboard, bool show_leaderboard)const
+	bool debug)const
 {
 	glClearColor(1.0f, 0.8f, 0.0f, 0.f);
 		
@@ -143,27 +143,6 @@ void Renderer::render(
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
-
-
-		//leaderboard
-		if (show_leaderboard)
-		{
-			std::stringstream test;
-			float pos[4] = { 480, 400, 320, 240 };
-			text_shader.uniform("text_color", glm::vec3(0.1f, 0.9f, 0.1f));
-
-			for (int i = 0; i < leaderboard.size(); i++)
-			{
-				test << "Player " << i + 1 << ": " << leaderboard.at(i) << "pt";
-				text.render_text(test.str(), 1280 / 3.f, pos[i], 1.3f);
-
-				test.str("");
-			}
-		}
-		else
-		{
-			//text.render_text(t.to_string(), 0, 700, 0.5f);
-		}
 
 
 		auto offset = 0.0f;
