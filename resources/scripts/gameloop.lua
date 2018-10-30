@@ -31,6 +31,6 @@ function update(delta_seconds, game, entities)
 		end
 	end
 
-	print(game.scores[1])
+	--print(game.scores[1])
 
 end
