@@ -115,20 +115,18 @@ GameScript::GameScript()
 
 void GameScript::setup()
 {
-	std::string game{"game"};
 	stack.newtable();
-	stack.setglobal(game.c_str());
+	stack.setglobal("game");
 	stack.getglobal("setup");
 
 	if (lua_isfunction(stack.lua_state, -1))
 	{
-		stack.getglobal(game.c_str());
+		stack.getglobal("game");
 		stack.call(1, 0);
 	}
 
-	std::string name{"entities"};
 	stack.newtable();
-	stack.setglobal(name.c_str());
+	stack.setglobal("entities");
 
 	stack.getglobal("entities");
 	int top = stack.top();
@@ -144,18 +142,16 @@ void GameScript::setup()
 }
 
 void GameScript::update(std::chrono::milliseconds delta,
-	 objects* players)
+	objects* players)
 {
 
 	{
-		std::string game{ "game" };
-		stack.getglobal(game.c_str());
+		stack.getglobal("game");
 		stack.clear();
 	}
-	
+
 	{
-		std::string name{ "entities" };
-		stack.getglobal(name.c_str());
+		stack.getglobal("entities");
 		int top = stack.top();
 		for (int i = 1; i <= 4; i++)
 		{
@@ -174,12 +170,27 @@ void GameScript::update(std::chrono::milliseconds delta,
 	stack.getglobal("game");
 	stack.getglobal("entities");
 	stack.call(3, 0);
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; ++i)
+		{
+			stack.rawget(top, i);
+			stack.getfield(-1, "position");
+			stack.getfield(-1, "x");
+			stack.getfield(-2, "y");
+			players[i - 1].position.x = stack.tonumber(-2);
+			players[i - 1].position.y = stack.tonumber(-1);
+		}
+
+		stack.clear();
+	}
 }
 
 std::array<std::tuple<std::string, int, float>, 4> GameScript::name_id_score()
 {
-	std::string game{"game"};
-	stack.getglobal(game.c_str());
+	stack.getglobal("game");
 	stack.getfield(-1, "scores");
 	stack.getfield(-1, "0");
 	stack.getfield(-2, "1");
