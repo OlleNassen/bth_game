@@ -135,7 +135,7 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 {
 	auto index = logic::input::indices - i.index - 1;
 	auto& button = (*current_buttons)[index];
-	
+
 	for (auto& arrays : buttons)
 		for (auto& button : arrays)
 			button.state = button_state::none;

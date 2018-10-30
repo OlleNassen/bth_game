@@ -176,8 +176,9 @@ void Window::update_input(logic::input& input)
 			}
 		}
 
-		if (input[logic::button::up] == logic::button_state::pressed)
+		if (input[logic::button::up] == logic::button_state::pressed)		
 			--input_index;
+			
 
 		if (input[logic::button::down] == logic::button_state::pressed)
 			++input_index;
@@ -198,12 +199,12 @@ void Window::update_input(logic::input& input)
 			
 			if (axes[i] < -0.5f)
 			{
-				input[neg] = logic::button_state::held;
+				//input[neg] = logic::button_state::held;
 			}
 				
 			else if (axes[i] > 0.5f)
 			{
-				input[pos] = logic::button_state::held;
+				//input[pos] = logic::button_state::held;
 			}
 		}
 	}
