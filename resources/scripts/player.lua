@@ -7,9 +7,9 @@ end
 
 function update(delta_seconds, entity)
 	--print(entity.points)
-	entity.velocity.x = 5
-	entity.size.x = 2045
-	entity.impulse.y = -13
+	--entity.forces.x = -1000
+	--entity.size.x = 2045
+	--entity.impulse.y =  50
 
 	--entity.velocity.y = delta_seconds * 100 * entity.direction.z
 end
