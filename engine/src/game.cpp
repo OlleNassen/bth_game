@@ -108,8 +108,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
 	{
-		menu.open();	
-		
+		menu.open();			
 	}
 
 	if (menu.on())
@@ -121,7 +120,7 @@ void Game::update(std::chrono::milliseconds delta)
 		window.hide_cursor();
 	}	
 
-	if ((*local_input)[logic::button::debug] == logic::button_state::pressed)
+	if ((*local_input)[logic::button::debug] == logic::button_state::held)
 		game_state = (game_state | state::render_physics);
 
 
