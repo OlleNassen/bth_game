@@ -2,9 +2,9 @@
 
 Race::Race(std::string* usernames)
 {
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 4; i++)
 	{
-		this->usernames[i] = usernames[i];
+		name_id_score[i] = std::make_tuple(usernames[i], i, 0);
 	}
 }
 
@@ -13,37 +13,14 @@ bool Race::should_restart() const
 	return false;
 }
 
-const std::string& Race::operator[](int index) const
-{
-	return usernames[player_ids[index]];
-}
-
 void Race::update(float* positions)
 {
 	for (int i = 0; i < 4; ++i)
 	{
 		if (positions[i] > goal)
-			scores[i] += 1;
-	}
-
-	for (int i = 0; i < 4; ++i)
-	{
-		if (positions[i] > goal)
 		{
-			scores[player_ids[i]] += 1;
+			std::get<2>(name_id_score[i]) += score;
+			score -= 1;
 		}
-			
-	}
-
-	for (int i = 0; i < 4; ++i)
-	{
-		int greatest = 0;
-		for (int j = 0; j < 4; ++j)
-		{
-			if (positions[greatest] < positions[j])
-				greatest = j;
-		}
-		positions[greatest] = 0.0f;
-		player_ids[i] = greatest;
 	}
 }

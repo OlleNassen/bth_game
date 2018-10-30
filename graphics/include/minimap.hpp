@@ -32,7 +32,7 @@ private:
 	VertexArray vao_id;
 	Buffer vbo_id;
 	glm::mat4 transform = glm::mat4(1.0f);
-	unsigned int player_count;
+	unsigned int player_count = 0;
 	unsigned int height = 100;
 	unsigned int width = 10;
 };

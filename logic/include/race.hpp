@@ -1,7 +1,8 @@
 #ifndef RACE_HPP
 #define RACE_HPP
-
 #include <string>
+#include <tuple>
+#include <array>
 
 class Race
 {
@@ -11,14 +12,13 @@ public:
 
 	bool should_restart() const;
 
-	const std::string& operator[](int index) const;
 	void update(float* positions);
 
 private:
 	float goal = 10.0;
+	float score = 5; 
 	std::string usernames[4] = { "P1", "P2", "P3", "P4" };
-	int player_ids[4] = { 0, 1, 2, 3 };
-	int scores[4] = {};
+	std::array<std::tuple<std::string, int, int>, 4> name_id_score;
 };
 
 

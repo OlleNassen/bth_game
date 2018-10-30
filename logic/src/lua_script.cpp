@@ -4,19 +4,13 @@
 namespace logic
 {
 
-LuaScript::LuaScript()
+PlayerScript::PlayerScript()
 	: stack{ "../resources/scripts/player.lua" }
 {
 	stack.setglobal("entities");
 }
 
-LuaScript::LuaScript(const std::string& filename)
-	: stack{filename.c_str()}
-{
-	//stack.setglobal("entities");
-}
-
-void LuaScript::setup(int entity)
+void PlayerScript::setup(int entity)
 {
 	std::string name{"entities[" + std::to_string(entity) + "]"};
 	stack.newtable();
@@ -33,7 +27,7 @@ void LuaScript::setup(int entity)
 	stack.clear();
 }
 
-void LuaScript::update(
+void PlayerScript::update(
 	std::chrono::milliseconds delta, 
 	objects& object, 
 	const input& i, 
@@ -69,8 +63,6 @@ void LuaScript::update(
 		stack.rawset(top);
 		stack.clear();
 	}
-
-	
 
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);
@@ -113,6 +105,93 @@ void LuaScript::update(
 		
 		stack.clear();
 	}	
+}
+
+GameScript::GameScript()
+	: stack{ "../resources/scripts/gameloop.lua" }
+{
+}
+
+void GameScript::setup()
+{
+	std::string game{"game"};
+	stack.newtable();
+	stack.setglobal(game.c_str());
+	stack.getglobal("setup");
+
+	if (lua_isfunction(stack.lua_state, -1))
+	{
+		stack.getglobal(game.c_str());
+		stack.call(1, 0);
+	}
+
+	std::string name{"entities"};
+	stack.newtable();
+	stack.setglobal(name.c_str());
+	for (int i = 1; i <= 4; i++)
+	{
+		stack.newtable();
+		std::string temp{ "p" + std::to_string(i) };
+		stack.setglobal(temp.c_str());
+	}
+
+	stack.clear();
+}
+
+void GameScript::update(std::chrono::milliseconds delta,
+	 objects* players)
+{
+	{
+		std::string game{ "game" };
+		stack.getglobal(game.c_str());
+		stack.clear();
+	}
+	
+	{
+		std::string name{ "entities" };
+		stack.getglobal(name.c_str());
+		for (int i = 1; i <= 4; i++)
+		{
+			std::string temp{ "p" + std::to_string(i) };
+			stack.getglobal(temp.c_str());
+			int top = stack.top();
+			stack.push("position");
+			stack.push(players[i].position);
+			stack.rawset(top);
+		}
+
+		stack.clear();
+	}
+
+	stack.getglobal("update");
+	stack.push(delta.count() / 1000.0f);
+	stack.getglobal("game");
+	stack.getglobal("entities");
+	stack.call(3, 0);
+}
+
+std::array<std::tuple<std::string, int, float>, 4> GameScript::name_id_score()
+{
+	std::string game{"game"};
+	stack.getglobal(game.c_str());
+	stack.getfield(-1, "scores");
+	stack.getfield(-1, "0");
+	stack.getfield(-2, "1");
+	stack.getfield(-3, "2");
+	stack.getfield(-4, "3");
+
+	std::array<std::tuple<std::string, int, float>, 4> temp;
+
+	float index = -4;
+	for (int i = 0; i < 4; ++i)
+	{
+		temp[i] = std::make_tuple("p" + std::to_string(i), i,
+			stack.tonumber(index++));
+	}
+
+	stack.clear();
+
+	return temp;
 }
 
 }

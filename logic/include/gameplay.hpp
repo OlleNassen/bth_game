@@ -54,7 +54,8 @@ public:
 	Output update(Input input);
 private:
 	script_array<int> entities;
-	script_array<LuaScript> scripts;
+	PlayerScript player_script;
+	GameScript game_script;
 	Race race;
 	std::array<glm::vec3, 4> directions;
 
