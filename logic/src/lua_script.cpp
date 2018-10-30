@@ -110,6 +110,7 @@ void PlayerScript::update(
 GameScript::GameScript()
 	: stack{ "../resources/scripts/gameloop.lua" }
 {
+	//stack.setglobal("entities");
 }
 
 void GameScript::setup()
@@ -128,11 +129,15 @@ void GameScript::setup()
 	std::string name{"entities"};
 	stack.newtable();
 	stack.setglobal(name.c_str());
+
+	stack.getglobal("entities");
+	int top = stack.top();
 	for (int i = 1; i <= 4; i++)
 	{
 		stack.newtable();
-		std::string temp{ "p" + std::to_string(i) };
-		stack.setglobal(temp.c_str());
+		//std::string temp{ "p" + std::to_string(i) };
+		stack.rawset(top, i);
+		//stack.setglobal(temp.c_str());
 	}
 
 	stack.clear();
@@ -141,6 +146,7 @@ void GameScript::setup()
 void GameScript::update(std::chrono::milliseconds delta,
 	 objects* players)
 {
+
 	{
 		std::string game{ "game" };
 		stack.getglobal(game.c_str());
@@ -150,14 +156,14 @@ void GameScript::update(std::chrono::milliseconds delta,
 	{
 		std::string name{ "entities" };
 		stack.getglobal(name.c_str());
+		int top = stack.top();
 		for (int i = 1; i <= 4; i++)
 		{
-			std::string temp{ "p" + std::to_string(i) };
-			stack.getglobal(temp.c_str());
-			int top = stack.top();
+			stack.rawget(top, i);
+			int top_pos = stack.top();
 			stack.push("position");
-			stack.push(players[i].position);
-			stack.rawset(top);
+			stack.push(players[i - 1].position);
+			stack.rawset(top_pos);
 		}
 
 		stack.clear();
