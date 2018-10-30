@@ -55,9 +55,13 @@ public:
 	void pop();
 	void clear();
 
+	void stack_dump();
+
 	lua_State* lua_state;
 private:
 };
+
+
 
 }
 

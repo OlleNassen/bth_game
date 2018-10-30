@@ -152,7 +152,7 @@ void LuaStack::push(const glm::vec2& value)
 	{
 		push(member);
 		push(value[i++]);
-		(-3);
+		rawset(top);
 	}
 }
 
@@ -167,7 +167,7 @@ void LuaStack::push(const glm::vec3& value)
 	{
 		push(member);
 		push(value[i++]);
-		rawset(-4);
+		rawset(top);
 	}
 }
 
@@ -196,7 +196,7 @@ void LuaStack::clear()
 	lua_pop(lua_state, top());
 }
 
-static void stack_dump(lua_State* lua_state) 
+void LuaStack::stack_dump()
 {
 	int top = lua_gettop(lua_state);
 	

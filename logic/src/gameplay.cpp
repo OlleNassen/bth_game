@@ -45,7 +45,7 @@ Output Gameplay::update(Input inputs)
 		
 	std::array<glm::vec2, 4> velocities;
 	
-	for (int i=0; i < 4; i++)
+	for (int i=0; i < 1; i++)
 	{
 		scripts[0].update(inputs.delta, inputs.dynamics[i]);
 	}
