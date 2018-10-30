@@ -8,6 +8,7 @@ Game::Game()
 	: window(settings.get_window_settings().resolution
 	, settings.get_window_settings().fullscreen
 	, "Scrap Escape")
+
 	, mesh_lib{0}
 	, object_lib{1}
 	, level{"../resources/level/level.ssp", &mesh_lib, &object_lib}
@@ -162,8 +163,6 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			dynamics[i].forces.x = logic_out.directions[i].x * 2000.0f;
-			
 			if (level.models[i].is_animated)
 				level.models[i].update_animation((float)delta.count());
 
@@ -193,15 +192,7 @@ void Game::update(std::chrono::milliseconds delta)
 				level.models[i].switch_animation(RUNNING, 0.2);
 			else if (glm::abs(dynamics[i].forces.x) < 3.0f && level.models[i].get_state() == MODEL_STATE::RUNNING 
 				&& level.models[i].get_state() != MODEL_STATE::IDLE && level.models[i].get_state() != MODEL_STATE::TURN)
-				level.models[i].switch_animation(IDLE, 0.2);
-			
-			if (jump_timers[i] <= 0ms && player_inputs[i][logic::button::jump] == logic::button_state::held)
-			{
-				jump_timers[i] = 3s;
-				dynamics[i].impulse = glm::vec2{ 0.0f, 25.0f};
-			}
-			
-			jump_timers[i] -= delta;		
+				level.models[i].switch_animation(IDLE, 0.2);		
 
 			//===================================Turning===================================
 
