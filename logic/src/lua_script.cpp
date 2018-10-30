@@ -33,9 +33,22 @@ void LuaScript::setup(int entity)
 	stack.clear();
 }
 
-void LuaScript::update(std::chrono::milliseconds delta, objects& object)
+void LuaScript::update(
+	std::chrono::milliseconds delta, 
+	objects& object, 
+	const input& i, 
+	int index)
 {
-	std::string name{ "entities[" + std::to_string(0) + "]" };
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		stack.push("button");
+		stack.push(i);
+		stack.rawset(top);
+		stack.clear();
+	}
+
 	{
 		stack.getglobal(name.c_str());
 		int top = stack.top();
@@ -56,6 +69,8 @@ void LuaScript::update(std::chrono::milliseconds delta, objects& object)
 		stack.rawset(top);
 		stack.clear();
 	}
+
+	
 
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);

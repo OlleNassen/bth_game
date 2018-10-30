@@ -186,6 +186,36 @@ void LuaStack::push(const glm::vec4& value)
 	}
 }
 
+void LuaStack::push(const input& value)
+{
+	newtable();
+	int top = lua_gettop(lua_state);
+	const char* members[] = 
+	{ 
+		"up",
+		"left",
+		"down",
+		"right",
+		"jump",
+		"debug",
+		"select",
+		"cancel",
+		"glow",
+		"refresh",
+		"menu",
+		"quit"
+	};
+
+	int i = 0;
+	for (auto* member : members)
+	{
+		push(member);
+		push(value[static_cast<button>(i++)] 
+			== button_state::held);
+		rawset(top);
+	}
+}
+
 void LuaStack::pop()
 {
 	lua_pop(lua_state, 1);

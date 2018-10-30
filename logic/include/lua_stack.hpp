@@ -2,6 +2,7 @@
 #define LUA_STACK_HPP
 
 #include <glm/glm.hpp>
+#include "input.hpp"
 
 struct lua_State;
 typedef int(*lua_CFunction)(lua_State *L);
@@ -51,6 +52,8 @@ public:
 	void push(const glm::vec2& value);
 	void push(const glm::vec3& value);
 	void push(const glm::vec4& value);
+
+	void push(const input& value);
 
 	void pop();
 	void clear();

@@ -192,15 +192,7 @@ void Game::update(std::chrono::milliseconds delta)
 				level.models[i].switch_animation(RUNNING, 0.2);
 			else if (glm::abs(dynamics[i].forces.x) < 3.0f && level.models[i].get_state() == MODEL_STATE::RUNNING 
 				&& level.models[i].get_state() != MODEL_STATE::IDLE && level.models[i].get_state() != MODEL_STATE::TURN)
-				level.models[i].switch_animation(IDLE, 0.2);
-			
-			if (jump_timers[i] <= 0ms && player_inputs[i][logic::button::jump] == logic::button_state::held)
-			{
-				jump_timers[i] = 3s;
-				dynamics[i].impulse = glm::vec2{ 0.0f, 25.0f};
-			}
-			
-			jump_timers[i] -= delta;		
+				level.models[i].switch_animation(IDLE, 0.2);		
 
 			//===================================Turning===================================
 

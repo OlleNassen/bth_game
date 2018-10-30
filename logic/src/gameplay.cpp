@@ -45,9 +45,13 @@ Output Gameplay::update(Input inputs)
 		
 	std::array<glm::vec2, 4> velocities;
 	
-	for (int i=0; i < 1; i++)
+	for (int i=0; i < 4; i++)
 	{
-		scripts[0].update(inputs.delta, inputs.dynamics[i]);
+		scripts[0].update(
+			inputs.delta, 
+			inputs.dynamics[i], 
+			inputs.player_inputs[i], 
+			i);
 	}
 	  
 	//Object placing \Vincent & Lucas S

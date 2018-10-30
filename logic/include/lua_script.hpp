@@ -31,7 +31,11 @@ public:
 	LuaScript(const std::string& filename);
 	
 	void setup(int entity);
-	void update(std::chrono::milliseconds delta, objects& object);
+	void update(
+		std::chrono::milliseconds delta, 
+		objects& object, 
+		const input& i, 
+		int index);
 private:
 	LuaStack stack;
 };
