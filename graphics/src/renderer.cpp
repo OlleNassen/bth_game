@@ -35,11 +35,12 @@ void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
 	const std::array<std::string, 12>& buttons,
-	const std::vector<glm::vec3>& debug_positions,
-	bool is_menu,
-	bool connected,
-	bool debug)const
+	const std::vector<glm::vec3>& debug_positions)const
 {
+	bool is_menu = (game_state & state::menu);
+	bool connected = (game_state & state::connected);
+	bool debug_active = (game_state & state::render_physics);
+	
 	glClearColor(1.0f, 0.8f, 0.0f, 0.f);
 		
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -176,18 +177,19 @@ void Renderer::update(std::chrono::milliseconds delta,
 	const std::string& data,
 	int num_players,
 	int id,
-	bool is_on,
-	bool move_char)
+	int new_game_state)
 {
-
-	using namespace std::chrono_literals;
+	player_count = num_players;
+	game_state = new_game_state;
+	bool is_chat_on = (game_state & state::chat);
+	
+	using namespace std::chrono_literals;	
+	
 	time = data != log ? 0ms : time + delta;
 	log = data;
-	is_chat_visible = is_on || time < 3s;
+	is_chat_visible = is_chat_on || time < 3s;
 
-	player_count = num_players;
-
-	if (!is_on)
+	if (!is_chat_on)
 	{
 		//Dust Particles
 		fx_emitter.calculate_dust_data(delta, db_camera);

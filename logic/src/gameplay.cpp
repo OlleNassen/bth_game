@@ -144,6 +144,24 @@ Output Gameplay::update(Input inputs)
 
 	//Give up \Vincent
 	give_up(inputs);
+
+	{
+		float positions[4];
+		for (int i = 0; i < 4; ++i)
+		{
+			positions[i] = inputs.dynamics[i].position.y;
+		}
+		race.update(positions);
+
+		if (race.should_restart())
+		{
+			for (int i = 0; i < 4; ++i)
+			{
+				 inputs.dynamics[i].position.y = 0.0f;
+			}
+		}
+	}
+	
 	
 	return Output{ velocities, inputs.directions };
 }

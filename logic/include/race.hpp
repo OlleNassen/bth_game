@@ -15,7 +15,7 @@ public:
 	void update(float* positions);
 
 private:
-	float goal = 100.0;
+	float goal = 10.0;
 	std::string usernames[4] = { "P1", "P2", "P3", "P4" };
 	int player_ids[4] = { 0, 1, 2, 3 };
 	int scores[4] = {};
