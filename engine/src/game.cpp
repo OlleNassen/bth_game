@@ -71,9 +71,7 @@ void Game::run()
 	auto delta_time = 0ns;
 	auto frames = 0;
 
-	while (window.is_open() && 
-		!menu.exit() &&
-		(*local_input)[logic::button::quit] != logic::button_state::held)
+	while (window.is_open() && !menu.exit())
 	{
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();
@@ -106,13 +104,26 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	int game_state = 0;
+	int game_state = 0;	
+
+	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
+	{
+		menu.open();	
+		
+	}
+
+	if (menu.on())
+	{
+		window.show_cursor();		
+	}
+	else
+	{
+		window.hide_cursor();
+	}	
 
 	if ((*local_input)[logic::button::debug] == logic::button_state::pressed)
 		game_state = (game_state | state::render_physics);
 
-	if (!menu.on())
-		window.hide_cursor();
 
 	chat.update(delta);
 	menu.update(delta, *local_input);

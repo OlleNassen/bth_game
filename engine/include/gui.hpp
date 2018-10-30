@@ -54,6 +54,8 @@ public:
 	Menu();
 	void update(std::chrono::milliseconds delta, const logic::input& i);
 
+	void open();
+
 	const std::array<std::string, 12>& button_strings() const;
 
 	bool debug() const;
@@ -88,7 +90,7 @@ public:
 
 private:
 	bool is_debug = false;
-	bool is_on = false;
+	bool is_on = true;
 	bool want_exit = false;
 	button_array buttons[3];
 	button_array* current_buttons{ &buttons[0] };

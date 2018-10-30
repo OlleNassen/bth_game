@@ -109,6 +109,20 @@ const std::array<std::string, 12>& Menu::button_strings() const
 	return strings;
 }
 
+void Menu::open()
+{
+	if (current_buttons != &buttons[0])
+	{
+		current_buttons = &buttons[0];
+		is_debug = false;
+		is_on = true;
+	}
+	else
+	{
+		want_exit = true;
+	}	
+}
+
 void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 {
 	auto index = logic::input::indices - i.index - 1;

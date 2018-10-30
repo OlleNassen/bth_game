@@ -41,7 +41,7 @@ void Renderer::render(
 	bool connected = (game_state & state::connected);
 	bool debug_active = (game_state & state::render_physics);
 	
-	glClearColor(1.0f, 0.8f, 0.0f, 0.f);
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	scene_texture.bind_framebuffer();
@@ -143,7 +143,7 @@ void Renderer::render(
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 		text_shader.uniform("projection", projection);
-		text_shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
 
 		auto offset = 0.0f;
