@@ -1,5 +1,7 @@
 #ifndef LUA_SCRIPT_HPP
 #define LUA_SCRIPT_HPP
+#include <array>
+#include <tuple>
 #include <chrono>
 #include <string>
 #include <vector>
@@ -24,11 +26,10 @@ public:
 	glm::vec2 impulse;
 };
 
-class LuaScript
+class PlayerScript
 {
 public:
-	LuaScript();
-	LuaScript(const std::string& filename);
+	PlayerScript();
 	
 	void setup(int entity);
 	void update(
@@ -39,6 +40,21 @@ public:
 private:
 	LuaStack stack;
 };
+
+class GameScript
+{
+public:
+	GameScript();
+
+	void setup();
+	void update(
+		std::chrono::milliseconds delta,
+		objects* players);
+	std::array<std::tuple<std::string, int, float>, 4> name_id_score();
+private:
+	LuaStack stack;
+};
+
 
 }
 

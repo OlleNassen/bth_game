@@ -21,8 +21,9 @@ void Gameplay::refresh()
 
 	for (auto i = 0; i < 4; ++i)
 	{
-		scripts[0].setup(i);
+		player_script.setup(i);
 	}
+	game_script.setup();
 }
 
 Output Gameplay::update(Input inputs)
@@ -47,12 +48,14 @@ Output Gameplay::update(Input inputs)
 	
 	for (int i=0; i < 4; i++)
 	{
-		scripts[0].update(
+		player_script.update(
 			inputs.delta, 
 			inputs.dynamics[i], 
 			inputs.player_inputs[i], 
 			i);
 	}
+
+	game_script.update(inputs.delta, &inputs.dynamics[0]);
 	  
 	//Object placing \Vincent & Lucas S
 	if (inputs.player_inputs[0][logic::button::build_mode] == logic::button_state::pressed)
