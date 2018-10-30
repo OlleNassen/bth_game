@@ -192,14 +192,15 @@ std::array<std::tuple<std::string, int, float>, 4> GameScript::name_id_score()
 {
 	stack.getglobal("game");
 	stack.getfield(-1, "scores");
-	stack.getfield(-1, "0");
-	stack.getfield(-2, "1");
-	stack.getfield(-3, "2");
-	stack.getfield(-4, "3");
+	int top = stack.top();
+	stack.rawget(top, 1);
+	stack.rawget(top, 2);
+	stack.rawget(top, 3);
+	stack.rawget(top, 4);
 
 	std::array<std::tuple<std::string, int, float>, 4> temp;
 
-	float index = -4;
+	int index = -4;
 	for (int i = 0; i < 4; ++i)
 	{
 		temp[i] = std::make_tuple("p" + std::to_string(i), i,
