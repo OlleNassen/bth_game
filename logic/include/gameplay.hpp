@@ -7,6 +7,7 @@
 
 #include "lua_script.hpp"
 #include "input.hpp"
+#include "race.hpp"
 #include "../../graphics/include/game_scene.hpp"
 #include "../../physics/include/world.hpp"
 
@@ -54,6 +55,7 @@ public:
 private:
 	script_array<int> entities;
 	script_array<LuaScript> scripts;
+	Race race;
 	std::array<glm::vec3, 4> directions;
 
 	int model_id{ -1 };

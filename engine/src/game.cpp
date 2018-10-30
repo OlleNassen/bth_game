@@ -2,6 +2,8 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
+#include <flags.hpp>
+
 using namespace std::chrono_literals;
 
 Game::Game()
@@ -70,9 +72,7 @@ void Game::run()
 	auto delta_time = 0ns;
 	auto frames = 0;
 
-	while (window.is_open() && 
-		!menu.exit() &&
-		(*local_input)[logic::button::quit] != logic::button_state::held)
+	while (window.is_open() && !menu.exit())
 	{
 		delta_time += clock::now() - last_time;
 		last_time = clock::now();
@@ -97,8 +97,7 @@ void Game::render()
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
-		db_coll, menu.on(),
-		net.connected(), menu.debug());
+		db_coll);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -106,13 +105,25 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-	if ((*local_input)[logic::button::debug] == logic::button_state::pressed)
+	int game_state = 0;	
+
+	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
 	{
-		renderer.debug_active = !renderer.debug_active;
+		menu.open();			
 	}
 
-	if (!menu.on())
+	if (menu.on())
+	{
+		window.show_cursor();		
+	}
+	else
+	{
 		window.hide_cursor();
+	}	
+
+	if ((*local_input)[logic::button::debug] == logic::button_state::held)
+		game_state = (game_state | state::render_physics);
+
 
 	chat.update(delta);
 	menu.update(delta, *local_input);
@@ -239,6 +250,15 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
+	if (menu.on())
+		game_state = (game_state | state::menu);
+
+	if (chat.is_on())
+		game_state = (game_state | state::chat);
+
+	if (net.connected())
+		game_state = (game_state | state::connected);
+
 
 	physics.update(delta, dynamics);
 	{
@@ -254,8 +274,7 @@ void Game::update(std::chrono::milliseconds delta)
 			player_inputs[net.id()].cursor,
 			logic_out.directions,
 			chat[1], player_count,
-			net.id(), chat.is_on(),
-			net.connected());
+			net.id(), game_state);
 	}
 }
 

@@ -22,12 +22,14 @@
     <ClCompile Include="src\gameplay.cpp" />
     <ClCompile Include="src\lua_script.cpp" />
     <ClCompile Include="src\lua_stack.cpp" />
+    <ClCompile Include="src\race.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\gameplay.hpp" />
     <ClInclude Include="include\input.hpp" />
     <ClInclude Include="include\lua_script.hpp" />
     <ClInclude Include="include\lua_stack.hpp" />
+    <ClInclude Include="include\race.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

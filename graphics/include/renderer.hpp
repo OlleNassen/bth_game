@@ -4,6 +4,9 @@
 #include <chrono>
 #include <time.h>
 #include <vector>
+
+#include <flags.hpp>
+
 #include "game_scene.hpp"
 #include "camera.hpp"
 #include "text.hpp"
@@ -41,10 +44,7 @@ public:
 		const std::string* begin,
 		const std::string* end,
 		const std::array<std::string, 12>& buttons,
-		const std::vector<glm::vec3>& debug_positions,
-		bool is_menu,
-		bool connected,
-		bool debug) const;
+		const std::vector<glm::vec3>& debug_positions) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -53,10 +53,7 @@ public:
 		const std::string& data,
 		int num_players,
 		int id,
-		bool is_on,
-		bool move_char);
-
-	bool debug_active{ false };
+		int new_game_state);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -151,6 +148,8 @@ private:
 	Minimap minimap;
 
 	FX fx_emitter;
+
+	int game_state;
 
 };
 
