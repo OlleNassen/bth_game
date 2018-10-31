@@ -26,7 +26,7 @@ public:
 	PlayerArrows();
 	~PlayerArrows() = default;
 	void update(const std::vector<Model> &models, int players);
-	void render();
+	void render() const;
 	//void set_position(glm::vec2 position, int i)
 private:
 	Texture arrow_texture;

@@ -103,6 +103,7 @@ void PlayerArrows::update(const std::vector<Model> &models, int players)
 				std::cout << "not visible" << std::endl;
 				visible[i] = false;
 				player_vector[i] = player_positions[i] - player_positions[0];
+				float angle = std::atan2(player_vector[i].y, player_vector[i].x);
 			}
 			else
 				visible[i] = true;
@@ -110,7 +111,7 @@ void PlayerArrows::update(const std::vector<Model> &models, int players)
 	}
 }
 
-void PlayerArrows::render()
+void PlayerArrows::render() const
 {
 	//beräkna vektor mellan spelarna
 	//beräkna matrix för position, rotation, scale
