@@ -95,10 +95,12 @@ void Host::send(GameState& state)
 		state.sequence = ++sequence;
 		state.player_count = player_count;
 
+		int index = 0;
 		for (auto* peer : peers)
 		{
 			if (peer)
 			{
+				state.player_id = ++index;
 				ENetPacket* enet_packet =
 					enet_packet_create(&state,
 					sizeof(GameState),
@@ -106,7 +108,9 @@ void Host::send(GameState& state)
 					| ENET_PACKET_FLAG_NO_ALLOCATE);
 				enet_peer_send(peer, 0, enet_packet);
 			}
+			enet_host_flush(enet_host);
 		}
+		state.player_id = 0;
 	}
 }
 
