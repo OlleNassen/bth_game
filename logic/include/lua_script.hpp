@@ -8,6 +8,8 @@
 #include <iostream>
 #include <lua.hpp>
 #include "lua_stack.hpp"
+#include "../../graphics/include/game_scene.hpp"
+#include "../../physics/include/world.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -36,7 +38,7 @@ public:
 class PlayerScript
 {
 public:
-	PlayerScript();
+	PlayerScript(const std::string& path);
 	
 	void setup(int entity);
 	void update(
@@ -61,7 +63,6 @@ public:
 private:
 	LuaStack stack;
 };
-
 
 }
 

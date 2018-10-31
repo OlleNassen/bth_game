@@ -4,8 +4,8 @@
 namespace logic
 {
 
-PlayerScript::PlayerScript()
-	: stack{ "../resources/scripts/player.lua" }
+PlayerScript::PlayerScript(const std::string& path)
+	: stack{ path.c_str() }
 {
 	stack.setglobal("entities");
 }
@@ -34,6 +34,7 @@ void PlayerScript::update(
 	int index)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
+
 	{
 		stack.getglobal(name.c_str());
 		int top = stack.top();
