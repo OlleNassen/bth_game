@@ -146,10 +146,6 @@ void Game::update(std::chrono::milliseconds delta)
 		is_client = true;
 	}
 
-	pack_data();
-	net.update(net_state, str);
-	unpack_data();
-
 	std::array<glm::vec3, 4> directions
 	{ 
 		glm::vec3{0.0f}, 
@@ -277,6 +273,11 @@ void Game::update(std::chrono::milliseconds delta)
 
 
 	physics.update(delta, dynamics);
+
+	pack_data();
+	net.update(net_state, str);
+	unpack_data();
+
 	{
 		graphics::objects_array obj;
 		for (int i = 0; i < dynamics.size(); ++i)

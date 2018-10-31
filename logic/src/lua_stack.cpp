@@ -210,9 +210,10 @@ void LuaStack::push(const input& value)
 	for (auto* member : members)
 	{
 		push(member);
-		push(value[static_cast<button>(i++)] 
-			== button_state::held);
+		push(value[static_cast<button>(i)] 
+			== button_state::held);	
 		rawset(top);
+		++i;
 	}
 }
 
