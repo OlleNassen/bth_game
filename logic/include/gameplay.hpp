@@ -38,6 +38,7 @@ struct Output
 {
 	std::array<glm::vec2, 4> velocities;
 	std::array<glm::vec3, 4> directions;
+	std::array<std::tuple<std::string, int, float>, 4> name_id_score;
 };
 
 template <typename T>

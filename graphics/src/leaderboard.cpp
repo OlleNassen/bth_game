@@ -4,10 +4,12 @@
 
 namespace graphics
 {
-Leaderboard::Leaderboard(glm::mat4 projection)
+Leaderboard::Leaderboard(const glm::mat4& projection)
 {
 	for (int i = 0; i < 4; i++)
 		scoreboard[i] = i;
+
+	this->projection = projection;
 }
 
 Leaderboard::~Leaderboard()
@@ -22,13 +24,11 @@ void Leaderboard::update(int array[])
 void Leaderboard::render(const Shader& shader)const
 {
 	shader.use();
-	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	shader.uniform("projection", projection);
-	/*shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));*/
+	shader.uniform("text_color", glm::vec3(0.1f, 0.9f, 0.1f));
 
 	std::stringstream test;
 	float pos[4] = { 480, 400, 320, 240 };
-	shader.uniform("text_color", glm::vec3(0.1f, 0.9f, 0.1f));
 
 	for (int i = 0; i < 4; i++)
 	{

@@ -102,7 +102,6 @@ void Renderer::render(
 
 		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
 
-
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
@@ -112,12 +111,8 @@ void Renderer::render(
 			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
-
 		}
-
 	}
-
-	
 
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -144,14 +139,13 @@ void Renderer::render(
 			ui.render();
 		}
 
+		//leaderboard
+		leaderboard.render(text_shader);
+
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-
-
-		//leaderboard
-		leaderboard.render(text_shader);
 
 		auto offset = 0.0f;
 
@@ -173,9 +167,6 @@ void Renderer::render(
 
 		glEnable(GL_DEPTH_TEST);
 	}
-
-	/*text.render_text("GAME OVER!\n\n\n\n", 1280 / 2.f, 720 / 2.f, 2.0f);*/
-	
 
 }
 

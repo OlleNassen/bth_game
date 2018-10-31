@@ -10,13 +10,14 @@ namespace graphics
 class Leaderboard
 {
 public:
-	Leaderboard(glm::mat4 projection);
+	Leaderboard(const glm::mat4& projection);
 	~Leaderboard();
 
 	void render(const Shader& shader)const;
 	void update(int array[]);
 
 private:
+	glm::mat4 projection;
 	int scoreboard[4];
 	Text text;
 };
