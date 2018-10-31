@@ -100,17 +100,14 @@ void Host::send(GameState& state)
 		{
 			if (peer)
 			{
-				state.player_id = ++index;
 				ENetPacket* enet_packet =
 					enet_packet_create(&state,
-					sizeof(GameState),
-					ENET_PACKET_FLAG_UNSEQUENCED
-					| ENET_PACKET_FLAG_NO_ALLOCATE);
+						sizeof(GameState),
+						ENET_PACKET_FLAG_UNSEQUENCED
+						| ENET_PACKET_FLAG_NO_ALLOCATE);
 				enet_peer_send(peer, 0, enet_packet);
 			}
-			enet_host_flush(enet_host);
 		}
-		state.player_id = 0;
 	}
 }
 

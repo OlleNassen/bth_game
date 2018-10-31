@@ -16,7 +16,7 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 
 	Rigidbody body;
 	body.box = OBB{ position, size, orientation };
-	body.position = position;
+	body.position = body.box.position;
 	body.velocity = glm::vec3{0.0f};
 	body.forces = glm::vec3{0.0f};
 	body.mass = 100.0f;

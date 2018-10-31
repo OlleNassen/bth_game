@@ -24,7 +24,7 @@ void Gameplay::refresh()
 	for (auto i = 0; i < 4; ++i)
 	{
 		player_script.setup(i);
-		placement_script.setup(i);
+		//placement_script.setup(i);
 	}
 	game_script.setup();
 
@@ -58,13 +58,13 @@ Output Gameplay::update(Input inputs,
 			inputs.dynamics[i], 
 			inputs.player_inputs[i], 
 			i);
-		
+		/*
 		placement_script.update(
 			inputs.delta,
 			inputs.dynamics[7],
 			inputs.player_inputs[i],
 			i);
-			
+			*/
 	}
 
 	game_script.update(inputs.delta, &inputs.dynamics[0]);
@@ -166,7 +166,7 @@ Output Gameplay::update(Input inputs,
 void Gameplay::give_up(Input input)
 {
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(input.delta).count();
-	if (input.player_inputs[0][button::remove_object] == button_state::held)
+	/*if (input.player_inputs[0][button::remove_object] == button_state::held)
 	{
 		give_up_timer += dt;
 		if (give_up_timer >= 5.0f)
@@ -176,7 +176,7 @@ void Gameplay::give_up(Input input)
 		}
 	}
 	else if (give_up_timer != 0.0f)
-		give_up_timer = 0.0f;
+		give_up_timer = 0.0f;*/
 }
  
 //int Gameplay::set_player_status(int i, bool status)

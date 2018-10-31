@@ -28,11 +28,6 @@ Game::Game()
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
 	window.assign_key(logic::button::debug, GLFW_KEY_F3);
-	window.assign_key(logic::button::switch_object, GLFW_KEY_F4);
-	window.assign_key(logic::button::remove_object, GLFW_KEY_O);
-	window.assign_key(logic::button::rotate, GLFW_KEY_R);
-	window.assign_key(logic::button::build_mode, GLFW_KEY_B);
-	window.assign_key(logic::button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
 
 	window.assign_button(logic::button::up, controller_buttons::up);
@@ -45,6 +40,14 @@ Game::Game()
 
 	window.assign_axis_neg(logic::button::left, controller_axis::ls_right);
 	window.assign_axis_pos(logic::button::right, controller_axis::ls_right);
+
+	for (int i = 0; i < 12; ++i)
+	{
+		player_inputs[0][static_cast<logic::button>(i)] = logic::button_state::none;
+		player_inputs[1][static_cast<logic::button>(i)] = logic::button_state::none;
+		player_inputs[2][static_cast<logic::button>(i)] = logic::button_state::none;
+		player_inputs[3][static_cast<logic::button>(i)] = logic::button_state::none;
+	}	
 
 	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
 
@@ -186,6 +189,7 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
+			/*
 			if (level.models[i].is_animated)
 				level.models[i].update_animation((float)delta.count());
 
@@ -256,7 +260,7 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 			}
-
+			*/
 			level.v[i] = dynamics[i].position;
 			level.models[i].set_position(dynamics[i].position);
 		}

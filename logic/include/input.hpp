@@ -23,12 +23,6 @@ enum class button
 	glow,
 	refresh,
 	menu,
-	switch_object,
-	rotate,
-	build_mode,
-	place_object,
-	remove_object,
-
 	quit
 		
 };
