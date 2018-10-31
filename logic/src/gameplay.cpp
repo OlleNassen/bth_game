@@ -1,4 +1,5 @@
 #include "gameplay.hpp"
+#include <time.h>
 
 namespace logic
 {
@@ -9,6 +10,7 @@ Gameplay::Gameplay()
 	refresh();
 
 	current_gameboard.clear();
+	srand(time(NULL));
 }
 
 void Gameplay::refresh()
@@ -71,7 +73,7 @@ Output Gameplay::update(Input inputs)
 		if (inputs.player_inputs[0][logic::button::place_object] == logic::button_state::pressed)
 		{
 			glm::vec2 position = glm::vec2(0.0f, 5.0f);
-			model_id = inputs.scene->add_object(data);
+			model_id = inputs.scene->add_object(data, get_random_object_id(inputs));
 			physics_id = inputs.physics->add_static_body(data.position, glm::vec2(0.0, 0.0), data.width, data.height, data.trigger);
 			inputs.scene->placed_objects_model_index.emplace_back(model_id);
 			inputs.physics->placed_objects_index.emplace_back(physics_id);
@@ -209,6 +211,11 @@ bool Gameplay::everyone_reached_goal()
 	bool value = true;
 
 	return value;
+}
+
+int	Gameplay::get_random_object_id(Input input)
+{
+	return rand() % input.scene->objects.size();
 }
 
 }

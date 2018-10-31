@@ -24,13 +24,14 @@ enum class button
 	glow,
 	refresh,
 	menu,
-	quit,
-	
 	switch_object,
 	rotate,
 	build_mode,
 	place_object,
-	remove_object	
+	remove_object,
+
+	quit
+		
 };
 
 enum class button_state

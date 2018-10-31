@@ -63,6 +63,7 @@ private:
 
 	int points = 0;
 	std::vector<int> current_gameboard;
+	int	get_random_object_id(Input input);
 };
 
 }
