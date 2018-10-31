@@ -13,15 +13,12 @@ public:
 	Leaderboard(glm::mat4 projection);
 	~Leaderboard();
 
-	void render( Shader& shader);
+	void render(const Shader& shader)const;
 	void update(int array[]);
 
 private:
 	int scoreboard[4];
 	Text text;
-	/*Shader leaderboard_text_shader{
-		"../resources/shaders/text.vs",
-		"../resources/shaders/text.fs" };*/
 };
 
 }

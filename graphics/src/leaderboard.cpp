@@ -19,7 +19,7 @@ void Leaderboard::update(int array[])
 
 }
 
-void Leaderboard::render( Shader& shader)
+void Leaderboard::render(const Shader& shader)const
 {
 	shader.use();
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);

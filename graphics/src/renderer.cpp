@@ -151,7 +151,7 @@ void Renderer::render(
 
 
 		//leaderboard
-		//leaderboard.render(text_shader);
+		leaderboard.render(text_shader);
 
 		auto offset = 0.0f;
 
