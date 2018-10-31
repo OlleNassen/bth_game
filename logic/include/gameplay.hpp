@@ -20,11 +20,15 @@
 
 namespace logic
 {
+
+using objects_array = std::array<objects, 100>;
 	   
 struct Input
 {
 	std::chrono::milliseconds delta;
+	objects_array& dynamics;
 	const input* player_inputs; //4
+	//unnecessary junk:
 	std::array<glm::vec3, 4> directions;
 	graphics::GameScene* scene;
 	physics::World* physics;
@@ -47,11 +51,11 @@ public:
 	void refresh();
 
 	Output update(Input input);
-	int set_player_status(int i, bool status);
-	bool get_player_status();
 private:
 	script_array<int> entities;
-	script_array<LuaScript> scripts;
+	PlayerScript player_script;
+	GameScript game_script;
+	std::array<glm::vec3, 4> directions;
 
 	int model_id{ -1 };
 	int physics_id{ -1 };
@@ -59,7 +63,6 @@ private:
 
 	float give_up_timer{ 0.0f };
 	void give_up(Input input);
-	bool everyone_reached_goal();
 
 	int points = 0;
 	std::vector<int> current_gameboard;

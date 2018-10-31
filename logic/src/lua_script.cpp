@@ -4,25 +4,16 @@
 namespace logic
 {
 
-LuaScript::LuaScript()
+PlayerScript::PlayerScript()
 	: stack{ "../resources/scripts/player.lua" }
 {
 	stack.setglobal("entities");
 }
 
-LuaScript::LuaScript(const std::string& filename)
-	: stack{filename.c_str()}
-{
-	//stack.setglobal("entities");
-}
-
-void LuaScript::setup(int entity)
+void PlayerScript::setup(int entity)
 {
 	std::string name{"entities[" + std::to_string(entity) + "]"};
 	stack.newtable();
-	stack.push("points");
-	stack.push(34);
-	stack.settable(-3);
 	stack.setglobal(name.c_str());
 
 	stack.getglobal("setup");
@@ -32,80 +23,193 @@ void LuaScript::setup(int entity)
 		stack.getglobal(name.c_str());
 		stack.call(1, 0);
 	}
+
+	stack.clear();
 }
 
-void LuaScript::update(std::chrono::milliseconds delta, const glm::vec3& direction, glm::vec2& velocity)
+void PlayerScript::update(
+	std::chrono::milliseconds delta, 
+	objects& object, 
+	const input& i, 
+	int index)
 {
-	std::string name{ "entities[" + std::to_string(0) + "]" };
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		stack.push("button");
+		stack.push(i);
+		stack.rawset(top);
+		stack.clear();
+	}
+
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		stack.push("position");
+		stack.push(object.position);
+		stack.rawset(top);
+		stack.push("velocity");
+		stack.push(object.velocity);
+		stack.rawset(top);
+		stack.push("size");
+		stack.push(object.size);
+		stack.rawset(top);
+		stack.push("forces");
+		stack.push(object.forces);
+		stack.rawset(top);
+		stack.push("impulse");
+		stack.push(object.impulse);
+		stack.rawset(top);
+		stack.clear();
+	}
 
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);
 	stack.getglobal(name.c_str());
-	stack.push("direction");
-	stack.push(direction);
-	stack.rawset(-3);
-	stack.push("position");
-	stack.push(velocity);
-	stack.rawset(-3);
-	stack.push("velocity");
-	stack.push(velocity);
-	stack.rawset(-3);
-	stack.push("size");
-	stack.push(velocity);
-	stack.rawset(-3);
-	stack.push("force");
-	stack.push(velocity);
-	stack.rawset(-3);
-
 	stack.call(2, 0);
 
-	stack.getglobal(name.c_str());
-	stack.push("velocity");
-	stack.gettable(-2);
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		
+		stack.getfield(top, "position");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.position.x = stack.tonumber(-2);
+		object.position.y = stack.tonumber(-1);
 
-	velocity.x = stack.tonumber(-2);
-	velocity.y = stack.tonumber(-1);
+		stack.getfield(top, "velocity");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.velocity.x = stack.tonumber(-2);
+		object.velocity.y = stack.tonumber(-1);
+
+		stack.getfield(top, "size");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.size.x = stack.tonumber(-2);
+		object.size.y = stack.tonumber(-1);
+
+		stack.getfield(top, "forces");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.forces.x = stack.tonumber(-2);
+		object.forces.y = stack.tonumber(-1);
+
+		stack.getfield(top, "impulse");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.impulse.x = stack.tonumber(-2);
+		object.impulse.y = stack.tonumber(-1);
+		
+		stack.clear();
+	}	
+}
+
+GameScript::GameScript()
+	: stack{ "../resources/scripts/gameloop.lua" }
+{
+	//stack.setglobal("entities");
+}
+
+void GameScript::setup()
+{
+	stack.newtable();
+	stack.setglobal("game");
+	stack.getglobal("setup");
+
+	if (lua_isfunction(stack.lua_state, -1))
+	{
+		stack.getglobal("game");
+		stack.call(1, 0);
+	}
+
+	stack.newtable();
+	stack.setglobal("entities");
+
+	stack.getglobal("entities");
+	int top = stack.top();
+	for (int i = 1; i <= 4; i++)
+	{
+		stack.newtable();
+		//std::string temp{ "p" + std::to_string(i) };
+		stack.rawset(top, i);
+		//stack.setglobal(temp.c_str());
+	}
 
 	stack.clear();
 }
 
-void LuaScript::set_player_status(bool value)
+void GameScript::update(std::chrono::milliseconds delta,
+	objects* players)
 {
-	stack.getglobal("reached_goal");
-	stack.push(value);
 
-	stack.call(1, 0);
-	stack.clear();
+	{
+		stack.getglobal("game");
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+			stack.push("position");
+			stack.push(players[i - 1].position);
+			stack.rawset(top_pos);
+		}
+
+		stack.clear();
+	}
+
+	stack.getglobal("update");
+	stack.push(delta.count() / 1000.0f);
+	stack.getglobal("game");
+	stack.getglobal("entities");
+	stack.call(3, 0);
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; ++i)
+		{
+			stack.rawget(top, i);
+			stack.getfield(-1, "position");
+			stack.getfield(-1, "x");
+			stack.getfield(-2, "y");
+			players[i - 1].position.x = stack.tonumber(-2);
+			players[i - 1].position.y = stack.tonumber(-1);
+		}
+
+		stack.clear();
+	}
 }
 
-bool LuaScript::player_status()
+std::array<std::tuple<std::string, int, float>, 4> GameScript::name_id_score()
 {
-	stack.getglobal("get_playable");
-	stack.call(0, 1);
-	
-	player_alive = stack.toboolean(-1);
-	stack.clear();
-	
-	return player_alive;
-}
+	stack.getglobal("game");
+	stack.getfield(-1, "scores");
+	int top = stack.top();
+	stack.rawget(top, 1);
+	stack.rawget(top, 2);
+	stack.rawget(top, 3);
+	stack.rawget(top, 4);
 
-void LuaScript::add_points(int points)
-{
-	stack.getglobal("add_points");
-	stack.push(points);
-	stack.call(1, 0);
-	stack.clear();
-}
+	std::array<std::tuple<std::string, int, float>, 4> temp;
 
-int LuaScript::get_player_points()
-{
-	stack.getglobal("get_player_points");
-	stack.call(0, 1);
+	int index = -4;
+	for (int i = 0; i < 4; ++i)
+	{
+		temp[i] = std::make_tuple("p" + std::to_string(i), i,
+			stack.tonumber(index++));
+	}
 
-	player_points = stack.tonumber(-1);
 	stack.clear();
 
-	return player_points;
+	return temp;
 }
 
 }

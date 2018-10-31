@@ -54,6 +54,8 @@ public:
 	Menu();
 	void update(std::chrono::milliseconds delta, const logic::input& i);
 
+	void open();
+
 	const std::array<std::string, 12>& button_strings() const;
 
 	bool debug() const;
@@ -66,32 +68,8 @@ private:
 	bool is_debug = false;
 	bool is_on = true;
 	bool want_exit = false;
-	button_array buttons[3];
+	button_array buttons[4];
 	button_array* current_buttons{&buttons[0]};
-
-	std::array<std::string, 12> strings;
-};
-
-class Options
-{
-public:
-	Options();
-	void update(std::chrono::milliseconds delta, const logic::input& i);
-
-	const std::array<std::string, 12>& button_strings() const;
-
-	bool debug() const;
-
-	bool on() const;
-
-	bool exit() const;
-
-private:
-	bool is_debug = false;
-	bool is_on = false;
-	bool want_exit = false;
-	button_array buttons[3];
-	button_array* current_buttons{ &buttons[0] };
 
 	std::array<std::string, 12> strings;
 };

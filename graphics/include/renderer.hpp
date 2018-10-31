@@ -4,6 +4,9 @@
 #include <chrono>
 #include <time.h>
 #include <vector>
+
+#include <flags.hpp>
+
 #include "game_scene.hpp"
 #include "camera.hpp"
 #include "text.hpp"
@@ -19,6 +22,15 @@
 namespace graphics
 {
 
+class objects
+{
+public:
+	glm::vec2 position;
+	glm::vec2 size;
+};
+
+using objects_array = std::array<objects, 100>;
+
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -32,23 +44,18 @@ public:
 		const std::string* begin,
 		const std::string* end,
 		const std::array<std::string, 12>& buttons,
-		const std::vector<glm::vec2>& debug_positions,
-		bool is_menu,
-		bool connected,
-		bool debug, std::vector<int> leaderboard, bool show_leaderboard) const;
+		const std::vector<glm::vec3>& debug_positions) const;
 
 	void update(std::chrono::milliseconds delta,
+		const objects_array& dynamics,
 		const glm::vec2& cursor,
 		const std::array<glm::vec3, 4>& directions,
 		const std::string& data,
 		int num_players,
 		int id,
-		bool is_on,
-		bool move_char);
+		int new_game_state);
 
-	bool debug_active{ false };
-
-	static void line_debug(const std::vector<glm::vec2>& lines)
+	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
 		VertexArray vao;
 		Buffer vertex_buffer;
@@ -57,10 +64,10 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 		gl_buffer_data(GL_ARRAY_BUFFER, lines, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
 
-		glLineWidth(1.0f);
-		glDrawArrays(GL_LINES, 0, lines.size());
+		glPointSize(5.0f);
+		glDrawArrays(GL_POINTS, 0, lines.size());
 		glBindVertexArray(0);
 	}
 
@@ -141,6 +148,8 @@ private:
 	Minimap minimap;
 
 	FX fx_emitter;
+
+	int game_state;
 
 };
 

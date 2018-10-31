@@ -55,11 +55,9 @@ private:
 	network::GameState net_state;
 	network::Messenger net;
 
+	physics::objects_array dynamics;
 	physics::World physics;	
 	std::chrono::milliseconds timestep{16};
-	
-	//Win clock //Temp
-	//std::chrono::milliseconds w_time{ 5000 };
 
 	gui::Chat chat;
 	gui::Menu menu;	

@@ -1,5 +1,7 @@
 #ifndef LUA_SCRIPT_HPP
 #define LUA_SCRIPT_HPP
+#include <array>
+#include <tuple>
 #include <chrono>
 #include <string>
 #include <vector>
@@ -14,25 +16,45 @@
 namespace logic
 {
 
-class LuaScript
+class objects
 {
 public:
-	LuaScript();
-	LuaScript(const std::string& filename);
+	glm::vec2 position;
+	glm::vec2 velocity;
+	glm::vec2 size;
+	glm::vec2 forces;
+	glm::vec2 impulse;
+};
+
+class PlayerScript
+{
+public:
+	PlayerScript();
 	
 	void setup(int entity);
-	void update(std::chrono::milliseconds delta, const glm::vec3& direction, glm::vec2& velocity);
-
-	void set_player_status(bool value);
-	void add_points(int points);
-
-	bool player_status();
-	int get_player_points();
+	void update(
+		std::chrono::milliseconds delta, 
+		objects& object, 
+		const input& i, 
+		int index);
 private:
 	LuaStack stack;
-	bool player_alive = true;
-	int player_points = 0;
 };
+
+class GameScript
+{
+public:
+	GameScript();
+
+	void setup();
+	void update(
+		std::chrono::milliseconds delta,
+		objects* players);
+	std::array<std::tuple<std::string, int, float>, 4> name_id_score();
+private:
+	LuaStack stack;
+};
+
 
 }
 

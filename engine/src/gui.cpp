@@ -78,17 +78,22 @@ void Chat::update(std::chrono::milliseconds delta)
 static void current_menu(int index, std::array<std::string, 12>& strings, const button_array& data)
 {
 	for (int i = 0; i < 12; ++i)
-	{
-		strings[i] = data[i].text;
-		
-		if (data[i].state == button_state::selected)
-			strings[index] = "[" + strings[index] + "]";
-		
-		if (data[i].state == button_state::hover)
-			strings[index] = " " + strings[index];	
-	}
-	
-	
+	{			
+		if (data[i].text != "")
+		{
+			strings[i] = data[i].text;
+			
+			if (data[i].state == button_state::selected)
+				strings[index] = "[" + strings[index] + "]";
+
+			if (data[i].state == button_state::hover)
+				strings[index] = " " + strings[index];
+		}
+		else
+		{
+			strings[i] = "";
+		}
+	}	
 }
 
 Menu::Menu() 
@@ -102,6 +107,9 @@ Menu::Menu()
 	buttons[1][8] = { "Host", button_state::none };
 	buttons[1][7] = { "Join", button_state::none };
 	buttons[1][6] = { "Back", button_state::none };
+
+	buttons[2][10] = { "Fullscreen", button_state::none };
+	buttons[2][6] = { "Back", button_state::none };
 }
 
 const std::array<std::string, 12>& Menu::button_strings() const
@@ -109,11 +117,25 @@ const std::array<std::string, 12>& Menu::button_strings() const
 	return strings;
 }
 
+void Menu::open()
+{
+	if (current_buttons != &buttons[0])
+	{
+		current_buttons = &buttons[0];
+		is_debug = false;
+		is_on = true;
+	}
+	else
+	{
+		want_exit = true;
+	}	
+}
+
 void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 {
 	auto index = logic::input::indices - i.index - 1;
 	auto& button = (*current_buttons)[index];
-	
+
 	for (auto& arrays : buttons)
 		for (auto& button : arrays)
 			button.state = button_state::none;
@@ -126,11 +148,15 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 		{
 			is_on = false;
 			is_debug = true;
-			current_buttons = &buttons[2];
+			current_buttons = &buttons[3];
 		}
 		else if (current_buttons == &buttons[0] && index == 8)
 		{
 			current_buttons = &buttons[1];
+		}
+		else if (current_buttons == &buttons[0] && index == 7)
+		{
+			current_buttons = &buttons[2];
 		}
 		else if (current_buttons == &buttons[0] && index == 6)
 		{
@@ -139,12 +165,12 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 		}
 		else if (current_buttons == &buttons[1] && index == 8)
 		{
-			current_buttons = &buttons[2];
+			current_buttons = &buttons[3];
 			is_on = false;
 		}
 		else if (current_buttons == &buttons[1] && index == 7)
 		{
-			current_buttons = &buttons[2];
+			current_buttons = &buttons[3];
 			is_on = false;
 			string_buffer = "";
 			chat_on = true;
@@ -153,6 +179,19 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 		{
 			current_buttons = &buttons[0];
 		}	
+		else if (current_buttons == &buttons[1] && index == 8)
+		{
+			current_buttons = &buttons[2];
+			is_on = false;
+		}
+		else if (current_buttons == &buttons[2] && index == 10)
+		{
+
+		}
+		else if (current_buttons == &buttons[2] && index == 6)
+		{
+			current_buttons = &buttons[0];
+		}
 	}
 	else if (i[logic::button::select] >= logic::button_state::pressed)
 	{
@@ -173,32 +212,6 @@ bool Menu::on() const
 }
 
 bool Menu::exit() const
-{
-	return want_exit;
-}
-
-Options::Options()
-{
-	buttons[0][10] = { "Fullscreen", button_state::none };
-	buttons[1][6] = { "Back", button_state::none };
-}
-
-const std::array<std::string, 12>& Options::button_strings() const
-{
-	return strings;
-}
-
-bool Options::debug() const
-{
-	return is_debug;
-}
-
-bool Options::on() const
-{
-	return is_on;
-}
-
-bool Options::exit() const
 {
 	return want_exit;
 }

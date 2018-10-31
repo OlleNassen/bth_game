@@ -9,6 +9,7 @@ Gameplay::Gameplay()
 	refresh();
 
 	current_gameboard.clear();
+	directions.fill(glm::vec3(0));
 }
 
 void Gameplay::refresh()
@@ -20,43 +21,41 @@ void Gameplay::refresh()
 
 	for (auto i = 0; i < 4; ++i)
 	{
-		scripts[0].setup(i);
+		player_script.setup(i);
 	}
+	game_script.setup();
 }
 
 Output Gameplay::update(Input inputs)
 {
 	for (int i = 0; i < 4; ++i)
 	{
-
 		const auto& in = inputs.player_inputs[i];
 		auto& direction = inputs.directions[i];
-		direction = { 0.0f, 0.0f, 0.0f };
+		directions[i] = { 0.0f, 0.0f, 0.0f };
 
 		if (in[button::up] >= button_state::pressed)
-			direction.z += 1.0f;
+			directions[i].z += 1.0f;
 		if (in[button::left] >= button_state::pressed)
-			direction.x -= 1.0f;
+			directions[i].x -= 1.0f;
 		if (in[button::down] >= button_state::pressed)
-			direction.z -= 1.0f;
+			directions[i].z -= 1.0f;
 		if (in[button::right] >= button_state::pressed)
-			direction.x += 1.0f;
+			directions[i].x += 1.0f;
 	}
 		
 	std::array<glm::vec2, 4> velocities;
 	
-	/*for (auto& entity : entities)
+	for (int i=0; i < 4; i++)
 	{
-		scripts[entity].update(inputs.delta, inputs.directions[0], velocities[0]);
-	}*/
-
-
-	// TEMP!!!
-	for (auto i = 0; i < 4; ++i)
-	{
-		scripts[0].update(inputs.delta, inputs.directions[i], velocities[i]);
+		player_script.update(
+			inputs.delta, 
+			inputs.dynamics[i], 
+			inputs.player_inputs[i], 
+			i);
 	}
 
+	game_script.update(inputs.delta, &inputs.dynamics[0]);
 	  
 	//Object placing \Vincent & Lucas S
 	if (inputs.player_inputs[0][logic::button::build_mode] == logic::button_state::pressed)
@@ -66,7 +65,6 @@ Output Gameplay::update(Input inputs)
 	if (inputs.scene->build_mode_active)
 	{
 		collision_data data;
-
 		
 		if (inputs.player_inputs[0][logic::button::place_object] == logic::button_state::pressed)
 		{
@@ -145,8 +143,10 @@ Output Gameplay::update(Input inputs)
 
 	//Give up \Vincent
 	give_up(inputs);
+
+	velocities.fill(glm::vec2(0,0));
 	
-	return Output{ velocities, inputs.directions };
+	return Output{ velocities, directions };
 }
 
 void Gameplay::give_up(Input input)
@@ -163,52 +163,6 @@ void Gameplay::give_up(Input input)
 	}
 	else if (give_up_timer != 0.0f)
 		give_up_timer = 0.0f;
-}
- 
-int Gameplay::set_player_status(int i, bool status)
-{		
-		if (current_gameboard.empty())
-		{
-			points = 3;
-			current_gameboard.push_back(i);
-			scripts[0].add_points(points);
-			scripts[0].set_player_status(status);
-		}
-		else if (current_gameboard.size() == 1)
-		{
-			points = 2;
-			current_gameboard.push_back(i);
-			scripts[0].add_points(points);
-			scripts[0].set_player_status(status);
-		}
-		else if (current_gameboard.size() == 2)
-		{
-			points = 1;
-			current_gameboard.push_back(i);
-			scripts[0].add_points(points);
-			scripts[0].set_player_status(status);
-		}
-		else
-		{
-			points = 0;
-			current_gameboard.push_back(i);
-			scripts[0].add_points(points);
-			scripts[0].set_player_status(status);
-		}
-	
-	return points;
-}
-
-bool Gameplay::get_player_status()
-{
-	return scripts[0].player_status();
-}
-
-bool Gameplay::everyone_reached_goal()
-{
-	bool value = true;
-
-	return value;
 }
 
 }
