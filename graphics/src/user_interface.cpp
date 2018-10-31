@@ -7,8 +7,10 @@ namespace graphics
 
 UserInterface::UserInterface()
 {
-	elements.fill({ {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f }, 0.0f });
+	elements.fill({ {0.0f, 0.0f}, {1.0, 1.0}, { 0.2f, 0.3f }, 0.0f });
 	elements.front() = { { -0.5f, -1.0f },{ 0.8f, 0.3f },{ 1.0f, 0.25f }, 0.0f };
+	elements.at(1) = { {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f }, 0.0f };
+
 	
 	glBindVertexArray(vao);
 
@@ -23,7 +25,7 @@ UserInterface::UserInterface()
 void UserInterface::update(const std::vector<Model> &models, int players)
 {
 	rebind_buffers();
-	player_arrows.update(models, players);
+	player_arrows.update(models, players, elements);
 }
 
 void UserInterface::render()const
@@ -90,7 +92,7 @@ PlayerArrows::PlayerArrows()
 	visible.fill(true);
 }
 
-void PlayerArrows::update(const std::vector<Model> &models, int players)
+void PlayerArrows::update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements)
 {
 	for (int i = 0; i < players; i++)
 	{
@@ -103,21 +105,35 @@ void PlayerArrows::update(const std::vector<Model> &models, int players)
 				std::cout << "not visible" << std::endl;
 				visible[i] = false;
 				player_vector[i] = player_positions[i] - player_positions[0];
-				float angle = std::atan2(player_vector[i].y, player_vector[i].x);
+				elements.at(i+2).rotation = std::atan2(player_vector[i].y, player_vector[i].x);
+				/*if(player_positions[i].x - player_positions[0].x > 0)
+					elements.at(i + 2).position.x = 0.9f;
+				else 
+					elements.at(i + 2).position.x = -0.9f;
+				if(player_positions[i].y - player_positions[0].y > 0)*/
+				elements.at(i + 2).position = glm::vec2(0, 0); //test
+
 			}
 			else
+			{
 				visible[i] = true;
+				elements.at(i + 2).position = glm::vec2(2, 2);
+			}
 		}
 	}
 }
 
-void PlayerArrows::render() const
+void PlayerArrows::render(int player_count) const
 {
 	//beräkna vektor mellan spelarna
 	//beräkna matrix för position, rotation, scale
 	//uppdatera attributes
 	//lägg in i array
 	//rita ut
+	/*for (int i = 0; i<player_count; i++)
+	{
+		if(!visible[i])*/
+
 }
 
 }
