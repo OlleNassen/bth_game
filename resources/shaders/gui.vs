@@ -4,6 +4,7 @@ layout (location = 0) in vec2 vertex_position;
 layout (location = 1) in vec2 position;
 layout (location = 2) in vec2 color;
 layout (location = 3) in vec2 scale;
+layout (location = 4) in float rotation;
 
 out vec2 vs_color;
 

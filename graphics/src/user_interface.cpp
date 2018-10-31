@@ -7,8 +7,8 @@ namespace graphics
 
 UserInterface::UserInterface()
 {
-	elements.fill({ {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f } });
-	elements.front() = { { -0.5f, -1.0f },{ 0.8f, 0.3f },{ 1.0f, 0.25f } };
+	elements.fill({ {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f }, 0.0f });
+	elements.front() = { { -0.5f, -1.0f },{ 0.8f, 0.3f },{ 1.0f, 0.25f }, 0.0f };
 	
 	glBindVertexArray(vao);
 
@@ -46,11 +46,16 @@ void UserInterface::render()const
 	glEnableVertexAttribArray(3);					
 	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
 		(void*)(sizeof(glm::vec2) * 2));
+
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
+		(void*)(sizeof(glm::vec2) * 3));
 	
 	glVertexAttribDivisor(0, 0);
 	glVertexAttribDivisor(1, 1);
 	glVertexAttribDivisor(2, 1);
 	glVertexAttribDivisor(3, 1);
+	glVertexAttribDivisor(4, 1);
 	
 	glDrawArraysInstanced(GL_TRIANGLES, 0, 6, elements.size());
 
@@ -58,6 +63,7 @@ void UserInterface::render()const
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
 
 	glBindVertexArray(0);
 }
@@ -102,7 +108,6 @@ void PlayerArrows::update(const std::vector<Model> &models, int players)
 				visible[i] = true;
 		}
 	}
-	
 }
 
 void PlayerArrows::render()
