@@ -9,6 +9,8 @@
 #include <array>
 #include <vector>
 
+#include <flags.hpp>
+
 #include "rigidbody_old.hpp"
 #include "rigidbody.hpp"
 #include "geometry3d.hpp"
@@ -60,7 +62,8 @@ public:
 
 	void update(
 		std::chrono::milliseconds delta,
-		objects_array& dynamics);
+		objects_array& dynamics, 
+		std::array<anim, 4>& anim_states);
 
 	std::vector<glm::vec2> get_forces() const;
 	bool intersects(const int box_id, const int target_box_id);

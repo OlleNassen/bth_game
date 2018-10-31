@@ -301,9 +301,14 @@ bool Animation_handler::switch_animation(MODEL_STATE state, float interpolation_
 	return foundAnimation;
 }
 
-void Animation_handler::update_animation(float delta)
+void Animation_handler::switch_animation(anim state)
 {
-	
+
+}
+
+void Animation_handler::update_animation(float delta, anim play_anim)
+{
+	switch_animation(play_anim);
 	get_time(delta);
 
 

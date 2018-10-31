@@ -12,6 +12,8 @@
 #include <GLFW/glfw3.h>
 #include "animation_handler.hpp"
 
+#include <flags.hpp>
+
 
 namespace graphics
 {
@@ -88,7 +90,7 @@ public:
 		return this->model[3][1];
 	}
 	void render(const Shader & shader, const Camera& camera, const std::array<PointLight, 4>&  lights)const;
-	void update_animation(float time);
+	void update_animation(float time, anim play_anim);
 
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern

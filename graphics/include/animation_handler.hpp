@@ -9,6 +9,8 @@
 #include <glm/vector_relational.hpp>
 #include <glm/trigonometric.hpp>
 
+#include <flags.hpp>
+
 #include "LeapImporter/LeapImporter/LeapMesh.h"
 #include "LeapImporter/LeapImporter/LeapAnimation.h"
 #include "LeapImporter/LeapImporter/LeapImporter.h"
@@ -42,8 +44,9 @@ public:
 	void update_bone_mat_vector();
 
 	bool switch_animation(MODEL_STATE state, float interpolation_time);
+	void switch_animation(anim state);
 
-	void update_animation(float delta);
+	void update_animation(float delta, anim play_anim);
 	void get_time(float delta);
 
 	void fixInverseBindPoses();

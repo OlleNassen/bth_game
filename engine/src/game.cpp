@@ -175,8 +175,7 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			if (level.models[i].is_animated)
-				level.models[i].update_animation((float)delta.count());
+			level.models[i].update_animation((float)delta.count(), anim_states[i]);
 
 			if (player_inputs[i][logic::button::jump] == logic::button_state::held)
 			{
@@ -261,7 +260,7 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::connected);
 
 
-	physics.update(delta, dynamics);
+	physics.update(delta, dynamics, anim_states);
 	{
 		graphics::objects_array obj;
 		for (int i = 0; i < dynamics.size(); ++i)
