@@ -19,6 +19,9 @@
 #include "skybox.hpp"
 #include "minimap.hpp"
 
+//test of new leaderboard
+#include <leaderboard.hpp>
+
 namespace graphics
 {
 
@@ -70,8 +73,6 @@ public:
 		glDrawArrays(GL_POINTS, 0, lines.size());
 		glBindVertexArray(0);
 	}
-
-	void show_leaderboard();
 
 private:
 	Shader pbr{ 
@@ -151,6 +152,11 @@ private:
 
 	int game_state;
 
+
+	//Test of leaderboard
+	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
+	Leaderboard leaderboard;
+	
 };
 
 

@@ -19,6 +19,7 @@ Renderer::Renderer(GameScene* scene)
 	, irradiance_buffer{irradiance, skybox}
 	, prefilter_buffer{pre_filter, skybox, true}
 	, brdf_buffer{brdf, skybox, 3.f}
+	, leaderboard(projection)
 {
 
 	db_camera.position.z = 20.0f;
@@ -29,6 +30,7 @@ Renderer::Renderer(GameScene* scene)
 		lights[i].position = glm::vec3{0,0,0};
 		lights[i].color = glm::vec3{1,1,1};
 	}
+
 }
 
 void Renderer::render(
@@ -115,6 +117,8 @@ void Renderer::render(
 
 	}
 
+	
+
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -146,6 +150,9 @@ void Renderer::render(
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
 
+		//leaderboard
+		//leaderboard.render(text_shader);
+
 		auto offset = 0.0f;
 
 		std::for_each(begin, end,
@@ -163,10 +170,12 @@ void Renderer::render(
 		if (!is_menu)
 			minimap.render(minimap_shader);
 
+
 		glEnable(GL_DEPTH_TEST);
 	}
 
 	/*text.render_text("GAME OVER!\n\n\n\n", 1280 / 2.f, 720 / 2.f, 2.0f);*/
+	
 
 }
 
@@ -218,11 +227,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		lights[i].position = scene->models[i].get_position();
 	}
 
-}
-
-void Renderer::show_leaderboard()
-{
-	
 }
 
 }
