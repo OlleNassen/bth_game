@@ -38,8 +38,9 @@ struct Output
 {
 	std::array<glm::vec2, 4> velocities;
 	std::array<glm::vec3, 4> directions;
-	std::array<std::tuple<std::string, int, float>, 4> name_id_score;
 };
+
+
 
 template <typename T>
 using script_array = std::array<T, 10>;
@@ -51,7 +52,8 @@ public:
 
 	void refresh();
 
-	Output update(Input input);
+	Output update(Input input,
+		std::array<logic::PlayerResult, 4>& player_results);
 private:
 	script_array<int> entities;
 	PlayerScript player_script;

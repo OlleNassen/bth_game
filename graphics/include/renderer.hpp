@@ -56,7 +56,8 @@ public:
 		const std::string& data,
 		int num_players,
 		int id,
-		int new_game_state);
+		int new_game_state,
+		std::string scoreboard);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{

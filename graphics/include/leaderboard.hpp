@@ -14,11 +14,11 @@ public:
 	~Leaderboard();
 
 	void render(const Shader& shader)const;
-	void update(int array[]);
+	void update(std::string&& scoreboard);
 
 private:
 	glm::mat4 projection;
-	int scoreboard[4];
+	std::string scoreboard;
 	Text text;
 };
 

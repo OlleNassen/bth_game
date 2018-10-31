@@ -16,6 +16,13 @@
 namespace logic
 {
 
+struct PlayerResult
+{
+public:
+	std::string name;
+	float score;
+};
+
 class objects
 {
 public:
@@ -50,7 +57,7 @@ public:
 	void update(
 		std::chrono::milliseconds delta,
 		objects* players);
-	std::array<std::tuple<std::string, int, float>, 4> name_id_score();
+	std::array<PlayerResult, 4> player_results();
 private:
 	LuaStack stack;
 };

@@ -177,7 +177,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	const std::string& data,
 	int num_players,
 	int id,
-	int new_game_state)
+	int new_game_state,
+	std::string scoreboard)
 {
 	player_count = num_players;
 	game_state = new_game_state;
@@ -217,6 +218,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		lights[i].position = scene->models[i].get_position();
 	}
+
+	leaderboard.update(std::move(scoreboard));
 
 }
 

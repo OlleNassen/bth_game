@@ -16,9 +16,9 @@ Leaderboard::~Leaderboard()
 {
 }
 
-void Leaderboard::update(int array[])
+void Leaderboard::update(std::string&& scoreboard)
 {
-
+	this->scoreboard = scoreboard;
 }
 
 void Leaderboard::render(const Shader& shader)const
@@ -27,16 +27,11 @@ void Leaderboard::render(const Shader& shader)const
 	shader.uniform("projection", projection);
 	shader.uniform("text_color", glm::vec3(0.1f, 0.9f, 0.1f));
 
-	std::stringstream test;
 	float pos[4] = { 480, 400, 320, 240 };
 
-	for (int i = 0; i < 4; i++)
-	{
-		test << "Player " << i << ": " << scoreboard[i] << "pt";
-		text.render_text(test.str(), 1280 / 3.f, pos[i], 1.3f);
+	text.render_text(scoreboard, 0, 0, 1.3f);
 
-		test.str("");
-	}
+
 }
 
 }
