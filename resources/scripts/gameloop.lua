@@ -18,6 +18,7 @@ function update(delta_seconds, game, entities)
 		do
 		entities[i].position.x = 0
 		entities[i].position.y = 0
+		--print(entities[1].position.x)
 		game.points = 5
 		end
 	end
