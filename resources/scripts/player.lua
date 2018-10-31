@@ -5,7 +5,6 @@ function setup(entity)
 end
 
 function update(delta_seconds, entity)
-	--print(entity.points)
 
 	if entity.button.left
 	then
