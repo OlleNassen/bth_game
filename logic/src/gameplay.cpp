@@ -26,7 +26,8 @@ void Gameplay::refresh()
 	game_script.setup();
 }
 
-Output Gameplay::update(Input inputs)
+Output Gameplay::update(Input inputs,
+	std::array<logic::PlayerResult, 4>& player_results)
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -144,9 +145,11 @@ Output Gameplay::update(Input inputs)
 	//Give up \Vincent
 	give_up(inputs);
 
+	player_results = game_script.player_results();
+
 	velocities.fill(glm::vec2(0,0));
 	
-	return Output{ velocities, directions };
+	return Output{ velocities, directions};
 }
 
 void Gameplay::give_up(Input input)

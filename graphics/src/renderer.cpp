@@ -19,6 +19,7 @@ Renderer::Renderer(GameScene* scene)
 	, irradiance_buffer{irradiance, skybox}
 	, prefilter_buffer{pre_filter, skybox, true}
 	, brdf_buffer{brdf, skybox, 3.f}
+	, leaderboard(projection)
 {
 
 	db_camera.position.z = 20.0f;
@@ -29,6 +30,7 @@ Renderer::Renderer(GameScene* scene)
 		lights[i].position = glm::vec3{0,0,0};
 		lights[i].color = glm::vec3{1,1,1};
 	}
+
 }
 
 void Renderer::render(
@@ -100,7 +102,6 @@ void Renderer::render(
 
 		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
 
-
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
@@ -110,9 +111,7 @@ void Renderer::render(
 			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
-
 		}
-
 	}
 
 	// Post Processing Effects
@@ -140,11 +139,13 @@ void Renderer::render(
 			ui.render();
 		}
 
+		//leaderboard
+		leaderboard.render(text_shader);
+
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-
 
 		auto offset = 0.0f;
 
@@ -163,10 +164,9 @@ void Renderer::render(
 		if (!is_menu)
 			minimap.render(minimap_shader);
 
+
 		glEnable(GL_DEPTH_TEST);
 	}
-
-	/*text.render_text("GAME OVER!\n\n\n\n", 1280 / 2.f, 720 / 2.f, 2.0f);*/
 
 }
 
@@ -177,7 +177,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	const std::string& data,
 	int num_players,
 	int id,
-	int new_game_state)
+	int new_game_state,
+	std::string scoreboard)
 {
 	player_count = num_players;
 	game_state = new_game_state;
@@ -218,11 +219,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 		lights[i].position = scene->models[i].get_position();
 	}
 
-}
+	leaderboard.update(std::move(scoreboard));
 
-void Renderer::show_leaderboard()
-{
-	
 }
 
 }

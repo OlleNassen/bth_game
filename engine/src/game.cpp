@@ -28,7 +28,7 @@ Game::Game()
 	window.assign_key(logic::button::debug, GLFW_KEY_F3);
 	window.assign_key(logic::button::switch_object, GLFW_KEY_F4);
 	window.assign_key(logic::button::remove_object, GLFW_KEY_O);
-	window.assign_key(logic::button::rotate, GLFW_KEY_R);	
+	window.assign_key(logic::button::rotate, GLFW_KEY_R);
 	window.assign_key(logic::button::build_mode, GLFW_KEY_B);
 	window.assign_key(logic::button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
@@ -54,12 +54,17 @@ Game::Game()
 	for (int i = 0; i < 4; ++i)
 	{
 		dynamics[i].position = level.v[i];
-		dynamics[i].velocity = {0.0f, 0.0f};
-		dynamics[i].size = {1.0f, 3.5f};
-		dynamics[i].forces = {0.0f, 0.0f};
+		dynamics[i].velocity = { 0.0f, 0.0f };
+		dynamics[i].size = { 1.0f, 3.5f };
+		dynamics[i].forces = { 0.0f, 0.0f };
 		dynamics[i].impulse = { 0.0f, 0.0f };
 	}
-		
+
+	for (int i = 0; i < 4; ++i)
+	{
+		std::string name = "P" + std::to_string(i);
+		player_results[i] = logic::PlayerResult{name, 0.0f};
+	}
 
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
@@ -159,7 +164,11 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].impulse = dynamics[i].impulse;
 		}
 		
-		logic_out = gameplay.update({ delta, obj, player_inputs, directions, &level, &physics });
+		logic_out = gameplay.update(
+			{ delta, obj,
+			player_inputs, directions,
+			&level, &physics },
+			player_results);
 
 		for (int i = 0; i < dynamics.size(); ++i)
 		{
@@ -269,13 +278,19 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].position = dynamics[i].position;
 			obj[i].size = dynamics[i].size;
 		}
+		
+		std::string temp;
+		for (auto& p : player_results)
+		{
+			temp += p.name + ' ' + std::to_string(p.score) + '\n';
+		}
 
 		renderer.update(delta,
 			obj,
 			player_inputs[net.id()].cursor,
 			logic_out.directions,
 			chat[1], player_count,
-			net.id(), game_state);
+			net.id(), game_state, temp);
 	}
 }
 
