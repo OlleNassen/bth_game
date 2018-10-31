@@ -31,7 +31,7 @@ public:
 class PlayerScript
 {
 public:
-	PlayerScript();
+	PlayerScript(const std::string& path);
 	
 	void setup(int entity);
 	void update(
@@ -53,19 +53,6 @@ public:
 		std::chrono::milliseconds delta,
 		objects* players);
 	std::array<std::tuple<std::string, int, float>, 4> name_id_score();
-private:
-	LuaStack stack;
-};
-
-
-class PlacingObjectsScript
-{
-public:
-	PlacingObjectsScript();
-
-	void setup();
-	void update(std::chrono::milliseconds delta, const input& i, graphics::GameScene* scene, physics::World* physics);
-
 private:
 	LuaStack stack;
 };

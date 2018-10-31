@@ -56,9 +56,9 @@ public:
 	bool everyone_reached_goal();*/
 private:
 	script_array<int> entities;
-	PlayerScript player_script;
+	PlayerScript player_script{"../resources/scripts/player.lua"};
+	PlayerScript placement_script{"../resources/scripts/placing_objects.lua"};
 	GameScript game_script;
-	PlacingObjectsScript object_placing_script;
 	std::array<glm::vec3, 4> directions;
 
 	int model_id{ -1 };
