@@ -51,10 +51,14 @@ public:
 	void refresh();
 
 	Output update(Input input);
+	/*int set_player_status(int i, bool status);
+	bool get_player_status();
+	bool everyone_reached_goal();*/
 private:
 	script_array<int> entities;
 	PlayerScript player_script;
 	GameScript game_script;
+	PlacingObjectsScript object_placing_script;
 	std::array<glm::vec3, 4> directions;
 
 	int model_id{ -1 };
@@ -64,7 +68,7 @@ private:
 	float give_up_timer{ 0.0f };
 	void give_up(Input input);
 
-	int points = 0;
+	//int points = 0;
 	std::vector<int> current_gameboard;
 	int	get_random_object_id(Input input);
 };

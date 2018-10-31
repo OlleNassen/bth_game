@@ -3,7 +3,7 @@
 namespace physics
 {
 
-void World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
+int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	float width, float height, glm::vec2 start_force)
 {
 	colliders1.reserve(100);
@@ -25,6 +25,8 @@ void World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	dynamic_positions.push_back(start_position);
 	dynamic_rigidbodies.push_back(start_force);
 	dynamic_box_colliders.push_back(Box(width, height, offset, false));
+
+	return dynamic_positions.size() - 1;
 }
 
 int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger)

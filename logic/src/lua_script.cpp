@@ -34,6 +34,7 @@ void PlayerScript::update(
 	int index)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
+
 	{
 		stack.getglobal(name.c_str());
 		int top = stack.top();
@@ -210,6 +211,62 @@ std::array<std::tuple<std::string, int, float>, 4> GameScript::name_id_score()
 	stack.clear();
 
 	return temp;
+}
+
+PlacingObjectsScript::PlacingObjectsScript()
+	: stack{ "../resources/scripts/placing_objects.lua" }
+{
+
+}
+
+void PlacingObjectsScript::setup()
+{
+	stack.newtable();
+	stack.setglobal("button");
+
+	stack.newtable();
+	stack.setglobal("scene");
+
+	stack.newtable();
+	stack.setglobal("physics");
+
+	stack.clear();
+}
+
+void PlacingObjectsScript::update(std::chrono::milliseconds delta, const input& i, graphics::GameScene* scene, physics::World* physics)
+{
+	//std::string name { "entity[" + std::to_string(0) + "]" };
+	
+	{
+		stack.getglobal("button");
+		int top = stack.top();
+		stack.push(i);
+		stack.rawset(top);
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("scene");
+		int top = stack.top();
+		stack.push(scene);
+		stack.rawset(top);
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("physics");
+		int top = stack.top();
+		stack.push(physics);
+		stack.rawset(top);
+		stack.clear();
+	}
+
+	stack.getglobal("update");
+	stack.push(delta.count() / 1000.0f);
+	stack.getglobal("button");
+	stack.getglobal("scene");
+	stack.getglobal("physics");
+	stack.call(4, 0);
 }
 
 }

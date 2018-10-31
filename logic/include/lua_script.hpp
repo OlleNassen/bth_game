@@ -8,6 +8,8 @@
 #include <iostream>
 #include <lua.hpp>
 #include "lua_stack.hpp"
+#include "../../graphics/include/game_scene.hpp"
+#include "../../physics/include/world.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -55,6 +57,18 @@ private:
 	LuaStack stack;
 };
 
+
+class PlacingObjectsScript
+{
+public:
+	PlacingObjectsScript();
+
+	void setup();
+	void update(std::chrono::milliseconds delta, const input& i, graphics::GameScene* scene, physics::World* physics);
+
+private:
+	LuaStack stack;
+};
 
 }
 
