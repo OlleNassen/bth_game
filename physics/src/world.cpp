@@ -56,6 +56,16 @@ void World::update(
 	colliders1.clear();
 	colliders2.clear();
 	results.clear();
+
+	for (int i = 0; i < bodies.size(); ++i)
+	{
+		auto& p = dynamics[i].position;
+		auto& body = bodies[i];
+		body.position = {p.x, p.y, 0.0f};
+		body.position.x += body.box.size.x;
+		body.position.y += body.box.size.y;
+		body.box.position = body.position;
+	}
 	
 	for (int i = 0; i < 4; ++i)
 	{
