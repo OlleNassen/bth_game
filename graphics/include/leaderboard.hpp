@@ -7,6 +7,7 @@
 
 namespace graphics
 {
+
 class Leaderboard
 {
 public:
@@ -20,6 +21,7 @@ public:
 private:
 	glm::mat4 projection;
 	std::string scoreboard;
+
 };
 
 }

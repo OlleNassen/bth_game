@@ -26,13 +26,9 @@ void Leaderboard::render(const Shader& shader,
 {
 	shader.use();
 	shader.uniform("projection", projection);
-	shader.uniform("text_color", glm::vec3(0.1f, 0.9f, 0.1f));
-
-	float pos[4] = { 480, 400, 320, 240 };
+	shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
 	text.render_text(scoreboard, 0, 0, 1.3f);
-
-
 }
 
 }
