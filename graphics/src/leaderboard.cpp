@@ -1,18 +1,9 @@
-#include <leaderboard.hpp>
-#include <sstream>
-#include <glm/gtc/matrix_transform.hpp>
+#include "leaderboard.hpp"
 
 namespace graphics
 {
 Leaderboard::Leaderboard(const glm::mat4& projection)
-{
-	for (int i = 0; i < 4; i++)
-		scoreboard[i] = i;
-
-	this->projection = projection;
-}
-
-Leaderboard::~Leaderboard()
+	: projection{projection}
 {
 }
 
