@@ -1,51 +1,38 @@
 #ifndef RIGIDBODY_HPP
 #define RIGIDBODY_HPP
-//::.. authors ..:://
-// Vincent, Lucas.S
 
 #include <glm/glm.hpp>
-#include <chrono>
-#include <algorithm>
-
-#include "boxcollider.hpp"
+#include <vector>
+#include "geometry3d.hpp"
 
 namespace physics
 {
 
+static constexpr glm::vec3 gravity{0.0f, -9.82f, 0.0f};
+
 class Rigidbody
 {
 public:
-	Rigidbody(glm::vec2 start_force);
-	~Rigidbody();
+	void update(float delta_seconds);
+	void apply_forces();
+	void solve_constraints(const std::vector<OBB>& constraints);
 
-	void update();
-	void cancel_forces();
-	void cancel_force_x();
-	void cancel_force_y();
-	void add_force(glm::vec2 force_direction);
+	void synch_collision_volumes();
+	float inverse_mass();
+	void add_linear_impulse(const glm::vec3& impulse);
 
-	glm::vec2 get_force()const;
-	bool gravity_active;
-	bool can_jump;
+	glm::vec3 position;
+	glm::vec3 velocity;
+	glm::vec3 forces;
+	float mass = 1.0f;
+	float restitution = 0.5f;
+	float friction = 0.6f;
 
-	//function used for detecting if a player has reached goal
-	void set_reached_goal(bool value);
-	bool get_reached_goal()const;
-
-private:
-	float mass;				//Massa är i kilo.
-	float drag;				//Luftmotstånd.
-	float floor_drag;		//Friktion
-	float gravity;			//Gravitation.
-
-	glm::vec2 force;		//Den totala kraften.
-
-	float converter;
-
-	Box box_collider;
-
-	bool reached_goal = false;
+	OBB box;
 };
+
+CollisionManifold find_collision_features(Rigidbody& left, Rigidbody& right);
+void apply_impulse(Rigidbody& left, Rigidbody& right, const CollisionManifold& m, int c);
 
 }
 

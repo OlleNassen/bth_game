@@ -63,6 +63,9 @@
     <ClCompile Include="src\minimap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\animation_logic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\shader.hpp">
@@ -119,10 +122,13 @@
     <ClInclude Include="include\fx.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\minimap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="include\animation_handler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\minimap.hpp">
+    <ClInclude Include="include\animation_logic.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

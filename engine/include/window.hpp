@@ -214,6 +214,9 @@ private:
 	std::map<controller_buttons, logic::button> buttons;
 	std::map<controller_axis, logic::button> axis_pos;
 	std::map<controller_axis, logic::button> axis_neg;
+
+	int input_index = 0;
+	bool using_controller = false;
 };
 
 #endif

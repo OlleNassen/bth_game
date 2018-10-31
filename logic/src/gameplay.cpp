@@ -10,6 +10,7 @@ Gameplay::Gameplay()
 	refresh();
 
 	current_gameboard.clear();
+	directions.fill(glm::vec3(0));
 	srand(time(NULL));
 }
 
@@ -22,43 +23,41 @@ void Gameplay::refresh()
 
 	for (auto i = 0; i < 4; ++i)
 	{
-		scripts[0].setup(i);
+		player_script.setup(i);
 	}
+	game_script.setup();
 }
 
 Output Gameplay::update(Input inputs)
 {
 	for (int i = 0; i < 4; ++i)
 	{
-
 		const auto& in = inputs.player_inputs[i];
 		auto& direction = inputs.directions[i];
-		direction = { 0.0f, 0.0f, 0.0f };
+		directions[i] = { 0.0f, 0.0f, 0.0f };
 
 		if (in[button::up] >= button_state::pressed)
-			direction.z += 1.0f;
+			directions[i].z += 1.0f;
 		if (in[button::left] >= button_state::pressed)
-			direction.x -= 1.0f;
+			directions[i].x -= 1.0f;
 		if (in[button::down] >= button_state::pressed)
-			direction.z -= 1.0f;
+			directions[i].z -= 1.0f;
 		if (in[button::right] >= button_state::pressed)
-			direction.x += 1.0f;
+			directions[i].x += 1.0f;
 	}
 		
 	std::array<glm::vec2, 4> velocities;
 	
-	/*for (auto& entity : entities)
+	for (int i=0; i < 4; i++)
 	{
-		scripts[entity].update(inputs.delta, inputs.directions[0], velocities[0]);
-	}*/
-
-
-	// TEMP!!!
-	for (auto i = 0; i < 4; ++i)
-	{
-		scripts[0].update(inputs.delta, inputs.directions[i], velocities[i]);
+		player_script.update(
+			inputs.delta, 
+			inputs.dynamics[i], 
+			inputs.player_inputs[i], 
+			i);
 	}
 
+	game_script.update(inputs.delta, &inputs.dynamics[0]);
 	  
 	//Object placing \Vincent & Lucas S
 	if (inputs.player_inputs[0][logic::button::build_mode] == logic::button_state::pressed)
@@ -68,7 +67,6 @@ Output Gameplay::update(Input inputs)
 	if (inputs.scene->build_mode_active)
 	{
 		collision_data data;
-
 		
 		if (inputs.player_inputs[0][logic::button::place_object] == logic::button_state::pressed)
 		{
@@ -147,8 +145,10 @@ Output Gameplay::update(Input inputs)
 
 	//Give up \Vincent
 	give_up(inputs);
+
+	velocities.fill(glm::vec2(0,0));
 	
-	return Output{ velocities, inputs.directions };
+	return Output{ velocities, directions };
 }
 
 void Gameplay::give_up(Input input)

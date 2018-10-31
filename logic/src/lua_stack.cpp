@@ -66,6 +66,11 @@ void LuaStack::setglobal(const char* value)
 	lua_setglobal(lua_state, value);
 }
 
+void LuaStack::getfield(int index, const char * name)
+{
+	lua_getfield(lua_state, index, name);
+}
+
 void LuaStack::setfield(int index, const char * name)
 {
 	lua_setfield(lua_state, index, name);
@@ -181,6 +186,36 @@ void LuaStack::push(const glm::vec4& value)
 	}
 }
 
+void LuaStack::push(const input& value)
+{
+	newtable();
+	int top = lua_gettop(lua_state);
+	const char* members[] = 
+	{ 
+		"up",
+		"left",
+		"down",
+		"right",
+		"jump",
+		"debug",
+		"select",
+		"cancel",
+		"glow",
+		"refresh",
+		"menu",
+		"quit"
+	};
+
+	int i = 0;
+	for (auto* member : members)
+	{
+		push(member);
+		push(value[static_cast<button>(i++)] 
+			== button_state::held);
+		rawset(top);
+	}
+}
+
 void LuaStack::pop()
 {
 	lua_pop(lua_state, 1);
@@ -191,7 +226,7 @@ void LuaStack::clear()
 	lua_pop(lua_state, top());
 }
 
-static void stack_dump(lua_State* lua_state) 
+void LuaStack::stack_dump()
 {
 	int top = lua_gettop(lua_state);
 	
