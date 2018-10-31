@@ -21,7 +21,8 @@ void Leaderboard::update(std::string&& scoreboard)
 	this->scoreboard = scoreboard;
 }
 
-void Leaderboard::render(const Shader& shader)const
+void Leaderboard::render(const Shader& shader,
+	const Text& text)const
 {
 	shader.use();
 	shader.uniform("projection", projection);

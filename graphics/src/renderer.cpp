@@ -140,7 +140,7 @@ void Renderer::render(
 		}
 
 		//leaderboard
-		leaderboard.render(text_shader);
+		leaderboard.render(text_shader, text);
 
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);

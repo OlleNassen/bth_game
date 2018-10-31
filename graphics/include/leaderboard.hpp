@@ -13,13 +13,13 @@ public:
 	Leaderboard(const glm::mat4& projection);
 	~Leaderboard();
 
-	void render(const Shader& shader)const;
+	void render(const Shader& shader,
+		const Text& text)const;
 	void update(std::string&& scoreboard);
 
 private:
 	glm::mat4 projection;
 	std::string scoreboard;
-	Text text;
 };
 
 }
