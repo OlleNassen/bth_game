@@ -203,7 +203,7 @@ std::array<PlayerResult, 4> GameScript::player_results()
 	int index = -4;
 	for (int i = 0; i < 4; ++i)
 	{
-		temp[i] = PlayerResult{"P" + std::to_string(i),
+		temp[i] = PlayerResult{"P" + std::to_string(i + 1),
 		stack.tonumber(index++)};
 	}
 

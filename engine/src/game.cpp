@@ -1,5 +1,7 @@
 #include "game.hpp"
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <glm/glm.hpp>
 
 #include <flags.hpp>
@@ -62,7 +64,7 @@ Game::Game()
 
 	for (int i = 0; i < 4; ++i)
 	{
-		std::string name = "P" + std::to_string(i);
+		std::string name = "P" + std::to_string(i+1);
 		player_results[i] = logic::PlayerResult{name, 0.0f};
 	}
 
@@ -279,12 +281,13 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].size = dynamics[i].size;
 		}
 		
-		std::string temp;
-		for (auto& p : player_results)
-		{
-			temp += p.name + ' ' + std::to_string(p.score) + '\n';
-		}
-
+		using namespace std;
+		stringstream stream;
+		for (auto& p : player_results)	
+			stream << p.name << ": "
+			<< fixed << setprecision(2) << p.score << " | ";
+		
+		string temp = stream.str();
 		renderer.update(delta,
 			obj,
 			player_inputs[net.id()].cursor,
