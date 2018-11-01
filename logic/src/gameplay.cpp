@@ -61,7 +61,7 @@ Output Gameplay::update(Input inputs,
 		
 		placement_script.update(
 			inputs.delta,
-			inputs.dynamics[7],
+			inputs.dynamics[4],
 			inputs.player_inputs[i],
 			i);
 			

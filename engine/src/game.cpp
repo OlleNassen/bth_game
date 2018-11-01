@@ -262,7 +262,25 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
-	level.models[7].set_position(dynamics[7].position);
+	/*static bool done = true;
+	static int model_pos = -1;
+	static int pos = -1;
+	if (done)
+	{
+		done = false;
+		collision_data data;
+		model_pos = level.add_object(data, 0);
+		pos = physics.add_dynamic_body(dynamics[0].position, { 0,0 }, data.width, data.height, { 0, 0 });
+		
+		dynamics[4].position = dynamics[0].position;
+		dynamics[4].velocity = { 0.0f, 0.0f };
+		dynamics[4].size = { data.width, data.height };
+		dynamics[4].forces = { 0.0f, 0.0f };
+		dynamics[4].impulse = { 0.0f, 0.0f };
+	}
+
+	level.models[model_pos].set_position(dynamics[4].position);*/
+
 
 	if (menu.on())
 		game_state = (game_state | state::menu);

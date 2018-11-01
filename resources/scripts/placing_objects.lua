@@ -4,7 +4,7 @@ end
 
 rotate_was_pressed = { false, false, false, false }
 iterator = 1
-place_speed = 2.0;
+place_speed = 1.0;
 
 function update(delta_seconds, entity)
 
@@ -22,6 +22,7 @@ function update(delta_seconds, entity)
 
 	if entity.button.up
 	then
+		print("NOW")
 		entity.position.y = entity.position.y + delta_place_speed
 	end
 	
