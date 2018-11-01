@@ -24,7 +24,7 @@ Game::Game()
 	window.assign_key(logic::button::down, GLFW_KEY_S);
 	window.assign_key(logic::button::right, GLFW_KEY_D);
 	window.assign_key(logic::button::jump, GLFW_KEY_SPACE);
-	window.assign_key(logic::button::glow, GLFW_KEY_G);
+	window.assign_key(logic::button::rotate, GLFW_KEY_R);
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
 	window.assign_key(logic::button::debug, GLFW_KEY_F3);
