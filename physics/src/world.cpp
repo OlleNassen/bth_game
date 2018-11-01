@@ -60,7 +60,7 @@ void World::update(
 	colliders2.clear();
 	results.clear();
 	
-	for (int i = 0; i < bodies.size(); ++i)
+	for (auto i = 0u; i < bodies.size(); ++i)
 	{
 		auto& p = dynamics[i].position;
 		auto& body = bodies[i];
@@ -93,10 +93,10 @@ void World::update(
 		t = 0;
 
 
-	for (int i = 0; i < bodies.size(); ++i)
+	for (auto i = 0u; i < bodies.size(); ++i)
 	{
 		auto& left = bodies[i];
-		for (int j = 0; j < bodies.size(); ++j)
+		for (auto j = 0u; j < bodies.size(); ++j)
 		{
 			auto& right = bodies[j];
 			if (&left != &right && obb_obb(left.box, right.box))
@@ -139,7 +139,7 @@ void World::update(
 
 	for (int k = 0; k < impulse_iteration; ++k)
 	{
-		for (int i = 0; i < results.size(); ++i)
+		for (auto i = 0u; i < results.size(); ++i)
 		{
 			int j_size = results[i].contacts.size();
 			for (int j = 0; j < j_size; ++j)
@@ -182,7 +182,7 @@ void World::update(
 		body.solve_constraints(constraints);
 	}
 
-	for (int i = 0; i < bodies.size(); ++i)
+	for (auto i = 0u; i < bodies.size(); ++i)
 	{
 		dynamics[i].position = { bodies[i].position.x - bodies[i].box.size.x, bodies[i].position.y - bodies[i].box.size.y };
 		dynamics[i].velocity = { bodies[i].velocity.x, bodies[i].velocity.y };
@@ -240,7 +240,7 @@ std::vector<glm::vec3> World::get_all_debug() const
 {
 	std::vector<glm::vec3> out_vertices;
 
-	for (int i = 0; i < bodies.size(); i++)
+	for (auto i = 0u; i < bodies.size(); i++)
 	{
 		std::vector<Point> vertices = get_vertices(bodies[i].box);
 		auto& b = bodies[i];
@@ -251,7 +251,7 @@ std::vector<glm::vec3> World::get_all_debug() const
 		}
 	}
 
-	for (int i = 0; i < statics.size(); i++)
+	for (auto i = 0u; i < statics.size(); i++)
 	{
 		std::vector<Point> vertices = get_vertices(statics[i].box);
 		auto& s = statics[i];

@@ -9,7 +9,6 @@
 #include "camera.hpp"
 #include "texture.hpp"
 #include "lights.hpp"
-#include <GLFW/glfw3.h>
 #include "animation_handler.hpp"
 
 
