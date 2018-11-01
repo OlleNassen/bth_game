@@ -17,7 +17,7 @@ struct GuiElement
 	glm::vec2 position;
 	glm::vec2 color;
 	glm::vec2 scale;
-	float rotation;
+	float angle;
 };
 
 class PlayerArrows
@@ -44,7 +44,7 @@ public:
 
 	void update(const std::vector<Model> &models, int players);
 	void render_arrows()const;
-	void render(const Shader& shader)const;
+	void render()const;
 	PlayerArrows player_arrows;
 private:
 

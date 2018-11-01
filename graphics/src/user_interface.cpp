@@ -28,9 +28,8 @@ void UserInterface::update(const std::vector<Model> &models, int players)
 	player_arrows.update(models, players, elements);
 }
 
-void UserInterface::render(const Shader& shader)const
+void UserInterface::render()const
 {
-	shader.uniform("")
 
 	glBindVertexArray(vao);
 
@@ -106,33 +105,70 @@ void PlayerArrows::update(const std::vector<Model> &models, int players, std::ar
 {
 	for (int i = 0; i < players; i++)
 	{
-		player_positions[i] = glm::vec2(models.at(i).get_position());
-		if (i > 0)
-		{
-			if (abs(player_positions[i].x - player_positions[0].x) > 20
-				|| abs(player_positions[i].y - player_positions[0].y) > 10)
-			{
-				std::cout << "not visible" << std::endl;
-				visible[i] = false;
-				player_vector[i] = player_positions[i] - player_positions[0];
-				elements.at(i+2).rotation = std::atan2(player_vector[i].y, player_vector[i].x);
-				/*if(player_positions[i].x - player_positions[0].x > 0)
-					elements.at(i + 2).position.x = 0.9f;
-				else 
-					elements.at(i + 2).position.x = -0.9f;
-				if(player_positions[i].y - player_positions[0].y > 0)*/
+		//player_positions[i] = glm::vec2(models.at(i).get_position());
+		//if (i > 0)
+		//{
+		//	if (abs(player_positions[i].x - player_positions[0].x) > 20
+		//		|| abs(player_positions[i].y - player_positions[0].y) > 10)
+		//	{
+		//		std::cout << "not visible" << std::endl;
+		//		visible[i] = false;
+		//		player_vector[i] = player_positions[i] - player_positions[0];
+		//		elements.at(i+2).angle = std::atan2(player_vector[i].y, player_vector[i].x);
+		//		/*if(player_positions[i].x - player_positions[0].x > 0)
+		//			elements.at(i + 2).position.x = 0.9f;
+		//		else 
+		//			elements.at(i + 2).position.x = -0.9f;
+		//		if(player_positions[i].y - player_positions[0].y > 0)*/
 
-				elements.at(i + 2).position = glm::vec2(0, 0); //test
-				arrow_matrix = glm::mat4(1.0f);
-				arrow_matrix = glm::rotate(arrow_matrix, elements.at(i + 2).rotation, glm::vec3(0.0, 0.0, 1.0));
-			}
+		//		elements.at(i + 2).position = glm::vec2(0, 0); //test
+		//		arrow_matrix = glm::mat4(1.0f);
+		//		arrow_matrix = glm::rotate(arrow_matrix, elements.at(i + 2).angle, glm::vec3(0.0, 0.0, 1.0));
+		//	}
+		//	else
+		//	{
+		//		
+		//		visible[i] = true;
+		//		elements.at(i + 2).position = glm::vec2(2.0f, 2.0f);
+		//	}
+		//}
+
+		
+	}
+	player_positions[1] = glm::vec2(1.0f, 1.0f);
+	//if (i > 0)
+	{
+		//if (abs(player_positions[1].x - player_positions[0].x) > 20
+			//|| abs(player_positions[i].y - player_positions[0].y) > 10)
+		{
+			player_positions[0] = glm::vec2(models.at(0).get_position());
+			//std::cout << "not visible" << std::endl;
+			//visible[i] = false;
+			player_vector[0] =  player_positions[1] - player_positions[0] ;
+			player_vector[0].y *= -1;
+			elements.at(2).angle = std::atan2(player_vector[0].y, player_vector[0].x);
+			/*if(player_positions[i].x - player_positions[0].x > 0)
+				elements.at(i + 2).position.x = 0.9f;
 			else
-			{
-				
-				visible[i] = true;
-				elements.at(i + 2).position = glm::vec2(2.0f, 2.0f);
-			}
+			
+				elements.at(i + 2).position.x = -0.9f;
+			if(player_positions[i].y - player_positions[0].y > 0)*/
+			//elements.at(0).angle += glm::pi<float>();
+
+			elements.at(2).position = glm::vec2(0.5, 0); //test
+			/*arrow_matrix = glm::mat4(1.0f);
+			arrow_matrix = glm::rotate(arrow_matrix, elements.at(2).angle, glm::vec3(0.0, 0.0, 1.0));*/
+			//glm::transpose(arrow_matrix);
 		}
+		/*else
+		{
+
+			visible[i] = true;
+			elements.at(i + 2).position = glm::vec2(2.0f, 2.0f);
+		}*/
+		/*player_vector[0] = glm::vec2(1, 1) - player_positions[0];
+		elements.at(i + 2).angle = std::atan2(player_vector[0].y, player_vector[0].x);*/
+		std::cout << elements.at(2).angle << "\n";
 	}
 }
 
