@@ -28,6 +28,7 @@ struct Input
 	std::chrono::milliseconds delta;
 	objects_array& dynamics;
 	const input* player_inputs; //4
+	std::array<anim, 4>& anim_states;
 	//unnecessary junk:
 	std::array<glm::vec3, 4> directions;
 	graphics::GameScene* scene;

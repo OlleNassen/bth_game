@@ -159,7 +159,16 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].impulse = dynamics[i].impulse;
 		}
 		
-		logic_out = gameplay.update({ delta, obj, player_inputs, directions, &level, &physics });
+		logic_out = gameplay.update(
+		{ 
+			delta, 
+			obj, 
+			player_inputs, 
+			anim_states, 
+			directions, 
+			&level, 
+			&physics 
+		});
 
 		for (int i = 0; i < dynamics.size(); ++i)
 		{

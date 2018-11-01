@@ -31,7 +31,8 @@ void PlayerScript::update(
 	std::chrono::milliseconds delta, 
 	objects& object, 
 	const input& i, 
-	int index)
+	int index,
+	anim& anim_state)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
 	{
@@ -39,6 +40,15 @@ void PlayerScript::update(
 		int top = stack.top();
 		stack.push("button");
 		stack.push(i);
+		stack.rawset(top);
+		stack.clear();
+	}
+
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		stack.push("anim");
+		stack.push(anim_state);
 		stack.rawset(top);
 		stack.clear();
 	}
@@ -68,6 +78,15 @@ void PlayerScript::update(
 	stack.push(delta.count() / 1000.0f);
 	stack.getglobal(name.c_str());
 	stack.call(2, 0);
+
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		stack.getfield(top, "anim");
+		stack.getfield(-1, "current");
+		anim_state = static_cast<anim>(stack.tointeger(-1));
+		stack.clear();
+	}
 
 	{
 		stack.getglobal(name.c_str());
