@@ -133,7 +133,7 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
-			death_screen.render(death_screen_shader);
+			//death_screen.render(death_screen_shader);
 		}
 	}
 	else
