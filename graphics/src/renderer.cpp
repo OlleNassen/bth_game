@@ -37,7 +37,8 @@ void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
 	const std::array<std::string, 12>& buttons,
-	const std::vector<glm::vec3>& debug_positions)const
+	const std::vector<glm::vec3>& debug_positions,
+	bool game_over)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -178,7 +179,11 @@ void Renderer::render(
 		if (player_count > 1)
 		{
 			//leaderboard
-			leaderboard.render(text_shader, text);
+			if (game_over)
+			{
+				leaderboard.render(text_shader, text);
+			}
+
 			if (!is_menu)
 			{
 				minimap.render(minimap_shader);

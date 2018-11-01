@@ -38,6 +38,7 @@ struct Output
 {
 	std::array<glm::vec2, 4> velocities;
 	std::array<glm::vec3, 4> directions;
+	bool game_over;
 };
 
 

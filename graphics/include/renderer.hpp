@@ -49,7 +49,8 @@ public:
 		const std::string* begin,
 		const std::string* end,
 		const std::array<std::string, 12>& buttons,
-		const std::vector<glm::vec3>& debug_positions) const;
+		const std::vector<glm::vec3>& debug_positions,
+		bool game_over) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,

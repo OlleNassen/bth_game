@@ -1,11 +1,12 @@
 function setup(game)
 	game.goal = 100
 	game.points = 0 -- do not change this, edit value in update loop
+	game.max_points = 10
 	--4 playerscores:
 	game.scores = { 0, 0, 0, 0 }
 	game.finished = { false, false, false, false }
 	game.clock = 0.0
-	game.winner = -1
+	game.winner = false
 end
 
 function update(delta_seconds, game, entities)
@@ -83,6 +84,14 @@ function update(delta_seconds, game, entities)
 			game.finished[i] = true
 			entities[i].position.x = -2000
 			entities[i].position.y = -2000
+		end
+	end
+
+	for i = 1, 4, 1
+	do
+		if game.scores[i] > game.max_points
+		then
+			game.winner = true
 		end
 	end
 

@@ -60,6 +60,7 @@ public:
 		std::chrono::milliseconds delta,
 		objects* players);
 	std::array<PlayerResult, 4> player_results();
+	bool game_over();
 private:
 	LuaStack stack;
 };

@@ -213,4 +213,16 @@ std::array<PlayerResult, 4> GameScript::player_results()
 	return temp;
 }
 
+bool GameScript::game_over() 
+{
+	stack.getglobal("game");
+	stack.getfield(-1, "winner");
+
+	bool temp = stack.toboolean(-1);
+
+	stack.clear();
+
+	return temp;
+}
+
 }

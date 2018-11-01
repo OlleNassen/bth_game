@@ -160,7 +160,7 @@ Output Gameplay::update(Input inputs,
 
 	velocities.fill(glm::vec2(0,0));
 	
-	return Output{ velocities, directions};
+	return Output{ velocities, directions, game_script.game_over()};
 }
 
 void Gameplay::give_up(Input input)

@@ -108,7 +108,7 @@ void Game::render()
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
-		db_coll);
+		db_coll, logic_out.game_over);
 }
 
 void Game::update(std::chrono::milliseconds delta)
