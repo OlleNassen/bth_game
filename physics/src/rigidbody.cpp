@@ -8,7 +8,7 @@ namespace physics
 void Rigidbody::update(float delta_seconds)
 {
 	const float damping = 0.98f;
-	glm::vec3 acceleration = forces * inverse_mass();
+	glm::vec3 acceleration = forces * inverse_mass;
 	velocity += acceleration * delta_seconds;
 	velocity *= damping;
 
@@ -16,27 +16,10 @@ void Rigidbody::update(float delta_seconds)
 	synch_collision_volumes();
 }
 
-void Rigidbody::apply_forces()
-{
-	forces = gravity * mass;
-}
-
-void Rigidbody::solve_constraints(const std::vector<OBB>& constraints)
-{
-
-}
 
 void Rigidbody::synch_collision_volumes()
 {
 	box.position = position;
-}
-
-float Rigidbody::inverse_mass()
-{
-	if (mass == 0.0f)
-		return 0.0f;
-
-	return 1.0f / mass;
 }
 
 void Rigidbody::add_linear_impulse(const glm::vec3& impulse)
@@ -55,8 +38,8 @@ CollisionManifold find_collision_features(Rigidbody& left, Rigidbody& right)
 
 void apply_impulse(Rigidbody& left, Rigidbody& right, const CollisionManifold& m, int c)
 {
-	float left_inverse_mass = left.inverse_mass();
-	float right_inverse_mass = right.inverse_mass();
+	float left_inverse_mass = left.inverse_mass;
+	float right_inverse_mass = right.inverse_mass;
 
 	float inverse_mass_sum = left_inverse_mass + right_inverse_mass;
 

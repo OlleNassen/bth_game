@@ -20,6 +20,7 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	body.velocity = glm::vec3{0.0f};
 	body.forces = glm::vec3{0.0f};
 	body.mass = 100.0f;
+	body.inverse_mass = 1.0f / body.mass;
 	bodies.push_back(body);
 	
 	dynamic_positions.push_back(start_position);
@@ -44,6 +45,7 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 	body.velocity = glm::vec3{ 0.0f };
 	body.forces = glm::vec3{ 0.0f };
 	body.mass = 0.0f;
+	body.inverse_mass = 0.0f;
 	statics.push_back(body);
 
 	return static_positions.size() - 1;
@@ -160,7 +162,7 @@ void World::update(
 	{
 		Rigidbody* left = colliders1[i];
 		Rigidbody* right = colliders2[i];
-		float total_mass = left->inverse_mass() + right->inverse_mass();
+		float total_mass = left->inverse_mass + right->inverse_mass;
 
 		if (total_mass == 0.0f)
 			continue;
@@ -170,16 +172,11 @@ void World::update(
 		glm::vec3 correction = 
 			results[i].normal * scalar * linear_projection_percent;
 
-		left->position = left->position - correction * left->inverse_mass();
-		right->position = right->position - correction * right->inverse_mass();
+		left->position = left->position - correction * left->inverse_mass;
+		right->position = right->position - correction * right->inverse_mass;
 
 		left->synch_collision_volumes();
 		right->synch_collision_volumes();
-	}
-
-	for (auto& body : bodies)
-	{
-		body.solve_constraints(constraints);
 	}
 
 	for (auto i = 0u; i < bodies.size(); ++i)
