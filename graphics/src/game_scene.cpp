@@ -38,6 +38,8 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 	models[0].create_animation_data("Robot_Jump_4.sspAnim", anim::landing);
 	models[0].create_animation_data("Robot_turn.sspAnim", anim::turning);
 	models[0].create_animation_data("Robot_wj1.sspAnim", anim::connect_wall);
+	models[0].create_animation_data("Robot_hanging.sspAnim", anim::hanging_wall);
+	
 	models[0].create_animation_data("Robot_wj2.sspAnim", anim::jump_from_wall);
 	models[0].create_animation_data("Robot_slide.sspAnim", anim::sliding);
 

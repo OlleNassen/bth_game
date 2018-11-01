@@ -62,7 +62,7 @@ public:
 
 	void update(
 		std::chrono::milliseconds delta,
-		objects_array& dynamics, 
+		objects_array& dynamics,
 		std::array<anim, 4>& anim_states);
 
 	std::vector<glm::vec2> get_forces() const;
@@ -71,6 +71,10 @@ public:
 	std::vector<glm::vec3> get_all_debug()const;
 
 	void rotate_static_box(int id);
+
+	bool rw[4];
+	bool lw[4];
+
 
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);

@@ -370,7 +370,7 @@ float Animation_handler::animation_logic(anim state)
 	else if (current_state == anim::start_jump)
 	{
 		if (state == anim::in_jump)
-			time == 0.02f;
+			time = 0.02f;
 
 	}
 	else if (current_state == anim::in_jump)
@@ -425,7 +425,7 @@ float Animation_handler::animation_logic(anim state)
 	else if (current_state == anim::jump_from_wall)
 	{
 		if (state == anim::in_jump)
-			time == 0.002;
+			time = 0.002;
 	}
 	return time;
 }
@@ -433,13 +433,18 @@ float Animation_handler::animation_logic(anim state)
 bool Animation_handler::update_animation(float delta, anim& play_anim)
 {
 	bool switch_worked = false;
-	get_time(delta);
+
+	if (animations[current_animation]->switching)
+		time_at_switch += (delta * 0.001);
+
+	this->time_seconds += (delta * 0.001);
+	//get_time(delta);
 
 	if (animations[current_animation]->looping)
 		switch_worked = switch_animation(play_anim);
 	else if (animations[current_animation]->max_time <= this->time_seconds && !this->animations[current_animation]->looping)
 		switch_worked = switch_animation(play_anim);
-
+	
 	if (!switch_worked)
 		play_anim = current_state;
 
@@ -458,12 +463,36 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 
 	if (animations[current_animation]->max_time <= this->time_seconds && !this->animations[current_animation]->looping)
 	{
-		if (current_state != anim::turning || current_state != anim::jump_from_wall)
-			switch_animation(anim::idle);
-		else if (current_state == anim::turning)
+		if (current_state == anim::turning)
+		{
 			switch_animation(anim::running);
+			play_anim = current_state;
+		}
 		else if (current_state == anim::jump_from_wall)
+		{
 			switch_animation(anim::in_jump);
+			play_anim = current_state;
+		}
+		else if (current_state == anim::connect_wall)
+		{
+			switch_animation(anim::hanging_wall);
+			play_anim = current_state;
+		}
+		else if (current_state == anim::start_jump) 
+		{
+			switch_animation(anim::in_jump);
+       			play_anim = current_state;
+		}
+		else if (current_state == anim::landing)
+		{
+			switch_animation(anim::idle);
+			play_anim = current_state;
+		}
+		else
+		{
+			switch_animation(anim::idle);
+			play_anim = current_state;
+		}
 	}
 
 	//Temp Animation Logic
@@ -476,7 +505,7 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 
 
 
-	return switch_worked;
+	return true;
 }
 
 void Animation_handler::get_time(float delta)

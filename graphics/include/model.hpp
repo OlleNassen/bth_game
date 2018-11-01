@@ -39,7 +39,7 @@ public:
 	{
 		return this->animation_handler.get_animation_finished(state);
 	}
-	void switch_animation(anim enm, float switch_time)
+	void switch_animation(anim enm)
 	{
 		this->animation_handler.switch_animation(enm);
 	}

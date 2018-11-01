@@ -51,7 +51,7 @@ void World::update(
 	std::chrono::milliseconds delta,
 	objects_array& dynamics, 
 	std::array<anim, 4>& anim_states)
-{
+{	
 	std::chrono::duration<float> delta_seconds = delta;	
 	
 	colliders1.clear();
@@ -172,40 +172,65 @@ void World::update(
 		dynamics[i].impulse = {0.0f, 0.0f};
 	}
 
+	
 	for (int i = 0; i < 4; ++i)
 	{
 		bool stop = false;
-		Point points[3];
-		points[0] = bodies[i].box.position - bodies[i].box.size.y * 1.5f;
-		points[1] = bodies[i].box.position - bodies[i].box.size.x * 1.5f;
-		points[2] = bodies[i].box.position + bodies[i].box.size.x * 1.5f;
-		
-		for (auto& walls : statics)
+		Point points[3]
 		{
-			if (point_in_obb(points[0], walls.box))
+			bodies[i].box.position,
+			bodies[i].box.position,
+			bodies[i].box.position
+		};
+
+		points[0].y -= bodies[i].box.size.y * 1.01f;
+		points[1].x -= bodies[i].box.size.x * 1.01f;
+		points[2].x += bodies[i].box.size.x * 1.01f;
+		
+		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_wall)
+			for (auto& walls : statics)
 			{
-				anim_states[i] = anim::landing;
-				stop = true;
+				if (point_in_obb(points[0], walls.box))
+				{
+					anim_states[i] = anim::landing;
+					stop = true;
+				}
 			}
-		}
 
 		if (!stop)
 		{
-			for (auto& walls : statics)
+			if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump)
 			{
-				if (point_in_obb(points[1], walls.box))
-				{
-					anim_states[i] = anim::connect_wall;
-				}					
-			}
 
-			for (auto& walls : statics)
-			{
-				if (point_in_obb(points[2], walls.box))
+				for (auto& walls : statics)
 				{
-					anim_states[i] = anim::connect_wall;
+					if (point_in_obb(points[1], walls.box))
+					{
+						anim_states[i] = anim::connect_wall;
+						lw[i] = true;
+					}
+					else
+					{
+						lw[i] = false;
+					}
+				}
+
+				for (auto& walls : statics)
+				{
+					if (point_in_obb(points[2], walls.box))
+					{
+						anim_states[i] = anim::connect_wall;
+ 						rw[i] = true;
+					}
+					else
+					{
+						rw[i] = false;
+					}
 				}
 			}
+			if (anim_states[i] == anim::hanging_wall && rw[i] == false && lw[i] == false)
+				anim_states[i] = anim::falling;
+
 		}
 	}
 }
