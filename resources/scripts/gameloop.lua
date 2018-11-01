@@ -11,7 +11,7 @@ function update(delta_seconds, game, entities)
 
 	game.clock = game.clock + delta_seconds
 
-	if game.clock > 20.0 -- Deal out points and reset if timer is too high
+	if game.clock > 120.0 -- Deal out points and reset if timer is too high
 	then
 		while game.points > 0
 		do
@@ -61,7 +61,7 @@ function update(delta_seconds, game, entities)
 		entities[4].position.x = 3
 		entities[4].position.y = 0
 
-		game.points = 4
+		game.points = 4 -- Don't change unless you know what you're doing :)
 		game.clock = 0
 
 		for i = 1, 4, 1
@@ -81,7 +81,7 @@ function update(delta_seconds, game, entities)
 
 			game.finished[i] = true
 			entities[i].position.x = -2000
-			entities[i].position.y = 0
+			entities[i].position.y = -2000
 		end
 	end
 
