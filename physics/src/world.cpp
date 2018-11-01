@@ -132,9 +132,8 @@ void World::update(
 	for (auto& body : bodies)
 	{	
 		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
-		body.apply_forces();
-		body.forces.x += dynamics[index].forces.x;
-		body.forces.y += dynamics[index].forces.y;
+		body.forces.x = dynamics[index].forces.x;
+		body.forces.y = dynamics[index].forces.y;
 		++index;
 	}
 

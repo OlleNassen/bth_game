@@ -199,12 +199,12 @@ void Window::update_input(logic::input& input)
 			
 			if (axes[i] < -0.5f)
 			{
-				//input[neg] = logic::button_state::held;
+				input[neg] = logic::button_state::held;
 			}
 				
 			else if (axes[i] > 0.5f)
 			{
-				//input[pos] = logic::button_state::held;
+				input[pos] = logic::button_state::held;
 			}
 		}
 	}
