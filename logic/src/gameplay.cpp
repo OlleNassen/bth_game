@@ -67,7 +67,7 @@ Output Gameplay::update(Input inputs,
 			*/
 	}
 
-	game_script.update(inputs.delta, &inputs.dynamics[0]);
+	game_script.update(inputs.delta, inputs.triggers, &inputs.dynamics[0]);
 	  
 	//Object placing \Vincent & Lucas S
 	/*if (inputs.player_inputs[0][logic::button::build_mode] == logic::button_state::pressed)

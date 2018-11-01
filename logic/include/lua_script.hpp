@@ -18,6 +18,8 @@
 namespace logic
 {
 
+using trigger_array = std::array<int, 100>;
+
 struct PlayerResult
 {
 public:
@@ -58,6 +60,7 @@ public:
 	void setup();
 	void update(
 		std::chrono::milliseconds delta,
+		const trigger_array& triggers,
 		objects* players);
 	std::array<PlayerResult, 4> player_results();
 	bool game_over();
