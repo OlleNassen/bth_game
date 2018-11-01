@@ -433,13 +433,13 @@ float Animation_handler::animation_logic(anim state)
 bool Animation_handler::update_animation(float delta, anim& play_anim)
 {
 	bool switch_worked = false;
-
+	
 	if (animations[current_animation]->switching)
 		time_at_switch += (delta * 0.001);
 
 	this->time_seconds += (delta * 0.001);
 	//get_time(delta);
-
+	
 	if (animations[current_animation]->looping)
 		switch_worked = switch_animation(play_anim);
 	else if (animations[current_animation]->max_time <= this->time_seconds && !this->animations[current_animation]->looping)
