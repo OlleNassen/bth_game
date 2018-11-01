@@ -28,12 +28,12 @@ public:
 	void update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements);
 	void render() const;
 	//void set_position(glm::vec2 position, int i)
+	glm::mat4 arrow_matrix;
 private:
 	Texture arrow_texture;
 	std::array<glm::vec2, 4> player_positions;
 	std::array<glm::vec2, 4> player_vector;
 	std::array<bool, 4> visible;
-	glm::mat4 arrow_matrix;
 };
 
 class UserInterface
@@ -43,7 +43,7 @@ public:
 	UserInterface();
 
 	void update(const std::vector<Model> &models, int players);
-	void render_arrows()const;
+	void render_arrows(const Shader& shader)const;
 	void render(const Shader& shader)const;
 	PlayerArrows player_arrows;
 private:
