@@ -22,7 +22,7 @@ void Minimap::update(const std::vector<Model>& models, int players)
 	player_count = players;
 	for (int i = 1; i <= player_count; i++)
 	{
-		this->map_elements[i].position.y = models[i-1].get_y_position()/50 -0.9;
+		this->map_elements[i].position.y = models[i-1].get_y_position()/171 -0.9;
 
 		
 
