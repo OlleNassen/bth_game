@@ -12,6 +12,8 @@
 #include <GLFW/glfw3.h>
 #include "animation_handler.hpp"
 
+#include <flags.hpp>
+
 
 namespace graphics
 {
@@ -24,22 +26,22 @@ public:
 	bool is_animated = false;
 	bool is_turned_left = false, is_turned_right = true;
 
-	void create_animation_data(const std::string & file_path, MODEL_STATE enm)
+	void create_animation_data(const std::string & file_path, anim enm)
 	{
 		this->animation_handler.create_animation_data(file_path, enm);
 		is_animated = true;
 	}
-	MODEL_STATE get_state()
+	anim get_state()
 	{
 		return this->animation_handler.current_state;
 	}
-	bool get_animation_done(MODEL_STATE state)
+	bool get_animation_done(anim state)
 	{
 		return this->animation_handler.get_animation_finished(state);
 	}
-	void switch_animation(MODEL_STATE enm, float switch_time)
+	void switch_animation(anim enm)
 	{
-		this->animation_handler.switch_animation(enm, switch_time);
+		this->animation_handler.switch_animation(enm);
 	}
 
 	void move(glm::vec2 offset)
@@ -88,7 +90,7 @@ public:
 		return this->model[3][1];
 	}
 	void render(const Shader & shader, const Camera& camera, const std::array<PointLight, 4>&  lights)const;
-	void update_animation(float time);
+	void update_animation(float time, anim& play_anim);
 
 private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern

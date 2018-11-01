@@ -63,6 +63,8 @@ private:
 	gui::Chat chat;
 	gui::Menu menu;	
 
+	std::array<anim, 4> anim_states;
+
 	//Temp leaderboards
 	std::vector<int> leader_board;
 	bool showleaderboard = false;

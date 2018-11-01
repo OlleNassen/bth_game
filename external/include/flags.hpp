@@ -12,6 +12,21 @@ enum state : int
 	render_physics = 1 << 6
 };
 
+enum class anim 
+{
+	start_jump,
+	in_jump,
+	falling,
+	landing,
+	hanging_wall,
+	connect_wall,
+	jump_from_wall,
+	idle,
+	running,
+	turning,
+	sliding
+};
+
 
 
 #endif

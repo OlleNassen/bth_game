@@ -51,8 +51,9 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 
 void World::update(
 	std::chrono::milliseconds delta,
-	objects_array& dynamics)
-{
+	objects_array& dynamics, 
+	std::array<anim, 4>& anim_states)
+{	
 	std::chrono::duration<float> delta_seconds = delta;	
 	
 	colliders1.clear();
@@ -169,8 +170,70 @@ void World::update(
 		dynamics[i].position = { bodies[i].position.x - bodies[i].box.size.x, bodies[i].position.y - bodies[i].box.size.y };
 		dynamics[i].velocity = { bodies[i].velocity.x, bodies[i].velocity.y };
 		dynamics[i].size = { bodies[i].box.size.x, bodies[i].box.size.y };
-		dynamics[i].forces = { 0.0f, 0.0f };
+		dynamics[i].forces = {0.0f, 0.0f};
 		dynamics[i].impulse = {0.0f, 0.0f};
+	}
+
+	
+	for (int i = 0; i < 4; ++i)
+	{
+		bool stop = false;
+		Point points[3]
+		{
+			bodies[i].box.position,
+			bodies[i].box.position,
+			bodies[i].box.position
+		};
+
+		points[0].y -= bodies[i].box.size.y * 1.01f;
+		points[1].x -= bodies[i].box.size.x * 1.01f;
+		points[2].x += bodies[i].box.size.x * 1.01f;
+		
+		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_wall)
+			for (auto& walls : statics)
+			{
+				if (point_in_obb(points[0], walls.box))
+				{
+					anim_states[i] = anim::landing;
+					stop = true;
+				}
+			}
+
+		if (!stop)
+		{
+			if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump)
+			{
+
+				for (auto& walls : statics)
+				{
+					if (point_in_obb(points[1], walls.box))
+					{
+						anim_states[i] = anim::connect_wall;
+						lw[i] = true;
+					}
+					else
+					{
+						lw[i] = false;
+					}
+				}
+
+				for (auto& walls : statics)
+				{
+					if (point_in_obb(points[2], walls.box))
+					{
+						anim_states[i] = anim::connect_wall;
+ 						rw[i] = true;
+					}
+					else
+					{
+						rw[i] = false;
+					}
+				}
+			}
+			if (anim_states[i] == anim::hanging_wall && rw[i] == false && lw[i] == false)
+				anim_states[i] = anim::falling;
+
+		}
 	}
 }
 

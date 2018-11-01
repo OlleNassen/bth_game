@@ -217,6 +217,39 @@ void LuaStack::push(const input& value)
 	}
 }
 
+void LuaStack::push(const anim& value)
+{
+	newtable();
+	int top = lua_gettop(lua_state);
+	const char* members[] =
+	{
+		"start_jump",
+		"in_jump",
+		"falling",
+		"landing",
+		"hanging_wall",
+		"connect_wall",
+		"jump_from_wall",
+		"idle",
+		"running",
+		"turning",
+		"sliding"
+	};
+
+	int i = 0;
+	for (auto* member : members)
+	{
+		push(member);
+		push(i);
+		rawset(top);
+		++i;
+	}
+
+	push("current");
+	push(static_cast<int>(value));
+	rawset(top);
+}
+
 void LuaStack::pop()
 {
 	lua_pop(lua_state, 1);
