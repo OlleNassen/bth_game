@@ -195,7 +195,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int new_game_state,
 	std::string scoreboard)
 {
-	player_count = num_players;
+	player_count = num_players + 1;
 	game_state = new_game_state;
 	bool is_chat_on = (game_state & state::chat);
 	
