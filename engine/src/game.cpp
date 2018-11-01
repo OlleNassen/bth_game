@@ -1,5 +1,7 @@
 #include "game.hpp"
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <glm/glm.hpp>
 
 #include <flags.hpp>
@@ -26,11 +28,6 @@ Game::Game()
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
 	window.assign_key(logic::button::debug, GLFW_KEY_F3);
-	window.assign_key(logic::button::switch_object, GLFW_KEY_F4);
-	window.assign_key(logic::button::remove_object, GLFW_KEY_O);
-	window.assign_key(logic::button::rotate, GLFW_KEY_R);	
-	window.assign_key(logic::button::build_mode, GLFW_KEY_B);
-	window.assign_key(logic::button::place_object, GLFW_KEY_KP_ENTER);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
 
 	window.assign_button(logic::button::up, controller_buttons::up);
@@ -44,6 +41,14 @@ Game::Game()
 	window.assign_axis_neg(logic::button::left, controller_axis::ls_right);
 	window.assign_axis_pos(logic::button::right, controller_axis::ls_right);
 
+	for (int i = 0; i < 12; ++i)
+	{
+		player_inputs[0][static_cast<logic::button>(i)] = logic::button_state::none;
+		player_inputs[1][static_cast<logic::button>(i)] = logic::button_state::none;
+		player_inputs[2][static_cast<logic::button>(i)] = logic::button_state::none;
+		player_inputs[3][static_cast<logic::button>(i)] = logic::button_state::none;
+	}	
+
 	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
 
 	physics.add_dynamic_body(level.v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
@@ -54,12 +59,17 @@ Game::Game()
 	for (int i = 0; i < 4; ++i)
 	{
 		dynamics[i].position = level.v[i];
-		dynamics[i].velocity = {0.0f, 0.0f};
-		dynamics[i].size = {1.0f, 3.5f};
-		dynamics[i].forces = {0.0f, 0.0f};
+		dynamics[i].velocity = { 0.0f, 0.0f };
+		dynamics[i].size = { 1.0f, 3.5f };
+		dynamics[i].forces = { 0.0f, 0.0f };
 		dynamics[i].impulse = { 0.0f, 0.0f };
 	}
-		
+
+	for (int i = 0; i < 4; ++i)
+	{
+		std::string name = "P" + std::to_string(i+1);
+		player_results[i] = logic::PlayerResult{name, 0.0f};
+	}
 
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
@@ -136,10 +146,6 @@ void Game::update(std::chrono::milliseconds delta)
 		is_client = true;
 	}
 
-	pack_data();
-	net.update(net_state, str);
-	unpack_data();
-
 	std::array<glm::vec3, 4> directions
 	{ 
 		glm::vec3{0.0f}, 
@@ -159,7 +165,11 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].impulse = dynamics[i].impulse;
 		}
 		
-		logic_out = gameplay.update({ delta, obj, player_inputs, directions, &level, &physics });
+		logic_out = gameplay.update(
+			{ delta, obj,
+			player_inputs, directions,
+			&level, &physics },
+			player_results);
 
 		for (int i = 0; i < dynamics.size(); ++i)
 		{
@@ -175,6 +185,7 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
+			/*
 			if (level.models[i].is_animated)
 				level.models[i].update_animation((float)delta.count());
 
@@ -245,7 +256,7 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 			}
-
+			*/
 			level.v[i] = dynamics[i].position;
 			level.models[i].set_position(dynamics[i].position);
 		}
@@ -262,6 +273,11 @@ void Game::update(std::chrono::milliseconds delta)
 
 
 	physics.update(delta, dynamics);
+
+	pack_data();
+	net.update(net_state, str);
+	unpack_data();
+
 	{
 		graphics::objects_array obj;
 		for (int i = 0; i < dynamics.size(); ++i)
@@ -269,13 +285,20 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].position = dynamics[i].position;
 			obj[i].size = dynamics[i].size;
 		}
-
+		
+		using namespace std;
+		stringstream stream;
+		for (auto& p : player_results)	
+			stream << p.name << ": "
+			<< fixed << setprecision(2) << p.score << " | ";
+		
+		string temp = stream.str();
 		renderer.update(delta,
 			obj,
 			player_inputs[net.id()].cursor,
 			logic_out.directions,
 			chat[1], player_count,
-			net.id(), game_state);
+			net.id(), game_state, temp);
 	}
 }
 

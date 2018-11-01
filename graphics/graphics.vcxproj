@@ -170,6 +170,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\fx.cpp" />
+    <ClCompile Include="src\leaderboard.cpp" />
     <ClCompile Include="src\minimap.cpp" />
     <ClCompile Include="src\game_scene.cpp" />
     <ClCompile Include="src\mesh_lib.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="include\user_interface.hpp" />
     <ClInclude Include="include\primitive_factory.hpp" />
     <ClInclude Include="include\skybox.hpp" />
+    <ClInclude Include="include\leaderboard.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -40,6 +40,8 @@ struct Output
 	std::array<glm::vec3, 4> directions;
 };
 
+
+
 template <typename T>
 using script_array = std::array<T, 10>;
 
@@ -50,10 +52,12 @@ public:
 
 	void refresh();
 
-	Output update(Input input);
+	Output update(Input input,
+		std::array<logic::PlayerResult, 4>& player_results);
 private:
 	script_array<int> entities;
-	PlayerScript player_script;
+	PlayerScript player_script{"../resources/scripts/player.lua"};
+	PlayerScript placement_script{"../resources/scripts/placing_objects.lua"};
 	GameScript game_script;
 	std::array<glm::vec3, 4> directions;
 
@@ -66,6 +70,7 @@ private:
 
 	int points = 0;
 	std::vector<int> current_gameboard;
+	int	get_random_object_id(Input input);
 };
 
 }
