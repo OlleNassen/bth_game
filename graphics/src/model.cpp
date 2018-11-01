@@ -59,7 +59,7 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 }
 
 
-void Model::update_animation(float time, anim play_anim)
+void Model::update_animation(float time, anim& play_anim)
 {
 	this->animation_handler.update_animation(time, play_anim);
 }

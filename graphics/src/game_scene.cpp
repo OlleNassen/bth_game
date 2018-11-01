@@ -30,15 +30,16 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 
 	//for (int i = 0; i < 4; i++)
 	//{
-	models[0].create_animation_data("Robot_idle.sspAnim", MODEL_STATE::IDLE);
-	models[0].create_animation_data("robot_run.sspAnim", MODEL_STATE::RUNNING);
-	models[0].create_animation_data("Robot_Jump_1.sspAnim", MODEL_STATE::START_JUMP);
-	models[0].create_animation_data("Robot_Jump_2.sspAnim", MODEL_STATE::FALLING);
-	models[0].create_animation_data("Robot_Jump_3.sspAnim", MODEL_STATE::IN_JUMP);
-	models[0].create_animation_data("Robot_Jump_4.sspAnim", MODEL_STATE::LANDING);
-	models[0].create_animation_data("Robot_turn.sspAnim", MODEL_STATE::TURN);
-	models[0].create_animation_data("Robot_wj1.sspAnim", MODEL_STATE::CONNECT_WALL);
-	models[0].create_animation_data("Robot_wj2.sspAnim", MODEL_STATE::JUMP_FROM_WALL);
+	models[0].create_animation_data("Robot_idle.sspAnim", anim::idle);
+	models[0].create_animation_data("robot_run.sspAnim", anim::running);
+	models[0].create_animation_data("Robot_Jump_1.sspAnim", anim::start_jump);
+	models[0].create_animation_data("Robot_Jump_2.sspAnim", anim::falling);
+	models[0].create_animation_data("Robot_Jump_3.sspAnim", anim::in_jump);
+	models[0].create_animation_data("Robot_Jump_4.sspAnim", anim::landing);
+	models[0].create_animation_data("Robot_turn.sspAnim", anim::turning);
+	models[0].create_animation_data("Robot_wj1.sspAnim", anim::connect_wall);
+	models[0].create_animation_data("Robot_wj2.sspAnim", anim::jump_from_wall);
+	models[0].create_animation_data("Robot_slide.sspAnim", anim::sliding);
 
 	//}
 

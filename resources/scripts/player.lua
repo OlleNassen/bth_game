@@ -6,12 +6,12 @@ end
 
 function update(delta_seconds, entity)
 
-	if entity.button.left
+	if entity.button.left 
 	then
 		entity.forces.x = -4000
 	end
 
-	if entity.button.right
+	if entity.button.right 
 	then
 		entity.forces.x = 4000
 	end
