@@ -45,6 +45,7 @@ public:
 	uint16 inputs[4] = {0};
 	uint32 sequence = 0;
 	uint8 player_count = 1;
+	uint8 player_id = 0;
 };
 
 class Queue

@@ -22,13 +22,24 @@ public:
 	Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh);
 	~Model();
 	bool is_animated = false;
+	bool is_turned_left = false, is_turned_right = true;
 
-
-
-	void create_animation_data(const std::string & file_path)
+	void create_animation_data(const std::string & file_path, MODEL_STATE enm)
 	{
-		this->animation_handler.create_animation_data(file_path);
+		this->animation_handler.create_animation_data(file_path, enm);
 		is_animated = true;
+	}
+	MODEL_STATE get_state()
+	{
+		return this->animation_handler.current_state;
+	}
+	bool get_animation_done(MODEL_STATE state)
+	{
+		return this->animation_handler.get_animation_finished(state);
+	}
+	void switch_animation(MODEL_STATE enm, float switch_time)
+	{
+		this->animation_handler.switch_animation(enm, switch_time);
 	}
 
 	void move(glm::vec2 offset)
@@ -46,7 +57,7 @@ public:
 		//model[3][2] = 0.0f;
 	}
 
-	void rotate(float degree, glm::vec2 center_pivot)
+	void rotate(float degree)
 	{
 		/*glm::mat3 rotation{ model };
 		glm::vec3 translation{ model[3][0], model[3][1], model[3][2] };
@@ -58,11 +69,11 @@ public:
 
 		
 		//Works but not for all
-		model = glm::translate(model, { 0.0, center_pivot.x / 2, 0.0 });
+		/*model = glm::translate(model, { 0.0, center_pivot.x / 2, 0.0 });
 		model = glm::rotate(model, glm::radians(degree), { 1,0,0 });
-		model = glm::translate(model, { 0.0, -center_pivot.x / 2, 0.0 });
+		model = glm::translate(model, { 0.0, -center_pivot.x / 2, 0.0 });*/
 
-
+		model = glm::rotate(model, glm::radians(degree), { 0, 0, 1 });
 	}
 
 	glm::vec3 get_position()const

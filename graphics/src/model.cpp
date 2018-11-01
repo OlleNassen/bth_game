@@ -46,7 +46,7 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 	
 	if (is_animated)
 	{
-		shader.uniform("bone_mats", animation_handler.bone_mat_vector);
+		shader.uniform("bone_mats", this->animation_handler.bone_mat_vector);
 	}
 	
 	

@@ -49,17 +49,16 @@ private:
 	logic::Gameplay gameplay;
 	logic::input player_inputs[4];
 	logic::input* local_input{ &player_inputs[0] };
+	std::array<logic::PlayerResult, 4> player_results;
 	
 	network::uint8 player_count = 1;
 	network::uint32 state_sequence = 0;
 	network::GameState net_state;
 	network::Messenger net;
 
+	physics::objects_array dynamics;
 	physics::World physics;	
 	std::chrono::milliseconds timestep{16};
-	
-	//Win clock //Temp
-	//std::chrono::milliseconds w_time{ 5000 };
 
 	gui::Chat chat;
 	gui::Menu menu;	

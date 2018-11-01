@@ -1,11 +1,15 @@
 #ifndef LUA_SCRIPT_HPP
 #define LUA_SCRIPT_HPP
+#include <array>
+#include <tuple>
 #include <chrono>
 #include <string>
 #include <vector>
 #include <iostream>
 #include <lua.hpp>
 #include "lua_stack.hpp"
+#include "../../graphics/include/game_scene.hpp"
+#include "../../physics/include/world.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -14,24 +18,50 @@
 namespace logic
 {
 
-class LuaScript
+struct PlayerResult
 {
 public:
-	LuaScript();
-	LuaScript(const std::string& filename);
+	std::string name;
+	float score;
+};
+
+class objects
+{
+public:
+	glm::vec2 position;
+	glm::vec2 velocity;
+	glm::vec2 size;
+	glm::vec2 forces;
+	glm::vec2 impulse;
+};
+
+class PlayerScript
+{
+public:
+	PlayerScript(const std::string& path);
 	
 	void setup(int entity);
-	void update(std::chrono::milliseconds delta, const glm::vec3& direction, glm::vec2& velocity);
-
-	void set_player_status(bool value);
-	void add_points(int points);
-
-	bool player_status();
-	int get_player_points();
+	void update(
+		std::chrono::milliseconds delta, 
+		objects& object, 
+		const input& i, 
+		int index);
 private:
 	LuaStack stack;
-	bool player_alive = true;
-	int player_points = 0;
+};
+
+class GameScript
+{
+public:
+	GameScript();
+
+	void setup();
+	void update(
+		std::chrono::milliseconds delta,
+		objects* players);
+	std::array<PlayerResult, 4> player_results();
+private:
+	LuaStack stack;
 };
 
 }
