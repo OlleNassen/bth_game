@@ -19,6 +19,7 @@ Renderer::Renderer(GameScene* scene)
 	, irradiance_buffer{irradiance, skybox}
 	, prefilter_buffer{pre_filter, skybox, true}
 	, brdf_buffer{brdf, skybox, 3.f}
+	, leaderboard(projection)
 {
 
 	db_camera.position.z = 20.0f;
@@ -29,18 +30,20 @@ Renderer::Renderer(GameScene* scene)
 		lights[i].position = glm::vec3{0,0,0};
 		lights[i].color = glm::vec3{1,1,1};
 	}
+
 }
 
 void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
 	const std::array<std::string, 12>& buttons,
-	const std::vector<glm::vec2>& debug_positions,
-	bool is_menu,
-	bool connected,
-	bool debug, std::vector<int> leaderboard, bool show_leaderboard)const
+	const std::vector<glm::vec3>& debug_positions)const
 {
-	glClearColor(1.0f, 0.8f, 0.0f, 0.f);
+	bool is_menu = (game_state & state::menu);
+	bool connected = (game_state & state::connected);
+	bool debug_active = (game_state & state::render_physics);
+	
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	scene_texture.bind_framebuffer();
@@ -72,6 +75,7 @@ void Renderer::render(
 			lines.use();
 			lines.uniform("projection", game_camera.projection);
 			lines.uniform("view", game_camera.view());
+			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -98,35 +102,43 @@ void Renderer::render(
 
 		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
 
-
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
 			lines.use();
 			lines.uniform("projection", db_camera.projection);
 			lines.uniform("view", db_camera.view());
-			lines.uniform("line_color", glm::vec3(1.0, 0.0, 0.0));
+			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
-
 		}
-
 	}
 
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	post_proccessing.use();
-	post_proccessing.uniform("scene_texture", 0);
-	post_proccessing.uniform("depth_texture", 1);
-	post_proccessing.uniform("screen_warning", 2);
+	if (player_count > 1)
+	{
+		post_proccessing.use();
+		post_proccessing.uniform("scene_texture", 0);
+		post_proccessing.uniform("depth_texture", 1);
+		post_proccessing.uniform("screen_warning", 2);
 
-	scene_texture.bind_texture(0);
-	scene_texture.bind_texture(1);
-	post_processing_effects.texture.bind(2);
+		scene_texture.bind_texture(0);
+		scene_texture.bind_texture(1);
+		post_processing_effects.texture.bind(2);
 
-	post_proccessing.uniform("pulse", post_processing_effects.glow_value);
-	post_processing_effects.render();
+		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
+		post_processing_effects.render();
+	}
+	else
+	{
+		if (!is_menu)
+		{
+			loading_screen.render(loading_screen_shader);
+		}
+	}
+
 
 	{
 		glDisable(GL_DEPTH_TEST);
@@ -138,32 +150,11 @@ void Renderer::render(
 			ui.render();
 		}
 
+
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 		text_shader.uniform("projection", projection);
-		text_shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
-
-
-		//leaderboard
-		if (show_leaderboard)
-		{
-			std::stringstream test;
-			float pos[4] = { 480, 400, 320, 240 };
-			text_shader.uniform("text_color", glm::vec3(0.1f, 0.9f, 0.1f));
-
-			for (int i = 0; i < leaderboard.size(); i++)
-			{
-				test << "Player " << i + 1 << ": " << leaderboard.at(i) << "pt";
-				text.render_text(test.str(), 1280 / 3.f, pos[i], 1.3f);
-
-				test.str("");
-			}
-		}
-		else
-		{
-			//text.render_text(t.to_string(), 0, 700, 0.5f);
-		}
-
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
 		auto offset = 0.0f;
 
@@ -179,34 +170,49 @@ void Renderer::render(
 		for (auto i = 0u; i < buttons.size(); ++i)
 			text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
 
-		if (!is_menu)
-			minimap.render(minimap_shader);
+		if (player_count > 1)
+		{
+			//leaderboard
+			leaderboard.render(text_shader, text);
+			if (!is_menu)
+			{
+				minimap.render(minimap_shader);
+			}
+		}
 
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	/*text.render_text("GAME OVER!\n\n\n\n", 1280 / 2.f, 720 / 2.f, 2.0f);*/
-
 }
 
 void Renderer::update(std::chrono::milliseconds delta,
+	const objects_array& dynamics,
 	const glm::vec2& cursor,
 	const std::array<glm::vec3, 4>& directions,
 	const std::string& data,
 	int num_players,
 	int id,
-	bool is_on,
-	bool move_char)
+	int new_game_state,
+	std::string scoreboard)
 {
-
-	using namespace std::chrono_literals;
+	player_count = num_players + 1;
+	game_state = new_game_state;
+	bool is_chat_on = (game_state & state::chat);
+	
+	using namespace std::chrono_literals;	
+	
 	time = data != log ? 0ms : time + delta;
 	log = data;
-	is_chat_visible = is_on || time < 3s;
+	is_chat_visible = is_chat_on || time < 3s;
+	loading_screen.timer += delta;
 
-	player_count = num_players;
+	//Loading screen reset
+	if (loading_screen.timer > 4000ms)
+	{
+		loading_screen.timer = 0ms;
+	}
 
-	if (!is_on)
+	if (!is_chat_on)
 	{
 		//Dust Particles
 		fx_emitter.calculate_dust_data(delta, db_camera);
@@ -225,11 +231,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		//game_camera.update(delta, &scene->v[scene->placing_object_id], &scene->v[scene->placing_object_id + 1]);
 	}
-	else
-	{
-		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
-	}
 
+	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update(scene->models, player_count);
 
 	minimap.update(scene->models, player_count);
@@ -239,11 +242,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 		lights[i].position = scene->models[i].get_position();
 	}
 
-}
+	leaderboard.update(std::move(scoreboard));
 
-void Renderer::show_leaderboard()
-{
-	
 }
 
 }

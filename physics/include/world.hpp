@@ -8,29 +8,46 @@
 #include <chrono>
 #include <array>
 #include <vector>
-#include <math.h>
 
-
-#include "static_collision.hpp"
+#include "rigidbody_old.hpp"
 #include "rigidbody.hpp"
+#include "geometry3d.hpp"
 #include "boxcollider.hpp"
+#include "obb.hpp"
 
 namespace physics
 {
 
-//template <typename T>
+struct StaticCollider
+{
+public:
+	glm::vec2 start_pos;
+	glm::vec2 offset;
+	float width;
+	float height;
+};
+
+class objects
+{
+public:
+	glm::vec2 position;
+	glm::vec2 velocity;
+	glm::vec2 size;
+	glm::vec2 forces;
+	glm::vec2 impulse;
+};
+
+using objects_array = std::array<objects, 100>;
+
+
 class World
 {
 public:
-	World();
-	World(int nr_of_players);
-
-	//void add_dynamic_body(glm::vec2 start_force, float width, float height, glm::vec2 offset, glm::vec2 start_position);
-	void add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force);
+	int add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force);
 	int add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
 
 	//Dynamic
-	std::vector<Rigidbody> dynamic_rigidbodies;
+	std::vector<Rigidbody_old> dynamic_rigidbodies;
 	std::vector<Box> dynamic_box_colliders;
 	std::vector<glm::vec2> dynamic_positions;
 
@@ -38,27 +55,36 @@ public:
 	std::vector<Box> static_box_colliders;
 	std::vector<glm::vec2> static_positions;
 
-
 	//Static Placed Objects // lucas test
 	std::vector<int> placed_objects_index;
 
+	void update(
+		std::chrono::milliseconds delta,
+		objects_array& dynamics);
 
-	//void update(std::chrono::milliseconds delta);
-	std::vector<glm::vec2> update(std::chrono::milliseconds delta);
-
-	void load_players(std::vector<glm::vec2> player_pos);
-	void load_static_bodies(std::vector<Static_collider> static_bodies);
-
-	std::vector<glm::vec2> get_forces()const;
+	std::vector<glm::vec2> get_forces() const;
 	bool intersects(const int box_id, const int target_box_id);
 
-	std::vector<glm::vec2> get_all_debug()const;
+	std::vector<glm::vec3> get_all_debug()const;
 
 	void rotate_static_box(int id);
+
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 
-	int nr_of_players = 0;
+	std::vector<Rigidbody> statics;
+	std::vector<Rigidbody> bodies;
+	std::vector<OBB> constraints;
+
+	std::vector<Rigidbody*> colliders1;
+	std::vector<Rigidbody*> colliders2;
+	std::vector<CollisionManifold> results;
+
+	float linear_projection_percent = 0.45f;
+	float penetration_slack = 0.01f;
+	int impulse_iteration = 5;
+
+
 };
 
 }

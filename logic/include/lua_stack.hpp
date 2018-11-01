@@ -2,6 +2,7 @@
 #define LUA_STACK_HPP
 
 #include <glm/glm.hpp>
+#include "input.hpp"
 
 struct lua_State;
 typedef int(*lua_CFunction)(lua_State *L);
@@ -28,6 +29,7 @@ public:
 	void getglobal(const char* value);
 	void setglobal(const char* value);
 
+	void getfield(int index, const char * name);
 	void setfield(int index, const char* name);
 
 	void settable(int index);
@@ -51,12 +53,18 @@ public:
 	void push(const glm::vec3& value);
 	void push(const glm::vec4& value);
 
+	void push(const input& value);
+
 	void pop();
 	void clear();
+
+	void stack_dump();
 
 	lua_State* lua_state;
 private:
 };
+
+
 
 }
 

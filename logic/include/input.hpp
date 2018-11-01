@@ -12,7 +12,6 @@ using uint16 = std::uint16_t;
 
 enum class button
 {
-	
 	up,
 	left,
 	down,
@@ -24,13 +23,8 @@ enum class button
 	glow,
 	refresh,
 	menu,
-	quit,
-	
-	switch_object,
-	rotate,
-	build_mode,
-	place_object,
-	remove_object	
+	quit
+		
 };
 
 enum class button_state

@@ -88,10 +88,14 @@ void UserInterface::rebind_buffers()
 	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement), (void*)(sizeof(glm::vec2) * 2));
 }
 
-void UserInterface::render_arrows()const
+void UserInterface::render_arrows(const Shader& shader)const
 {
 	//elements.at(0) = glm::vec2(2.0f, 2.0f);
-	render();
+	shader.use();
+	shader.uniform("is_arrow", true);
+	shader.uniform("rotation_matrix", player_arrows.arrow_matrix);
+
+	render(shader);
 }
 
 PlayerArrows::PlayerArrows()
