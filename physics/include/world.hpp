@@ -85,7 +85,7 @@ private:
 
 	float linear_projection_percent = 0.8f;
 	float penetration_slack = 0.01f;
-	int impulse_iteration = 5;
+	int impulse_iteration = 8;
 
 
 };

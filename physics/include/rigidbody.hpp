@@ -8,8 +8,6 @@
 namespace physics
 {
 
-static constexpr glm::vec3 gravity{0.0f, -64.5f, 0.0f};
-
 class Rigidbody
 {
 public:
