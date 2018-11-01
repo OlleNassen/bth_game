@@ -23,12 +23,12 @@ std::vector<std::string> faces
 	"images/skybox3/negz.jpg", // BACK
 	"images/skybox3/posz.jpg" // FRONT
 	*/
-	"../resources/textures/skybox2/black_pixel.png",	// FRONT
-	"../resources/textures/skybox2/black_pixel.png",	// BACK
-	"../resources/textures/skybox2/top_test.png",		// TOP
-	"../resources/textures/skybox2/black_pixel.png",	// BOTTOM
-	"../resources/textures/skybox2/black_pixel.png",	// RIGHT
-	"../resources/textures/skybox2/black_pixel.png"		// LEFT
+	"../resources/textures/skybox2/black.png",	// FRONT
+	"../resources/textures/skybox2/black.png",	// BACK
+	"../resources/textures/skybox2/grey.png",		// TOP
+	"../resources/textures/skybox2/black.png",	// BOTTOM
+	"../resources/textures/skybox2/back.png",	// RIGHT
+	"../resources/textures/skybox2/back.png"		// LEFT
 };
 
 Skybox::Skybox()
