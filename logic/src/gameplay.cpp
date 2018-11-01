@@ -24,10 +24,14 @@ void Gameplay::refresh()
 	for (auto i = 0; i < 4; ++i)
 	{
 		player_script.setup(i);
+	}
+
+	for (int i = 0; i < 100; ++i)
+	{
 		placement_script.setup(i);
 	}
-	game_script.setup();
 
+	game_script.setup();
 }
 
 Output Gameplay::update(Input inputs,
@@ -64,13 +68,13 @@ Output Gameplay::update(Input inputs,
 		int d_id = inputs.players_placed_objects_id[i].dynamics_id;
 
 		placement_script.update(
-			inputs.delta,
-			inputs.dynamics[d_id],
-			inputs.player_inputs[i],
-			i);
+		inputs.delta,
+		inputs.dynamics[d_id],
+		inputs.player_inputs[i],
+		d_id);
 	}
 
-
+	
 	//game_script.update(inputs.delta, &inputs.dynamics[0]);
 	  
 	//Object placing \Vincent & Lucas S

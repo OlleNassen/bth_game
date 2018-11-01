@@ -1,10 +1,8 @@
 function setup(entity)
-
+	entity.rotate_was_pressed = false
 end
 
-rotate_was_pressed = { false, false, false, false }
-iterator = 1
-place_speed = 1.0;
+place_speed = 9.82
 
 function update(delta_seconds, entity)
 
@@ -22,7 +20,6 @@ function update(delta_seconds, entity)
 
 	if entity.button.up
 	then
-		print("NOW")
 		entity.position.y = entity.position.y + delta_place_speed
 	end
 	
@@ -31,19 +28,10 @@ function update(delta_seconds, entity)
 		entity.position.y = entity.position.y - delta_place_speed
 	end
 
-	if iterator == 1
+	if entity.button.rotate and not entity.rotate_was_pressed
 	then
-		if entity.button.rotate and not rotate_was_pressed[iterator]
-		then
-			print("DO ROTATION!")
-		end
-
-		rotate_was_pressed[iterator] = entity.button.rotate
+		print("DO ROTATION!")
 	end
 
-	iterator = iterator + 1
-	if iterator > 4
-	then
-		iterator = 1
-	end
+	entity.rotate_was_pressed = entity.button.rotate
 end

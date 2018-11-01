@@ -157,22 +157,22 @@ void Game::update(std::chrono::milliseconds delta)
 	};
 
 	//Test for multiple players
-	players_placed_objects_id.fill({ 0, 0 });
 	{
 		if (buildmode)
 		{
 			if (!give_players_objects)
 			{
+				players_placed_objects_id.fill({ 0, 0 });
 				for (int i = 0; i < 4; i++)
 				{
 					collision_data data;
 					int model_id = level.add_object(data, 6);
-					int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 8 + i }, { 0, 0 }, data.width, data.height, { 0, 0 });
+					int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + i }, { 0, 0 }, data.width, data.height, { 0, 0 });
 
 					players_placed_objects_id[i].model_id = model_id;
 					players_placed_objects_id[i].dynamics_id = dynamic_id;
 
-					dynamics[dynamic_id].position = { 0, 8 + i };
+					dynamics[dynamic_id].position = { 0, 16 + i };
 					dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 					dynamics[dynamic_id].size = { data.width, data.height };
 					dynamics[dynamic_id].forces = { 0.0f, 0.0f };
@@ -182,13 +182,6 @@ void Game::update(std::chrono::milliseconds delta)
 				}
 			}
 
-			/*for (int i = 0; i < 4; i++)
-			{
-				int model_id = players_placed_objects_id[i].dynamics_id;
-				int dynamic_id = players_placed_objects_id[i].model_id;
-
-				level.models[model_id].set_position(dynamics[dynamic_id].position);
-			}*/
 			for (auto& ppoi : players_placed_objects_id)
 			{
 				level.models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
