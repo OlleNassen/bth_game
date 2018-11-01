@@ -98,18 +98,18 @@ static void current_menu(int index, std::array<std::string, 12>& strings, const 
 
 Menu::Menu() 
 {
-	buttons[0][10] = { "Debug", button_state::none };
+	buttons[0][10] = { "DEBUG", button_state::none };
 	
-	buttons[0][8] = { "Start", button_state::none };
-	buttons[0][7] = { "Options", button_state::none };
-	buttons[0][6] = { "Exit", button_state::none };
+	buttons[0][8] = { "START", button_state::none };
+	buttons[0][7] = { "OPTIONS", button_state::none };
+	buttons[0][6] = { "EXIT", button_state::none };
 
-	buttons[1][8] = { "Host", button_state::none };
-	buttons[1][7] = { "Join", button_state::none };
-	buttons[1][6] = { "Back", button_state::none };
+	buttons[1][8] = { "HOST", button_state::none };
+	buttons[1][7] = { "JOIN", button_state::none };
+	buttons[1][6] = { "BACK", button_state::none };
 
-	buttons[2][10] = { "Fullscreen", button_state::none };
-	buttons[2][6] = { "Back", button_state::none };
+	buttons[2][10] = { "FULLSCREEN", button_state::none };
+	buttons[2][6] = { "BACK", button_state::none };
 }
 
 const std::array<std::string, 12>& Menu::button_strings() const

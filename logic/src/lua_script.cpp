@@ -142,7 +142,9 @@ void GameScript::setup()
 	stack.clear();
 }
 
-void GameScript::update(std::chrono::milliseconds delta,
+void GameScript::update(
+	std::chrono::milliseconds delta,
+	const trigger_array& triggers,
 	objects* players)
 {
 
@@ -163,6 +165,28 @@ void GameScript::update(std::chrono::milliseconds delta,
 			stack.rawset(top_pos);
 		}
 
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+			
+			for (int j = 0; j < triggers.size(); ++j)
+			{
+				if (triggers[i] == j)
+				{
+					stack.push("triggered");
+					stack.push(j);
+					stack.rawset(top_pos);
+				}
+			}
+		}
 		stack.clear();
 	}
 
@@ -207,6 +231,18 @@ std::array<PlayerResult, 4> GameScript::player_results()
 		temp[i] = PlayerResult{"P" + std::to_string(i + 1),
 		stack.tonumber(index++)};
 	} 
+
+	stack.clear();
+
+	return temp;
+}
+
+bool GameScript::game_over() 
+{
+	stack.getglobal("game");
+	stack.getfield(-1, "winner");
+
+	bool temp = stack.toboolean(-1);
 
 	stack.clear();
 

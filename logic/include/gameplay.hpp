@@ -28,11 +28,13 @@ namespace logic
 {
 
 using objects_array = std::array<objects, 100>;
+using trigger_array = std::array<int, 100>;
 	   
 struct Input
 {
 	std::chrono::milliseconds delta;
 	objects_array& dynamics;
+	const trigger_array& triggers;
 	const input* player_inputs; //4
 	//unnecessary junk:
 	std::array<glm::vec3, 4> directions;
@@ -45,6 +47,7 @@ struct Output
 {
 	std::array<glm::vec2, 4> velocities;
 	std::array<glm::vec3, 4> directions;
+	bool game_over;
 };
 
 

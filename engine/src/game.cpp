@@ -110,7 +110,7 @@ void Game::render()
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
-		db_coll);
+		db_coll, logic_out.game_over);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -201,7 +201,7 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 		
 		logic_out = gameplay.update(
-			{ delta, obj,
+			{ delta, obj, triggers,
 			player_inputs, directions,
 			&level, &physics , players_placed_objects_id },
 			player_results);
@@ -330,7 +330,7 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::connected);
 
 
-	physics.update(delta, dynamics);
+	physics.update(delta, dynamics, triggers);
 
 	pack_data();
 	net.update(net_state, str);

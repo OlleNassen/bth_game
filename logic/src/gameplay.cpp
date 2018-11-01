@@ -43,14 +43,14 @@ Output Gameplay::update(Input inputs,
 		auto& direction = inputs.directions[i];
 		directions[i] = { 0.0f, 0.0f, 0.0f };
 
-		if (in[button::up] >= button_state::pressed)
+		/*if (in[button::up] >= button_state::pressed)
 			directions[i].z += 1.0f;
 		if (in[button::left] >= button_state::pressed)
 			directions[i].x -= 1.0f;
 		if (in[button::down] >= button_state::pressed)
 			directions[i].z -= 1.0f;
 		if (in[button::right] >= button_state::pressed)
-			directions[i].x += 1.0f;
+			directions[i].x += 1.0f;*/
 	}
 		
 	std::array<glm::vec2, 4> velocities;
@@ -168,7 +168,7 @@ Output Gameplay::update(Input inputs,
 
 	velocities.fill(glm::vec2(0,0));
 	
-	return Output{ velocities, directions};
+	return Output{ velocities, directions, game_script.game_over()};
 }
 
 void Gameplay::give_up(Input input)

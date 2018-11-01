@@ -56,6 +56,7 @@ private:
 	network::GameState net_state;
 	network::Messenger net;
 
+	physics::trigger_array triggers;
 	physics::objects_array dynamics;
 	physics::World physics;	
 	std::chrono::milliseconds timestep{16};

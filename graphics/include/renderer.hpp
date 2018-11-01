@@ -18,6 +18,8 @@
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
 #include "minimap.hpp"
+#include "loading_screen.hpp"
+#include "death_screen.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -47,7 +49,8 @@ public:
 		const std::string* begin,
 		const std::string* end,
 		const std::array<std::string, 12>& buttons,
-		const std::vector<glm::vec3>& debug_positions) const;
+		const std::vector<glm::vec3>& debug_positions,
+		bool game_over) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -115,6 +118,12 @@ private:
 	Shader minimap_shader{ 
 		"../resources/shaders/minimap.vs",
 		"../resources/shaders/minimap.fs" };
+	Shader loading_screen_shader{
+		"../resources/shaders/loading_screen.vs",
+		"../resources/shaders/loading_screen.fs" };
+	Shader death_screen_shader{
+		"../resources/shaders/death_screen.vs",
+		"../resources/shaders/death_screen.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -148,6 +157,9 @@ private:
 
 	bool show_start{false};
 	Minimap minimap;
+
+	LoadingScreen loading_screen;
+	DeathScreen death_screen;
 
 	FX fx_emitter;
 

@@ -51,7 +51,8 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 
 void World::update(
 	std::chrono::milliseconds delta,
-	objects_array& dynamics)
+	objects_array& dynamics,
+	trigger_array& triggers)
 {
 	std::chrono::duration<float> delta_seconds = delta;	
 	
@@ -88,7 +89,25 @@ void World::update(
 		}
 	}
 
-	for (auto& left : bodies)
+	for (auto& t : triggers)
+		t = 0;
+
+
+	for (int i = 0; i < bodies.size(); ++i)
+	{
+		auto& left = bodies[i];
+		for (int j = 0; j < bodies.size(); ++j)
+		{
+			auto& right = bodies[j];
+			if (&left != &right && obb_obb(left.box, right.box))
+			{
+				triggers[i] = j;
+				triggers[i] = i;
+			}
+		}
+	}
+
+	/*for (auto& left : bodies)
 	{
 		for (auto& right : bodies)
 		{
@@ -107,7 +126,7 @@ void World::update(
 				}
 			}		
 		}
-	}
+	}*/
 	
 	int index = 0;
 	for (auto& body : bodies)
