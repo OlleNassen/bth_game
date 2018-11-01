@@ -18,6 +18,7 @@
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
 #include "minimap.hpp"
+#include "loading_screen.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -115,6 +116,9 @@ private:
 	Shader minimap_shader{ 
 		"../resources/shaders/minimap.vs",
 		"../resources/shaders/minimap.fs" };
+	Shader loading_screen_shader{
+		"../resources/shaders/loading_screen.vs",
+		"../resources/shaders/loading_screen.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -148,6 +152,8 @@ private:
 
 	bool show_start{false};
 	Minimap minimap;
+
+	LoadingScreen loading_screen;
 
 	FX fx_emitter;
 

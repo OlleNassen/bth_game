@@ -117,17 +117,28 @@ void Renderer::render(
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	post_proccessing.use();
-	post_proccessing.uniform("scene_texture", 0);
-	post_proccessing.uniform("depth_texture", 1);
-	post_proccessing.uniform("screen_warning", 2);
+	if (player_count > 1)
+	{
+		post_proccessing.use();
+		post_proccessing.uniform("scene_texture", 0);
+		post_proccessing.uniform("depth_texture", 1);
+		post_proccessing.uniform("screen_warning", 2);
 
-	scene_texture.bind_texture(0);
-	scene_texture.bind_texture(1);
-	post_processing_effects.texture.bind(2);
+		scene_texture.bind_texture(0);
+		scene_texture.bind_texture(1);
+		post_processing_effects.texture.bind(2);
 
-	post_proccessing.uniform("pulse", post_processing_effects.glow_value);
-	post_processing_effects.render();
+		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
+		post_processing_effects.render();
+	}
+	else
+	{
+		if (!is_menu)
+		{
+			loading_screen.render(loading_screen_shader);
+		}
+	}
+
 
 	{
 		glDisable(GL_DEPTH_TEST);
@@ -139,8 +150,6 @@ void Renderer::render(
 			ui.render();
 		}
 
-		//leaderboard
-		leaderboard.render(text_shader, text);
 
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
@@ -161,8 +170,15 @@ void Renderer::render(
 		for (auto i = 0u; i < buttons.size(); ++i)
 			text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
 
-		if (!is_menu)
-			minimap.render(minimap_shader);
+		if (player_count > 1)
+		{
+			//leaderboard
+			leaderboard.render(text_shader, text);
+			if (!is_menu)
+			{
+				minimap.render(minimap_shader);
+			}
+		}
 
 		glEnable(GL_DEPTH_TEST);
 	}
@@ -179,7 +195,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int new_game_state,
 	std::string scoreboard)
 {
-	player_count = num_players;
+	player_count = num_players + 1;
 	game_state = new_game_state;
 	bool is_chat_on = (game_state & state::chat);
 	
@@ -188,6 +204,13 @@ void Renderer::update(std::chrono::milliseconds delta,
 	time = data != log ? 0ms : time + delta;
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
+	loading_screen.timer += delta;
+
+	//Loading screen reset
+	if (loading_screen.timer > 4000ms)
+	{
+		loading_screen.timer = 0ms;
+	}
 
 	if (!is_chat_on)
 	{
