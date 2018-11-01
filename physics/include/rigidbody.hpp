@@ -8,7 +8,7 @@
 namespace physics
 {
 
-static constexpr glm::vec3 gravity{0.0f, -9.82f, 0.0f};
+static constexpr glm::vec3 gravity{0.0f, -29.5f, 0.0f};
 
 class Rigidbody
 {
@@ -24,9 +24,9 @@ public:
 	glm::vec3 position;
 	glm::vec3 velocity;
 	glm::vec3 forces;
-	float mass = 1.0f;
+	float mass = 2.0f;
 	float restitution = 0.5f;
-	float friction = 0.6f;
+	float friction = 0.55f;
 
 	OBB box;
 };
