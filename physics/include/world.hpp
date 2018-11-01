@@ -38,6 +38,8 @@ public:
 };
 
 using objects_array = std::array<objects, 100>;
+using trigger_array = std::array<int, 100>;
+
 
 
 class World
@@ -60,7 +62,8 @@ public:
 
 	void update(
 		std::chrono::milliseconds delta,
-		objects_array& dynamics);
+		objects_array& dynamics,
+		trigger_array& triggers);
 
 	std::vector<glm::vec2> get_forces() const;
 	bool intersects(const int box_id, const int target_box_id);

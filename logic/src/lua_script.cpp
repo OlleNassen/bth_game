@@ -142,7 +142,9 @@ void GameScript::setup()
 	stack.clear();
 }
 
-void GameScript::update(std::chrono::milliseconds delta,
+void GameScript::update(
+	std::chrono::milliseconds delta,
+	const trigger_array& triggers,
 	objects* players)
 {
 
@@ -163,6 +165,28 @@ void GameScript::update(std::chrono::milliseconds delta,
 			stack.rawset(top_pos);
 		}
 
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+			
+			for (int j = 0; j < triggers.size(); ++j)
+			{
+				if (triggers[i] == j)
+				{
+					stack.push("triggered");
+					stack.push(j);
+					stack.rawset(top_pos);
+				}
+			}
+		}
 		stack.clear();
 	}
 

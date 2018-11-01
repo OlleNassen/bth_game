@@ -166,7 +166,7 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 		
 		logic_out = gameplay.update(
-			{ delta, obj,
+			{ delta, obj, triggers,
 			player_inputs, directions,
 			&level, &physics },
 			player_results);
@@ -272,7 +272,7 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::connected);
 
 
-	physics.update(delta, dynamics);
+	physics.update(delta, dynamics, triggers);
 
 	pack_data();
 	net.update(net_state, str);
