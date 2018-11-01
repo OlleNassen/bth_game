@@ -119,17 +119,22 @@ void Renderer::render(
 
 	if (player_count > 1)
 	{
-		post_proccessing.use();
-		post_proccessing.uniform("scene_texture", 0);
-		post_proccessing.uniform("depth_texture", 1);
-		post_proccessing.uniform("screen_warning", 2);
+		if (!is_menu)
+		{
+			post_proccessing.use();
+			post_proccessing.uniform("scene_texture", 0);
+			post_proccessing.uniform("depth_texture", 1);
+			post_proccessing.uniform("screen_warning", 2);
 
-		scene_texture.bind_texture(0);
-		scene_texture.bind_texture(1);
-		post_processing_effects.texture.bind(2);
+			scene_texture.bind_texture(0);
+			scene_texture.bind_texture(1);
+			post_processing_effects.texture.bind(2);
 
-		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
-		post_processing_effects.render();
+			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
+			post_processing_effects.render();
+
+			death_screen.render(death_screen_shader);
+		}
 	}
 	else
 	{
@@ -205,11 +210,16 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
 	loading_screen.timer += delta;
+	death_screen.timer += delta;
 
 	//Loading screen reset
 	if (loading_screen.timer > 4000ms)
 	{
 		loading_screen.timer = 0ms;
+	}
+	if (death_screen.timer > 1000ms)
+	{
+		death_screen.timer = 0ms;
 	}
 
 	if (!is_chat_on)

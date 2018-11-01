@@ -19,6 +19,7 @@
 #include "skybox.hpp"
 #include "minimap.hpp"
 #include "loading_screen.hpp"
+#include "death_screen.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -119,6 +120,9 @@ private:
 	Shader loading_screen_shader{
 		"../resources/shaders/loading_screen.vs",
 		"../resources/shaders/loading_screen.fs" };
+	Shader death_screen_shader{
+		"../resources/shaders/death_screen.vs",
+		"../resources/shaders/death_screen.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -154,6 +158,7 @@ private:
 	Minimap minimap;
 
 	LoadingScreen loading_screen;
+	DeathScreen death_screen;
 
 	FX fx_emitter;
 
