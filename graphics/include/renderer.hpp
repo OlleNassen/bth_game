@@ -115,6 +115,9 @@ private:
 	Shader minimap_shader{ 
 		"../resources/shaders/minimap.vs",
 		"../resources/shaders/minimap.fs" };
+	Shader loading_screen_shader{
+		"../resources/shaders/loading_screen.vs",
+		"../resources/shaders/loading_screen.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;

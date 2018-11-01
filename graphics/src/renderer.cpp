@@ -165,6 +165,7 @@ void Renderer::render(
 			minimap.render(minimap_shader);
 
 
+
 		glEnable(GL_DEPTH_TEST);
 	}
 
