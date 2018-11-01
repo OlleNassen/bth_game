@@ -8,8 +8,15 @@ layout (location = 4) in float rotation;
 
 out vec2 vs_color;
 
+uniform bool is_arrow;
+uniform mat4 rotation_matrix;
+
 void main()
 {
     vs_color = color;
 	gl_Position = vec4(vertex_position * scale + position, 0.0, 1.0);
+
+	if(is_arrow)
+		gl_Position = rotation_matrix * vec4(vertex_position * scale + position, 0.0, 1.0);
+
 }

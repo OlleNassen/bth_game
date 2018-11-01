@@ -135,7 +135,7 @@ void Renderer::render(
 		gui.use();
 		if (is_chat_visible)
 		{
-			ui.render();
+			ui.render(gui);
 		}
 
 		text_shader.use();

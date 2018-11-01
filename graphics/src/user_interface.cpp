@@ -28,8 +28,10 @@ void UserInterface::update(const std::vector<Model> &models, int players)
 	player_arrows.update(models, players, elements);
 }
 
-void UserInterface::render()const
+void UserInterface::render(const Shader& shader)const
 {
+	shader.uniform("")
+
 	glBindVertexArray(vao);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
@@ -87,9 +89,17 @@ void UserInterface::rebind_buffers()
 	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement), (void*)(sizeof(glm::vec2) * 2));
 }
 
+void UserInterface::render_arrows()const
+{
+	//elements.at(0) = glm::vec2(2.0f, 2.0f);
+	render();
+}
+
 PlayerArrows::PlayerArrows()
 {
 	visible.fill(true);
+	arrow_matrix = glm::mat4(1.0f);
+
 }
 
 void PlayerArrows::update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements)
@@ -111,19 +121,22 @@ void PlayerArrows::update(const std::vector<Model> &models, int players, std::ar
 				else 
 					elements.at(i + 2).position.x = -0.9f;
 				if(player_positions[i].y - player_positions[0].y > 0)*/
-				elements.at(i + 2).position = glm::vec2(0, 0); //test
 
+				elements.at(i + 2).position = glm::vec2(0, 0); //test
+				arrow_matrix = glm::mat4(1.0f);
+				arrow_matrix = glm::rotate(arrow_matrix, elements.at(i + 2).rotation, glm::vec3(0.0, 0.0, 1.0));
 			}
 			else
 			{
+				
 				visible[i] = true;
-				elements.at(i + 2).position = glm::vec2(2, 2);
+				elements.at(i + 2).position = glm::vec2(2.0f, 2.0f);
 			}
 		}
 	}
 }
 
-void PlayerArrows::render(int player_count) const
+void PlayerArrows::render() const
 {
 	//beräkna vektor mellan spelarna
 	//beräkna matrix för position, rotation, scale
