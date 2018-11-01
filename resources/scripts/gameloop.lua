@@ -5,6 +5,7 @@ function setup(game)
 	game.scores = { 0, 0, 0, 0 }
 	game.finished = { false, false, false, false }
 	game.clock = 0.0
+	game.winner = -1
 end
 
 function update(delta_seconds, game, entities)

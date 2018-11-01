@@ -164,7 +164,6 @@ void Renderer::render(
 		if (!is_menu)
 			minimap.render(minimap_shader);
 
-
 		glEnable(GL_DEPTH_TEST);
 	}
 
