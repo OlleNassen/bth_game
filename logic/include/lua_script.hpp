@@ -36,7 +36,8 @@ public:
 		std::chrono::milliseconds delta, 
 		objects& object, 
 		const input& i, 
-		int index);
+		int index,
+		anim& anim_state);
 private:
 	LuaStack stack;
 };

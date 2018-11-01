@@ -52,7 +52,7 @@ Output Gameplay::update(Input inputs)
 			inputs.delta, 
 			inputs.dynamics[i], 
 			inputs.player_inputs[i], 
-			i);
+			i, inputs.anim_states[i]);
 	}
 
 	game_script.update(inputs.delta, &inputs.dynamics[0]);
