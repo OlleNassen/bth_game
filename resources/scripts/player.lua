@@ -23,7 +23,7 @@ function update(delta_seconds, entity)
 		then
 			entity.anim.current = entity.anim.start_jump
 		end
-		if entity.velocity.y > 0.1
+		if entity.velocity.y < -0.4
 		then 
 			entity.anim.current = entity.anim.falling
 		end
@@ -44,6 +44,10 @@ function update(delta_seconds, entity)
 		if entity.button.jump
 		then
 			entity.anim.current = entity.anim.start_jump
+		end
+		if entity.velocity.y < -0.4
+		then 
+			entity.anim.current = entity.anim.falling
 		end
 	end
 
@@ -92,23 +96,23 @@ function update(delta_seconds, entity)
 		end
 	end
 
-		if entity.anim.current == entity.anim.connect_wall
-	then
-		if entity.button.jump and entity.button.right and entity.can_walljump
-		then
-			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 18
-			entity.impulse.x = -8
-			entity.can_walljump = false
-		end
-		if entity.button.jump and entity.button.left and entity.can_walljump
-		then
-			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 18
-			entity.impulse.x = 8
-			entity.can_walljump = false
-		end
-	end
+		--if entity.anim.current == entity.anim.connect_wall
+		--then
+		--if entity.button.jump and entity.button.right and entity.can_walljump
+		--then
+		--	entity.anim.current = entity.anim.jump_from_wall
+		--	entity.impulse.y = 18
+		--	entity.impulse.x = -8
+		--	entity.can_walljump = false
+		--end
+		--if entity.button.jump and entity.button.left and entity.can_walljump
+		--then
+		--	entity.anim.current = entity.anim.jump_from_wall
+		--	entity.impulse.y = 18
+		--	entity.impulse.x = 8
+		--	entity.can_walljump = false
+		--end
+		--end
 
 	--if entity.anim.current == entity.anim.jump_from_wall
 	--then

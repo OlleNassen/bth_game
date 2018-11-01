@@ -353,6 +353,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.01f;
 		else if (state == anim::turning)
 			time = 0.1f;
+		else if (state == anim::falling)
+			time = 0.1;
 	}
 	else if (current_state == anim::running)
 	{
@@ -366,6 +368,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.002f;
 		else if (state == anim::sliding)
 			time = 0.2;
+		else if (state == anim::falling)
+			time = 0.1;
 	}
 	else if (current_state == anim::start_jump)
 	{
