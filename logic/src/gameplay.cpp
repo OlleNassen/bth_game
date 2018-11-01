@@ -51,6 +51,8 @@ Output Gameplay::update(Input inputs,
 		
 	std::array<glm::vec2, 4> velocities;
 	
+
+
 	for (int i=0; i < 4; i++)
 	{
 		player_script.update(
@@ -58,14 +60,16 @@ Output Gameplay::update(Input inputs,
 			inputs.dynamics[i], 
 			inputs.player_inputs[i], 
 			i);
-		
+
+		int d_id = inputs.players_placed_objects_id[i].dynamics_id;
+
 		placement_script.update(
 			inputs.delta,
-			inputs.dynamics[4],
+			inputs.dynamics[d_id],
 			inputs.player_inputs[i],
 			i);
-			
 	}
+
 
 	//game_script.update(inputs.delta, &inputs.dynamics[0]);
 	  

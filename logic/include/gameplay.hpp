@@ -18,6 +18,12 @@
 //	bool trigger;
 //};
 
+struct id_and_model_place
+{
+	int dynamics_id = 0;
+	int model_id = 0;
+};
+
 namespace logic
 {
 
@@ -32,6 +38,7 @@ struct Input
 	std::array<glm::vec3, 4> directions;
 	graphics::GameScene* scene;
 	physics::World* physics;
+	std::array<id_and_model_place, 4> players_placed_objects_id;
 };
 
 struct Output
