@@ -3,12 +3,12 @@
 namespace graphics
 {
 	DeathScreen::DeathScreen()
-		:death_1("../resources/textures/death_1.png")
-		,death_2("../resources/textures/death_2.png")
-		,death_3("../resources/textures/death_3.png")
-		,death_4("../resources/textures/death_4.png")
-		,death_5("../resources/textures/death_5.png")
-		,death_6("../resources/textures/death_6.png")
+		:death_1("../resources/textures/death_screen/death_1.png")
+		,death_2("../resources/textures/death_screen/death_2.png")
+		,death_3("../resources/textures/death_screen/death_3.png")
+		,death_4("../resources/textures/death_screen/death_4.png")
+		,death_5("../resources/textures/death_screen/death_5.png")
+		,death_6("../resources/textures/death_screen/death_6.png")
 
 	{
 		glGenVertexArrays(1, &vao_id);
