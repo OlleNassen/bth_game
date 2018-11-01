@@ -1,5 +1,8 @@
 #include "animation_handler.hpp"
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+
 Animation_handler::Animation_handler()
 {
 	this->animations.clear();
