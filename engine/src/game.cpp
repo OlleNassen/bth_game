@@ -262,6 +262,8 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
+	level.models[7].set_position(dynamics[7].position);
+
 	if (menu.on())
 		game_state = (game_state | state::menu);
 
