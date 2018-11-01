@@ -18,6 +18,7 @@
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
 #include "minimap.hpp"
+#include "loading_screen.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -151,6 +152,8 @@ private:
 
 	bool show_start{false};
 	Minimap minimap;
+
+	LoadingScreen loading_screen;
 
 	FX fx_emitter;
 
