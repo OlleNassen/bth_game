@@ -23,7 +23,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 	v[2] = { 3, 0 };
 	v[3] = { -9, 0 };
 
-	models.emplace_back(glm::translate(model, vec3{ v[0], 0 }), vec3{ 0.9f, 0.2f, 0.1f}, mesh_lib->get_mesh(0));
+	models.emplace_back(glm::translate(model, vec3{ v[0], 0 }), vec3{ 1.0f, 0.0f, 0.0f}, mesh_lib->get_mesh(0));
 	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }), vec3{ 0.2f, 0.9f, 0.1f}, mesh_lib->get_mesh(0));
 	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }), vec3{ 0.1f, 0.1f, 0.9f}, mesh_lib->get_mesh(0));
 	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }), vec3{ 0.9f, 0.8f, 0.1f}, mesh_lib->get_mesh(0));

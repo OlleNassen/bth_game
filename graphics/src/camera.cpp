@@ -51,7 +51,7 @@ void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::
 	}
 	else
 	{
-		forward = glm::mix(forward, vec3{ 0.0f, 0.0f, -1.0f }, delta_seconds.count() /* 0.01f*/);
+		forward = glm::mix(forward, vec3{ 0.0f, 0.0f, -1.0f }, delta_seconds.count() * 0.5f);
 	}
 
 	forward = glm::normalize(forward);
