@@ -23,7 +23,7 @@ function update(delta_seconds, entity)
 	if entity.button.jump and entity.jump_timer < 0
 	then
 		entity.jump_timer = 1.0
-		entity.impulse.y = 90
+		entity.impulse.y = 45
 	end
 
 
