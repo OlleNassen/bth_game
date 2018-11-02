@@ -108,6 +108,21 @@ void PlayerScript::update(
 	}	
 }
 
+bool PlayerScript::build_stage_done(int index)
+{
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	stack.getfield(-1, "done");
+
+	bool temp = stack.toboolean(-1);
+
+	stack.clear();
+
+	return temp;
+}
+
+
+
 GameScript::GameScript()
 	: stack{ "../resources/scripts/gameloop.lua" }
 {

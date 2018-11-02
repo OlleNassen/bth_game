@@ -118,7 +118,25 @@ void Game::update(std::chrono::milliseconds delta)
 
 	int game_state = 0;	
 
-	game_state = state::building;
+	if (menu.on())
+		game_state = (game_state | state::menu);
+
+	if (chat.is_on())
+		game_state = (game_state | state::chat);
+
+	if (net.connected())
+		game_state = (game_state | state::connected);
+
+	if (gameplay.build_stage())
+	{
+		game_state = (game_state | state::building);
+	}
+	else
+	{
+		game_state = (game_state | state::playing);
+	}
+		
+	
 
 	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
 	{
@@ -300,14 +318,7 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
-	if (menu.on())
-		game_state = (game_state | state::menu);
 
-	if (chat.is_on())
-		game_state = (game_state | state::chat);
-
-	if (net.connected())
-		game_state = (game_state | state::connected);
 
 
 	physics.update(delta, dynamics, triggers);

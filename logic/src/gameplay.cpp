@@ -37,10 +37,22 @@ void Gameplay::refresh()
 
 Output Gameplay::update(Input inputs,
 	std::array<logic::PlayerResult, 4>& player_results,
-	int current_state)
+	int& current_state)
 {
+
 	if (current_state & state::building)
 	{
+		players_done = 0;
+		for (int i = 0; i < 4; i++)
+		{
+			int d_id = inputs.players_placed_objects_id[i].dynamics_id;
+
+			if (placement_script.build_stage_done(d_id))
+			{
+				++players_done;
+			}
+		}
+		
 		for (int i = 0; i < 4; i++)
 		{
 			int d_id = inputs.players_placed_objects_id[i].dynamics_id;
@@ -50,8 +62,8 @@ Output Gameplay::update(Input inputs,
 				inputs.dynamics[d_id],
 				inputs.player_inputs[i],
 				d_id);
-		}
-
+		}		
+		
 	}
 
 	else if (current_state & state::playing)
@@ -75,6 +87,11 @@ Output Gameplay::update(Input inputs,
 
 	
 	return Output{game_script.game_over()};
+}
+
+bool Gameplay::build_stage() const
+{
+	return players_done != 4;
 }
 
 void Gameplay::give_up(Input input)
