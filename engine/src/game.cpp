@@ -312,8 +312,13 @@ void Game::update(std::chrono::milliseconds delta)
 				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 			}
 			*/
-			level.v[i] = dynamics[i].position;
-			level.models[i].set_position(dynamics[i].position);
+			glm::vec2 pos
+			{
+				dynamics[i].position.x,
+				dynamics[i].position.y - dynamics[i].size.y - 0.5f
+			};
+			level.v[i] = pos;
+			level.models[i].set_position(pos);
 
 		}
 	}
@@ -426,7 +431,7 @@ void Game::place_random_objects(float start_height, float map_width, int number_
 	int totalX = 5;
 	int totalY = 3;
 
-	int width = map_width / 6;
+	int width = static_cast<int>(map_width / 6.0f);
 
 	startPosition = { width * 2, map_width };
 
