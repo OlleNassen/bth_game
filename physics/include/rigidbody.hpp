@@ -25,8 +25,8 @@ public:
 	glm::vec3 velocity;
 	glm::vec3 forces;
 	float mass = 1000.0f;
-	float restitution = 0.4f;
-	float friction = 0.6f;
+	float restitution = 0.45f;
+	float friction = 0.65f;
 
 	OBB box;
 };

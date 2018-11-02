@@ -4,8 +4,8 @@ function setup(entity)
 	entity.can_jump = true
 	entity.can_walljump = true
 	entity.can_move = true -- instead of playable
-	entity.maxSpeed = 6500
-	entity.acceleration = 5000
+	entity.maxSpeed = 7000
+	entity.acceleration = 5500
 end
 
 function update(delta_seconds, entity)
@@ -58,17 +58,17 @@ function update(delta_seconds, entity)
 	then
 		if entity.can_jump
 		then
-			entity.impulse.y = 40
+			entity.impulse.y = 41
 			entity.can_jump = false
 		end
 		if entity.button.right 
 		then
-			entity.forces.x = 8000/3--entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)
+			entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)
 			--entity.forces.x = 2000
 		end
 		if entity.button.left
 		then
-			entity.forces.x = -8000/3--entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds)
+			entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds)
 			--entity.forces.x = -2000
 		end
 		if entity.velocity.y < -0.4
@@ -82,8 +82,6 @@ function update(delta_seconds, entity)
 		entity.can_jump = true
 		entity.can_walljump = true
 	end
-
-
 	
 	if entity.anim.current == entity.anim.falling
 	then
@@ -111,8 +109,8 @@ function update(delta_seconds, entity)
 		if entity.button.jump and entity.button.left and entity.can_walljump
 		then
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 18
-			entity.impulse.x = 8
+			entity.impulse.y =  18
+			entity.impulse.x =  8
 			entity.can_walljump = false
 		end
 	end
@@ -134,12 +132,6 @@ function update(delta_seconds, entity)
 			entity.can_walljump = false
 		end
 	end
-	--[[if entity.button.jump and entity.jump_timer < 0
-	then
-		entity.jump_timer = 1.0
-		entity.impulse.y = 40
-	end]]--
-
 
 	--Cap the velocity/entity.forces.x
 	if entity.forces.x > entity.maxSpeed
