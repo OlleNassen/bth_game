@@ -49,6 +49,7 @@ public:
 	Texture dust;
 	Texture spark;
 	Texture steam;
+	Texture blitz;
 
 	
 	unsigned int randomizer = 0;
@@ -60,10 +61,12 @@ public:
 	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_spark_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_steam_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_blitz_data(std::chrono::milliseconds delta, const Camera& camera);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
 	FXdata* fx_steam_ptr = new FXdata{};
+	FXdata* fx_blitz_ptr = new FXdata{};
 
 private:
 	void render_particles(const FXdata& data) const;

@@ -68,7 +68,7 @@ void Renderer::render(
 		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, db_camera);
 
 		glDisable(GL_DEPTH_TEST);
 		if (debug_active)
@@ -101,7 +101,7 @@ void Renderer::render(
 		skybox_shader.use();
 		skybox.render(skybox_shader, db_camera);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, db_camera);
 
 		if (debug_active)
 		{
