@@ -330,10 +330,15 @@ void Game::update(std::chrono::milliseconds delta)
 					if (level.models[i].get_state() != anim::hanging_right && level.models[i].get_state() != anim::hanging_left && level.models[i].get_state() != anim::turning && level.models[i].get_state() != anim::connect_wall  && level.models[i].get_state() != anim::jump_from_wall)
 						level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 				}
-					
 
-				level.v[i] = dynamics[i].position;
-				level.models[i].set_position(dynamics[i].position);
+				glm::vec2 pos
+				{
+					dynamics[i].position.x,
+					dynamics[i].position.y - dynamics[i].size.y - 0.5f
+				};
+					
+				level.v[i] = pos;
+				level.models[i].set_position(pos);
 		}
 	}
 

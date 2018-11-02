@@ -11,22 +11,22 @@ Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh
 {
 }
 
-void Model::create_animation_data(const std::string & file_path, MODEL_STATE enm)
+void Model::create_animation_data(const std::string & file_path, anim enm)
 {
 	this->animation_handler.create_animation_data(file_path, enm);
 	is_animated = true;
 }
-MODEL_STATE Model::get_state()
+anim Model::get_state()
 {
 	return this->animation_handler.current_state;
 }
-bool Model::get_animation_done(MODEL_STATE state)
+bool Model::get_animation_done(anim state)
 {
 	return this->animation_handler.get_animation_finished(state);
 }
-void Model::switch_animation(MODEL_STATE enm, float switch_time)
+void Model::switch_animation(anim enm)
 {
-	this->animation_handler.switch_animation(enm, switch_time);
+	this->animation_handler.switch_animation(enm);
 }
 
 void Model::move(glm::vec2 offset)

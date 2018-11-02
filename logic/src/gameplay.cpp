@@ -61,7 +61,7 @@ Output Gameplay::update(Input inputs,
 				inputs.delta,
 				inputs.dynamics[d_id],
 				inputs.player_inputs[i],
-				d_id);
+				d_id, inputs.anim_states[i]);
 		}		
 		
 	}
@@ -74,7 +74,7 @@ Output Gameplay::update(Input inputs,
 				inputs.delta,
 				inputs.dynamics[i],
 				inputs.player_inputs[i],
-				i);
+				i, inputs.anim_states[i]);
 		}
 		game_script.update(inputs.delta, inputs.triggers, &inputs.dynamics[0]);
 	}
