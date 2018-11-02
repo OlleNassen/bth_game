@@ -334,7 +334,7 @@ void Game::update(std::chrono::milliseconds delta)
 				glm::vec2 pos
 				{
 					dynamics[i].position.x,
-					dynamics[i].position.y - dynamics[i].size.y - 0.5f
+					dynamics[i].position.y - dynamics[i].size.y
 				};
 					
 				level.v[i] = pos;
