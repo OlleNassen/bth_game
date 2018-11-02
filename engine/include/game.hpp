@@ -75,6 +75,9 @@ private:
 	std::array <id_and_model_place, 4> players_placed_objects_id;
 	bool buildmode = true;
 	bool give_players_objects = false;
+
+	//Random placed objects
+	std::array <id_and_model_place, 4> random_placed_objects_id;
 };
 
 

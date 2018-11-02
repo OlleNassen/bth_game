@@ -75,7 +75,7 @@ Game::Game()
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
 
-	//place_random_objects(20, 20, 9);
+	//place_random_objects(0, 20, 9); //For random placing object
 }
 
 void Game::run()
@@ -429,29 +429,22 @@ void Game::place_random_objects(float start_height, float map_width, int number_
 		}
 	}
 
-	/*for (int i = 0; i < number_of_randoms; i++)
-	{
-		int model_id = level.add_object(data, 6);
-		data.position += positions[rand_numb[i]];
-		int physics_id = physics.add_dynamic_body(data.position, glm::vec2(0.0, 0.0), data.width, data.height, { 0,0 });
-		physics.dynamic_positions[physics_id] = positions[rand_numb[i]];
-		level.models[model_id].set_position({ positions[rand_numb[i]].x + (data.width / 2), positions[rand_numb[i]].y });
-		std::cout << positions[rand_numb[i]].x << " : " << positions[rand_numb[i]].y << std::endl;
-	}*/
-
 	for (int i = 99; i > 99 - number_of_randoms; i--)
 	{
+		collision_data data;
 		int model_id = level.add_object(data, 6);
-		data.position += positions[rand_numb[abs(i - 99)]];
-		int physics_id = physics.add_dynamic_body(data.position, glm::vec2(0.0, 0.0), data.width, data.height, { 0,0 });
-		physics.dynamic_positions[physics_id] = positions[rand_numb[abs(i - 99)]];
+		data.position = positions[rand_numb[abs(i - 99)]];
+		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 });
 
-		level.models[model_id].set_position({ positions[rand_numb[abs(i - 99)]].x + (data.width / 2), positions[rand_numb[abs(i - 99)]].y });
+		dynamics[dynamic_id].position = positions[rand_numb[abs(i - 99)]];
+		dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
+		dynamics[dynamic_id].size = { data.width, data.height };
+		dynamics[dynamic_id].forces = { 0.0f, 0.0f };
+		dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
 
-		dynamics[i].position = positions[rand_numb[abs(i - 99)]];
-		dynamics[i].velocity = { 0.0f, 0.0f };
-		dynamics[i].size = { data.width, data.height };
-		dynamics[i].forces = { 0.0f, 0.0f };
-		dynamics[i].impulse = { 0.0f, 0.0f };
+
+		level.models[model_id].set_position(dynamics[dynamic_id].position);
+
 	}
+
 }
