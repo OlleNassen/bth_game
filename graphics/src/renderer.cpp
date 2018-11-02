@@ -243,7 +243,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (scene->build_mode_active)
 	{
-		glm::vec2 build_pos[2];
+		//glm::vec2 build_pos[2];
 
 		//game_camera.update(delta, &scene->v[scene->placing_object_id], &scene->v[scene->placing_object_id + 1]);
 	}

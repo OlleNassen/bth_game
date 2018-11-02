@@ -1,5 +1,6 @@
 #include "gameplay.hpp"
 #include <time.h>
+#include <flags.hpp>
 
 namespace logic
 {
@@ -66,13 +67,16 @@ Output Gameplay::update(Input inputs,
 			i);
 
 		//For build mode
-		int d_id = inputs.players_placed_objects_id[i].dynamics_id;
+		/*if (game_state & state::building)
+		{
+			int d_id = inputs.players_placed_objects_id[i].dynamics_id;
 
-		placement_script.update(
-		inputs.delta,
-		inputs.dynamics[d_id],
-		inputs.player_inputs[i],
-		d_id);
+			placement_script.update(
+				inputs.delta,
+				inputs.dynamics[d_id],
+				inputs.player_inputs[i],
+				d_id);
+		}*/
 	}
 
 	//Give up \Vincent
