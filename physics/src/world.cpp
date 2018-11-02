@@ -205,7 +205,7 @@ void World::update(
 				if (point_in_obb(points[0], walls.box) /*|| point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box)*/)
 				{
 					anim_states[i] = anim::landing;
-					//stop = true;
+					stop = true;
 				}
 			}
 
@@ -214,7 +214,7 @@ void World::update(
 			//std::cout << i << "   " << points[0].x << std::endl;
 			if (points[0].x > 19.3f || points[0].x < -19.3f)
 			{
-				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump)
+				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump/* || anim_states[i] == anim::idle || anim_states[i] == anim::running*/)
 				{
 
 					for (auto& walls : statics)
