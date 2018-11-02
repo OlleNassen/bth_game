@@ -16,7 +16,7 @@ public:
 	Animation_handler();
 	~Animation_handler();
 
-	MODEL_STATE current_state;
+	anim current_state;
 	int current_keyframe;
 	//std::vector<Animation_logic> logic;
 
@@ -24,20 +24,16 @@ public:
 	glm::quat calc_interpolated_quaternion(float time, int index);
 	glm::vec3 calc_interpolated_rotation(float time, int index);
 	glm::vec3 calc_interpolated_scale(float time, int index);
-
-	glm::vec3 calc_switching_translation(float time, int index);
-	glm::quat calc_switching_quaternion(float time, int index);
-	glm::vec3 calc_switching_scale(float time, int index);
-
-	unsigned int find_switching_keyframe(float time, int index);
 	unsigned int find_current_keyframe(float time, int index);
 	void update_keyframe_transform(float time, int index);
 	void get_parent_transform();
 	void update_bone_mat_vector();
 
-	bool switch_animation(MODEL_STATE state, float interpolation_time);
+	//bool switch_animation(MODEL_STATE state, float interpolation_time);
+	bool switch_animation(anim state);
+	float animation_logic(anim state);
 
-	void update_animation(float delta);
+	bool update_animation(float delta, anim& play_anim);
 	void get_time(float delta);
 
 	void fixInverseBindPoses();
@@ -45,14 +41,14 @@ public:
 	glm::mat4 mat_to_GLM(float mat[4][4]);
 	void set_local_matrix(glm::mat4 mat, int index);
 
-	void create_animation_data(const std::string & file_path, MODEL_STATE enm);
+	void create_animation_data(const std::string & file_path, anim enm);
 	glm::mat4 getMatrices(int index);
 
 	std::vector<Animation*> animations;
 	std::vector<glm::mat4> bone_mat_vector, switch_bone_mat_vector, link_matricies, offset_matrices, parent_transforms;
 	std::vector<glm::vec3> switch_translations, switch_scales;
 	std::vector<glm::quat> switch_quat;
-	std::vector<MODEL_STATE> animation_states;
+	std::vector<anim> animation_states;
 	std::vector<Joint> joints;
 	int current_animation;
 	int previous_animation;
@@ -61,7 +57,7 @@ public:
 	float switch_time, time_at_switch;
 	std::vector<std::vector<glm::mat4>> animation_offset, animation_link;
 
-	bool get_animation_finished(MODEL_STATE state);
-	MODEL_STATE get_state();
+	bool get_animation_finished(anim state);
+	anim get_state();
 };
 #endif 

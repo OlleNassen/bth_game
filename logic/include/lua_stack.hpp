@@ -2,6 +2,7 @@
 #define LUA_STACK_HPP
 
 #include <glm/glm.hpp>
+#include <flags.hpp>
 #include "input.hpp"
 
 struct lua_State;
@@ -9,8 +10,6 @@ typedef int(*lua_CFunction)(lua_State *L);
 
 namespace logic
 {
-
-
 
 class LuaStack
 {
@@ -54,6 +53,7 @@ public:
 	void push(const glm::vec4& value);
 
 	void push(const input& value);
+	void push(const anim& value);
 
 	void pop();
 	void clear();
@@ -62,6 +62,7 @@ public:
 
 	lua_State* lua_state;
 private:
+	
 };
 
 

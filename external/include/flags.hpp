@@ -13,6 +13,23 @@ enum state : int
 	playing = 1 << 7
 };
 
+enum class anim 
+{
+	start_jump,
+	in_jump,
+	falling,
+	landing,
+	hanging_wall,
+	connect_wall,
+	jump_from_wall,
+	idle,
+	running,
+	turning,
+	sliding,
+	hanging_left,
+	hanging_right
+};
+
 
 
 #endif

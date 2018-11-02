@@ -9,6 +9,8 @@
 #include <array>
 #include <vector>
 
+#include <flags.hpp>
+
 #include "rigidbody_old.hpp"
 #include "rigidbody.hpp"
 #include "geometry3d.hpp"
@@ -63,7 +65,8 @@ public:
 	void update(
 		std::chrono::milliseconds delta,
 		objects_array& dynamics,
-		trigger_array& triggers);
+		trigger_array& triggers,
+		std::array<anim, 4>& anim_states);
 
 	std::vector<glm::vec2> get_forces() const;
 	bool intersects(const int box_id, const int target_box_id);
@@ -71,6 +74,10 @@ public:
 	std::vector<glm::vec3> get_all_debug()const;
 
 	void rotate_static_box(int id);
+
+	bool rw[4];
+	bool lw[4];
+
 
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);

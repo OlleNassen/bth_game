@@ -35,6 +35,7 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+
 };
 
 class PlayerScript
@@ -47,7 +48,9 @@ public:
 		std::chrono::milliseconds delta, 
 		objects& object, 
 		const input& i, 
-		int index);
+		int index,
+		anim& anim_state);
+		bool rw[4], lw[4];
 
 	bool build_stage_done(int index);
 

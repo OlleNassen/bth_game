@@ -54,7 +54,8 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 void World::update(
 	std::chrono::milliseconds delta,
 	objects_array& dynamics,
-	trigger_array& triggers)
+	trigger_array& triggers,
+	std::array<anim, 4>& anim_states)
 {
 	std::chrono::duration<float> delta_seconds = delta;	
 	
@@ -181,8 +182,78 @@ void World::update(
 		dynamics[i].position = { bodies[i].position.x, bodies[i].position.y };
 		dynamics[i].velocity = { bodies[i].velocity.x, bodies[i].velocity.y };
 		dynamics[i].size = { bodies[i].box.size.x, bodies[i].box.size.y };
-		dynamics[i].forces = { 0.0f, 0.0f };
+		dynamics[i].forces = {0.0f, 0.0f};
 		dynamics[i].impulse = {0.0f, 0.0f};
+	}
+
+	
+	for (int i = 0; i < 4; ++i)
+	{
+		bool stop = false;
+		rw[i] = false;
+		lw[i] = false;
+		Point points[5]
+		{
+			bodies[i].box.position,
+			bodies[i].box.position,
+			bodies[i].box.position,
+			bodies[i].box.position,
+			bodies[i].box.position
+		};
+
+		points[0].y -= bodies[i].box.size.y * 1.01f;
+		points[1].x -= bodies[i].box.size.x * 1.01f;
+		points[2].x += bodies[i].box.size.x * 1.01f;
+
+		points[3].y -= bodies[i].box.size.y * 1.01f;
+		points[3].x += bodies[i].box.size.x * 0.95f;
+											  
+		points[4].y -= bodies[i].box.size.y * 1.01f;
+		points[4].x -= bodies[i].box.size.x * 0.95f;
+		
+		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || anim_states[i] == anim::hanging_right)
+			for (auto& walls : statics)
+			{
+				if (point_in_obb(points[0], walls.box) /*|| point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box)*/)
+				{
+					anim_states[i] = anim::landing;
+					//stop = true;
+				}
+			}
+
+		if (!stop)
+		{
+			//std::cout << i << "   " << points[0].x << std::endl;
+			if (points[0].x > 19.3f || points[0].x < -19.3f)
+			{
+				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump)
+				{
+
+					for (auto& walls : statics)
+					{
+						if (point_in_obb(points[1], walls.box))
+						{
+							anim_states[i] = anim::hanging_left;
+							lw[i] = true;
+						}
+
+					}
+
+					for (auto& walls : statics)
+					{
+						if (point_in_obb(points[2], walls.box))
+						{
+							anim_states[i] = anim::hanging_right;
+   							rw[i] = true;
+						}
+	
+					}
+				}
+			}
+			//if (anim_states[i] == anim::hanging_wall && rw[i] == false && lw[i] == false)
+			//	anim_states[i] = anim::falling;
+
+		}
 	}
 }
 

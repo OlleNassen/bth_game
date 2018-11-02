@@ -44,6 +44,9 @@ void main()
 	vs_out.world_pos = vec3(model * bone_matrix * vec4(position, 1.0));
 	vs_out.world_normal = (model *bone_matrix* vec4(normal, 0)).xyz;
 
+	vs_out.world_pos = vec3(model * bone_matrix * vec4(position, 1.0));
+	vs_out.world_normal = (model * bone_matrix * vec4(normal, 0)).xyz;
+
 	gl_Position = projection * view_pos;
 	}
 
