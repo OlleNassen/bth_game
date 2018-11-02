@@ -28,22 +28,21 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }), vec3{ 0.1f, 0.1f, 0.9f}, mesh_lib->get_mesh(0));
 	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }), vec3{ 0.9f, 0.8f, 0.1f}, mesh_lib->get_mesh(0));
 
-	//for (int i = 0; i < 4; i++)
-	//{
-	models[0].create_animation_data("Robot_idle.sspAnim", anim::idle);
-	models[0].create_animation_data("robot_run.sspAnim", anim::running);
-	models[0].create_animation_data("Robot_Jump_1.sspAnim", anim::start_jump);
-	models[0].create_animation_data("Robot_Jump_2.sspAnim", anim::falling);
-	models[0].create_animation_data("Robot_Jump_3.sspAnim", anim::in_jump);
-	models[0].create_animation_data("Robot_Jump_4.sspAnim", anim::landing);
-	models[0].create_animation_data("Robot_turn.sspAnim", anim::turning);
-	models[0].create_animation_data("Robot_wj1.sspAnim", anim::connect_wall);
-	models[0].create_animation_data("Robot_hanging.sspAnim", anim::hanging_left);
-	models[0].create_animation_data("Robot_hanging.sspAnim", anim::hanging_right);
-	models[0].create_animation_data("Robot_wj2.sspAnim", anim::jump_from_wall);
-	models[0].create_animation_data("Robot_slide.sspAnim", anim::sliding);
-
-	//}
+	for (int i = 0; i < 4; i++)
+	{
+		models[i].create_animation_data("Robot_idle.sspAnim", anim::idle);
+		models[i].create_animation_data("robot_run.sspAnim", anim::running);
+		models[i].create_animation_data("Robot_Jump_1.sspAnim", anim::start_jump);
+		models[i].create_animation_data("Robot_Jump_2.sspAnim", anim::falling);
+		models[i].create_animation_data("Robot_Jump_3.sspAnim", anim::in_jump);
+		models[i].create_animation_data("Robot_Jump_4.sspAnim", anim::landing);
+		models[i].create_animation_data("Robot_turn.sspAnim", anim::turning);
+		models[i].create_animation_data("Robot_wj1.sspAnim", anim::connect_wall);
+		models[i].create_animation_data("Robot_hanging.sspAnim", anim::hanging_left);
+		models[i].create_animation_data("Robot_hanging.sspAnim", anim::hanging_right);
+		models[i].create_animation_data("Robot_wj2.sspAnim", anim::jump_from_wall);
+		models[i].create_animation_data("Robot_slide.sspAnim", anim::sliding);
+	}
 
 	for (unsigned int i = 0; i < level.counterReader.levelObjectCount; i++)
 	{
