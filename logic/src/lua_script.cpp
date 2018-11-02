@@ -4,8 +4,8 @@
 namespace logic
 {
 
-PlayerScript::PlayerScript()
-	: stack{ "../resources/scripts/player.lua" }
+PlayerScript::PlayerScript(const std::string& path)
+	: stack{ path.c_str() }
 {
 	stack.setglobal("entities");
 }
@@ -35,6 +35,7 @@ void PlayerScript::update(
 	anim& anim_state)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
+
 	{
 		stack.getglobal(name.c_str());
 		int top = stack.top();
@@ -207,7 +208,7 @@ void GameScript::update(std::chrono::milliseconds delta,
 	}
 }
 
-std::array<std::tuple<std::string, int, float>, 4> GameScript::name_id_score()
+std::array<PlayerResult, 4> GameScript::player_results()
 {
 	stack.getglobal("game");
 	stack.getfield(-1, "scores");
@@ -217,13 +218,13 @@ std::array<std::tuple<std::string, int, float>, 4> GameScript::name_id_score()
 	stack.rawget(top, 3);
 	stack.rawget(top, 4);
 
-	std::array<std::tuple<std::string, int, float>, 4> temp;
+	std::array<PlayerResult, 4> temp;
 
 	int index = -4;
 	for (int i = 0; i < 4; ++i)
 	{
-		temp[i] = std::make_tuple("p" + std::to_string(i), i,
-			stack.tonumber(index++));
+		temp[i] = PlayerResult{"P" + std::to_string(i + 1),
+		stack.tonumber(index++)};
 	}
 
 	stack.clear();

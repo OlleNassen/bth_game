@@ -8,6 +8,8 @@
 #include <iostream>
 #include <lua.hpp>
 #include "lua_stack.hpp"
+#include "../../graphics/include/game_scene.hpp"
+#include "../../physics/include/world.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -15,6 +17,13 @@
 
 namespace logic
 {
+
+struct PlayerResult
+{
+public:
+	std::string name;
+	float score;
+};
 
 class objects
 {
@@ -29,7 +38,7 @@ public:
 class PlayerScript
 {
 public:
-	PlayerScript();
+	PlayerScript(const std::string& path);
 	
 	void setup(int entity);
 	void update(
@@ -51,11 +60,10 @@ public:
 	void update(
 		std::chrono::milliseconds delta,
 		objects* players);
-	std::array<std::tuple<std::string, int, float>, 4> name_id_score();
+	std::array<PlayerResult, 4> player_results();
 private:
 	LuaStack stack;
 };
-
 
 }
 

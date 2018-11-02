@@ -59,7 +59,7 @@ public:
 		//model[3][2] = 0.0f;
 	}
 
-	void rotate(float degree, glm::vec2 center_pivot)
+	void rotate(float degree)
 	{
 		/*glm::mat3 rotation{ model };
 		glm::vec3 translation{ model[3][0], model[3][1], model[3][2] };
@@ -71,11 +71,11 @@ public:
 
 		
 		//Works but not for all
-		model = glm::translate(model, { 0.0, center_pivot.x / 2, 0.0 });
+		/*model = glm::translate(model, { 0.0, center_pivot.x / 2, 0.0 });
 		model = glm::rotate(model, glm::radians(degree), { 1,0,0 });
-		model = glm::translate(model, { 0.0, -center_pivot.x / 2, 0.0 });
+		model = glm::translate(model, { 0.0, -center_pivot.x / 2, 0.0 });*/
 
-
+		model = glm::rotate(model, glm::radians(degree), { 0, 0, 1 });
 	}
 
 	glm::vec3 get_position()const

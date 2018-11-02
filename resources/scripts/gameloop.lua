@@ -2,25 +2,26 @@ function setup(game)
 	game.goal = 100
 	game.points = 0 -- do not change this, edit value in update loop
 	--4 playerscores:
-	game.scores = {p1, p2, p3, p4}
+	game.scores = { 0, 0, 0, 0 }
 
-	rawset(game.scores, 1, 0)
-	rawset(game.scores, 2, 0)
-	rawset(game.scores, 3, 0)
-	rawset(game.scores, 4, 0)
 end
 
 function update(delta_seconds, game, entities)
 
-	if game.points == 0
+	if game.points <= 0
 	then
-		for i = 1, 4, 1
-		do
-		entities[i].position.x = 0
-		entities[i].position.y = 0
-		--print(entities[1].position.x)
+		entities[1].position.x = 0
+		entities[1].position.y = 0
+
+		entities[2].position.x = 5
+		entities[2].position.y = 0
+
+		entities[3].position.x = 10
+		entities[3].position.y = 0
+
+		entities[4].position.x = 3
+		entities[4].position.y = 0
 		game.points = 5
-		end
 	end
 
 	for i = 1, 4, 1

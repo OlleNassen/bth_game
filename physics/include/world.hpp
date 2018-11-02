@@ -45,7 +45,7 @@ using objects_array = std::array<objects, 100>;
 class World
 {
 public:
-	void add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force);
+	int add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force);
 	int add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
 
 	//Dynamic

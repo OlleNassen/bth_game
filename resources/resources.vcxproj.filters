@@ -42,5 +42,6 @@
     <None Include="shaders\fx_steam.vs" />
     <None Include="scripts\gameloop.lua" />
     <None Include="scripts\player.lua" />
+    <None Include="scripts\placing_objects.lua" />
   </ItemGroup>
 </Project>
