@@ -34,7 +34,7 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 	shader.uniform("light_pos[2]", lights[2].position);
 	shader.uniform("light_pos[3]", lights[3].position);
 	
-	shader.uniform("light_color", lights[0].color);
+	shader.uniform("light_color", emissive_color);
 
 	shader.uniform("albedo_map", 0);
 	shader.uniform("normal_map", 1);
