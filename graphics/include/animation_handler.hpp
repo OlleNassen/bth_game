@@ -1,16 +1,10 @@
 #ifndef ANIMATION_HANDLER_HPP
 #define ANIMATION_HANDLER_HPP
 
-//#include "animation_logic.hpp"
-#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/vector_relational.hpp>
-#include <glm/trigonometric.hpp>
-
 #include <flags.hpp>
-
 #include "LeapImporter/LeapImporter/LeapMesh.h"
 #include "LeapImporter/LeapImporter/LeapAnimation.h"
 #include "LeapImporter/LeapImporter/LeapImporter.h"

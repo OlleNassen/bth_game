@@ -1,5 +1,8 @@
 #include "animation_handler.hpp"
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+
 Animation_handler::Animation_handler()
 {
 	this->animations.clear();
@@ -224,7 +227,7 @@ void Animation_handler::get_parent_transform()
 	this->parent_transforms.clear();
 
 	std::vector<glm::mat4> global_joint_transforms, finalTransforms;
-	for (int i = 0; i < this->joints.size(); i++)
+	for (auto i = 0u; i < this->joints.size(); i++)
 	{
 		global_joint_transforms.push_back(glm::mat4(1));
 		this->parent_transforms.push_back(glm::mat4(1));
@@ -233,7 +236,7 @@ void Animation_handler::get_parent_transform()
 	global_joint_transforms[0] = mat_to_GLM(this->joints[0].local_transform_matrix);
 	this->parent_transforms[0] = global_joint_transforms[0];
 
-	for (int i = 1; i < this->joints.size(); i++)
+	for (auto i = 1u; i < this->joints.size(); i++)
 	{
 		global_joint_transforms[i] = global_joint_transforms[this->joints[i].parent_id] *
 			mat_to_GLM(this->joints[i].local_transform_matrix);
@@ -528,15 +531,15 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 void Animation_handler::get_time(float delta)
 {
 	if (animations[current_animation]->switching)
-		time_at_switch += (delta * 0.001);
+		time_at_switch += (delta * 0.001f);
 							   		   
-	this->time_seconds += (delta * 0.001);
+	this->time_seconds += (delta * 0.001f);
 }
 void Animation_handler::fixInverseBindPoses()
 {
 	this->offset_matrices.clear();
 	std::vector<glm::mat4> LM, GM, IBP;
-	for (int i = 0; i < this->joints.size(); i++)
+	for (auto i = 0u; i < this->joints.size(); i++)
 	{
 		LM.push_back(glm::mat4(1));
 		GM.push_back(glm::mat4(1));
@@ -548,7 +551,7 @@ void Animation_handler::fixInverseBindPoses()
 	IBP[0] = (glm::inverse(LM[0]));
 	offset_matrices.push_back(IBP[0]);
 
-	for (int i = 1; i < this->joints.size(); i++)
+	for (auto i = 1u; i < this->joints.size(); i++)
 	{
 		LM[i] = this->animation_link[current_animation][i];
 		GM[i] = GM[joints[i].parent_id] * LM[i];
@@ -621,7 +624,7 @@ void Animation_handler::create_animation_data(const std::string & file_path, ani
 		this->animation_states.push_back(enm);
 
 
-		for (int i = 0; i < this->joints.size(); i++)
+		for (auto i = 0u; i < this->joints.size(); i++)
 		{
 			this->link_matricies.push_back(mat_to_GLM(joints[i].local_transform_matrix));
 		}

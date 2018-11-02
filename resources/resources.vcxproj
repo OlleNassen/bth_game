@@ -125,6 +125,8 @@
     <None Include="shaders\box.vs" />
     <None Include="shaders\brdf.fs" />
     <None Include="shaders\brdf.vs" />
+    <None Include="shaders\death_screen.fs" />
+    <None Include="shaders\death_screen.vs" />
     <None Include="shaders\fx_dust.fs" />
     <None Include="shaders\fx_dust.vs" />
     <None Include="shaders\fx_spark.fs" />
@@ -133,6 +135,10 @@
     <None Include="shaders\fx_steam.vs" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
+    <None Include="shaders\loading_screen.fs" />
+    <None Include="shaders\loading_screen.vs" />
+    <None Include="shaders\main_menu_screen.fs" />
+    <None Include="shaders\main_menu_screen.vs" />
     <None Include="shaders\pre_filter.fs" />
     <None Include="shaders\skybox.fs" />
     <None Include="shaders\skybox.vs" />
