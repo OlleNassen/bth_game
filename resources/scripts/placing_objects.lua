@@ -46,7 +46,7 @@ function update(delta_seconds, entity)
 
 	end
 
-	if entity.clock > 5.0
+	if entity.clock > 10.0
 	then
 		entity.done = true
 	end
