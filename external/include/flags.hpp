@@ -24,7 +24,9 @@ enum class anim
 	idle,
 	running,
 	turning,
-	sliding
+	sliding,
+	hanging_left,
+	hanging_right
 };
 
 
