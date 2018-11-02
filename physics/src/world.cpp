@@ -20,6 +20,7 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	body.velocity = glm::vec3{0.0f};
 	body.forces = glm::vec3{0.0f};
 	body.mass = 100.0f;
+	body.inverse_mass = 1.0f / body.mass;
 	bodies.push_back(body);
 	
 	dynamic_positions.push_back(start_position);
@@ -44,6 +45,7 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 	body.velocity = glm::vec3{ 0.0f };
 	body.forces = glm::vec3{ 0.0f };
 	body.mass = 0.0f;
+	body.inverse_mass = 0.0f;
 	statics.push_back(body);
 
 	return static_positions.size() - 1;
@@ -60,7 +62,7 @@ void World::update(
 	colliders2.clear();
 	results.clear();
 	
-	for (int i = 0; i < bodies.size(); ++i)
+	for (auto i = 0u; i < bodies.size(); ++i)
 	{
 		auto& p = dynamics[i].position;
 		auto& body = bodies[i];
@@ -93,10 +95,10 @@ void World::update(
 		t = 0;
 
 
-	for (int i = 0; i < bodies.size(); ++i)
+	for (auto i = 0u; i < bodies.size(); ++i)
 	{
 		auto& left = bodies[i];
-		for (int j = 0; j < bodies.size(); ++j)
+		for (auto j = 0u; j < bodies.size(); ++j)
 		{
 			auto& right = bodies[j];
 			if (&left != &right && obb_obb(left.box, right.box))
@@ -139,7 +141,7 @@ void World::update(
 
 	for (int k = 0; k < impulse_iteration; ++k)
 	{
-		for (int i = 0; i < results.size(); ++i)
+		for (auto i = 0u; i < results.size(); ++i)
 		{
 			int j_size = results[i].contacts.size();
 			for (int j = 0; j < j_size; ++j)
@@ -160,7 +162,7 @@ void World::update(
 	{
 		Rigidbody* left = colliders1[i];
 		Rigidbody* right = colliders2[i];
-		float total_mass = left->inverse_mass() + right->inverse_mass();
+		float total_mass = left->inverse_mass + right->inverse_mass;
 
 		if (total_mass == 0.0f)
 			continue;
@@ -170,19 +172,14 @@ void World::update(
 		glm::vec3 correction = 
 			results[i].normal * scalar * linear_projection_percent;
 
-		left->position = left->position - correction * left->inverse_mass();
-		right->position = right->position - correction * right->inverse_mass();
+		left->position = left->position - correction * left->inverse_mass;
+		right->position = right->position - correction * right->inverse_mass;
 
 		left->synch_collision_volumes();
 		right->synch_collision_volumes();
 	}
 
-	for (auto& body : bodies)
-	{
-		body.solve_constraints(constraints);
-	}
-
-	for (int i = 0; i < bodies.size(); ++i)
+	for (auto i = 0u; i < bodies.size(); ++i)
 	{
 		dynamics[i].position = { bodies[i].position.x - bodies[i].box.size.x, bodies[i].position.y - bodies[i].box.size.y };
 		dynamics[i].velocity = { bodies[i].velocity.x, bodies[i].velocity.y };
@@ -240,7 +237,7 @@ std::vector<glm::vec3> World::get_all_debug() const
 {
 	std::vector<glm::vec3> out_vertices;
 
-	for (int i = 0; i < bodies.size(); i++)
+	for (auto i = 0u; i < bodies.size(); i++)
 	{
 		std::vector<Point> vertices = get_vertices(bodies[i].box);
 		auto& b = bodies[i];
@@ -251,7 +248,7 @@ std::vector<glm::vec3> World::get_all_debug() const
 		}
 	}
 
-	for (int i = 0; i < statics.size(); i++)
+	for (auto i = 0u; i < statics.size(); i++)
 	{
 		std::vector<Point> vertices = get_vertices(statics[i].box);
 		auto& s = statics[i];

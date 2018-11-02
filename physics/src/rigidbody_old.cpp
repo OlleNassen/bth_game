@@ -17,7 +17,7 @@ Rigidbody_old::Rigidbody_old(glm::vec2 start_force)
 	floor_drag = 0.1f;
 
 	//Gravitation i float.
-	gravity = 9.82 * converter; //(9.82f * 9.82f);// *converter;
+	gravity = 9.82f * converter; //(9.82f * 9.82f);// *converter;
 	gravity_active = true;
 
 	//Start kraft.
