@@ -37,6 +37,7 @@ struct Input
 	objects_array& dynamics;
 	const trigger_array& triggers;
 	const input* player_inputs; //4
+	std::array<id_and_model_place, 4> players_placed_objects_id;
 };
 
 struct Output

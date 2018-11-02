@@ -2,7 +2,7 @@ function setup(entity)
 	entity.rotate_was_pressed = false
 end
 
-place_speed = 9.82 * 9
+place_speed = 10
 
 function update(delta_seconds, entity)
 

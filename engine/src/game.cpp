@@ -118,7 +118,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 	int game_state = 0;	
 
-	game_state = state::playing;
+	game_state = state::building;
 
 	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
 	{
@@ -204,7 +204,8 @@ void Game::update(std::chrono::milliseconds delta)
 		
 		logic_out = gameplay.update(
 			{ delta, obj, triggers,
-			player_inputs},
+			player_inputs, 
+			players_placed_objects_id },
 			player_results, game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
