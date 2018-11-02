@@ -191,16 +191,10 @@ void GameScript::update(
 		{
 			stack.rawget(top, i);
 			int top_pos = stack.top();
-			
-			for (int j = 0; j < (int)triggers.size(); ++j)
-			{
-				if (triggers[i] == j)
-				{
-					stack.push("triggered");
-					stack.push(j);
-					stack.rawset(top_pos);
-				}
-			}
+
+			stack.push("triggered");
+			stack.push(triggers[i - 1]);
+			stack.rawset(top_pos);
 		}
 		stack.clear();
 	}

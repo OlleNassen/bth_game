@@ -102,7 +102,6 @@ void World::update(
 			if (&left != &right && obb_obb(left.box, right.box))
 			{
 				triggers[i] = j;
-				triggers[i] = i;
 			}
 		}
 	}

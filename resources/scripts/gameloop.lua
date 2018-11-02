@@ -86,6 +86,16 @@ function update(delta_seconds, game, entities)
 			entities[i].position.y = -2000
 		end
 	end
+		--Check if players dead
+	for i = 1, 4, 1
+	do
+		if entities[i].triggered >= 4
+		then
+			game.finished[i] = true
+			entities[i].position.x = -2000
+			entities[i].position.y = -2000
+		end
+	end
 
 	for i = 1, 4, 1
 	do
