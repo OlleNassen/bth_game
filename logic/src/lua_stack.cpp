@@ -200,7 +200,7 @@ void LuaStack::push(const input& value)
 		"debug",
 		"select",
 		"cancel",
-		"glow",
+		"rotate",
 		"refresh",
 		"menu",
 		"quit"

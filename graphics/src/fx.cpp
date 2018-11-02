@@ -174,7 +174,7 @@ void FX::calculate_dust_data(std::chrono::milliseconds delta, const Camera& came
 
 	randomizer = rand() % 100;
 
-	if (randomizer <= 40)
+	if (randomizer <= 80)
 	{
 		//Update data for particles
 		if (fx_dust.total_particle_count <= MAX_DUST_PARTICLES)
@@ -183,7 +183,7 @@ void FX::calculate_dust_data(std::chrono::milliseconds delta, const Camera& came
 			{
 				//Create a random position here
 				fx_dust.random_x = static_cast<float>(rand() % 40) - 20.0f;
-				fx_dust.random_y = static_cast<float>(rand() % 60);
+				fx_dust.random_y = static_cast<float>(rand() % 170);
 				fx_dust.random_z = static_cast<float>(rand() % 20) - 12.0f;
 
 				//Find and update the last used particle

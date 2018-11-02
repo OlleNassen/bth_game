@@ -108,6 +108,21 @@ void PlayerScript::update(
 	}	
 }
 
+bool PlayerScript::build_stage_done(int index)
+{
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	stack.getfield(-1, "done");
+
+	bool temp = stack.toboolean(-1);
+
+	stack.clear();
+
+	return temp;
+}
+
+
+
 GameScript::GameScript()
 	: stack{ "../resources/scripts/gameloop.lua" }
 {
@@ -230,7 +245,7 @@ std::array<PlayerResult, 4> GameScript::player_results()
 	{
 		temp[i] = PlayerResult{"P" + std::to_string(i + 1),
 		stack.tonumber(index++)};
-	}
+	} 
 
 	stack.clear();
 

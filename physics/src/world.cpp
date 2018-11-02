@@ -16,7 +16,7 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 
 	Rigidbody body;
 	body.box = OBB{ position, size, orientation };
-	body.position = body.box.position;
+	body.position = position;
 	body.velocity = glm::vec3{0.0f};
 	body.forces = glm::vec3{0.0f};
 	body.mass = 100.0f;
@@ -67,8 +67,6 @@ void World::update(
 		auto& p = dynamics[i].position;
 		auto& body = bodies[i];
 		body.position = {p.x, p.y, 0.0f};
-		body.position.x += body.box.size.x;
-		body.position.y += body.box.size.y;
 	}
 	
 	for (int i = 0; i < 4; ++i)
@@ -181,7 +179,7 @@ void World::update(
 
 	for (auto i = 0u; i < bodies.size(); ++i)
 	{
-		dynamics[i].position = { bodies[i].position.x - bodies[i].box.size.x, bodies[i].position.y - bodies[i].box.size.y };
+		dynamics[i].position = { bodies[i].position.x, bodies[i].position.y };
 		dynamics[i].velocity = { bodies[i].velocity.x, bodies[i].velocity.y };
 		dynamics[i].size = { bodies[i].box.size.x, bodies[i].box.size.y };
 		dynamics[i].forces = { 0.0f, 0.0f };

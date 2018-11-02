@@ -24,7 +24,7 @@ Game::Game()
 	window.assign_key(logic::button::down, GLFW_KEY_S);
 	window.assign_key(logic::button::right, GLFW_KEY_D);
 	window.assign_key(logic::button::jump, GLFW_KEY_SPACE);
-	window.assign_key(logic::button::glow, GLFW_KEY_G);
+	window.assign_key(logic::button::rotate, GLFW_KEY_R);
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
 	window.assign_key(logic::button::debug, GLFW_KEY_F3);
@@ -49,8 +49,6 @@ Game::Game()
 		player_inputs[3][static_cast<logic::button>(i)] = logic::button_state::none;
 	}	
 
-	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
-
 	physics.add_dynamic_body(level.v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 	physics.add_dynamic_body(level.v[1], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 	physics.add_dynamic_body(level.v[2], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
@@ -74,6 +72,8 @@ Game::Game()
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
+
+	//place_random_objects(0, 20, 9); //For random placing object
 }
 
 void Game::run()
@@ -118,6 +118,26 @@ void Game::update(std::chrono::milliseconds delta)
 
 	int game_state = 0;	
 
+	if (menu.on())
+		game_state = (game_state | state::menu);
+
+	if (chat.is_on())
+		game_state = (game_state | state::chat);
+
+	if (net.connected())
+		game_state = (game_state | state::connected);
+
+	if (gameplay.build_stage())
+	{
+		game_state = (game_state | state::building);
+	}
+	else
+	{
+		game_state = (game_state | state::playing);
+	}
+		
+	
+
 	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
 	{
 		menu.open();			
@@ -154,6 +174,41 @@ void Game::update(std::chrono::milliseconds delta)
 		glm::vec3{0.0f} 
 	};
 
+	//Giving players building blocks and moving them.
+	if (game_state & state::building)
+	{
+		if (!give_players_objects)
+		{
+			players_placed_objects_id.fill({ 0, 0 });
+			for (int i = 0; i < 4; i++)
+			{
+				collision_data data;
+				int model_id = level.add_object(data, 6);
+				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + i }, { 0, 0 }, data.width, data.height, { 0, 0 });
+
+				players_placed_objects_id[i].model_id = model_id;
+				players_placed_objects_id[i].dynamics_id = dynamic_id;
+
+				dynamics[dynamic_id].position = { 0, 16 + i };
+				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
+				dynamics[dynamic_id].size = { data.width, data.height };
+				dynamics[dynamic_id].forces = { 0.0f, 0.0f };
+				dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+
+				give_players_objects = true;
+			}
+		}
+
+		for (auto& ppoi : players_placed_objects_id)
+		{
+			level.models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
+		}
+	}
+	else
+	{
+		give_players_objects = false;
+	}	
+
 	{
 		logic::objects_array obj;
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -167,9 +222,9 @@ void Game::update(std::chrono::milliseconds delta)
 		
 		logic_out = gameplay.update(
 			{ delta, obj, triggers,
-			player_inputs, directions,
-			&level, &physics },
-			player_results);
+			player_inputs, 
+			players_placed_objects_id },
+			player_results, game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
 		{
@@ -180,7 +235,7 @@ void Game::update(std::chrono::milliseconds delta)
 			dynamics[i].impulse = obj[i].impulse;
 		}
 	}
-	
+
 	if (net.connected())
 	{
 		for (int i = 0; i < 4; ++i)
@@ -257,19 +312,18 @@ void Game::update(std::chrono::milliseconds delta)
 				level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 			}
 			*/
-			level.v[i] = dynamics[i].position;
-			level.models[i].set_position(dynamics[i].position);
+			glm::vec2 pos
+			{
+				dynamics[i].position.x,
+				dynamics[i].position.y - dynamics[i].size.y - 0.5f
+			};
+			level.v[i] = pos;
+			level.models[i].set_position(pos);
+
 		}
 	}
 
-	if (menu.on())
-		game_state = (game_state | state::menu);
 
-	if (chat.is_on())
-		game_state = (game_state | state::chat);
-
-	if (net.connected())
-		game_state = (game_state | state::connected);
 
 
 	physics.update(delta, dynamics, triggers);
@@ -285,6 +339,24 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].position = dynamics[i].position;
 			obj[i].size = dynamics[i].size;
 		}
+
+		std::array<glm::vec3, 4> directions;
+		for (int i = 0; i < 4; ++i)
+		{
+			const auto& in = player_inputs[i];
+			auto& direction = directions[i];
+			direction = { 0.0f, 0.0f, 0.0f };
+			using namespace logic;
+
+			if (in[button::up] >= button_state::pressed)
+				direction.z += 1.0f;
+			if (in[button::left] >= button_state::pressed)
+				direction.x -= 1.0f;
+			if (in[button::down] >= button_state::pressed)
+				direction.z -= 1.0f;
+			if (in[button::right] >= button_state::pressed)
+				direction.x += 1.0f;
+		}
 		
 		using namespace std;
 		stringstream stream;
@@ -296,7 +368,7 @@ void Game::update(std::chrono::milliseconds delta)
 		renderer.update(delta,
 			obj,
 			player_inputs[net.id()].cursor,
-			logic_out.directions,
+			directions,
 			chat[1], player_count,
 			net.id(), game_state, temp);
 	}
@@ -342,4 +414,73 @@ void Game::unpack_data()
 
 		local_input = &player_inputs[net.id()];
 	}
+}
+
+void Game::place_random_objects(float start_height, float map_width, int number_of_randoms)
+{
+	/*for (int i = 0; i < 15; i++)
+	{
+		input.physics->random_placed_objects_pos[i] = glm::vec2{ 0.0, hight };
+	}*/
+
+	collision_data data;
+
+	glm::vec2 startPosition = { 0.0, 0.0 };
+	std::vector<glm::vec2> positions;
+
+	int totalX = 5;
+	int totalY = 3;
+
+	int width = static_cast<int>(map_width / 6.0f);
+
+	startPosition = { width * 2, map_width };
+
+	for (int i = 0; i < totalY; i++)
+	{
+		for (int j = 0; j < totalX; j++)
+		{
+			positions.push_back({ startPosition.x - (j * width),  startPosition.y + (i * 8) });
+		}
+	}
+
+	std::vector<int> rand_numb;
+
+	bool same_number = false;
+	int randum_number;
+
+	while (rand_numb.size() < number_of_randoms)
+	{
+		same_number = false;
+		randum_number = rand() % positions.size();
+		for (int i = 0; i < rand_numb.size(); i++)
+		{
+			if (randum_number == rand_numb[i])
+			{
+				same_number = true;
+			}
+		}
+		if (!same_number)
+		{
+			rand_numb.push_back(randum_number);
+		}
+	}
+
+	for (int i = 99; i > 99 - number_of_randoms; i--)
+	{
+		collision_data data;
+		int model_id = level.add_object(data, 6);
+		data.position = positions[rand_numb[abs(i - 99)]];
+		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 });
+
+		dynamics[dynamic_id].position = positions[rand_numb[abs(i - 99)]];
+		dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
+		dynamics[dynamic_id].size = { data.width, data.height };
+		dynamics[dynamic_id].forces = { 0.0f, 0.0f };
+		dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+
+
+		level.models[model_id].set_position(dynamics[dynamic_id].position);
+
+	}
+
 }

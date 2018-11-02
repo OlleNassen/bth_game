@@ -1,5 +1,5 @@
-#ifndef SE_GAME_HPP
-#define SE_GAME_HPP
+#ifndef GAME_HPP
+#define GAME_HPP
 
 #include <memory>
 #include <array>
@@ -64,10 +64,20 @@ private:
 	gui::Chat chat;
 	gui::Menu menu;	
 
+	void place_random_objects(float start_height, float map_width, int number_of_randoms);
+
 	//Temp leaderboards
 	std::vector<int> leader_board;
 	bool showleaderboard = false;
 	bool is_client{};
+
+	//test
+	std::array <id_and_model_place, 4> players_placed_objects_id;
+	bool buildmode = true;
+	bool give_players_objects = false;
+
+	//Random placed objects
+	std::array <id_and_model_place, 4> random_placed_objects_id;
 };
 
 

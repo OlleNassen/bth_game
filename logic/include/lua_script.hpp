@@ -48,6 +48,9 @@ public:
 		objects& object, 
 		const input& i, 
 		int index);
+
+	bool build_stage_done(int index);
+
 private:
 	LuaStack stack;
 };
