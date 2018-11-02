@@ -147,9 +147,11 @@ void Renderer::render(
 		gui.use();
 		if (is_chat_visible)
 		{
-			ui.render();
-		}
 
+		}
+		/*else
+			ui.render_arrows();*/
+		ui.render(gui);
 
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
@@ -223,6 +225,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 		fx_emitter.calculate_steam_data(delta, db_camera);
 
 		db_camera.update(delta, directions[0], cursor);
+		ui.disable_chat();
+	}
+	else
+	{
+		ui.enable_chat();
 	}
 
 	if (scene->build_mode_active)

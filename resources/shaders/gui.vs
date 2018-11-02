@@ -1,12 +1,14 @@
 #version 430
 
 layout (location = 0) in vec2 vertex_position;
-layout (location = 1) in vec2 position;
-layout (location = 2) in vec2 color;
-layout (location = 3) in vec2 scale;
-layout (location = 4) in float angle;
+layout (location = 1) in vec2 uv;
+layout (location = 2) in vec2 position;
+layout (location = 3) in vec2 color;
+layout (location = 4) in vec2 scale;
+layout (location = 5) in float angle;
 
 out vec2 vs_color;
+out vec2 texture_coord;
 
 //uniform bool is_arrow;
 //uniform mat4 rotation_matrix;
@@ -28,9 +30,10 @@ mat4 rotationMatrix(vec3 axis, float angle)
 void main()
 {
     vs_color = color;
-	//gl_Position = vec4(vertex_position * scale + position, 0.0, 1.0);
+	texture_coord = uv;
 	rm = rotationMatrix(vec3(0.0, 0.0, 1.0), angle); 
+	gl_Position = vec4(vertex_position * scale + position, 0.0, 1.0);
 	//if(is_arrow)
-		gl_Position = rm * vec4(vertex_position * scale + position, 0.0, 1.0);
+	//	gl_Position = rm * vec4(vertex_position * scale + position, 0.0, 1.0);
 
 }
