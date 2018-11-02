@@ -31,43 +31,37 @@ void Gameplay::refresh()
 }
 
 Output Gameplay::update(Input inputs,
-	std::array<logic::PlayerResult, 4>& player_results)
+	std::array<logic::PlayerResult, 4>& player_results,
+	int current_state)
 {
-	for (int i = 0; i < 4; ++i)
+	if (current_state & state::building)
 	{
-		const auto& in = inputs.player_inputs[i];
-		auto& direction = inputs.directions[i];
-		directions[i] = { 0.0f, 0.0f, 0.0f };
+		for (int i = 0; i < 4; i++)
+		{
+			placement_script.update(
+				inputs.delta,
+				inputs.dynamics[7],
+				inputs.player_inputs[i],
+				i);
+		}
 
-		/*if (in[button::up] >= button_state::pressed)
-			directions[i].z += 1.0f;
-		if (in[button::left] >= button_state::pressed)
-			directions[i].x -= 1.0f;
-		if (in[button::down] >= button_state::pressed)
-			directions[i].z -= 1.0f;
-		if (in[button::right] >= button_state::pressed)
-			directions[i].x += 1.0f;*/
 	}
-		
-	std::array<glm::vec2, 4> velocities;
+
+	else if (current_state & state::playing)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			player_script.update(
+				inputs.delta,
+				inputs.dynamics[i],
+				inputs.player_inputs[i],
+				i);
+		}
+		game_script.update(inputs.delta, inputs.triggers, &inputs.dynamics[0]);
+	}
 	
-	for (int i=0; i < 4; i++)
-	{
-		player_script.update(
-			inputs.delta, 
-			inputs.dynamics[i], 
-			inputs.player_inputs[i], 
-			i);
-		/*
-		placement_script.update(
-			inputs.delta,
-			inputs.dynamics[7],
-			inputs.player_inputs[i],
-			i);
-			*/
-	}
 
-	game_script.update(inputs.delta, inputs.triggers, &inputs.dynamics[0]);
+
 	  
 	//Object placing \Vincent & Lucas S
 	/*if (inputs.player_inputs[0][logic::button::build_mode] == logic::button_state::pressed)
@@ -158,9 +152,8 @@ Output Gameplay::update(Input inputs,
 
 	player_results = game_script.player_results();
 
-	velocities.fill(glm::vec2(0,0));
 	
-	return Output{ velocities, directions, game_script.game_over()};
+	return Output{game_script.game_over()};
 }
 
 void Gameplay::give_up(Input input)
@@ -227,7 +220,7 @@ void Gameplay::give_up(Input input)
 
 int	Gameplay::get_random_object_id(Input input)
 {
-	return rand() % input.scene->objects.size();
+	return 0;// rand() % input.scene->objects.size();
 }
 
 }

@@ -9,7 +9,8 @@ enum state : int
 	menu = 1 << 3,
 	building = 1 << 4,
 	chat = 1 << 5,
-	render_physics = 1 << 6
+	render_physics = 1 << 6,
+	playing = 1 << 7
 };
 
 

@@ -4,6 +4,7 @@
 #include <chrono>
 #include <array>
 #include <glm/glm.hpp>
+#include <flags.hpp>
 
 #include "lua_script.hpp"
 #include "input.hpp"
@@ -30,16 +31,10 @@ struct Input
 	objects_array& dynamics;
 	const trigger_array& triggers;
 	const input* player_inputs; //4
-	//unnecessary junk:
-	std::array<glm::vec3, 4> directions;
-	graphics::GameScene* scene;
-	physics::World* physics;
 };
 
 struct Output
 {
-	std::array<glm::vec2, 4> velocities;
-	std::array<glm::vec3, 4> directions;
 	bool game_over;
 };
 
@@ -56,7 +51,8 @@ public:
 	void refresh();
 
 	Output update(Input input,
-		std::array<logic::PlayerResult, 4>& player_results);
+		std::array<logic::PlayerResult, 4>& player_results,
+		int current_state);
 private:
 	script_array<int> entities;
 	PlayerScript player_script{"../resources/scripts/player.lua"};

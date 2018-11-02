@@ -49,8 +49,6 @@ Game::Game()
 		player_inputs[3][static_cast<logic::button>(i)] = logic::button_state::none;
 	}	
 
-	logic_out.directions.fill({ 0.0f, 0.0f, 0.0f });
-
 	physics.add_dynamic_body(level.v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 	physics.add_dynamic_body(level.v[1], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 	physics.add_dynamic_body(level.v[2], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
@@ -118,6 +116,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 	int game_state = 0;	
 
+	game_state = state::playing;
+
 	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
 	{
 		menu.open();			
@@ -146,14 +146,6 @@ void Game::update(std::chrono::milliseconds delta)
 		is_client = true;
 	}
 
-	std::array<glm::vec3, 4> directions
-	{ 
-		glm::vec3{0.0f}, 
-		glm::vec3{0.0f},
-		glm::vec3{0.0f}, 
-		glm::vec3{0.0f} 
-	};
-
 	{
 		logic::objects_array obj;
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -167,9 +159,8 @@ void Game::update(std::chrono::milliseconds delta)
 		
 		logic_out = gameplay.update(
 			{ delta, obj, triggers,
-			player_inputs, directions,
-			&level, &physics },
-			player_results);
+			player_inputs},
+			player_results, game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
 		{
@@ -285,6 +276,24 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].position = dynamics[i].position;
 			obj[i].size = dynamics[i].size;
 		}
+
+		std::array<glm::vec3, 4> directions;
+		for (int i = 0; i < 4; ++i)
+		{
+			const auto& in = player_inputs[i];
+			auto& direction = directions[i];
+			direction = { 0.0f, 0.0f, 0.0f };
+			using namespace logic;
+
+			if (in[button::up] >= button_state::pressed)
+				direction.z += 1.0f;
+			if (in[button::left] >= button_state::pressed)
+				direction.x -= 1.0f;
+			if (in[button::down] >= button_state::pressed)
+				direction.z -= 1.0f;
+			if (in[button::right] >= button_state::pressed)
+				direction.x += 1.0f;
+		}
 		
 		using namespace std;
 		stringstream stream;
@@ -296,7 +305,7 @@ void Game::update(std::chrono::milliseconds delta)
 		renderer.update(delta,
 			obj,
 			player_inputs[net.id()].cursor,
-			logic_out.directions,
+			directions,
 			chat[1], player_count,
 			net.id(), game_state, temp);
 	}
