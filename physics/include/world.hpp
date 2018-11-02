@@ -40,6 +40,8 @@ public:
 };
 
 using objects_array = std::array<objects, 100>;
+using trigger_array = std::array<int, 100>;
+
 
 
 class World
@@ -63,6 +65,7 @@ public:
 	void update(
 		std::chrono::milliseconds delta,
 		objects_array& dynamics,
+		trigger_array& triggers,
 		std::array<anim, 4>& anim_states);
 
 	std::vector<glm::vec2> get_forces() const;
@@ -87,9 +90,9 @@ private:
 	std::vector<Rigidbody*> colliders2;
 	std::vector<CollisionManifold> results;
 
-	float linear_projection_percent = 0.45f;
+	float linear_projection_percent = 0.8f;
 	float penetration_slack = 0.01f;
-	int impulse_iteration = 5;
+	int impulse_iteration = 8;
 
 
 };

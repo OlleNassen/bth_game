@@ -836,9 +836,9 @@ std::vector<Point> clip_edges_obb(const std::vector<Line>& edges, const OBB& obb
 
 	std::vector<Plane> planes = get_planes(obb);
 
-	for (int i = 0; i < planes.size(); ++i)
+	for (auto i = 0u; i < planes.size(); ++i)
 	{
-		for (int j = 0; j < edges.size(); ++j)
+		for (auto j = 0u; j < edges.size(); ++j)
 		{
 			if (clip_to_plane(planes[i], edges[j], &intersection))
 			{

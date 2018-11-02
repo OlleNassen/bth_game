@@ -1,5 +1,6 @@
 #ifndef LIGHTS_HPP
 #define LIGHTS_HPP
+
 #include <glm/glm.hpp>
 
 namespace graphics

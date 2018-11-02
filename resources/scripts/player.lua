@@ -195,4 +195,6 @@ function update(delta_seconds, entity)
 	--entity.impulse.y =  50
 
 	--entity.velocity.y = delta_seconds * 100 * entity.direction.z
+
+	entity.forces.y = entity.forces.y - 6400
 end

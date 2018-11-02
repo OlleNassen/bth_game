@@ -10,7 +10,7 @@ namespace logic
 
 using uint16 = std::uint16_t;
 
-enum class button
+enum class button	//DONT CHANGE!!!
 {
 	up,
 	left,
@@ -20,7 +20,7 @@ enum class button
 	debug,
 	select,
 	cancel,
-	glow,
+	rotate,
 	refresh,
 	menu,
 	quit

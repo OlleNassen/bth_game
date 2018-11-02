@@ -36,7 +36,7 @@ void MeshLib::create_mesh_list()
 		"ladder.ssp",						//8
 		"wood_box.ssp",						//9
 		"valve.ssp",						//10
-		"fan_shell.ssp",					//11
+		"wall_background.ssp",				//11
 		"fan_shell.ssp",					//12
 		"propeller.ssp",					//13
 		"ventilation.ssp",					//14
@@ -66,7 +66,9 @@ void MeshLib::create_mesh_list()
 		"cog_2.ssp",						//38
 		"cog_3.ssp",						//39
 		"machine_1.ssp",					//40
-		"machine_2.ssp"						//41
+		"machine_2.ssp",					//41
+		"wall_slim.ssp",					//42
+		"hatch.ssp"							//43
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
