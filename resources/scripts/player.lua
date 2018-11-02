@@ -109,7 +109,7 @@ function update(delta_seconds, entity)
 
 	if entity.anim.current == entity.anim.hanging_right
 	then
-		if entity.button.jump and entity.button.left and entity.can_walljump
+		if entity.button.jump and entity.can_walljump
 		then
 			entity.anim.current = entity.anim.jump_from_wall
 			entity.impulse.y = 35
@@ -121,7 +121,7 @@ function update(delta_seconds, entity)
 
 	if entity.anim.current == entity.anim.hanging_left
 	then
-		if entity.button.jump and entity.button.right and entity.can_walljump
+		if entity.button.jump and entity.can_walljump
 		then
 			entity.anim.current = entity.anim.jump_from_wall
 			entity.impulse.y = 35
