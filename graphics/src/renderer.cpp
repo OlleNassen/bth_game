@@ -148,6 +148,11 @@ void Renderer::render(
 	{
 		glDisable(GL_DEPTH_TEST);
 
+		if (is_menu)
+		{
+			main_menu_screen.render(main_menu_shader);
+		}
+
 		// Text
 		gui.use();
 		if (is_chat_visible)
@@ -212,6 +217,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	is_chat_visible = is_chat_on || time < 3s;
 	loading_screen.timer += delta;
 	death_screen.timer += delta;
+	main_menu_screen.timer += delta;
 
 	//Loading screen reset
 	if (loading_screen.timer > 4000ms)
@@ -221,6 +227,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (death_screen.timer > 1000ms)
 	{
 		death_screen.timer = 0ms;
+	}
+	if (main_menu_screen.timer > 1600ms)
+	{
+		main_menu_screen.timer = 0ms;
 	}
 
 	if (!is_chat_on)

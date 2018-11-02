@@ -47,5 +47,7 @@
     <None Include="shaders\loading_screen.fs" />
     <None Include="shaders\death_screen.fs" />
     <None Include="shaders\death_screen.vs" />
+    <None Include="shaders\main_menu_screen.fs" />
+    <None Include="shaders\main_menu_screen.vs" />
   </ItemGroup>
 </Project>
