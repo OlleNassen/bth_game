@@ -1,5 +1,6 @@
 #include "gameplay.hpp"
 #include <time.h>
+#include <flags.hpp>
 
 namespace logic
 {
@@ -24,10 +25,14 @@ void Gameplay::refresh()
 	for (auto i = 0; i < 4; ++i)
 	{
 		player_script.setup(i);
-		//placement_script.setup(i);
 	}
-	game_script.setup();
 
+	for (int i = 0; i < 100; ++i)
+	{
+		placement_script.setup(i);
+	}
+
+	game_script.setup();
 }
 
 Output Gameplay::update(Input inputs,

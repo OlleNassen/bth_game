@@ -230,7 +230,7 @@ std::array<PlayerResult, 4> GameScript::player_results()
 	{
 		temp[i] = PlayerResult{"P" + std::to_string(i + 1),
 		stack.tonumber(index++)};
-	}
+	} 
 
 	stack.clear();
 
