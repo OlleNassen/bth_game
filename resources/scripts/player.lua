@@ -10,6 +10,7 @@ end
 
 function update(delta_seconds, entity)
 
+	
 	if entity.anim.current == entity.anim.running
 	then
 		entity.anim.current = entity.anim.idle
@@ -27,7 +28,7 @@ function update(delta_seconds, entity)
 		then
 			entity.anim.current = entity.anim.start_jump
 		end
-		if entity.velocity.y < -0.4
+		if entity.velocity.y < -1.4
 		then 
 			entity.anim.current = entity.anim.falling
 		end
@@ -51,28 +52,28 @@ function update(delta_seconds, entity)
 		then
 			entity.anim.current = entity.anim.start_jump
 		end
-		if entity.velocity.y < -0.4
-		then 
-			entity.anim.current = entity.anim.falling
-		end
+		--if entity.velocity.y < -0.4
+		--then 
+		--	entity.anim.current = entity.anim.falling
+		--end
 	end
 
 	if entity.anim.current == entity.anim.in_jump
 	then
 		if entity.can_jump
 		then
-			entity.impulse.y = 20
+			entity.impulse.y = 40
 			entity.can_jump = false
 		end
 		if entity.button.right 
 		then
-			entity.forces.x = 2000
+			entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 		if entity.button.left
 		then
-			entity.forces.x = -2000
+			entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
-		if entity.velocity.y < -0.4
+		if entity.velocity.y < -2.8
 		then 
 			entity.anim.current = entity.anim.falling
 		end
@@ -82,18 +83,64 @@ function update(delta_seconds, entity)
 	then
 		entity.can_jump = true
 		entity.can_walljump = true
+		if entity.button.right
+		then
+			entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		end
+		if entity.button.left
+		then
+			entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		end
+
 	end
 
-	if entity.anim.current == entity.anim.hanging_wall
+	if entity.anim.current == entity.anim.falling
+	then
+		if entity.button.right 
+		then
+			entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		end
+		if entity.button.left
+		then
+			entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		end
+	end
+
+	if entity.anim.current == entity.anim.hanging_right
+	then
+		if entity.button.jump and entity.button.left and entity.can_walljump
+		then
+			entity.anim.current = entity.anim.jump_from_wall
+			entity.impulse.y = 35
+			entity.impulse.x = -25
+			entity.can_walljump = false
+		end
+		entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
+	end
+
+	if entity.anim.current == entity.anim.hanging_left
 	then
 		if entity.button.jump and entity.button.right and entity.can_walljump
+		then
+			entity.anim.current = entity.anim.jump_from_wall
+			entity.impulse.y = 35
+			entity.impulse.x = 25
+			entity.can_walljump = false
+		end
+		entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
+	end
+
+
+	if entity.anim.current == entity.anim.connect_wall
+		then
+		if entity.button.jump and entity.button.left and entity.can_walljump
 		then
 			entity.anim.current = entity.anim.jump_from_wall
 			entity.impulse.y = 18
 			entity.impulse.x = -8
 			entity.can_walljump = false
 		end
-		if entity.button.jump and entity.button.left and entity.can_walljump
+		if entity.button.jump and entity.button.right and entity.can_walljump
 		then
 			entity.anim.current = entity.anim.jump_from_wall
 			entity.impulse.y = 18
@@ -101,23 +148,6 @@ function update(delta_seconds, entity)
 			entity.can_walljump = false
 		end
 	end
-
-		if entity.anim.current == entity.anim.connect_wall
-	then
-		if entity.button.jump and entity.button.right and entity.can_walljump
-		then
-			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 18
-			entity.impulse.x = -8
-			entity.can_walljump = false
-		end
-		if entity.button.jump and entity.button.left and entity.can_walljump
-		then
-			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 18
-			entity.impulse.x = 8
-			entity.can_walljump = false
-		end
 	--[[if entity.button.jump and entity.jump_timer < 0
 	then
 		entity.jump_timer = 1.0

@@ -33,6 +33,7 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+
 };
 
 class PlayerScript
@@ -47,6 +48,7 @@ public:
 		const input& i, 
 		int index,
 		anim& anim_state);
+		bool rw[4], lw[4];
 private:
 	LuaStack stack;
 };

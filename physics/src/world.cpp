@@ -178,6 +178,8 @@ void World::update(
 	for (int i = 0; i < 4; ++i)
 	{
 		bool stop = false;
+		rw[i] = false;
+		lw[i] = false;
 		Point points[3]
 		{
 			bodies[i].box.position,
@@ -189,7 +191,7 @@ void World::update(
 		points[1].x -= bodies[i].box.size.x * 1.01f;
 		points[2].x += bodies[i].box.size.x * 1.01f;
 		
-		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_wall)
+		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || anim_states[i] == anim::hanging_right)
 			for (auto& walls : statics)
 			{
 				if (point_in_obb(points[0], walls.box))
@@ -201,37 +203,35 @@ void World::update(
 
 		if (!stop)
 		{
-			if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump)
+			//std::cout << i << "   " << points[0].x << std::endl;
+			if (points[0].x > 19.3f || points[0].x < -19.3f)
 			{
-
-				for (auto& walls : statics)
+				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump)
 				{
-					if (point_in_obb(points[1], walls.box))
-					{
-						anim_states[i] = anim::connect_wall;
-						lw[i] = true;
-					}
-					else
-					{
-						lw[i] = false;
-					}
-				}
 
-				for (auto& walls : statics)
-				{
-					if (point_in_obb(points[2], walls.box))
+					for (auto& walls : statics)
 					{
-						anim_states[i] = anim::connect_wall;
- 						rw[i] = true;
+						if (point_in_obb(points[1], walls.box))
+						{
+							anim_states[i] = anim::hanging_left;
+							lw[i] = true;
+						}
+
 					}
-					else
+
+					for (auto& walls : statics)
 					{
-						rw[i] = false;
+						if (point_in_obb(points[2], walls.box))
+						{
+							anim_states[i] = anim::hanging_right;
+   							rw[i] = true;
+						}
+	
 					}
 				}
 			}
-			if (anim_states[i] == anim::hanging_wall && rw[i] == false && lw[i] == false)
-				anim_states[i] = anim::falling;
+			//if (anim_states[i] == anim::hanging_wall && rw[i] == false && lw[i] == false)
+			//	anim_states[i] = anim::falling;
 
 		}
 	}

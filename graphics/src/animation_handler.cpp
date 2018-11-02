@@ -382,13 +382,17 @@ float Animation_handler::animation_logic(anim state)
 		if (state == anim::connect_wall)
 			time = 0.1f;
 		else if (state == anim::falling)
-			time = 0.3f;
+			time = 0.1f;
+		else if (state == anim::hanging_left || state == anim::hanging_right)
+			time = 0.1f;
 	}
 	else if (current_state == anim::falling)
 	{
 		if (state == anim::landing)
 			time = 0.1f;
 		else if (state == anim::connect_wall)
+			time = 0.1f;
+		else if (state == anim::hanging_left || state == anim::hanging_right)
 			time = 0.1f;
 	}
 	else if (current_state == anim::landing)
@@ -412,12 +416,21 @@ float Animation_handler::animation_logic(anim state)
 	{
 		if (state == anim::falling)
 			time = 0.3f;
-		else if (state == anim::hanging_wall)
+		else if (state == anim::hanging_left || state == anim::hanging_right)
 			time = 0.1f;
 		else if (state == anim::landing)
 			time = 0.2f;
 	}
-	else if (current_state == anim::hanging_wall)
+	else if (current_state == anim::hanging_right)
+	{
+		if (state == anim::jump_from_wall)
+			time = 0.1;
+		else if (state == anim::landing)
+			time = 0.2;
+		else if (state == anim::falling)
+			time = 0.2;
+	}
+	else if (current_state == anim::hanging_left)
 	{
 		if (state == anim::jump_from_wall)
 			time = 0.1;
@@ -477,11 +490,11 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 			switch_animation(anim::in_jump);
 			play_anim = current_state;
 		}
-		else if (current_state == anim::connect_wall)
-		{
-			switch_animation(anim::hanging_wall);
-			play_anim = current_state;
-		}
+		//else if (current_state == anim::connect_wall)
+		//{
+		//	switch_animation(anim::hanging_wall);
+		//	play_anim = current_state;
+		//}
 		else if (current_state == anim::start_jump) 
 		{
 			switch_animation(anim::in_jump);
