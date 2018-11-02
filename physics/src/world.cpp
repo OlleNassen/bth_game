@@ -180,8 +180,10 @@ void World::update(
 		bool stop = false;
 		rw[i] = false;
 		lw[i] = false;
-		Point points[3]
+		Point points[5]
 		{
+			bodies[i].box.position,
+			bodies[i].box.position,
 			bodies[i].box.position,
 			bodies[i].box.position,
 			bodies[i].box.position
@@ -190,14 +192,20 @@ void World::update(
 		points[0].y -= bodies[i].box.size.y * 1.01f;
 		points[1].x -= bodies[i].box.size.x * 1.01f;
 		points[2].x += bodies[i].box.size.x * 1.01f;
+
+		points[3].y -= bodies[i].box.size.y * 1.01f;
+		points[3].x += bodies[i].box.size.x * 0.95f;
+											  
+		points[4].y -= bodies[i].box.size.y * 1.01f;
+		points[4].x -= bodies[i].box.size.x * 0.95f;
 		
 		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || anim_states[i] == anim::hanging_right)
 			for (auto& walls : statics)
 			{
-				if (point_in_obb(points[0], walls.box))
+				if (point_in_obb(points[0], walls.box) /*|| point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box)*/)
 				{
 					anim_states[i] = anim::landing;
-					stop = true;
+					//stop = true;
 				}
 			}
 
