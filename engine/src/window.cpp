@@ -139,7 +139,7 @@ void Window::update_input(logic::input& input)
 		double y = 0.0;
 		glfwGetCursorPos(glfw_window, &x, &y);
 
-		input.index = (y / window_size.y) * (logic::input::indices - 1);
+		input.index = static_cast<int>((y / window_size.y) * (logic::input::indices - 1));
 		input.cursor = { x, y };
 
 		if (input.index < 0) input.index = 0;
@@ -199,12 +199,12 @@ void Window::update_input(logic::input& input)
 			
 			if (axes[i] < -0.5f)
 			{
-				//input[neg] = logic::button_state::held;
+				input[neg] = logic::button_state::held;
 			}
 				
 			else if (axes[i] > 0.5f)
 			{
-				//input[pos] = logic::button_state::held;
+				input[pos] = logic::button_state::held;
 			}
 		}
 	}

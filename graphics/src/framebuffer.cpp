@@ -136,8 +136,8 @@ Framebuffer::Framebuffer(const Shader& shader, const Skybox& skybox, bool temp)
 	for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
 	{
 		// reisze framebuffer according to mip-level size.
-		unsigned int mipWidth = 128 * std::pow(0.5, mip);
-		unsigned int mipHeight = 128 * std::pow(0.5, mip);
+		unsigned int mipWidth = static_cast<unsigned int>(128 * std::pow(0.5, mip));
+		unsigned int mipHeight = static_cast<unsigned int>(128 * std::pow(0.5, mip));
 		glBindRenderbuffer(GL_RENDERBUFFER, fbo_texture);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
 		glViewport(0, 0, mipWidth, mipHeight);

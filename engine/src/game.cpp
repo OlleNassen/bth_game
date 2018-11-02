@@ -191,7 +191,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 	{
 		logic::objects_array obj;
-		for (int i = 0; i < dynamics.size(); ++i)
+		for (auto i = 0u; i < dynamics.size(); ++i)
 		{
 			obj[i].position = dynamics[i].position;
 			obj[i].velocity = dynamics[i].velocity;
@@ -206,7 +206,7 @@ void Game::update(std::chrono::milliseconds delta)
 			&level, &physics , players_placed_objects_id },
 			player_results);
 
-		for (int i = 0; i < dynamics.size(); ++i)
+		for (auto i = 0u; i < dynamics.size(); ++i)
 		{
 			dynamics[i].position = obj[i].position;
 			dynamics[i].velocity = obj[i].velocity;
@@ -316,7 +316,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 	{
 		graphics::objects_array obj;
-		for (int i = 0; i < dynamics.size(); ++i)
+		for (auto i = 0u; i < dynamics.size(); ++i)
 		{
 			obj[i].position = dynamics[i].position;
 			obj[i].size = dynamics[i].size;
@@ -345,7 +345,7 @@ void Game::pack_data()
 		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
 	}
 
-	for (int i = 0; i < dynamics.size(); ++i)
+	for (auto i = 0u; i < dynamics.size(); ++i)
 	{
 		net_state.game_objects[i].position = dynamics[i].position;
 		net_state.game_objects[i].velocity = dynamics[i].velocity;
@@ -369,7 +369,7 @@ void Game::unpack_data()
 
 		if (net.id())
 		{
-			for (int i = 0; i < dynamics.size(); ++i)
+			for (auto i = 0u; i < dynamics.size(); ++i)
 			{
 				dynamics[i].position = net_state.game_objects[i].position;
 				dynamics[i].velocity = net_state.game_objects[i].velocity;

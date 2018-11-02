@@ -20,7 +20,7 @@ Minimap::Minimap()
 void Minimap::update(const std::vector<Model>& models, int players)
 {
 	player_count = players;
-	for (int i = 1; i <= player_count; i++)
+	for (auto i = 1u; i <= player_count; i++)
 	{
 		this->map_elements[i].position.y = models[i-1].get_y_position()/171 -0.9;
 
@@ -33,7 +33,7 @@ void Minimap::render(const Shader& shader) const
 {
 	shader.use();
 
-	for (int i = 0; i <= player_count; i++)
+	for (auto i = 0u; i <= player_count; i++)
 	{	
 		shader.uniform("player_pos", map_elements[i].position);		
 		shader.uniform("scale", map_elements[i].scale);

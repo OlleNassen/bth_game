@@ -1,5 +1,5 @@
-#ifndef GAME_HPP
-#define GAME_HPP
+#ifndef SE_GAME_HPP
+#define SE_GAME_HPP
 
 #include <memory>
 #include <array>
