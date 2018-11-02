@@ -20,6 +20,7 @@
 #include "minimap.hpp"
 #include "loading_screen.hpp"
 #include "death_screen.hpp"
+#include "main_menu_screen.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -124,6 +125,9 @@ private:
 	Shader death_screen_shader{
 		"../resources/shaders/death_screen.vs",
 		"../resources/shaders/death_screen.fs" };
+	Shader main_menu_shader{
+		"../resources/shaders/main_menu_screen.vs",
+		"../resources/shaders/main_menu_screen.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -160,6 +164,7 @@ private:
 
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
+	MainMenuScreen main_menu_screen;
 
 	FX fx_emitter;
 

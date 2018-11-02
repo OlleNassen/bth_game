@@ -178,6 +178,7 @@
     <ClCompile Include="src\fx.cpp" />
     <ClCompile Include="src\leaderboard.cpp" />
     <ClCompile Include="src\loading_screen.cpp" />
+    <ClCompile Include="src\main_menu_screen.cpp" />
     <ClCompile Include="src\minimap.cpp" />
     <ClCompile Include="src\game_scene.cpp" />
     <ClCompile Include="src\mesh_lib.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="include\framebuffer.hpp" />
     <ClInclude Include="include\lights.hpp" />
     <ClInclude Include="include\loading_screen.hpp" />
+    <ClInclude Include="include\main_menu_screen.hpp" />
     <ClInclude Include="include\mesh.hpp" />
     <ClInclude Include="include\mesh_lib.hpp" />
     <ClInclude Include="include\minimap.hpp" />

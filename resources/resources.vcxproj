@@ -137,6 +137,8 @@
     <None Include="shaders\gui.vs" />
     <None Include="shaders\loading_screen.fs" />
     <None Include="shaders\loading_screen.vs" />
+    <None Include="shaders\main_menu_screen.fs" />
+    <None Include="shaders\main_menu_screen.vs" />
     <None Include="shaders\pre_filter.fs" />
     <None Include="shaders\skybox.fs" />
     <None Include="shaders\skybox.vs" />
