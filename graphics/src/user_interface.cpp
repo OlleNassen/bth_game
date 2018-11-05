@@ -25,10 +25,10 @@ UserInterface::UserInterface()
 	arrow_textures.at(0).load_texture("../resources/textures/player_icon.png");
 }
 
-void UserInterface::update(const std::vector<Model> &models, int players)
+void UserInterface::update(const std::vector<Model> &models, int players, glm::vec3 &camera_pos)
 {
 	rebind_buffers();
-	player_arrows.update(models, players, elements);
+	player_arrows.update(models, players, elements, camera_pos);
 }
 
 void UserInterface::render(const Shader &shader)const
@@ -137,19 +137,19 @@ PlayerArrows::PlayerArrows()
 
 }
 
-void PlayerArrows::update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements)
+void PlayerArrows::update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements, glm::vec3 &camera_pos)
 {
 	for (int i = 0; i < players; i++)
 	{
 		player_positions[i] = glm::vec2(models.at(i).get_position());
 		if (i > 0)
 		{
-			if (abs(player_positions[i].x - player_positions[0].x) > 23
-				|| abs(player_positions[i].y - player_positions[0].y) > 14)
+			if (abs(player_positions[i].x - camera_pos.x) > 23
+				|| abs(player_positions[i].y - camera_pos.y) > 14)
 			{
 				
 				visible[i] = false;
-				player_vector[i] = player_positions[i] - player_positions[0];
+				player_vector[i] = player_positions[i] - glm::vec2(camera_pos.x, camera_pos.y);
 				elements.at(i + 2).position = (glm::normalize(player_vector[i]) * 0.9f);
 				std::cout << player_positions[0].x << "\t" << player_positions[0].y << std::endl;
 				std::cout << player_positions[i].x << "\t" << player_positions[i].y << std::endl;

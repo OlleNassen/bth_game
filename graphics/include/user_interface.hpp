@@ -25,7 +25,7 @@ class PlayerArrows
 public:
 	PlayerArrows();
 	~PlayerArrows() = default;
-	void update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements);
+	void update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements, glm::vec3 &camera_pos);
 	void render() const;
 	//void set_position(glm::vec2 position, int i)
 	glm::mat4 arrow_matrix;
@@ -41,7 +41,7 @@ public:
 	
 	UserInterface();
 
-	void update(const std::vector<Model> &models, int players);
+	void update(const std::vector<Model> &models, int players, glm::vec3 &camera_pos);
 	/*void render_arrows();
 	void render_chat();*/
 	void render(const Shader &shader)const;
