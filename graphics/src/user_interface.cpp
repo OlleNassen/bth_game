@@ -7,7 +7,7 @@ namespace graphics
 
 UserInterface::UserInterface()
 {
-	elements.fill({ {2.0f, 2.0f}, {1.0, 1.0}, { 0.1f, 0.18f }, 0.0f });
+	elements.fill({ {2.0f, 2.0f}, {1.0, 1.0}, { 0.05f, 0.09f }, 0.0f });
 	elements.front() = { { -0.5f, -1.0f },{ 0.8f, 0.3f },{ 1.0f, 0.25f }, 0.0f };
 	elements.at(1) = { {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f }, 0.0f };
 
@@ -150,7 +150,8 @@ void PlayerArrows::update(const std::vector<Model> &models, int players, std::ar
 				//std::cout << "not visible" << std::endl;
 				visible[i] = false;
 				player_vector[i] = player_positions[i] - player_positions[0];
-				elements.at(i + 2).position = glm::normalize(player_vector[i]);
+				elements.at(i + 2).position = (glm::normalize(player_vector[i]) * 0.9f);
+				//elements.at(i + 2).position /= 1.1f;
 				//elements.at(i + 2).position = glm::vec2(.0f, .9f);
 				player_vector[i].y *= -1;
 
