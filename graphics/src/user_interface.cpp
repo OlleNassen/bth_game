@@ -7,7 +7,7 @@ namespace graphics
 
 UserInterface::UserInterface()
 {
-	elements.fill({ {2.0f, 2.0f}, {1.0, 1.0}, { 0.2f, 0.3f }, 0.0f });
+	elements.fill({ {2.0f, 2.0f}, {1.0, 1.0}, { 0.1f, 0.18f }, 0.0f });
 	elements.front() = { { -0.5f, -1.0f },{ 0.8f, 0.3f },{ 1.0f, 0.25f }, 0.0f };
 	elements.at(1) = { {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f }, 0.0f };
 
@@ -41,9 +41,9 @@ void UserInterface::render(const Shader &shader)const
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2) * 2, nullptr);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)sizeof(glm::vec2));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2) * 2, (void*)sizeof(glm::vec2));
 
 	glBindBuffer(GL_ARRAY_BUFFER, gui_buffer);
 	glEnableVertexAttribArray(2);
