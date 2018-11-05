@@ -8,8 +8,6 @@
 #include <iostream>
 #include <lua.hpp>
 #include "lua_stack.hpp"
-#include "../../graphics/include/game_scene.hpp"
-#include "../../physics/include/world.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -20,11 +18,15 @@ namespace logic
 
 using trigger_array = std::array<int, 100>;
 
-struct PlayerResult
+struct LuaExport
 {
 public:
-	std::string name;
-	float score;
+	//For each player
+	std::array<std::string,4> names;
+	std::array<float, 4> scores;
+	std::array<bool, 4> died;
+	std::array<bool, 4> finished;
+	bool game_over;
 };
 
 class objects
@@ -68,8 +70,9 @@ public:
 		std::chrono::milliseconds delta,
 		const trigger_array& triggers,
 		objects* players);
-	std::array<PlayerResult, 4> player_results();
-	bool game_over();
+
+	void update_export();
+	LuaExport data;
 private:
 	LuaStack stack;
 };

@@ -241,40 +241,35 @@ void GameScript::update(
 	}
 }
 
-std::array<PlayerResult, 4> GameScript::player_results()
+void GameScript::update_export()
 {
 	stack.getglobal("game");
-	stack.getfield(-1, "scores");
 	int top = stack.top();
-	stack.rawget(top, 1);
-	stack.rawget(top, 2);
-	stack.rawget(top, 3);
-	stack.rawget(top, 4);
 
-	std::array<PlayerResult, 4> temp;
-
-	int index = -4;
-	for (int i = 0; i < 4; ++i)
+	for (int i = 1; i <= 4; ++i)
 	{
-		temp[i] = PlayerResult{"P" + std::to_string(i + 1),
-		stack.tonumber(index++)};
-	} 
+		stack.getfield(top, "names");
+		stack.rawget(-1, i);
+		data.names[i - 1] = stack.tostring(-1);
 
+		stack.getfield(top, "scores");
+		stack.rawget(-1, i);
+		data.scores[i - 1] = stack.tonumber(-1);
+
+		stack.getfield(top, "died");
+		stack.rawget(-1, i);
+		data.died[i - 1] = stack.toboolean(-1);
+
+		stack.getfield(top, "finished");
+		stack.rawget(-1, i);
+		data.finished[i - 1] = stack.toboolean(-1);
+	}
+
+	stack.getfield(top, "winner");
+	data.game_over = stack.toboolean(-1);
 	stack.clear();
 
-	return temp;
-}
 
-bool GameScript::game_over() 
-{
-	stack.getglobal("game");
-	stack.getfield(-1, "winner");
-
-	bool temp = stack.toboolean(-1);
-
-	stack.clear();
-
-	return temp;
 }
 
 }

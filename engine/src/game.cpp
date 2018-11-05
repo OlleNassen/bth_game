@@ -69,12 +69,6 @@ Game::Game()
 		dynamics[i].impulse = { 0.0f, 0.0f };
 	}
 
-	for (int i = 0; i < 4; ++i)
-	{
-		std::string name = "P" + std::to_string(i+1);
-		player_results[i] = logic::PlayerResult{name, 0.0f};
-	}
-
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
@@ -126,8 +120,7 @@ void Game::render()
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
-		db_coll, 
-		build_info, logic_out.game_over);
+		db_coll, build_info, lua_data.game_over);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -249,12 +242,12 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].impulse = dynamics[i].impulse;
 		}
 
-		logic_out = gameplay.update(
+		lua_data = gameplay.update(
 			{ delta, obj, triggers,
 			player_inputs, 
 			anim_states,
 			players_placed_objects_id },
-			player_results, game_state);
+			game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
 		{
@@ -265,8 +258,6 @@ void Game::update(std::chrono::milliseconds delta)
 			dynamics[i].impulse = obj[i].impulse;
 		}
 	}
-	
-
 
 		if (net.connected())
 		{
@@ -367,9 +358,6 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
-
-
-
 	physics.update(delta, dynamics, triggers, anim_states);
 
 	pack_data();
@@ -401,12 +389,15 @@ void Game::update(std::chrono::milliseconds delta)
 			if (in[button::right] >= button_state::pressed)
 				direction.x += 1.0f;
 		}
-		
+
 		using namespace std;
 		stringstream stream;
-		for (auto& p : player_results)	
-			stream << p.name << ": "
-			<< fixed << setprecision(2) << p.score << " | ";
+		for (int i = 0; i < 4; ++i)
+		{
+			stream << lua_data.names[i] << ": "
+				<< fixed << setprecision(2) 
+				<< lua_data.scores[i] << " | ";
+		}			
 		
 		string temp = stream.str();
 		renderer.update(delta,
