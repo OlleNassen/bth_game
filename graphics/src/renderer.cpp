@@ -170,7 +170,7 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
-			if (died[0])
+			if (died[player_id])
 			{
 				death_screen.render(death_screen_shader);
 			}
@@ -223,7 +223,7 @@ void Renderer::render(
 		if (player_count > 1)
 		{
 			//leaderboard
-			if (died[0])
+			if (game_over)
 			{
 				leaderboard.render(text_shader, text);
 			}
@@ -251,8 +251,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<bool, 4> died)
 {
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
-	player_count = num_players + 1;
+	player_count = num_players;
 	game_state = new_game_state;
+	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
 	
 	using namespace std::chrono_literals;	
@@ -261,7 +262,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
 	loading_screen.timer += delta;
-	if (died[0])
+	if (died[id])
 	{
 		death_screen.timer += delta;
 	}
@@ -272,7 +273,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		loading_screen.timer = 0ms;
 	}
-	if (!died[0])
+	if (!died[id])
 	{
 		death_screen.timer = 0ms;
 	}

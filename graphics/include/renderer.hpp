@@ -182,7 +182,7 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
-	bool temp_death_bool = false;
+	int player_id;
 
 	FX fx_emitter;
 
