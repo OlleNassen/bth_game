@@ -5,6 +5,8 @@ in vec2 texture_coord;
 out vec4 fragment_color;
 
 uniform sampler2D icon_texture;
+uniform sampler2D gui_texture;
+
 void main()
 {
 	fragment_color = texture(icon_texture, texture_coord);

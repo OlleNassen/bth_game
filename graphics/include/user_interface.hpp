@@ -56,6 +56,7 @@ private:
 	Buffer vertex_buffer;
 	Buffer gui_buffer;
 	std::array<Texture, 10> arrow_textures;
+	Texture gui_texture;
 	std::array<GuiElement, 100> elements;
 };
 

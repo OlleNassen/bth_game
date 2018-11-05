@@ -23,6 +23,9 @@ UserInterface::UserInterface()
 
 	rebind_buffers();
 	arrow_textures.at(0).load_texture("../resources/textures/player_icon.png");
+	gui_texture.bind(1);
+	gui_texture.load_texture("../resources/textures/chat_texture.png");
+
 }
 
 void UserInterface::update(const std::vector<Model> &models, int players, glm::vec3 &camera_pos)
@@ -34,9 +37,10 @@ void UserInterface::update(const std::vector<Model> &models, int players, glm::v
 void UserInterface::render(const Shader &shader)const
 {
 	shader.use();
-
 	shader.uniform("icon_texture", 0);
-	arrow_textures.at(0).bind(0);
+	shader.uniform("gui_texture", 1);
+	gui_texture.bind(1);
+	//arrow_textures.at(0).bind(0);
 	glBindVertexArray(vao);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
@@ -92,6 +96,10 @@ void UserInterface::enable_chat()
 {
 	elements.front().position = glm::vec2(-0.5f, -1.0f);
 	elements.at(1).position = glm::vec2(-0.5f, -0.6f);
+	for (int i = 2; i < 6; i++)
+	{
+		elements.at(i).position = glm::vec2(2.0f, 2.0f);
+	}
 }
 
 
@@ -151,9 +159,9 @@ void PlayerArrows::update(const std::vector<Model> &models, int players, std::ar
 				visible[i] = false;
 				player_vector[i] = player_positions[i] - glm::vec2(camera_pos.x, camera_pos.y);
 				elements.at(i + 2).position = (glm::normalize(player_vector[i]) * 0.9f);
-				std::cout << player_positions[0].x << "\t" << player_positions[0].y << std::endl;
+				/*std::cout << player_positions[0].x << "\t" << player_positions[0].y << std::endl;
 				std::cout << player_positions[i].x << "\t" << player_positions[i].y << std::endl;
-				
+				*/
 				//elements.at(i + 2).position = glm::vec2(.0f, .9f);
 				player_vector[i].y *= -1;
 
