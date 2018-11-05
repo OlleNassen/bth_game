@@ -15,7 +15,8 @@ function update(delta_seconds, game, entities)
 
 	game.clock = game.clock + delta_seconds
 
-	if game.clock > 60.0 -- Deal out points and reset if timer is too high
+	--should be as long as a play time
+	if game.clock > 600000.0 -- Deal out points and reset if timer is too high
 	then
 		while game.points > 0
 		do
