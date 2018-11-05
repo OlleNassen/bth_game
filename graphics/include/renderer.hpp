@@ -60,7 +60,8 @@ public:
 		const std::array<std::string, 12>& buttons,
 		const std::vector<glm::vec3>& debug_positions,
 		const std::vector<build_information>& build_infos,
-		bool game_over) const;
+		bool game_over, 
+		std::array<bool, 4> died) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -70,7 +71,8 @@ public:
 		int num_players,
 		int id,
 		int new_game_state,
-		std::string scoreboard);
+		std::string scoreboard, 
+		std::array<bool, 4> died);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -180,6 +182,7 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
+	bool temp_death_bool = false;
 
 	FX fx_emitter;
 
