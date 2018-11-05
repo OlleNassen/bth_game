@@ -28,7 +28,7 @@
 struct build_information
 {
 	std::vector<glm::vec3> build_positions;
-	bool can_place = true;
+	int place_state = 1;
 };
 
 namespace graphics

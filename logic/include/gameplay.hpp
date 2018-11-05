@@ -23,7 +23,7 @@ struct id_and_model_place
 {
 	int dynamics_id = 0;
 	int model_id = 0;
-	bool can_place = true;
+	int place_state = 1;
 };
 
 namespace logic
@@ -39,7 +39,7 @@ struct Input
 	const trigger_array& triggers;
 	const input* player_inputs; //4
 	std::array<anim, 4>& anim_states;
-	std::array<id_and_model_place, 4> players_placed_objects_id;
+	std::array<id_and_model_place, 4>& players_placed_objects_id;
 };
 
 

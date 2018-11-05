@@ -104,13 +104,17 @@ void Renderer::render(
 				lines.uniform("projection", game_camera.projection);
 				lines.uniform("view", game_camera.view());
 
-				if (build_info[i].can_place)
+				if (build_info[i].place_state == 0)	//Cannot Place
+				{
+					lines.uniform("line_color", glm::vec3(1.0f, 0.0f, 0.0f));
+				}
+				else if (build_info[i].place_state == 1) //Can Place
 				{
 					lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
 				}
-				else
-				{ 
-					lines.uniform("line_color", glm::vec3(1.0f, 0.0f, 0.0f));
+				else if(build_info[i].place_state == 2)	//Has Placed
+				{
+					lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
 				}
 
 				line_debug(build_info[i].build_positions);

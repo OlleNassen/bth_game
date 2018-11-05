@@ -318,6 +318,29 @@ bool World::overlapping(const int target_id)
 		}
 	}
 
+	for (int i = 0; i < bodies.size(); i++)
+	{
+		if (target_id != i)
+		{
+			Rigidbody &right = bodies[i];
+			CollisionManifold result;
+			reset_collison_manifold(result);
+
+			result = find_collision_features(left, right);
+
+			if (result.colliding)
+			{
+				return true;
+			}
+		}
+	}
+
+	//Add this for "spawn" protection
+	/*if (glm::distance(left.position, glm::vec3(0.0f, 0.0f, 0.0f)) < 5.0f)
+	{
+		return true;
+	}*/
+
 	return false;
 }
 

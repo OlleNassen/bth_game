@@ -55,6 +55,8 @@ public:
 		bool rw[4], lw[4];
 
 	bool build_stage_done(int index);
+	bool build_stage_force_done(int index);
+	void set_build_stage_done(int index, bool state);
 
 private:
 	LuaStack stack;
