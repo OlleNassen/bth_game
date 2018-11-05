@@ -89,7 +89,6 @@ function update(delta_seconds, entity)
 	then
 		if entity.can_jump
 		then
-			print("jump")
 			entity.forces.x = 0
 			entity.forces.y = 0
 			entity.velocity.x = 0
@@ -203,7 +202,6 @@ function update(delta_seconds, entity)
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
 		then
-			print("Walljump")
 			entity.jump_timer = 0
 			entity.forces.x = 0
 			entity.forces.y = 0
@@ -225,7 +223,6 @@ function update(delta_seconds, entity)
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
 		then
-			print("Walljump")
 			entity.jump_timer = 0
 			entity.forces.x = 0
 			entity.forces.y = 0
