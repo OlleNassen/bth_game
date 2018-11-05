@@ -4,8 +4,8 @@ function setup(entity)
 	entity.can_jump = true
 	entity.can_walljump = true
 	entity.can_move = true -- instead of playable
-	entity.maxSpeed = 7000
-	entity.acceleration = 5500
+	entity.maxSpeed = 5000
+	entity.acceleration = 580000
 	entity.jump_timer = 0
 end
 
@@ -18,13 +18,29 @@ function update(delta_seconds, entity)
 		entity.anim.current = entity.anim.idle
 		if entity.button.right 
 		then
-			entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)
+			if entity.velocity.x < 6.0
+			then
+				entity.forces.x = (entity.forces.x + 5000 + (entity.maxSpeed*entity.acceleration*delta_seconds))
+				print(entity.velocity.x)
+			elseif  entity.velocity.x > 6.0
+			then
+				print(entity.velocity.x)
+				entity.forces.x = (entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds))
 			--entity.forces.x = 4000
+			end
 		end
 		if entity.button.left
 		then
-			entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds)
-			--entity.forces.x = -4000
+			if entity.velocity.x > -6.0
+			then
+				entity.forces.x = (entity.forces.x + -5000 + (-entity.maxSpeed*entity.acceleration*delta_seconds))
+				print(entity.velocity.x)
+			elseif  entity.velocity.x < -6.0
+			then
+				print(entity.velocity.x)
+				entity.forces.x = (entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds))
+			--entity.forces.x = 4000
+			end
 		end
 		if entity.button.jump
 		then
@@ -71,7 +87,7 @@ function update(delta_seconds, entity)
 			entity.velocity.y = 0
 			entity.impulse.y = 0
 			entity.impulse.x = 0
-
+			
 
 			entity.impulse.y = 41
 			entity.can_jump = false
@@ -136,8 +152,7 @@ function update(delta_seconds, entity)
 			entity.velocity.y = 0
 			entity.impulse.y = 0
 			entity.impulse.x = 0
-
-
+			
 			entity.anim.current = entity.anim.jump_from_wall
 			entity.impulse.y = 25
 			entity.impulse.x = -25
@@ -159,7 +174,7 @@ function update(delta_seconds, entity)
 			entity.velocity.y = 0
 			entity.impulse.y = 0
 			entity.impulse.x = 0
-
+			
 			entity.anim.current = entity.anim.jump_from_wall
 			entity.impulse.y = 25
 			entity.impulse.x = 25
