@@ -52,6 +52,16 @@ function update(delta_seconds, entity)
 		entity.force_done = true
 	end
 
+	width = 20
+	height = 0
+
+	if entity.position.x < -width
+	then
+		entity.position.x  = -width
+	elseif entity.position.x > width
+	then
+		entity.position.x = width
+	end
 
 	entity.rotate_was_pressed = entity.button.rotate
 end

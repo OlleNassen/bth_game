@@ -335,6 +335,12 @@ bool World::overlapping(const int target_id)
 		}
 	}
 
+	//Add this for "spawn" protection
+	/*if (glm::distance(left.position, glm::vec3(0.0f, 0.0f, 0.0f)) < 5.0f)
+	{
+		return true;
+	}*/
+
 	return false;
 }
 
