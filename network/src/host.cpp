@@ -120,7 +120,7 @@ void Host::send(GameState& state)
 	}
 }
 
-void Host::receive(uint16& input, int i)
+void Host::receive(uint16* input)
 {
 	if (enet_host)
 	{
@@ -134,10 +134,12 @@ void Host::receive(uint16& input, int i)
 				int index = 0;
 				for (auto* peer : peers)
 				{
-					if (peer && ++index == i)
+					++index;
+					if (peer == eevent.peer)
 					{
-						input = *reinterpret_cast<uint16*>(eevent.packet->data);	
-					}
+						input[index] = *reinterpret_cast<uint16*>(eevent.packet->data);
+						break;
+					}					
 				}
 				break;
 			}
@@ -182,9 +184,7 @@ void Host::connect(const ENetEvent& eevent)
 			peer = eevent.peer;
 			break;
 		}
-	}
-		
-			
+	}			
 }
 
 void Host::disconnect(const ENetEvent& eevent)
@@ -192,8 +192,13 @@ void Host::disconnect(const ENetEvent& eevent)
 	std::cout << "Diconnected." << '\n';
 	--player_count;
 	for (auto& peer : peers)
+	{
 		if (peer == eevent.peer)
+		{
 			peer = nullptr;
+			break;
+		}
+	}			
 }
 
 

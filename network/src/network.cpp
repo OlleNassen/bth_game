@@ -28,14 +28,10 @@ void Messenger::update(GameState& state, const char* ip_address)
 	else
 	{	
 		player_host.send(state);
-		for (int i = 1; i < 4; ++i)
-		{	
-			player_host.receive(state.inputs[i], i);
-		}
+		player_host.receive(state.inputs);
 	}
 
 	player_id = state.player_id;
-	//std::cout << player_id << '\n';
 }
 
 }
