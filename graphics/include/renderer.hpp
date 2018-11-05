@@ -171,7 +171,7 @@ private:
 
 	PostProcessingEffects post_processing_effects;
 
-	std::array<PointLight, 4> lights;
+	std::array<PointLight, 14> lights;
 
 	int first_model = 0;
 	int last_model = 0;
@@ -200,7 +200,7 @@ private:
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T* first, const T* last)
+void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T* first, const T* last)
 {
 	for (auto it = first; it != last; ++it)
 	{
@@ -210,7 +210,7 @@ void render_type(const Shader& shader, const Camera& camera, const std::array<Po
 }
 
 template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T& data, int num_players)
+void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T& data, int num_players)
 {
 	for (auto i = 0; i < num_players; ++i)
 	{

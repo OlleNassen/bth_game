@@ -26,7 +26,7 @@ std::vector<std::string> faces
 	"../resources/textures/skybox2/black.png",	// FRONT
 	"../resources/textures/skybox2/black.png",	// BACK
 	"../resources/textures/skybox2/black.png",	// TOP
-	"../resources/textures/skybox2/right.png",	// BOTTOM
+	"../resources/textures/skybox2/black.png",	// BOTTOM
 	"../resources/textures/skybox2/black.png",	// RIGHT
 	"../resources/textures/skybox2/black.png"	// LEFT
 };

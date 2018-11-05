@@ -11,7 +11,9 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-uniform vec3 light_pos[4];
+uniform vec3 light_pos[14];
+uniform vec3 light_color[14];
+uniform float light_intensity[14];
 
 const int JOINT_SIZE = 20;
 uniform int animated;
