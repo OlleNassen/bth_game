@@ -73,8 +73,9 @@ private:
 	bool showleaderboard = false;
 	bool is_client{};
 
-	//test
+	//Building phase
 	std::array <id_and_model_place, 4> players_placed_objects_id;
+	std::vector<glm::vec3> placed_objects_hitbox_positions;
 	bool buildmode = true;
 	bool give_players_objects = false;
 

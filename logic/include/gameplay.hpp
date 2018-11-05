@@ -23,6 +23,7 @@ struct id_and_model_place
 {
 	int dynamics_id = 0;
 	int model_id = 0;
+	bool can_place = true;
 };
 
 namespace logic
