@@ -10,7 +10,7 @@ Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh
 	, emissive_color{emissive_color}
 {
 	std::string animationPath = mesh->name + "_anim" + ".sspAnim";
-	bool animated = animation_handler.create_animation_data(animationPath, anim::idle);
+	bool animated = animation_handler.create_animation_data(animationPath, anim::falling);
 	if (animated == true)
 		is_animated = true;
 }

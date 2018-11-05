@@ -206,12 +206,6 @@ void Game::update(std::chrono::milliseconds delta)
 				give_players_objects = true;
 			}
 		}
-		//anim idle = anim::idle;
-		//for (int i = 0; i < level.models.size(); i++)
-		//{
-		//	if (level.models[i].is_animated)
-		//		level.models[i].update_animation((float)delta.count(), idle);
-		//}
 
 		for (auto& ppoi : players_placed_objects_id)
 		{
@@ -265,67 +259,7 @@ void Game::update(std::chrono::milliseconds delta)
 				else if (physics.lw[i] == true)
 					level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 
-		
 
-
-				//if (player_inputs[i][logic::button::jump] == logic::button_state::held)
-				//{
-				//
-				//	if (level.models[i].get_state() != MODEL_STATE::START_JUMP && level.models[i].get_state() != IN_JUMP && level.models[i].get_state() != FALLING && level.models[i].get_state() != LANDING)
-				//		level.models[i].switch_animation(MODEL_STATE::START_JUMP, 0.005f);
-				//
-				//	if (level.models[i].get_animation_done(MODEL_STATE::START_JUMP))
-				//		level.models[i].switch_animation(MODEL_STATE::IN_JUMP, 0.02f);
-				//
-				//	if (level.models[i].get_state() == MODEL_STATE::IN_JUMP)
-				//	{
-				//		physics.dynamic_rigidbodies[i].add_force(glm::vec2{ 0.0f, 10.0f });
-				//	}
-				//}
-				//else if (level.models[i].get_state() == IN_JUMP && physics.dynamic_rigidbodies[i].get_force().y < -0.1f)
-				//	level.models[i].switch_animation(MODEL_STATE::FALLING, 0.32f);
-				//else if (glm::abs(physics.dynamic_rigidbodies[i].get_force().y) < 0.1f && level.models[i].get_state() == MODEL_STATE::FALLING)
-				//{
-				//	level.models[i].switch_animation(MODEL_STATE::LANDING, 0.05f);
-				//}
-				//
-				//if (glm::abs(dynamics[i].forces.x) > 3.0f && level.models[i].get_state() == MODEL_STATE::IDLE)
-				//	level.models[i].switch_animation(RUNNING, 0.2);
-				//else if (glm::abs(dynamics[i].forces.x) < 3.0f && level.models[i].get_state() == MODEL_STATE::RUNNING 
-				//	&& level.models[i].get_state() != MODEL_STATE::IDLE && level.models[i].get_state() != MODEL_STATE::TURN)
-				//	level.models[i].switch_animation(IDLE, 0.2);		
-				//
-				////===================================Turning===================================
-				//
-				//if (logic_out.directions[i].x > 0.0f || player_inputs[i][logic::button::right] == logic::button_state::held)
-				//{
-				//	if (level.models[i].get_state() != TURN && level.models[i].is_turned_left == true && level.models[i].is_turned_right == false && level.models[i].get_state() == IDLE
-				//		|| level.models[i].get_state() != TURN && level.models[i].is_turned_left == true && level.models[i].is_turned_right == false && level.models[i].get_state() == RUNNING
-				//		|| level.models[i].get_state() == FALLING || level.models[i].get_state() == IN_JUMP || level.models[i].get_state() == START_JUMP)
-				//	{
-				//		if (level.models[i].get_state() != FALLING && level.models[i].get_state() != IN_JUMP && level.models[i].get_state() != START_JUMP)
-				//			level.models[i].switch_animation(TURN, 0.1);
-				//
-				//		level.models[i].is_turned_right = true;
-				//		level.models[i].is_turned_left = false;
-				//	}
-				//
-				//}
-				//else if (logic_out.directions[i].x < 0.0f || player_inputs[i][logic::button::left] == logic::button_state::held)
-				//{
-				//
-				//	if (level.models[i].get_state() != TURN && level.models[i].is_turned_right == true && level.models[i].is_turned_left == false && level.models[i].get_state() == IDLE
-				//		|| level.models[i].get_state() != TURN && level.models[i].is_turned_right == true && level.models[i].is_turned_left == false && level.models[i].get_state() == RUNNING
-				//		|| level.models[i].get_state() == FALLING || level.models[i].get_state() == IN_JUMP || level.models[i].get_state() == START_JUMP)
-				//	{
-				//		if (level.models[i].get_state() != FALLING && level.models[i].get_state() != IN_JUMP && level.models[i].get_state() != START_JUMP)
-				//			level.models[i].switch_animation(TURN, 0.1);
-				//
-				//		level.models[i].is_turned_right = false;
-				//		level.models[i].is_turned_left = true;
-				//	}
-				//	//===================================Turning===================================
-				//}
 				if (player_inputs[i][logic::button::right] == logic::button_state::held)
 				{
 					if (level.models[i].get_state() != anim::hanging_right && level.models[i].get_state() != anim::hanging_left && level.models[i].get_state() != anim::turning && level.models[i].get_state() != anim::connect_wall && level.models[i].get_state() != anim::jump_from_wall)
@@ -349,7 +283,7 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
-	anim idle = anim::idle;
+	anim idle = anim::falling;
 
 	for (int i = 4; i < level.models.size(); i++)
 		if (level.models[i].is_animated)

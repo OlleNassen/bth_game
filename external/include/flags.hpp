@@ -27,7 +27,8 @@ enum class anim
 	turning,
 	sliding,
 	hanging_left,
-	hanging_right
+	hanging_right,
+	independent
 };
 
 

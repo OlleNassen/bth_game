@@ -134,7 +134,7 @@ function update(delta_seconds, entity)
 
 
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 25
+			entity.impulse.y = 35
 			entity.impulse.x = -25
 			entity.can_walljump = false
 		end
@@ -156,7 +156,7 @@ function update(delta_seconds, entity)
 			entity.impulse.x = 0
 
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 25
+			entity.impulse.y = 35
 			entity.impulse.x = 25
 			entity.can_walljump = false
 		end
@@ -191,4 +191,17 @@ function update(delta_seconds, entity)
 	--entity.velocity.y = delta_seconds * 100 * entity.direction.z
 
 	entity.forces.y = entity.forces.y - 6400
+end
+
+
+
+function setup(entity)
+	--player_playable = true -- 1 should be thought as a playable player 
+	entity.jump_timer = 1.0
+	entity.can_jump = true
+	entity.can_walljump = true
+	entity.can_move = true -- instead of playable
+	entity.maxSpeed = 7000
+	entity.acceleration = 5500
+	entity.jump_timer = 0
 end

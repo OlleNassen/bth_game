@@ -60,8 +60,8 @@ glm::vec3 Animation_handler::calc_interpolated_translation(float time, int index
 
 glm::quat Animation_handler::calc_interpolated_quaternion(float time, int index)
 {
-	if(current_animation != previous_animation)
-		current_keyframe = find_current_keyframe(time, index);
+	//if(current_animation != previous_animation)
+	current_keyframe = find_current_keyframe(time, index);
 	unsigned int nextRotation = current_keyframe + 1;
 
 	float deltaTime = animations[current_animation]->joints[index].keyFrames[nextRotation].time - animations[current_animation]->joints[index].keyFrames[current_keyframe].time;
@@ -315,7 +315,7 @@ bool Animation_handler::switch_animation(anim state)
 	if(current_state != state)
 	{
 		float interpolation_time = animation_logic(state);
-		if (interpolation_time > 0)
+		if (interpolation_time > -0.20)
 		{
 			for (unsigned int i = 0; i < this->animations.size(); i++)
 			{
@@ -362,6 +362,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.1f;
 		else if (state == anim::falling)
 			time = 0.1;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::running)
 	{
@@ -377,12 +379,15 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.2;
 		else if (state == anim::falling)
 			time = 0.1;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::start_jump)
 	{
 		if (state == anim::in_jump)
 			time = 0.02f;
-
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::in_jump)
 	{
@@ -392,6 +397,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.1f;
 		else if (state == anim::hanging_left || state == anim::hanging_right)
 			time = 0.1f;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::falling)
 	{
@@ -401,6 +408,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.1f;
 		else if (state == anim::hanging_left || state == anim::hanging_right)
 			time = 0.1f;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::landing)
 	{
@@ -408,6 +417,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.2f;
 		else if (state == anim::running)
 			time = 0.2f;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::sliding)
 	{
@@ -417,6 +428,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.2f;
 		else if (state == anim::start_jump)
 			time = 0.03f;
+		else if (state == anim::independent)
+			time = 0.0;
 		
 	}
 	else if (current_state == anim::connect_wall)
@@ -427,6 +440,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.1f;
 		else if (state == anim::landing)
 			time = 0.2f;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::hanging_right)
 	{
@@ -436,6 +451,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.2;
 		else if (state == anim::falling)
 			time = 0.2;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::hanging_left)
 	{
@@ -445,11 +462,40 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.2;
 		else if (state == anim::falling)
 			time = 0.2;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::jump_from_wall)
 	{
 		if (state == anim::in_jump)
 			time = 0.002;
+		else if (state == anim::independent)
+			time = 0.0;
+	}
+	else if (current_state == anim::independent)
+	{
+	if (state == anim::connect_wall)
+		time = 0.0f;
+	else if (state == anim::falling)
+		time = 0.0f;
+	else if (state == anim::hanging_left)
+		time = 0.0f;
+	else if (state == anim::hanging_right)
+		time = 0.0f;
+	else if (state == anim::hanging_wall)
+		time = 0.0f;
+	else if (state == anim::idle)
+		time = 0.0f;
+	else if (state == anim::running)
+		time = 0.0f;
+	else if (state == anim::in_jump)
+		time = 0.0f;
+	else if (state == anim::jump_from_wall)
+		time = 0.0f;	
+	else if (state == anim::start_jump)
+		time = 0.0f;
+	else if (state == anim::sliding)
+		time = 0.0f;
 	}
 	return time;
 }
@@ -458,11 +504,12 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 {
 	bool switch_worked = false;
 	
+
 	if (animations[current_animation]->switching)
 		time_at_switch += (delta * 0.001);
 
 	this->time_seconds += (delta * 0.001);
-	//get_time(delta);
+
 	if (animations.size() > 1)
 	{
 
@@ -470,25 +517,17 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 			switch_worked = switch_animation(play_anim);
 		else if (animations[current_animation]->max_time <= this->time_seconds && !this->animations[current_animation]->looping)
 			switch_worked = switch_animation(play_anim);
+	//get_time(delta);
 	
 		if (!switch_worked)
 			play_anim = current_state;
 
-	}
-	if (animations[current_animation]->max_time <= this->time_seconds && animations[current_animation]->looping)
-	{
-		this->time_seconds = 0.0;
-		this->current_keyframe = 0;
-	}
-	if (animations[current_animation]->switching)
-	{
-		if (switch_time <= time_at_switch)
-			animations[current_animation]->switching = false;
-	}
+		if (animations[current_animation]->switching)
+		{
+			if (switch_time <= time_at_switch)
+				animations[current_animation]->switching = false;
+		}
 
-	//Temp Animation Logic
-	if (animations.size() > 1)
-	{
 
 		if (animations[current_animation]->max_time <= this->time_seconds && !this->animations[current_animation]->looping)
 		{
@@ -502,11 +541,6 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 				switch_animation(anim::in_jump);
 				play_anim = current_state;
 			}
-			//else if (current_state == anim::connect_wall)
-			//{
-			//	switch_animation(anim::hanging_wall);
-			//	play_anim = current_state;
-			//}
 			else if (current_state == anim::start_jump) 
 			{
 				switch_animation(anim::in_jump);
@@ -526,6 +560,11 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 	}
 
 	//Temp Animation Logic
+	if (animations[current_animation]->max_time <= this->time_seconds && animations[current_animation]->looping)
+	{
+		this->time_seconds = 0.0;
+		this->current_keyframe = 0;
+	}
 
 	for (unsigned int i = 0; i < this->joints.size(); i++)
 	{

@@ -214,7 +214,7 @@ void World::update(
 		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || anim_states[i] == anim::hanging_right)
 			for (auto& walls : statics)
 			{
-				if (point_in_obb(points[0], walls.box) || point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box))
+				if (point_in_obb(points[0], walls.box))// || point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box))
 				{
 					anim_states[i] = anim::landing;
 					stop = true;
