@@ -20,7 +20,7 @@ function update(delta_seconds, entity)
 		then
 			if entity.velocity.x < 6.0
 			then
-				entity.forces.x = (entity.forces.x + 5000 + (entity.maxSpeed*entity.acceleration*delta_seconds))
+				entity.forces.x = (entity.forces.x + 5500 + (entity.maxSpeed*entity.acceleration*delta_seconds))
 				print(entity.velocity.x)
 			elseif  entity.velocity.x > 6.0
 			then
@@ -33,7 +33,7 @@ function update(delta_seconds, entity)
 		then
 			if entity.velocity.x > -6.0
 			then
-				entity.forces.x = (entity.forces.x + -5000 + (-entity.maxSpeed*entity.acceleration*delta_seconds))
+				entity.forces.x = (entity.forces.x + -5500 + (-entity.maxSpeed*entity.acceleration*delta_seconds))
 				print(entity.velocity.x)
 			elseif  entity.velocity.x < -6.0
 			then
