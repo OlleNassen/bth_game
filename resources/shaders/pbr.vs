@@ -11,8 +11,6 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-uniform vec3 light_pos[4];
-
 const int JOINT_SIZE = 20;
 uniform int animated;
 uniform mat4 bone_mats[JOINT_SIZE];

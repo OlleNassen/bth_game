@@ -154,7 +154,7 @@ private:
 
 	PostProcessingEffects post_processing_effects;
 
-	std::array<PointLight, 4> lights;
+	std::array<PointLight, 14> lights;
 
 	int player_count{0};
 	glm::vec2 v[4];
@@ -179,7 +179,7 @@ private:
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T& data)
+void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T& data)
 {
 	for (auto i = 4u; i < data.size(); ++i)
 	{
@@ -189,7 +189,7 @@ void render_type(const Shader& shader, const Camera& camera, const std::array<Po
 }
 
 template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T& data, int num_players)
+void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T& data, int num_players)
 {
 	for (auto i = 0; i < num_players; ++i)
 	{

@@ -79,7 +79,7 @@ void Model::rotate(const glm::vec3 axis, float angle)
 	model = glm::rotate(glm::mat4{ 1.0f }, angle, axis);
 }
 
-void Model::render(const Shader & shader, const Camera& camera, const std::array<PointLight, 4>& lights)const
+void Model::render(const Shader & shader, const Camera& camera, const std::array<PointLight, 14>& lights)const
 {
 	shader.uniform("model", model);
 	shader.uniform("view", camera.view());
@@ -87,12 +87,24 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 
 	shader.uniform("cam_pos", camera.position);
 	
-	shader.uniform("light_pos[0]", lights[0].position);
-	shader.uniform("light_pos[1]", lights[1].position);
-	shader.uniform("light_pos[2]", lights[2].position);
-	shader.uniform("light_pos[3]", lights[3].position);
-	
-	shader.uniform("light_color", lights[0].color);
+	int light_count = 0;
+	shader.uniform("light_pos[" + std::to_string(light_count) + "]", glm::vec3(camera.position.x, camera.position.y + 5, camera.position.z - 10));
+	shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[0].color);
+	shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[0].intensity);
+
+	light_count++;
+
+	for (int i = 1; i < 6; i++)
+	{
+		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
+		{
+			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
+			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
+			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
+			light_count++;
+		}
+	}
+	shader.uniform("light_count", light_count);
 
 	shader.uniform("albedo_map", 0);
 	shader.uniform("normal_map", 1);
