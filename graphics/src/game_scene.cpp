@@ -1,4 +1,6 @@
 #include "game_scene.hpp"
+
+#include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace graphics
@@ -13,7 +15,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 	//Create players
 	CustomLevel level(file_name);
 	CustomLevel objects("../resources/level/objects.ssp");
-	models.reserve(sizeof(Model) * (level.counterReader.levelObjectCount + 4));
+	models.reserve(sizeof(Model) * (level.counterReader.levelObjectCount));
 
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
@@ -23,25 +25,25 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 	v[2] = { 3, 0 };
 	v[3] = { -9, 0 };
 
-	models.emplace_back(glm::translate(model, vec3{ v[0], 0 }), vec3{ 1.0f, 0.0f, 0.0f}, mesh_lib->get_mesh(0));
-	models.emplace_back(glm::translate(model, vec3{ v[1], 0 }), vec3{ 0.2f, 0.9f, 0.1f}, mesh_lib->get_mesh(0));
-	models.emplace_back(glm::translate(model, vec3{ v[2], 0 }), vec3{ 0.1f, 0.1f, 0.9f}, mesh_lib->get_mesh(0));
-	models.emplace_back(glm::translate(model, vec3{ v[3], 0 }), vec3{ 0.9f, 0.8f, 0.1f}, mesh_lib->get_mesh(0));
+	moving_models.emplace_back(glm::translate(model, vec3{ v[0], 0 }), vec3{ 1.0f, 0.0f, 0.0f}, mesh_lib->get_mesh(0));
+	moving_models.emplace_back(glm::translate(model, vec3{ v[1], 0 }), vec3{ 0.2f, 0.9f, 0.1f}, mesh_lib->get_mesh(0));
+	moving_models.emplace_back(glm::translate(model, vec3{ v[2], 0 }), vec3{ 0.1f, 0.1f, 0.9f}, mesh_lib->get_mesh(0));
+	moving_models.emplace_back(glm::translate(model, vec3{ v[3], 0 }), vec3{ 0.9f, 0.8f, 0.1f}, mesh_lib->get_mesh(0));
 
 	for (int i = 0; i < 4; i++)
 	{
-		models[i].create_animation_data("Robot_idle.sspAnim", anim::idle);
-		models[i].create_animation_data("robot_run.sspAnim", anim::running);
-		models[i].create_animation_data("Robot_Jump_1.sspAnim", anim::start_jump);
-		models[i].create_animation_data("Robot_Jump_2.sspAnim", anim::falling);
-		models[i].create_animation_data("Robot_Jump_3.sspAnim", anim::in_jump);
-		models[i].create_animation_data("Robot_Jump_4.sspAnim", anim::landing);
-		models[i].create_animation_data("Robot_turn.sspAnim", anim::turning);
-		models[i].create_animation_data("Robot_wj1.sspAnim", anim::connect_wall);
-		models[i].create_animation_data("Robot_hanging.sspAnim", anim::hanging_left);
-		models[i].create_animation_data("Robot_hanging.sspAnim", anim::hanging_right);
-		models[i].create_animation_data("Robot_wj2.sspAnim", anim::jump_from_wall);
-		models[i].create_animation_data("Robot_slide.sspAnim", anim::sliding);
+		moving_models[i].create_animation_data("Robot_idle.sspAnim", anim::idle);
+		moving_models[i].create_animation_data("robot_run.sspAnim", anim::running);
+		moving_models[i].create_animation_data("Robot_Jump_1.sspAnim", anim::start_jump);
+		moving_models[i].create_animation_data("Robot_Jump_2.sspAnim", anim::falling);
+		moving_models[i].create_animation_data("Robot_Jump_3.sspAnim", anim::in_jump);
+		moving_models[i].create_animation_data("Robot_Jump_4.sspAnim", anim::landing);
+		moving_models[i].create_animation_data("Robot_turn.sspAnim", anim::turning);
+		moving_models[i].create_animation_data("Robot_wj1.sspAnim", anim::connect_wall);
+		moving_models[i].create_animation_data("Robot_hanging.sspAnim", anim::hanging_left);
+		moving_models[i].create_animation_data("Robot_hanging.sspAnim", anim::hanging_right);
+		moving_models[i].create_animation_data("Robot_wj2.sspAnim", anim::jump_from_wall);
+		moving_models[i].create_animation_data("Robot_slide.sspAnim", anim::sliding);
 	}
 
 	for (unsigned int i = 0; i < level.counterReader.levelObjectCount; i++)
@@ -55,7 +57,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 
 		models.emplace_back(model, glm::vec3(0, 0, 0), mesh_lib->get_mesh(level.levelObjects[i].id));
 
-		if(level.levelObjects[i].position[2] > -0.01 && level.levelObjects[i].position[2] < 0.01)
+		if(level.levelObjects[i].position[2] > -0.01f && level.levelObjects[i].position[2] < 0.01f)
 		{ 
 			float width = level.levelObjects[i].collisionBox[1];
 			float height = level.levelObjects[i].collisionBox[0];
@@ -65,6 +67,11 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 				glm::vec2{ ptr[0], ptr[1] }, width, height, false });
 		}
 	}
+
+	std::sort(models.begin(), models.end(), [](const auto& left, const auto& right)
+	{
+		return left.get_y_position() < right.get_y_position();
+	});
 
 	// Lucas/Vincent Test för placering av object.
 	inititate_object(objects, object_lib);

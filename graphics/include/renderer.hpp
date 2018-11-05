@@ -168,6 +168,9 @@ private:
 
 	std::array<PointLight, 4> lights;
 
+	int first_model = 0;
+	int last_model = 0;
+
 	int player_count{0};
 	glm::vec2 v[4];
 
@@ -191,11 +194,11 @@ private:
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T& data)
+void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T* first, const T* last)
 {
-	for (auto i = 4u; i < data.size(); ++i)
+	for (auto it = first; it != last; ++it)
 	{
-		const auto& renderable = data[i];
+		const auto& renderable = *it;
 		renderable.render(shader, camera, lights);
 	}
 }
