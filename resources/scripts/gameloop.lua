@@ -1,18 +1,19 @@
 function setup(game)
-	game.goal = 100
+	game.goal = 171
 	game.points = 0 -- do not change this, edit value in update loop
+	game.max_points = 10
 	--4 playerscores:
 	game.scores = { 0, 0, 0, 0 }
 	game.finished = { false, false, false, false }
 	game.clock = 0.0
-	game.winner = -1
+	game.winner = false
 end
 
 function update(delta_seconds, game, entities)
 
 	game.clock = game.clock + delta_seconds
 
-	if game.clock > 120.0 -- Deal out points and reset if timer is too high
+	if game.clock > 60.0 -- Deal out points and reset if timer is too high
 	then
 		while game.points > 0
 		do
@@ -51,16 +52,16 @@ function update(delta_seconds, game, entities)
 	then
 		-- Start positions
 		entities[1].position.x = 0
-		entities[1].position.y = 0
+		entities[1].position.y = 4
 
-		entities[2].position.x = 5
-		entities[2].position.y = 0
+		entities[2].position.x = 3
+		entities[2].position.y = 4
 
-		entities[3].position.x = 10
-		entities[3].position.y = 0
+		entities[3].position.x = 5
+		entities[3].position.y = 4
 
-		entities[4].position.x = 3
-		entities[4].position.y = 0
+		entities[4].position.x = 8
+		entities[4].position.y = 4
 
 		game.points = 4 -- Don't change unless you know what you're doing :)
 		game.clock = 0
@@ -75,7 +76,7 @@ function update(delta_seconds, game, entities)
 	--Check if players finished
 	for i = 1, 4, 1
 	do
-		if entities[i].position.y > game.goal
+		if entities[i].position.y > game.goal and not game.finished[i]
 		then
 			game.scores[i] = game.scores[i] + game.points
 			game.points = game.points - 1
@@ -83,6 +84,26 @@ function update(delta_seconds, game, entities)
 			game.finished[i] = true
 			entities[i].position.x = -2000
 			entities[i].position.y = -2000
+		end
+	end
+		--Check if players dead
+	for i = 1, 4, 1
+	do
+		if entities[i].triggered >= 4 and not game.finished[i]
+		then
+			game.points = game.points - 1
+
+			game.finished[i] = true
+			entities[i].position.x = -2000
+			entities[i].position.y = -2000
+		end
+	end
+
+	for i = 1, 4, 1
+	do
+		if game.scores[i] > game.max_points
+		then
+			game.winner = true
 		end
 	end
 

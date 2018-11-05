@@ -1,7 +1,7 @@
 #ifndef GAME_SCENE_HPP
 #define GAME_SCENE_HPP
 #include "model.hpp"
-#include "LeapImporter\LeapImporter\LeapLevel.h"
+#include "LeapImporter/LeapImporter/LeapLevel.h"
 #include <vector>
 #include <string>
 #include <glm/glm.hpp>

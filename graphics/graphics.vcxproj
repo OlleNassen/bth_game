@@ -127,14 +127,19 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level2</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)external/include/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <ExceptionHandling>false</ExceptionHandling>
+      <AdditionalOptions>/EHsc %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -143,8 +148,9 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>freetype.lib;LeapImporter.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)external/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -168,9 +174,11 @@
     <ClCompile Include="src\animation_logic.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\death_screen.cpp" />
     <ClCompile Include="src\fx.cpp" />
     <ClCompile Include="src\leaderboard.cpp" />
     <ClCompile Include="src\loading_screen.cpp" />
+    <ClCompile Include="src\main_menu_screen.cpp" />
     <ClCompile Include="src\minimap.cpp" />
     <ClCompile Include="src\game_scene.cpp" />
     <ClCompile Include="src\mesh_lib.cpp" />
@@ -191,6 +199,7 @@
     <ClInclude Include="include\animation_logic.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="include\death_screen.hpp" />
     <ClInclude Include="include\fx.hpp" />
     <ClInclude Include="include\game_scene.hpp" />
     <ClInclude Include="include\helpers.hpp" />
@@ -198,6 +207,7 @@
     <ClInclude Include="include\framebuffer.hpp" />
     <ClInclude Include="include\lights.hpp" />
     <ClInclude Include="include\loading_screen.hpp" />
+    <ClInclude Include="include\main_menu_screen.hpp" />
     <ClInclude Include="include\mesh.hpp" />
     <ClInclude Include="include\mesh_lib.hpp" />
     <ClInclude Include="include\minimap.hpp" />

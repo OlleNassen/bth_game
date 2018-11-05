@@ -3,10 +3,10 @@
 namespace graphics
 {
 LoadingScreen::LoadingScreen()
-	:waiting_1("../resources/textures/waiting_1.png")
-	,waiting_2("../resources/textures/waiting_2.png")
-	,waiting_3("../resources/textures/waiting_3.png")
-	,waiting_4("../resources/textures/waiting_4.png")
+	:waiting_1("../resources/textures/loading_screen/waiting_1.png")
+	,waiting_2("../resources/textures/loading_screen/waiting_2.png")
+	,waiting_3("../resources/textures/loading_screen/waiting_3.png")
+	,waiting_4("../resources/textures/loading_screen/waiting_4.png")
 
 {
 	glGenVertexArrays(1, &vao_id);

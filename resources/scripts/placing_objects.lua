@@ -1,32 +1,56 @@
 function setup(entity)
-	--player_playable = true -- 1 should be thought as a playable player 
-	entity.jump_timer = 1.0
-	entity.can_move = true -- instead of playable
+	entity.rotate_was_pressed = false
+	entity.done = false
+	entity.clock = 0.0
 end
 
+place_speed = 10
+
 function update(delta_seconds, entity)
-	--print(entity.points)
 
-	if entity.button.left
+	delta_place_speed = place_speed * delta_seconds
+	entity.clock = entity.clock + delta_seconds
+
+	if entity.done == false
 	then
-		entity.forces.x = -4000
+
+		if entity.button.left
+		then
+			entity.position.x = entity.position.x - delta_place_speed
+		end
+	
+		if entity.button.right
+		then
+			entity.position.x = entity.position.x + delta_place_speed
+		end
+
+		if entity.button.up
+		then
+			entity.position.y = entity.position.y + delta_place_speed
+		end
+	
+		if entity.button.down
+		then
+			entity.position.y = entity.position.y - delta_place_speed
+		end
+
+		if entity.button.rotate and not entity.rotate_was_pressed
+		then
+			print("DO ROTATION!")
+		end
+
+		if entity.button.jump
+		then
+			entity.done = true
+		end
+
 	end
 
-	if entity.button.right
+	if entity.clock > 10.0
 	then
-		entity.forces.x = 4000
+		entity.done = true
 	end
 
-	if entity.button.jump and entity.jump_timer < 0
-	then
-		entity.jump_timer = 1.0
-		entity.impulse.y = 25
-	end
 
-	entity.jump_timer = entity.jump_timer - delta_seconds
-	--entity.forces.x = -1000
-	--entity.size.x = 2045
-	--entity.impulse.y =  50
-
-	--entity.velocity.y = delta_seconds * 100 * entity.direction.z
+	entity.rotate_was_pressed = entity.button.rotate
 end

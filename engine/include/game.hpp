@@ -56,6 +56,7 @@ private:
 	network::GameState net_state;
 	network::Messenger net;
 
+	physics::trigger_array triggers;
 	physics::objects_array dynamics;
 	physics::World physics;	
 	std::chrono::milliseconds timestep{16};
@@ -63,10 +64,22 @@ private:
 	gui::Chat chat;
 	gui::Menu menu;	
 
+	void place_random_objects(float start_height, float map_width, int number_of_randoms);
+
+	std::array<anim, 4> anim_states;
+
 	//Temp leaderboards
 	std::vector<int> leader_board;
 	bool showleaderboard = false;
 	bool is_client{};
+
+	//test
+	std::array <id_and_model_place, 4> players_placed_objects_id;
+	bool buildmode = true;
+	bool give_players_objects = false;
+
+	//Random placed objects
+	std::array <id_and_model_place, 4> random_placed_objects_id;
 };
 
 

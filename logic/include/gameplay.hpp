@@ -4,6 +4,7 @@
 #include <chrono>
 #include <array>
 #include <glm/glm.hpp>
+#include <flags.hpp>
 
 #include "lua_script.hpp"
 #include "input.hpp"
@@ -18,26 +19,31 @@
 //	bool trigger;
 //};
 
+struct id_and_model_place
+{
+	int dynamics_id = 0;
+	int model_id = 0;
+};
+
 namespace logic
 {
 
 using objects_array = std::array<objects, 100>;
+using trigger_array = std::array<int, 100>;
 	   
 struct Input
 {
 	std::chrono::milliseconds delta;
 	objects_array& dynamics;
+	const trigger_array& triggers;
 	const input* player_inputs; //4
-	//unnecessary junk:
-	std::array<glm::vec3, 4> directions;
-	graphics::GameScene* scene;
-	physics::World* physics;
+	std::array<anim, 4>& anim_states;
+	std::array<id_and_model_place, 4> players_placed_objects_id;
 };
 
 struct Output
 {
-	std::array<glm::vec2, 4> velocities;
-	std::array<glm::vec3, 4> directions;
+	bool game_over;
 };
 
 
@@ -53,7 +59,9 @@ public:
 	void refresh();
 
 	Output update(Input input,
-		std::array<logic::PlayerResult, 4>& player_results);
+		std::array<logic::PlayerResult, 4>& player_results,
+		int& current_state);
+	bool build_stage() const;
 private:
 	script_array<int> entities;
 	PlayerScript player_script{"../resources/scripts/player.lua"};
@@ -71,6 +79,7 @@ private:
 	int points = 0;
 	std::vector<int> current_gameboard;
 	int	get_random_object_id(Input input);
+	int players_done = 0;
 };
 
 }
