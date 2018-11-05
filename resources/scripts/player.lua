@@ -154,7 +154,7 @@ function update(delta_seconds, entity)
 			entity.impulse.x = 0
 			
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 25
+			entity.impulse.y = 35
 			entity.impulse.x = -25
 			entity.can_walljump = false
 		end
@@ -176,7 +176,7 @@ function update(delta_seconds, entity)
 			entity.impulse.x = 0
 			
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 25
+			entity.impulse.y = 35
 			entity.impulse.x = 25
 			entity.can_walljump = false
 		end
