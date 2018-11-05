@@ -14,6 +14,7 @@ end
 function update(delta_seconds, entity)
 
 	
+
 	if entity.anim.current == entity.anim.running
 	then
 	
@@ -260,8 +261,7 @@ function update(delta_seconds, entity)
 	--
 	--	end
 	--end
-
-	
+	--entity.anim.current = entity.anim.running
 	--entity.jump_timer = entity.jump_timer - delta_seconds
 	--entity.forces.x = -1000
 	--entity.size.x = 2045

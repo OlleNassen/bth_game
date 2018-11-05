@@ -235,7 +235,8 @@ void LuaStack::push(const anim& value)
 		"turning",
 		"sliding",
 		"hanging_left",
-		"hanging_right"
+		"hanging_right",
+		"independent"
 	};
 
 	int i = 0;

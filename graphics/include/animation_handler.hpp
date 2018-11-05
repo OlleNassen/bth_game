@@ -8,6 +8,7 @@
 #include "LeapImporter/LeapImporter/LeapMesh.h"
 #include "LeapImporter/LeapImporter/LeapAnimation.h"
 #include "LeapImporter/LeapImporter/LeapImporter.h"
+#include <fstream>
 
 enum MODEL_STATE { START_JUMP, IN_JUMP, FALLING, LANDING, HANGING_WALL, CONNECT_WALL, JUMP_FROM_WALL, IDLE, RUNNING, TURN };
 class Animation_handler
@@ -43,7 +44,7 @@ public:
 	glm::mat4 mat_to_GLM(float mat[4][4]);
 	void set_local_matrix(glm::mat4 mat, int index);
 
-	void create_animation_data(const std::string & file_path, anim enm);
+	bool create_animation_data(const std::string & file_path, anim enm);
 	glm::mat4 getMatrices(int index);
 
 	std::vector<Animation*> animations;
