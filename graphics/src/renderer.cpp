@@ -28,8 +28,11 @@ Renderer::Renderer(GameScene* scene)
 	for (int i = 0; i < 4; ++i)
 	{
 		lights[i].position = glm::vec3{0,0,0};
-		lights[i].color = glm::vec3{1,1,1};
 	}
+	lights[0].color = glm::vec3{ 1.0f, 0.0f, 0.0f };
+	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
+	lights[2].color = glm::vec3{ 0.1f, 0.1f, 0.9f };
+	lights[3].color = glm::vec3{ 0.9f, 0.8f, 0.1f };
 
 }
 
@@ -52,6 +55,18 @@ void Renderer::render(
 
 	if (!is_menu && connected)
 	{
+		robot_shader.use();
+		robot_shader.uniform("brdf_lut", 6);
+		robot_shader.uniform("irradiance_map", 7);
+		robot_shader.uniform("prefilter_map", 8);
+
+		brdf_buffer.bind_texture(6);
+		irradiance_buffer.bind_texture(7);
+		prefilter_buffer.bind_texture(8);
+		render_character(robot_shader,
+			game_camera, lights, scene->models, player_count);   
+
+
 		pbr.use();
 		pbr.uniform("brdf_lut", 6);
 		pbr.uniform("irradiance_map", 7);
@@ -60,9 +75,6 @@ void Renderer::render(
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
-
-		render_character(pbr, 
-			game_camera, lights, scene->models, player_count);
 		render_type(pbr, game_camera, lights, scene->models);
 
 		skybox_shader.use();
@@ -94,7 +106,7 @@ void Renderer::render(
 		prefilter_buffer.bind_texture(8);
 
 		if(debug)
-			render_character(pbr, 
+			render_character(robot_shader,
 				db_camera, lights, scene->models, 4);
 		render_type(pbr, db_camera, lights, scene->models);
 

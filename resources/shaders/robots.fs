@@ -121,7 +121,7 @@ void main()
         vec3 L = normalize(light_pos[i] - fs_in.world_pos);
         vec3 H = normalize(V + L);
         float distance = length(light_pos[i] - fs_in.world_pos);
-        float attenuation = 25.0 / (distance * distance) * 5;
+        float attenuation = 1.0 / (distance * distance) * 5;
         vec3 radiance = lightColors[i] * attenuation;
 
         // Cook-Torrance BRDF
@@ -163,7 +163,7 @@ void main()
     kD *= 1.0 - metallic;	
 	
     vec3 irradiance = texture(irradiance_map, N).rgb;
-    vec3 diffuse      = irradiance * albedo;
+    vec3 diffuse = irradiance * albedo;
 
 	const float MAX_REFLECTION_LOD = 4.0;
     vec3 prefilteredColor = textureLod(prefilter_map, R,  roughness * MAX_REFLECTION_LOD).rgb;    
@@ -172,7 +172,7 @@ void main()
 
     vec3 ambient = (kD * diffuse + specular) * ao;
 
-	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
+	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
     
     vec3 color = ambient + Lo + emission; //emissive here?
 
