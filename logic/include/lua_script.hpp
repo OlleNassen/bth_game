@@ -18,6 +18,8 @@
 namespace logic
 {
 
+using trigger_array = std::array<int, 100>;
+
 struct PlayerResult
 {
 public:
@@ -33,6 +35,7 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+
 };
 
 class PlayerScript
@@ -45,7 +48,12 @@ public:
 		std::chrono::milliseconds delta, 
 		objects& object, 
 		const input& i, 
-		int index);
+		int index,
+		anim& anim_state);
+		bool rw[4], lw[4];
+
+	bool build_stage_done(int index);
+
 private:
 	LuaStack stack;
 };
@@ -58,8 +66,10 @@ public:
 	void setup();
 	void update(
 		std::chrono::milliseconds delta,
+		const trigger_array& triggers,
 		objects* players);
 	std::array<PlayerResult, 4> player_results();
+	bool game_over();
 private:
 	LuaStack stack;
 };

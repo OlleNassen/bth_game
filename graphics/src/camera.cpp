@@ -37,12 +37,23 @@ void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::
 	
 	auto distance_height = size.y / glm::tan(fovy / 2.0f);
 	auto distance_width = (size.x / aspect) / glm::tan(fovy / 2.0f);
-	auto desired_distance = std::max({ 20.0f, distance_width, distance_height });
+	auto desired_distance = std::max({ 25.0f, distance_width, distance_height });
 
 	std::chrono::duration<float> delta_seconds = delta;
+	desired_position.x = position.x;
 	position = glm::mix(position, { desired_position, desired_distance }, delta_seconds.count() * 2.0f);
 
-	forward = vec3{ desired_position - vec2{0,2}, 0.0f } -position;
+	position.y = glm::min(position.y, 160.0f);
+	
+	if (position.y >= 160.0f)
+	{
+		forward = glm::mix(forward, vec3{ desired_position.x, desired_position.y , 0.0f } - position, delta_seconds.count() * 0.01f);
+	}
+	else
+	{
+		forward = glm::mix(forward, vec3{ 0.0f, 0.0f, -1.0f }, delta_seconds.count() * 0.5f);
+	}
+
 	forward = glm::normalize(forward);
 }
 

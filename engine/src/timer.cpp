@@ -13,7 +13,7 @@ bool Timer::is_up(std::chrono::milliseconds delta)
 
 std::string Timer::to_string() const
 {
-	const int minutes = time_left.count() / 60000;
+	const int minutes = static_cast<int>(time_left.count()) / 60000;
 	const int seconds = (time_left.count() / 1000) % 60;
 	if (minutes == 0 && seconds < 10)
 	{

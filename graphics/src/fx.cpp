@@ -174,24 +174,24 @@ void FX::calculate_dust_data(std::chrono::milliseconds delta, const Camera& came
 
 	randomizer = rand() % 100;
 
-	if (randomizer <= 40)
+	if (randomizer <= 80)
 	{
 		//Update data for particles
 		if (fx_dust.total_particle_count <= MAX_DUST_PARTICLES)
 		{
-			for (int i = 0; i < fx_dust.nr_of_particles; i++)
+			for (auto i = 0u; i < fx_dust.nr_of_particles; i++)
 			{
 				//Create a random position here
-				fx_dust.random_x = rand() % 40 - 20.0f;
-				fx_dust.random_y = rand() % 60;
-				fx_dust.random_z = rand() % 20 - 12.0f;
+				fx_dust.random_x = static_cast<float>(rand() % 40) - 20.0f;
+				fx_dust.random_y = static_cast<float>(rand() % 170);
+				fx_dust.random_z = static_cast<float>(rand() % 20) - 12.0f;
 
 				//Find and update the last used particle
 				fx_dust.last_used_particle = find_unused_particle(fx_dust.particle_container, fx_dust.last_used_particle);
 				int particle_index = fx_dust.last_used_particle;
 
 				//Set default values for the particles, first off life and position.
-				fx_dust.particle_container[particle_index].random_amp = rand() % 10;
+				fx_dust.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10);
 				fx_dust.particle_container[particle_index].life = 1.0f;
 				fx_dust.particle_container[particle_index].pos = glm::vec3(fx_dust.random_x, fx_dust.random_y, fx_dust.random_z);
 
@@ -248,9 +248,9 @@ void FX::calculate_dust_data(std::chrono::milliseconds delta, const Camera& came
 					data.particle_container[particle_index].g = 22.0f;
 					data.particle_container[particle_index].b = 16.0f;
 				}*/
-				fx_dust.particle_container[particle_index].r = 200.0f;
-				fx_dust.particle_container[particle_index].g = 200.0f;
-				fx_dust.particle_container[particle_index].b = 200.0f;
+				fx_dust.particle_container[particle_index].r = 200;
+				fx_dust.particle_container[particle_index].g = 200;
+				fx_dust.particle_container[particle_index].b = 200;
 
 				fx_dust.particle_container[particle_index].a = rand() % 255;
 				fx_dust.particle_container[particle_index].size = 0;
@@ -325,19 +325,19 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 	//Update data for particles
 	if (fx_spark.total_particle_count <= MAX_DUST_PARTICLES)
 	{
-		for (int i = 0; i < fx_spark.nr_of_particles; i++)
+		for (auto i = 0u; i < fx_spark.nr_of_particles; i++)
 		{
 			//Create a random position here
-			fx_spark.random_x = rand() % 40 - 20.0f;
-			fx_spark.random_y = rand() % 60;
-			fx_spark.random_z = rand() % 20 - 12.0f;
+			fx_spark.random_x = static_cast<float>(rand() % 40) - 20.0f;
+			fx_spark.random_y = static_cast<float>(rand() % 60);
+			fx_spark.random_z = static_cast<float>(rand() % 20) - 12.0f;
 
 			//Find and update the last used particle
 			fx_spark.last_used_particle = find_unused_particle(fx_spark.particle_container, fx_spark.last_used_particle);
 			int particle_index = fx_spark.last_used_particle;
 
 			//Set default values for the particles, first off life and position.
-			fx_spark.particle_container[particle_index].random_amp = rand() % 3;
+			fx_spark.particle_container[particle_index].random_amp = static_cast<float>(rand() % 3);
 			fx_spark.particle_container[particle_index].life = 1.0f;
 			fx_spark.particle_container[particle_index].pos = glm::vec3(0.0f, 0.0f, 0.0f); //data.random_x, data.random_y, data.random_z
 
@@ -395,9 +395,9 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 				data.particle_container[particle_index].b = 16.0f;
 			}*/
 
-			fx_spark.particle_container[particle_index].r = 200.0f;
-			fx_spark.particle_container[particle_index].g = 0.0f;
-			fx_spark.particle_container[particle_index].b = 0.0f;
+			fx_spark.particle_container[particle_index].r = 200;
+			fx_spark.particle_container[particle_index].g = 0;
+			fx_spark.particle_container[particle_index].b = 0;
 
 			fx_spark.particle_container[particle_index].a = rand() % 255;
 			fx_spark.particle_container[particle_index].size = 1;
@@ -481,19 +481,19 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 		{
 			if (randomizer <= 20)
 			{
-				for (int i = 0; i < fx_steam.nr_of_particles; i++)
+				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
 				{
 					//Create a random position here
-					fx_steam.random_x = rand() % 40 - 20.0f;
-					fx_steam.random_y = rand() % 60;
-					fx_steam.random_z = rand() % 20 - 12.0f;
+					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
+					fx_steam.random_y = static_cast<float>(rand() % 60);
+					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
 
 					//Find and update the last used particle
 					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
 					int particle_index = fx_steam.last_used_particle;
 
 					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = rand() % 8 + 2;
+					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 8 + 2);
 					fx_steam.particle_container[particle_index].life = 1.0f;
 					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 					fx_steam.particle_container[particle_index].pos = glm::vec3(-20, 3.25f, -6);
@@ -514,11 +514,11 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 255.0f;
-					fx_steam.particle_container[particle_index].g = 255.0f;
-					fx_steam.particle_container[particle_index].b = 255.0f;
+					fx_steam.particle_container[particle_index].r = 255;
+					fx_steam.particle_container[particle_index].g = 255;
+					fx_steam.particle_container[particle_index].b = 255;
 					
-					fx_steam.particle_container[particle_index].a = 255.0f;
+					fx_steam.particle_container[particle_index].a = 255;
 					fx_steam.particle_container[particle_index].size = 2.0f;
 				}
 			}
@@ -527,19 +527,19 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 		{
 			if (randomizer <= 20)
 			{
-				for (int i = 0; i < fx_steam.nr_of_particles; i++)
+				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
 				{
 					//Create a random position here
-					fx_steam.random_x = rand() % 40 - 20.0f;
-					fx_steam.random_y = rand() % 60;
-					fx_steam.random_z = rand() % 20 - 12.0f;
+					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
+					fx_steam.random_y = static_cast<float>(rand() % 60);
+					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
 
 					//Find and update the last used particle
 					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
 					int particle_index = fx_steam.last_used_particle;
 
 					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = rand() % 8 + 2;
+					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 8 + 2);
 					fx_steam.particle_container[particle_index].life = 1.0f;
 					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 					fx_steam.particle_container[particle_index].pos = glm::vec3(7.5f, -4.5f, -39);
@@ -568,11 +568,11 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 255.0f;
-					fx_steam.particle_container[particle_index].g = 255.0f;
-					fx_steam.particle_container[particle_index].b = 255.0f;
+					fx_steam.particle_container[particle_index].r = 255;
+					fx_steam.particle_container[particle_index].g = 255;
+					fx_steam.particle_container[particle_index].b = 255;
 
-					fx_steam.particle_container[particle_index].a = 255.0f;
+					fx_steam.particle_container[particle_index].a = 255;
 					fx_steam.particle_container[particle_index].size = 2.0f;
 				}
 			}
@@ -581,19 +581,19 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 		{
 			if (randomizer <= 20)
 			{
-				for (int i = 0; i < fx_steam.nr_of_particles; i++)
+				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
 				{
 					//Create a random position here
-					fx_steam.random_x = rand() % 40 - 20.0f;
-					fx_steam.random_y = rand() % 60;
-					fx_steam.random_z = rand() % 20 - 12.0f;
+					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
+					fx_steam.random_y = static_cast<float>(rand() % 60);
+					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
 
 					//Find and update the last used particle
 					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
 					int particle_index = fx_steam.last_used_particle;
 
 					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = rand() % 8 + 2;
+					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 8 + 2);
 					fx_steam.particle_container[particle_index].life = 1.0f;
 					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 					fx_steam.particle_container[particle_index].pos = glm::vec3(-19.7f, 29.7f, -14.7f);
@@ -614,11 +614,11 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 255.0f;
-					fx_steam.particle_container[particle_index].g = 255.0f;
-					fx_steam.particle_container[particle_index].b = 255.0f;
+					fx_steam.particle_container[particle_index].r = 255;
+					fx_steam.particle_container[particle_index].g = 255;
+					fx_steam.particle_container[particle_index].b = 255;
 
-					fx_steam.particle_container[particle_index].a = 255.0f;
+					fx_steam.particle_container[particle_index].a = 255;
 					fx_steam.particle_container[particle_index].size = 2.0f;
 				}
 			}
@@ -627,19 +627,19 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 		{
 			if (randomizer <= 20)
 			{
-				for (int i = 0; i < fx_steam.nr_of_particles; i++)
+				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
 				{
 					//Create a random position here
-					fx_steam.random_x = rand() % 40 - 20.0f;
-					fx_steam.random_y = rand() % 60;
-					fx_steam.random_z = rand() % 20 - 12.0f;
+					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
+					fx_steam.random_y = static_cast<float>(rand() % 60);
+					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
 
 					//Find and update the last used particle
 					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
 					int particle_index = fx_steam.last_used_particle;
 
 					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = rand() % 8 + 2;
+					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 8 + 2);
 					fx_steam.particle_container[particle_index].life = 1.0f;
 					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 					fx_steam.particle_container[particle_index].pos = glm::vec3(19.7f, 27.8f, -10.9f);
@@ -660,11 +660,11 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 255.0f;
-					fx_steam.particle_container[particle_index].g = 255.0f;
-					fx_steam.particle_container[particle_index].b = 255.0f;
+					fx_steam.particle_container[particle_index].r = 255;
+					fx_steam.particle_container[particle_index].g = 255;
+					fx_steam.particle_container[particle_index].b = 255;
 
-					fx_steam.particle_container[particle_index].a = 255.0f;
+					fx_steam.particle_container[particle_index].a = 255;
 					fx_steam.particle_container[particle_index].size = 2.0f;
 				}
 			}
@@ -673,19 +673,19 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 		{
 			if (randomizer <= 20)
 			{
-				for (int i = 0; i < fx_steam.nr_of_particles; i++)
+				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
 				{
 					//Create a random position here
-					fx_steam.random_x = rand() % 40 - 20.0f;
-					fx_steam.random_y = rand() % 60;
-					fx_steam.random_z = rand() % 20 - 12.0f;
+					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
+					fx_steam.random_y = static_cast<float>(rand() % 60);
+					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
 
 					//Find and update the last used particle
 					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
 					int particle_index = fx_steam.last_used_particle;
 
 					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = rand() % 8 + 2;
+					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 8 + 2);
 					fx_steam.particle_container[particle_index].life = 1.0f;
 					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 					fx_steam.particle_container[particle_index].pos = glm::vec3(9.1f, 54.9f, -39.8f);
@@ -714,11 +714,11 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 255.0f;
-					fx_steam.particle_container[particle_index].g = 255.0f;
-					fx_steam.particle_container[particle_index].b = 255.0f;
+					fx_steam.particle_container[particle_index].r = 255;
+					fx_steam.particle_container[particle_index].g = 255;
+					fx_steam.particle_container[particle_index].b = 255;
 
-					fx_steam.particle_container[particle_index].a = 255.0f;
+					fx_steam.particle_container[particle_index].a = 255;
 					fx_steam.particle_container[particle_index].size = 2.0f;
 				}
 			}
@@ -746,11 +746,15 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 			fx_steam.position_data[4 * fx_steam.total_particle_count + 3] = fx_steam.particle_container[i].size * fx_steam.particle_container[i].life;
 			
 
+			float a = static_cast<float>(fx_steam.particle_container[i].a);
+			a *= fx_steam.particle_container[i].life;
+			GLubyte b = static_cast<GLubyte>(a);
+
 			//Set colors in the color data
 			fx_steam.color_data[4 * fx_steam.total_particle_count + 0] = fx_steam.particle_container[i].r;
 			fx_steam.color_data[4 * fx_steam.total_particle_count + 1] = fx_steam.particle_container[i].g;
 			fx_steam.color_data[4 * fx_steam.total_particle_count + 2] = fx_steam.particle_container[i].b;
-			fx_steam.color_data[4 * fx_steam.total_particle_count + 3] = (fx_steam.particle_container[i].a * fx_steam.particle_container[i].life) / DF;
+			fx_steam.color_data[4 * fx_steam.total_particle_count + 3] = b; //DF
 		}
 		else
 		{

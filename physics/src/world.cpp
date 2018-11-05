@@ -16,10 +16,11 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 
 	Rigidbody body;
 	body.box = OBB{ position, size, orientation };
-	body.position = body.box.position;
+	body.position = position;
 	body.velocity = glm::vec3{0.0f};
 	body.forces = glm::vec3{0.0f};
 	body.mass = 100.0f;
+	body.inverse_mass = 1.0f / body.mass;
 	bodies.push_back(body);
 	
 	dynamic_positions.push_back(start_position);
@@ -44,6 +45,7 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 	body.velocity = glm::vec3{ 0.0f };
 	body.forces = glm::vec3{ 0.0f };
 	body.mass = 0.0f;
+	body.inverse_mass = 0.0f;
 	statics.push_back(body);
 
 	return static_positions.size() - 1;
@@ -51,7 +53,9 @@ int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float wid
 
 void World::update(
 	std::chrono::milliseconds delta,
-	objects_array& dynamics)
+	objects_array& dynamics,
+	trigger_array& triggers,
+	std::array<anim, 4>& anim_states)
 {
 	std::chrono::duration<float> delta_seconds = delta;	
 	
@@ -59,13 +63,11 @@ void World::update(
 	colliders2.clear();
 	results.clear();
 	
-	for (int i = 0; i < bodies.size(); ++i)
+	for (auto i = 0u; i < bodies.size(); ++i)
 	{
 		auto& p = dynamics[i].position;
 		auto& body = bodies[i];
 		body.position = {p.x, p.y, 0.0f};
-		body.position.x += body.box.size.x;
-		body.position.y += body.box.size.y;
 	}
 	
 	for (int i = 0; i < 4; ++i)
@@ -88,7 +90,24 @@ void World::update(
 		}
 	}
 
-	for (auto& left : bodies)
+	for (auto& t : triggers)
+		t = 0;
+
+
+	for (auto i = 0u; i < bodies.size(); ++i)
+	{
+		auto& left = bodies[i];
+		for (auto j = 0u; j < bodies.size(); ++j)
+		{
+			auto& right = bodies[j];
+			if (&left != &right && obb_obb(left.box, right.box))
+			{
+				triggers[i] = j;
+			}
+		}
+	}
+
+	/*for (auto& left : bodies)
 	{
 		for (auto& right : bodies)
 		{
@@ -107,21 +126,20 @@ void World::update(
 				}
 			}		
 		}
-	}
+	}*/
 	
 	int index = 0;
 	for (auto& body : bodies)
 	{	
 		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
-		body.apply_forces();
-		body.forces.x += dynamics[index].forces.x;
-		body.forces.y += dynamics[index].forces.y;
+		body.forces.x = dynamics[index].forces.x;
+		body.forces.y = dynamics[index].forces.y;
 		++index;
 	}
 
 	for (int k = 0; k < impulse_iteration; ++k)
 	{
-		for (int i = 0; i < results.size(); ++i)
+		for (auto i = 0u; i < results.size(); ++i)
 		{
 			int j_size = results[i].contacts.size();
 			for (int j = 0; j < j_size; ++j)
@@ -142,7 +160,7 @@ void World::update(
 	{
 		Rigidbody* left = colliders1[i];
 		Rigidbody* right = colliders2[i];
-		float total_mass = left->inverse_mass() + right->inverse_mass();
+		float total_mass = left->inverse_mass + right->inverse_mass;
 
 		if (total_mass == 0.0f)
 			continue;
@@ -152,25 +170,90 @@ void World::update(
 		glm::vec3 correction = 
 			results[i].normal * scalar * linear_projection_percent;
 
-		left->position = left->position - correction * left->inverse_mass();
-		right->position = right->position - correction * right->inverse_mass();
+		left->position = left->position - correction * left->inverse_mass;
+		right->position = right->position - correction * right->inverse_mass;
 
 		left->synch_collision_volumes();
 		right->synch_collision_volumes();
 	}
 
-	for (auto& body : bodies)
+	for (auto i = 0u; i < bodies.size(); ++i)
 	{
-		body.solve_constraints(constraints);
-	}
-
-	for (int i = 0; i < bodies.size(); ++i)
-	{
-		dynamics[i].position = { bodies[i].position.x - bodies[i].box.size.x, bodies[i].position.y - bodies[i].box.size.y };
+		dynamics[i].position = { bodies[i].position.x, bodies[i].position.y };
 		dynamics[i].velocity = { bodies[i].velocity.x, bodies[i].velocity.y };
 		dynamics[i].size = { bodies[i].box.size.x, bodies[i].box.size.y };
-		dynamics[i].forces = { 0.0f, 0.0f };
+		dynamics[i].forces = {0.0f, 0.0f};
 		dynamics[i].impulse = {0.0f, 0.0f};
+	}
+
+	
+	for (int i = 0; i < 4; ++i)
+	{
+		bool stop = false;
+		rw[i] = false;
+		lw[i] = false;
+		Point points[5]
+		{
+			bodies[i].box.position,
+			bodies[i].box.position,
+			bodies[i].box.position,
+			bodies[i].box.position,
+			bodies[i].box.position
+		};
+
+		points[0].y -= bodies[i].box.size.y * 1.01f;
+		points[1].x -= bodies[i].box.size.x * 1.01f;
+		points[2].x += bodies[i].box.size.x * 1.01f;
+
+		points[3].y -= bodies[i].box.size.y * 1.01f;
+		points[3].x += bodies[i].box.size.x * 0.95f;
+											  
+		points[4].y -= bodies[i].box.size.y * 1.01f;
+		points[4].x -= bodies[i].box.size.x * 0.95f;
+		
+		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || anim_states[i] == anim::hanging_right)
+			for (auto& walls : statics)
+			{
+				if (point_in_obb(points[0], walls.box) /*|| point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box)*/)
+				{
+					anim_states[i] = anim::landing;
+					//stop = true;
+				}
+			}
+
+		if (!stop)
+		{
+			//std::cout << i << "   " << points[0].x << std::endl;
+			if (points[0].x > 19.3f || points[0].x < -19.3f)
+			{
+				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump)
+				{
+
+					for (auto& walls : statics)
+					{
+						if (point_in_obb(points[1], walls.box))
+						{
+							anim_states[i] = anim::hanging_left;
+							lw[i] = true;
+						}
+
+					}
+
+					for (auto& walls : statics)
+					{
+						if (point_in_obb(points[2], walls.box))
+						{
+							anim_states[i] = anim::hanging_right;
+   							rw[i] = true;
+						}
+	
+					}
+				}
+			}
+			//if (anim_states[i] == anim::hanging_wall && rw[i] == false && lw[i] == false)
+			//	anim_states[i] = anim::falling;
+
+		}
 	}
 }
 
@@ -222,7 +305,7 @@ std::vector<glm::vec3> World::get_all_debug() const
 {
 	std::vector<glm::vec3> out_vertices;
 
-	for (int i = 0; i < bodies.size(); i++)
+	for (auto i = 0u; i < bodies.size(); i++)
 	{
 		std::vector<Point> vertices = get_vertices(bodies[i].box);
 		auto& b = bodies[i];
@@ -233,7 +316,7 @@ std::vector<glm::vec3> World::get_all_debug() const
 		}
 	}
 
-	for (int i = 0; i < statics.size(); i++)
+	for (auto i = 0u; i < statics.size(); i++)
 	{
 		std::vector<Point> vertices = get_vertices(statics[i].box);
 		auto& s = statics[i];
