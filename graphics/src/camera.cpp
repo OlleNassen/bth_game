@@ -43,7 +43,7 @@ void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::
 	desired_position.x = position.x;
 	position = glm::mix(position, { desired_position, desired_distance }, delta_seconds.count() * 2.0f);
 
-	position.y = glm::min(position.y, 160.0f);
+	position.y = glm::min(position.y, 250.0f);
 	
 	if (position.y >= 160.0f)
 	{
