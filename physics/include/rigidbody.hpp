@@ -19,7 +19,7 @@ public:
 	glm::vec3 position;
 	glm::vec3 velocity;
 	glm::vec3 forces;
-	float mass = 1.0f;
+	float mass = 100.0f;
 	float inverse_mass = 1.0f / mass;
 	float restitution = 0.4f;
 	float friction = 0.45f;
