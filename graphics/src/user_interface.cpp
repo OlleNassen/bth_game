@@ -142,10 +142,10 @@ void PlayerArrows::update(const std::vector<Model> &models, int players, std::ar
 	for (int i = 0; i < players; i++)
 	{
 		player_positions[i] = glm::vec2(models.at(i).get_position());
-		if (i > 0)
+		//if (i > 0)
 		{
 			if (abs(player_positions[i].x - camera_pos.x) > 23
-				|| abs(player_positions[i].y - camera_pos.y) > 14)
+				|| abs(player_positions[i].y - camera_pos.y) > 16)
 			{
 				
 				visible[i] = false;
