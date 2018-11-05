@@ -248,28 +248,28 @@ void GameScript::update_export()
 
 	for (int i = 1; i <= 4; ++i)
 	{
-		stack.rawget(top, i);
-		stack.getfield(-1, "names");
-		data.names[i] = stack.tostring(-1);
-		stack.pop();
-		stack.pop();
+		stack.getfield(top, "names");
+		stack.rawget(-1, i);
+		data.names[i - 1] = stack.tostring(-1);
 
-		stack.getfield(-1, "scores");
-		data.scores[i] = stack.tonumber(-1);
-		stack.pop();
-		stack.pop();
+		stack.getfield(top, "scores");
+		stack.rawget(-1, i);
+		data.scores[i - 1] = stack.tonumber(-1);
 
-		stack.getfield(-1, "died");
-		data.died[i] = stack.toboolean(-1);
-		stack.pop();
-		stack.pop();
+		stack.getfield(top, "died");
+		stack.rawget(-1, i);
+		data.died[i - 1] = stack.toboolean(-1);
 
-		stack.getfield(-1, "finished");
-		data.finished[i] = stack.toboolean(-1);
-		stack.pop();
-		stack.pop();		
+		stack.getfield(top, "finished");
+		stack.rawget(-1, i);
+		data.finished[i - 1] = stack.toboolean(-1);
 	}
+
+	stack.getfield(top, "winner");
+	data.game_over = stack.toboolean(-1);
 	stack.clear();
+
+
 }
 
 }

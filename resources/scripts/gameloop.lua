@@ -3,7 +3,7 @@ function setup(game)
 	game.points = 0 -- do not change this, edit value in update loop
 	game.max_points = 10
 	--4 playerscores:
-	game.names = {"olle", "edvard", "petter", "osby"}
+	game.names = {"ole", "ed", "pet", "osby"}
 	game.scores = { 0, 0, 0, 0 }
 	game.finished = { false, false, false, false }
 	game.died = {false, false, false, false}
@@ -15,7 +15,7 @@ function update(delta_seconds, game, entities)
 
 	game.clock = game.clock + delta_seconds
 
-	if game.clock > 60.0 -- Deal out points and reset if timer is too high
+	if game.clock > 5.0 -- Deal out points and reset if timer is too high
 	then
 		while game.points > 0
 		do

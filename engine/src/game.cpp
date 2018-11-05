@@ -108,7 +108,7 @@ void Game::render()
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
-		db_coll, logic_out.game_over);
+		db_coll, lua_data.game_over);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -368,12 +368,15 @@ void Game::update(std::chrono::milliseconds delta)
 			if (in[button::right] >= button_state::pressed)
 				direction.x += 1.0f;
 		}
-		
+
 		using namespace std;
 		stringstream stream;
-		for (auto& p : player_results)	
-			stream << p.name << ": "
-			<< fixed << setprecision(2) << p.score << " | ";
+		for (int i = 0; i < 4; ++i)
+		{
+			stream << lua_data.names[i] << ": "
+				<< fixed << setprecision(2) 
+				<< lua_data.scores[i] << " | ";
+		}			
 		
 		string temp = stream.str();
 		renderer.update(delta,
