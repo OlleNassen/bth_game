@@ -47,9 +47,18 @@ Output Gameplay::update(Input inputs,
 		{
 			int d_id = inputs.players_placed_objects_id[i].dynamics_id;
 
-			if (placement_script.build_stage_done(d_id))
+			if (placement_script.build_stage_force_done(d_id))
 			{
 				++players_done;
+			}
+			else if (placement_script.build_stage_done(d_id) && inputs.players_placed_objects_id[i].place_state != 0)
+			{
+				++players_done;
+				inputs.players_placed_objects_id[i].place_state = 2;
+			}
+			else
+			{
+				placement_script.set_build_stage_done(d_id, false);
 			}
 		}
 		

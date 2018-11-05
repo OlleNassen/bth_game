@@ -1,6 +1,7 @@
 function setup(entity)
 	entity.rotate_was_pressed = false
 	entity.done = false
+	entity.force_done = false
 	entity.clock = 0.0
 end
 
@@ -48,7 +49,7 @@ function update(delta_seconds, entity)
 
 	if entity.clock > 10.0
 	then
-		entity.done = true
+		entity.force_done = true
 	end
 
 
