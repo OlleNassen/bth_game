@@ -3,8 +3,10 @@ function setup(game)
 	game.points = 0 -- do not change this, edit value in update loop
 	game.max_points = 10
 	--4 playerscores:
+	game.names = {"olle", "edvard", "petter", "osby"}
 	game.scores = { 0, 0, 0, 0 }
 	game.finished = { false, false, false, false }
+	game.died = {false, false, false, false}
 	game.clock = 0.0
 	game.winner = false
 end
@@ -69,6 +71,7 @@ function update(delta_seconds, game, entities)
 		for i = 1, 4, 1
 		do
 			game.finished[i] = false
+			game.died[i] = false
 		end
 
 	end
@@ -94,6 +97,7 @@ function update(delta_seconds, game, entities)
 			game.points = game.points - 1
 
 			game.finished[i] = true
+			game.died[i] = true
 			entities[i].position.x = -2000
 			entities[i].position.y = -2000
 		end

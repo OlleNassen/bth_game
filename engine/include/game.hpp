@@ -45,11 +45,10 @@ private:
 	graphics::GameScene level;
 	graphics::Renderer renderer;
 
-	logic::Output logic_out;
 	logic::Gameplay gameplay;
 	logic::input player_inputs[4];
 	logic::input* local_input{ &player_inputs[0] };
-	std::array<logic::PlayerResult, 4> player_results;
+	logic::LuaExport* lua_data;
 	
 	network::uint8 player_count = 1;
 	network::uint32 state_sequence = 0;

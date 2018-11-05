@@ -69,12 +69,6 @@ Game::Game()
 		dynamics[i].impulse = { 0.0f, 0.0f };
 	}
 
-	for (int i = 0; i < 4; ++i)
-	{
-		std::string name = "P" + std::to_string(i+1);
-		player_results[i] = logic::PlayerResult{name, 0.0f};
-	}
-
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
@@ -227,12 +221,12 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].impulse = dynamics[i].impulse;
 		}
 
-		logic_out = gameplay.update(
+		lua_data = gameplay.update(
 			{ delta, obj, triggers,
 			player_inputs, 
 			anim_states,
 			players_placed_objects_id },
-			player_results, game_state);
+			game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
 		{
@@ -243,8 +237,6 @@ void Game::update(std::chrono::milliseconds delta)
 			dynamics[i].impulse = obj[i].impulse;
 		}
 	}
-	
-
 
 		if (net.connected())
 		{
@@ -344,9 +336,6 @@ void Game::update(std::chrono::milliseconds delta)
 				level.models[i].set_position(pos);
 		}
 	}
-
-
-
 
 	physics.update(delta, dynamics, triggers, anim_states);
 
