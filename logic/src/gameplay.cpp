@@ -35,8 +35,7 @@ void Gameplay::refresh()
 	game_script.setup();
 }
 
-Output Gameplay::update(Input inputs,
-	std::array<logic::PlayerResult, 4>& player_results,
+LuaExport Gameplay::update(Input inputs,
 	int& current_state)
 {
 
@@ -47,9 +46,18 @@ Output Gameplay::update(Input inputs,
 		{
 			int d_id = inputs.players_placed_objects_id[i].dynamics_id;
 
-			if (placement_script.build_stage_done(d_id))
+			if (placement_script.build_stage_force_done(d_id))
 			{
 				++players_done;
+			}
+			else if (placement_script.build_stage_done(d_id) && inputs.players_placed_objects_id[i].place_state != 0)
+			{
+				++players_done;
+				inputs.players_placed_objects_id[i].place_state = 2;
+			}
+			else
+			{
+				placement_script.set_build_stage_done(d_id, false);
 			}
 		}
 		
@@ -82,11 +90,10 @@ Output Gameplay::update(Input inputs,
 
 	//Give up \Vincent
 	give_up(inputs);
-
-	player_results = game_script.player_results();
-
 	
-	return Output{game_script.game_over()};
+	game_script.update_export();
+
+	return game_script.data;
 }
 
 bool Gameplay::build_stage() const

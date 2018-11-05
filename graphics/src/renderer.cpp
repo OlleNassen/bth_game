@@ -50,6 +50,11 @@ Renderer::Renderer(GameScene* scene)
 	{
 		lights[i].intensity = 200;
 	}
+	lights[0].color = glm::vec3{ 1.0f, 0.0f, 0.0f };
+	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
+	lights[2].color = glm::vec3{ 0.1f, 0.1f, 0.9f };
+	lights[3].color = glm::vec3{ 0.9f, 0.8f, 0.1f };
+
 }
 
 void Renderer::render(
@@ -57,7 +62,8 @@ void Renderer::render(
 	const std::string* end,
 	const std::array<std::string, 12>& buttons,
 	const std::vector<glm::vec3>& debug_positions,
-	bool game_over)const
+	const std::vector<build_information>& build_info,
+	bool game_over, std::array<bool, 4> died)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -71,6 +77,17 @@ void Renderer::render(
 
 	if (!is_menu && connected)
 	{
+		robot_shader.use();
+		robot_shader.uniform("brdf_lut", 6);
+		robot_shader.uniform("irradiance_map", 7);
+		robot_shader.uniform("prefilter_map", 8);
+
+		brdf_buffer.bind_texture(6);
+		irradiance_buffer.bind_texture(7);
+		prefilter_buffer.bind_texture(8);
+		render_character(robot_shader,
+			game_camera, lights, scene->moving_models, player_count);   
+
 		pbr.use();
 		pbr.uniform("brdf_lut", 6);
 		pbr.uniform("irradiance_map", 7);
@@ -79,15 +96,20 @@ void Renderer::render(
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
+		render_type(pbr, game_camera, lights, 
+			&scene->models[first_model], &scene->models[last_model]);
 
-		render_character(pbr, 
-			game_camera, lights, scene->models, player_count);
-		render_type(pbr, game_camera, lights, scene->models);
+		if (scene->moving_models.size() > 4)
+			render_type(pbr, game_camera, lights,
+				&scene->moving_models[4], &scene->moving_models.back() + 1);
+
+		render_type(pbr, game_camera, lights,
+			&scene->models[0], &scene->models[3]);
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
+		fx_emitter.render_particles(fx_dust, fx_blitz, fx_spark, fx_steam, game_camera);
 
 		glDisable(GL_DEPTH_TEST);
 		if (debug_active)
@@ -95,11 +117,38 @@ void Renderer::render(
 			lines.use();
 			lines.uniform("projection", game_camera.projection);
 			lines.uniform("view", game_camera.view());
-			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
+			lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
 
+		if(game_state & state::building)
+		{
+			int max = build_info.size();
+			for (int i = 0; i < max; i++)
+			{
+				glDisable(GL_DEPTH_TEST);
+				lines.use();
+				lines.uniform("projection", game_camera.projection);
+				lines.uniform("view", game_camera.view());
+
+				if (build_info[i].place_state == 0)	//Cannot Place
+				{
+					lines.uniform("line_color", glm::vec3(1.0f, 0.0f, 0.0f));
+				}
+				else if (build_info[i].place_state == 1) //Can Place
+				{
+					lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
+				}
+				else if(build_info[i].place_state == 2)	//Has Placed
+				{
+					lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
+				}
+
+				line_debug(build_info[i].build_positions);
+				glEnable(GL_DEPTH_TEST);
+			}
+		}
 	}
 	else if (!is_menu)
 	{
@@ -113,14 +162,23 @@ void Renderer::render(
 		prefilter_buffer.bind_texture(8);
 
 		if(debug)
-			render_character(pbr, 
-				db_camera, lights, scene->models, 4);
-		render_type(pbr, db_camera, lights, scene->models);
+			render_character(robot_shader,
+				game_camera, lights, scene->moving_models, 4);
+
+		if (scene->moving_models.size() > 4)
+			render_type(pbr, db_camera, lights,
+				&scene->moving_models[4], &scene->moving_models.back() + 1);
+
+		render_type(pbr, db_camera, lights, 
+			&scene->models[first_model], &scene->models[last_model]);
+
+		render_type(pbr, db_camera, lights,
+			&scene->models[0], &scene->models[3]);
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, db_camera);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
+		fx_emitter.render_particles(fx_dust, fx_blitz, fx_spark, fx_steam, game_camera);
 
 		if (debug_active)
 		{
@@ -137,7 +195,7 @@ void Renderer::render(
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	if (player_count > 1)
+	if (player_count > 0)
 	{
 		if (!is_menu)
 		{
@@ -153,7 +211,10 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
-			//death_screen.render(death_screen_shader);
+			if (died[player_id])
+			{
+				death_screen.render(death_screen_shader);
+			}
 		}
 	}
 	else
@@ -227,11 +288,39 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int num_players,
 	int id,
 	int new_game_state,
-	std::string scoreboard)
+	std::string scoreboard, 
+	std::array<bool, 4> died)
 {
+	first_model = 0;
+	last_model = 0;
+	for (auto i = 0u; i < scene->models.size(); ++i)
+	{
+		float culling_distance = 50.0f;
+		auto bottom = scene->moving_models[id].get_y_position() - culling_distance;
+		auto top = scene->moving_models[id].get_y_position() + culling_distance;
+		
+		if (bottom < scene->models[i].get_y_position() && !first_model)
+		{
+			first_model = i;
+			last_model = i;
+		}
+
+		if (top < scene->models[i].get_y_position())
+		{
+			last_model = i;
+			break;
+		}
+
+		if (top >= scene->models.back().get_y_position())
+		{
+			last_model = scene->models.size() - 1;
+		}
+	}
+	
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
-	player_count = num_players + 1;
+	player_count = num_players;
 	game_state = new_game_state;
+	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
 	
 	using namespace std::chrono_literals;	
@@ -240,7 +329,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
 	loading_screen.timer += delta;
-	death_screen.timer += delta;
+	if (died[id])
+	{
+		death_screen.timer += delta;
+	}
 	main_menu_screen.timer += delta;
 
 	//Loading screen reset
@@ -248,10 +340,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		loading_screen.timer = 0ms;
 	}
-	if (death_screen.timer > 1000ms)
+	if (!died[id])
 	{
 		death_screen.timer = 0ms;
 	}
+	/*if (death_screen.timer > 1000ms)
+	{
+		death_screen.timer = 0ms;
+	}*/
 	if (main_menu_screen.timer > 1600ms)
 	{
 		main_menu_screen.timer = 0ms;
@@ -260,12 +356,13 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (!is_chat_on)
 	{
 		//Dust Particles
-		fx_emitter.calculate_dust_data(delta, db_camera);
+		fx_emitter.calculate_dust_data(delta, game_camera);
 		//dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
 
 		//Steam Particles
 		//steam_particles->calculate_steam_data(*steam_particles->fx, scene->v, delta, db_camera);
-		fx_emitter.calculate_steam_data(delta, db_camera);
+		fx_emitter.calculate_steam_data(delta, game_camera);
+		fx_emitter.calculate_blitz_data(delta, game_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 	}
@@ -279,12 +376,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
-	minimap.update(scene->models, player_count);
+	minimap.update(scene->moving_models, player_count);
 
 	/*for (int i = 0; i < 4; ++i)
 	{
-		lights[i].position = scene->models[i].get_position();
-	}*/
+		lights[i].position = scene->moving_models[i].get_position();
+	}
 
 	leaderboard.update(std::move(scoreboard));
 

@@ -301,6 +301,49 @@ bool World::intersects(const int box_id, const int target_box_id)
 	return intersection;
 }
 
+bool World::overlapping(const int target_id)
+{
+	auto& left = bodies[target_id];
+
+	for (auto& right : statics)
+	{
+		CollisionManifold result;
+		reset_collison_manifold(result);
+
+		result = find_collision_features(left, right);
+
+		if (result.colliding)
+		{
+			return true;
+		}
+	}
+
+	for (int i = 0; i < bodies.size(); i++)
+	{
+		if (target_id != i)
+		{
+			Rigidbody &right = bodies[i];
+			CollisionManifold result;
+			reset_collison_manifold(result);
+
+			result = find_collision_features(left, right);
+
+			if (result.colliding)
+			{
+				return true;
+			}
+		}
+	}
+
+	//Add this for "spawn" protection
+	/*if (glm::distance(left.position, glm::vec3(0.0f, 0.0f, 0.0f)) < 5.0f)
+	{
+		return true;
+	}*/
+
+	return false;
+}
+
 std::vector<glm::vec3> World::get_all_debug() const
 {
 	std::vector<glm::vec3> out_vertices;
@@ -325,6 +368,20 @@ std::vector<glm::vec3> World::get_all_debug() const
 		{
 			out_vertices.push_back(vertex);
 		}
+	}
+
+	return out_vertices;
+}
+
+std::vector<glm::vec3> World::get_debug_for(int id) const
+{
+	std::vector<glm::vec3> out_vertices;
+
+	std::vector<Point> vertices = get_vertices(bodies[id].box);
+
+	for (auto& vertex : vertices)
+	{
+		out_vertices.push_back(vertex);
 	}
 
 	return out_vertices;
