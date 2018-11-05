@@ -67,6 +67,7 @@ Game::Game()
 		dynamics[i].size = { 1.0f, 3.5f };
 		dynamics[i].forces = { 0.0f, 0.0f };
 		dynamics[i].impulse = { 0.0f, 0.0f };
+		anim_states[i] = anim::idle;
 	}
 
 	for (int i = 0; i < 4; ++i)
@@ -205,6 +206,12 @@ void Game::update(std::chrono::milliseconds delta)
 				give_players_objects = true;
 			}
 		}
+		//anim idle = anim::idle;
+		//for (int i = 0; i < level.models.size(); i++)
+		//{
+		//	if (level.models[i].is_animated)
+		//		level.models[i].update_animation((float)delta.count(), idle);
+		//}
 
 		for (auto& ppoi : players_placed_objects_id)
 		{
@@ -250,11 +257,8 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			for (int i = 0; i < 4; ++i)
 			{
-
 				if (level.models[i].is_animated)
-				{
 					level.models[i].update_animation((float)delta.count(), anim_states[i]);
-				}
 
 				if (physics.rw[i] == true)
 					level.models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
@@ -345,7 +349,11 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
+	anim idle = anim::idle;
 
+	for (int i = 4; i < level.models.size(); i++)
+		if (level.models[i].is_animated)
+			level.models[i].update_animation((float)delta.count(), idle);
 
 
 	physics.update(delta, dynamics, triggers, anim_states);

@@ -12,6 +12,7 @@ end
 function update(delta_seconds, entity)
 
 	
+
 	if entity.anim.current == entity.anim.running
 	then
 	
@@ -65,12 +66,6 @@ function update(delta_seconds, entity)
 		if entity.can_jump
 		then
 			print("jump")
-			entity.forces.x = 0
-			entity.forces.y = 0
-			entity.velocity.x = 0
-			entity.velocity.y = 0
-			entity.impulse.y = 0
-			entity.impulse.x = 0
 
 
 			entity.impulse.y = 41
@@ -102,11 +97,11 @@ function update(delta_seconds, entity)
 		entity.can_walljump = true
 		if entity.button.right
 		then
-			entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+			entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)
 		end
 		if entity.button.left
 		then
-			entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+			entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds)
 		end
 
 	end
@@ -169,7 +164,7 @@ function update(delta_seconds, entity)
 	end
 
 	--Cap the velocity/entity.forces.x
-	if entity.anim.current ~= entity.anim.hanging_left or entity.anim.current ~= entity.anim.hanging_right or entity.anim.current ~= entity.anim.jump_from_wall 
+	if entity.anim.current ~= entity.anim.hanging_left or entity.anim.current ~= entity.anim.hanging_right or entity.anim.current ~= entity.anim.jump_from_wall or entity.anim.current ~= entity.anim.start_jump or entity.anim.current ~= entity.anim.in_jump 
 	then
 		if entity.forces.x > entity.maxSpeed
 		then
@@ -187,8 +182,7 @@ function update(delta_seconds, entity)
 	--
 	--	end
 	--end
-
-	
+	--entity.anim.current = entity.anim.running
 	--entity.jump_timer = entity.jump_timer - delta_seconds
 	--entity.forces.x = -1000
 	--entity.size.x = 2045
