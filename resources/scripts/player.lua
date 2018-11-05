@@ -4,7 +4,7 @@ function setup(entity)
 	entity.can_jump = true
 	entity.can_walljump = true
 	entity.can_move = true -- instead of playable
-	entity.maxSpeed = 6500
+	entity.maxSpeed = 8500
 	entity.max_velocity = 15
 	entity.max_air_speed = 18
  	entity.acceleration = 580000
@@ -114,10 +114,10 @@ function update(delta_seconds, entity)
 		then
 			if entity.velocity.x < entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+				entity.forces.x = (entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) )/ 3
 			elseif entity.velocity.x > entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x 
+				entity.forces.x = entity.forces.x /3
 			end
 		end
 
@@ -125,10 +125,10 @@ function update(delta_seconds, entity)
 		then
 			if entity.velocity.x > -entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) /3
+				entity.forces.x = (entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) )/3
 			elseif  entity.velocity.x < -entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x
+				entity.forces.x = entity.forces.x/3
 			end
 			
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
@@ -147,10 +147,10 @@ function update(delta_seconds, entity)
 		then
 			if entity.velocity.x < entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+				entity.forces.x = (entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)) / 3
 			elseif entity.velocity.x > entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x 
+				entity.forces.x = entity.forces.x /3
 			end
 			
 			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
@@ -159,10 +159,10 @@ function update(delta_seconds, entity)
 		then
 			if entity.velocity.x > -entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) /3
+				entity.forces.x = (entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) )/3
 			elseif  entity.velocity.x < -entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x
+				entity.forces.x = entity.forces.x /3
 			end
 
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
@@ -176,7 +176,7 @@ function update(delta_seconds, entity)
 		then
 			if entity.velocity.x < entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+				entity.forces.x = (entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)) / 3
 			elseif entity.velocity.x > entity.max_air_speed
 			then
 				entity.forces.x = entity.forces.x 
@@ -188,10 +188,10 @@ function update(delta_seconds, entity)
 		then
 			if entity.velocity.x > -entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+				entity.forces.x = (entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) )/ 3
 			elseif entity.velocity.x < -entity.max_air_speed
 			then
-				entity.forces.x = entity.forces.x 
+				entity.forces.x = entity.forces.x /3
 			end
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
