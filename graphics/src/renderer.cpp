@@ -113,6 +113,7 @@ void Renderer::render(
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
+
 	}
 
 	// Post Processing Effects
@@ -135,6 +136,9 @@ void Renderer::render(
 			post_processing_effects.render();
 
 			//death_screen.render(death_screen_shader);
+			gui.use();
+			
+			ui.render(gui);
 		}
 	}
 	else
@@ -155,14 +159,14 @@ void Renderer::render(
 		}
 
 		// Text
-		gui.use();
-		if (is_chat_visible)
-		{
+		//gui.use();
+		//if (is_chat_visible)
+		//{
 
-		}
-		/*else
-			ui.render_arrows();*/
-		ui.render(gui);
+		//}
+		///*else
+		//	ui.render_arrows();*/
+		//ui.render(gui);
 
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);

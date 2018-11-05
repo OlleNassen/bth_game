@@ -147,11 +147,13 @@ void PlayerArrows::update(const std::vector<Model> &models, int players, std::ar
 			if (abs(player_positions[i].x - player_positions[0].x) > 23
 				|| abs(player_positions[i].y - player_positions[0].y) > 14)
 			{
-				//std::cout << "not visible" << std::endl;
+				
 				visible[i] = false;
 				player_vector[i] = player_positions[i] - player_positions[0];
 				elements.at(i + 2).position = (glm::normalize(player_vector[i]) * 0.9f);
-				//elements.at(i + 2).position /= 1.1f;
+				std::cout << player_positions[0].x << "\t" << player_positions[0].y << std::endl;
+				std::cout << player_positions[i].x << "\t" << player_positions[i].y << std::endl;
+				
 				//elements.at(i + 2).position = glm::vec2(.0f, .9f);
 				player_vector[i].y *= -1;
 
