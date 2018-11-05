@@ -68,7 +68,7 @@ void Renderer::render(
 		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, db_camera);
+		fx_emitter.render_particles(fx_dust, fx_blitz, fx_spark, fx_steam, db_camera);
 
 		glDisable(GL_DEPTH_TEST);
 		if (debug_active)
@@ -101,7 +101,7 @@ void Renderer::render(
 		skybox_shader.use();
 		skybox.render(skybox_shader, db_camera);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, db_camera);
+		fx_emitter.render_particles(fx_dust, fx_blitz, fx_spark, fx_steam, db_camera);
 
 		if (debug_active)
 		{
@@ -247,6 +247,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Steam Particles
 		//steam_particles->calculate_steam_data(*steam_particles->fx, scene->v, delta, db_camera);
 		fx_emitter.calculate_steam_data(delta, db_camera);
+		fx_emitter.calculate_blitz_data(delta, db_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 	}

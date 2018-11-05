@@ -110,6 +110,9 @@ private:
 	Shader fx_steam{ 
 		"../resources/shaders/fx_steam.vs",
 		"../resources/shaders/fx_steam.fs" };
+	Shader fx_blitz{
+		"../resources/shaders/fx_blitz.vs",
+		"../resources/shaders/fx_blitz.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };

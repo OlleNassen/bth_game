@@ -27,6 +27,7 @@ public:
 		float life;
 		float camera_distance;
 		float random_amp;
+		float r_amp, g_amp, b_amp;
 	};
 
 	struct FXdata {
@@ -56,7 +57,8 @@ public:
 
 	void render_particles(const Shader& dust,
 		const Shader& spark,
-		const Shader& steam, 
+		const Shader& steam,
+		const Shader& blitz,
 		const Camera& camera) const;
 	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_spark_data(std::chrono::milliseconds delta, const Camera& camera);
