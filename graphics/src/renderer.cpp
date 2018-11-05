@@ -65,7 +65,7 @@ void Renderer::render(
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
 		render_character(robot_shader,
-			game_camera, lights, scene->models, player_count);   
+			game_camera, lights, scene->moving_models, player_count);   
 
 
 		pbr.use();
@@ -76,7 +76,11 @@ void Renderer::render(
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
-		render_type(pbr, game_camera, lights, scene->models);
+		render_type(pbr, game_camera, lights, 
+			&scene->models[first_model], &scene->models[last_model]);
+
+		render_type(pbr, game_camera, lights,
+			&scene->models[0], &scene->models[3]);
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
@@ -135,8 +139,12 @@ void Renderer::render(
 
 		if(debug)
 			render_character(robot_shader,
-				db_camera, lights, scene->models, 4);
-		render_type(pbr, db_camera, lights, scene->models);
+				game_camera, lights, scene->moving_models, 4);
+		render_type(pbr, db_camera, lights, 
+			&scene->models[first_model], &scene->models[last_model]);
+
+		render_type(pbr, db_camera, lights,
+			&scene->models[0], &scene->models[3]);
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, db_camera);
@@ -250,6 +258,32 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int new_game_state,
 	std::string scoreboard)
 {
+	first_model = 0;
+	last_model = 0;
+	for (auto i = 0u; i < scene->models.size(); ++i)
+	{
+		float culling_distance = 45.0f;
+		auto bottom = scene->moving_models[id].get_y_position() - culling_distance;
+		auto top = scene->moving_models[id].get_y_position() + culling_distance;
+		
+		if (bottom < scene->models[i].get_y_position() && !first_model)
+		{
+			first_model = i;
+			last_model = i;
+		}
+
+		if (top < scene->models[i].get_y_position())
+		{
+			last_model = i;
+			break;
+		}
+
+		if (top >= scene->models.back().get_y_position())
+		{
+			last_model = scene->models.size() - 1;
+		}
+	}
+	
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
 	player_count = num_players + 1;
 	game_state = new_game_state;
