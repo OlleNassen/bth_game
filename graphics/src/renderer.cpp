@@ -42,7 +42,7 @@ void Renderer::render(
 	const std::array<std::string, 12>& buttons,
 	const std::vector<glm::vec3>& debug_positions,
 	const std::vector<build_information>& build_info,
-	bool game_over)const
+	bool game_over, std::array<bool, 4> died)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -190,7 +190,10 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
-			//death_screen.render(death_screen_shader);
+			if (died[player_id])
+			{
+				death_screen.render(death_screen_shader);
+			}
 		}
 	}
 	else
@@ -264,7 +267,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int num_players,
 	int id,
 	int new_game_state,
-	std::string scoreboard)
+	std::string scoreboard, 
+	std::array<bool, 4> died)
 {
 	first_model = 0;
 	last_model = 0;
@@ -293,8 +297,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 	}
 	
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
-	player_count = num_players + 1;
+	player_count = num_players;
 	game_state = new_game_state;
+	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
 	
 	using namespace std::chrono_literals;	
@@ -303,7 +308,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
 	loading_screen.timer += delta;
-	death_screen.timer += delta;
+	if (died[id])
+	{
+		death_screen.timer += delta;
+	}
 	main_menu_screen.timer += delta;
 
 	//Loading screen reset
@@ -311,10 +319,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		loading_screen.timer = 0ms;
 	}
-	if (death_screen.timer > 1000ms)
+	if (!died[id])
 	{
 		death_screen.timer = 0ms;
 	}
+	/*if (death_screen.timer > 1000ms)
+	{
+		death_screen.timer = 0ms;
+	}*/
 	if (main_menu_screen.timer > 1600ms)
 	{
 		main_menu_screen.timer = 0ms;
