@@ -38,6 +38,7 @@ void Renderer::render(
 	const std::string* end,
 	const std::array<std::string, 12>& buttons,
 	const std::vector<glm::vec3>& debug_positions,
+	const std::vector<build_information>& build_info,
 	bool game_over)const
 {
 	bool is_menu = (game_state & state::menu);
@@ -76,11 +77,34 @@ void Renderer::render(
 			lines.use();
 			lines.uniform("projection", game_camera.projection);
 			lines.uniform("view", game_camera.view());
-			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
+			lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
 
+		if(game_state & state::building)
+		{
+			int max = build_info.size();
+			for (int i = 0; i < max; i++)
+			{
+				glDisable(GL_DEPTH_TEST);
+				lines.use();
+				lines.uniform("projection", game_camera.projection);
+				lines.uniform("view", game_camera.view());
+
+				if (build_info[i].can_place)
+				{
+					lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
+				}
+				else
+				{ 
+					lines.uniform("line_color", glm::vec3(1.0f, 0.0f, 0.0f));
+				}
+
+				line_debug(build_info[i].build_positions);
+				glEnable(GL_DEPTH_TEST);
+			}
+		}
 	}
 	else if (!is_menu)
 	{
