@@ -68,7 +68,7 @@ void DebugCamera::update(std::chrono::milliseconds delta, const glm::vec3& direc
 void DebugCamera::change_position(std::chrono::milliseconds delta, const glm::vec3& direction)
 {
 	std::chrono::duration<float> float_seconds = delta;
-	auto velocity = 10.0f * float_seconds.count();
+	auto velocity = 30.0f * float_seconds.count();
 
 	position += forward * velocity * direction.z;
 	position += glm::normalize(glm::cross(forward, up)) * velocity * direction.x;
