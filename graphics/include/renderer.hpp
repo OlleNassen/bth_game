@@ -200,7 +200,7 @@ private:
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T& data)
+void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T* first, const T* last)
 {
 	for (auto it = first; it != last; ++it)
 	{

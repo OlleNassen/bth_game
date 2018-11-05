@@ -88,13 +88,8 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 	shader.uniform("cam_pos", camera.position);
 	
 	int light_count = 0;
-	shader.uniform("light_pos[" + std::to_string(light_count) + "]", glm::vec3(camera.position.x, camera.position.y + 5, camera.position.z - 10));
-	shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[0].color);
-	shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[0].intensity);
 
-	light_count++;
-
-	for (int i = 1; i < 6; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{
@@ -104,6 +99,7 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 			light_count++;
 		}
 	}
+
 	shader.uniform("light_count", light_count);
 
 	shader.uniform("albedo_map", 0);

@@ -16,8 +16,9 @@ uniform sampler2D normal_map;
 uniform sampler2D roughness_metallic_ao_map;
 uniform vec3 player_color;
 
-uniform vec3 light_pos[4];
-uniform vec3 light_color[4];
+uniform vec3 light_pos[14];
+uniform vec3 light_color[14];
+uniform float light_intensity[14];
 uniform vec3 cam_pos;
 
 //IBL
@@ -91,12 +92,6 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 void main()
 {
-	vec3 lightColors[4];
-
-	for(int i = 0; i < 4; i++)
-	{
-		lightColors[i] = light_color[i];
-	}
 
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
     float roughness = texture(roughness_metallic_ao_map, fs_in.tex_coord).r;
@@ -121,8 +116,8 @@ void main()
         vec3 L = normalize(light_pos[i] - fs_in.world_pos);
         vec3 H = normalize(V + L);
         float distance = length(light_pos[i] - fs_in.world_pos);
-        float attenuation = 1.0 / (distance * distance) * 5;
-        vec3 radiance = lightColors[i] * attenuation;
+        float attenuation = light_intensity[i] / (distance * distance) * 5;
+        vec3 radiance = light_color[i] * attenuation;
 
         // Cook-Torrance BRDF
         float NDF = DistributionGGX(N, H, roughness);   

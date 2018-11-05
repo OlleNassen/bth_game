@@ -95,11 +95,6 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 void main()
 {
 
-	for(int i = 0; i < 4; i++)
-	{
-		lightColors[i] = light_color[i];
-	}
-
     vec3 albedo     = pow(texture(albedo_map, fs_in.tex_coord).rgb, vec3(2.2));
     float roughness = texture(roughness_metallic_ao_map, fs_in.tex_coord).r;
     float metallic  = texture(roughness_metallic_ao_map, fs_in.tex_coord).g;
