@@ -155,11 +155,40 @@ std::array<button, 10> make_keybinds(const char* path)
 	return keybinds;
 }*/
 
+enum class controller_buttons
+{
+	a,
+	b,
+	x,
+	y,
+	lb,
+	rb,
+	select,
+	start,
+	ls,
+	rs,
+	up,
+	right,
+	down,
+	left
+
+};
+
+enum class controller_axis
+{
+	ls_right,
+	ls_up,
+	rs_right,
+	rs_up,
+	lt,
+	rt,
+};
+
 class Window
 {
 public:
 	Window() = default;
-	Window(const glm::ivec2& window_size, const std::string& title);
+	Window(const glm::ivec2& window_size, bool fullscreen, const std::string& title);
 	~Window();
 
 	bool is_open() const;
@@ -168,6 +197,10 @@ public:
 	void poll_events();
 	void update_input(logic::input& input);
 	void assign_key(logic::button name, int keybind) { keybinds.insert(std::make_pair(keybind, name)); }
+	
+	void assign_button(logic::button name, controller_buttons bind) { buttons.insert(std::make_pair(bind, name)); }
+	void assign_axis_neg(logic::button name, controller_axis bind) { axis_neg.insert(std::make_pair(bind, name)); }
+	void assign_axis_pos(logic::button name, controller_axis bind) { axis_pos.insert(std::make_pair(bind, name)); }
 
 	void show_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
 	void hide_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
@@ -177,6 +210,13 @@ private:
 	GLFWwindow* glfw_window;
 
 	std::map<int, logic::button> keybinds;
+
+	std::map<controller_buttons, logic::button> buttons;
+	std::map<controller_axis, logic::button> axis_pos;
+	std::map<controller_axis, logic::button> axis_neg;
+
+	int input_index = 0;
+	bool using_controller = false;
 };
 
 #endif

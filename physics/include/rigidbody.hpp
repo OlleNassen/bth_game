@@ -1,13 +1,9 @@
 #ifndef RIGIDBODY_HPP
 #define RIGIDBODY_HPP
-//::.. authors ..:://
-// Vincent, Lucas.S
 
 #include <glm/glm.hpp>
-#include <chrono>
-#include <algorithm>
-
-#include "boxcollider.hpp"
+#include <vector>
+#include "geometry3d.hpp"
 
 namespace physics
 {
@@ -15,31 +11,24 @@ namespace physics
 class Rigidbody
 {
 public:
-	Rigidbody(glm::vec2 start_force);
-	~Rigidbody();
+	void update(float delta_seconds);
 
-	void update();
-	void cancel_forces();
-	void cancel_force_x();
-	void cancel_force_y();
-	void add_force(glm::vec2 force_direction);
+	void synch_collision_volumes();
+	void add_linear_impulse(const glm::vec3& impulse);
 
-	glm::vec2 get_force()const;
-	bool gravity_active;
-	bool can_jump;
+	glm::vec3 position;
+	glm::vec3 velocity;
+	glm::vec3 forces;
+	float mass = 100.0f;
+	float inverse_mass = 1.0f / mass;
+	float restitution = 0.4f;
+	float friction = 0.45f;
 
-private:
-	float mass;				//Massa är i kilo.
-	float drag;				//Luftmotstånd.
-	float floor_drag;		//Friktion
-	float gravity;			//Gravitation.
-
-	glm::vec2 force;		//Den totala kraften.
-
-	float converter;
-
-	Box box_collider;
+	OBB box;
 };
+
+CollisionManifold find_collision_features(Rigidbody& left, Rigidbody& right);
+void apply_impulse(Rigidbody& left, Rigidbody& right, const CollisionManifold& m, int c);
 
 }
 

@@ -16,7 +16,7 @@
 #include "game_scene.hpp"
 #include "window.hpp"
 
-
+#include "settings.hpp"
 #include "gui.hpp"
 #include "timer.hpp"
 
@@ -37,9 +37,11 @@ private:
 	void pack_data();
 	void unpack_data();
 	
+	Settings settings; // NEEDS TO BE ABOVE WINDOW
 	Window window; //PUT BELOW WINDOW IF OPENGL RELATED
 	
 	graphics::MeshLib mesh_lib;
+	graphics::MeshLib object_lib;
 	graphics::GameScene level;
 	graphics::Renderer renderer;
 
@@ -47,19 +49,37 @@ private:
 	logic::Gameplay gameplay;
 	logic::input player_inputs[4];
 	logic::input* local_input{ &player_inputs[0] };
+	std::array<logic::PlayerResult, 4> player_results;
 	
 	network::uint8 player_count = 1;
 	network::uint32 state_sequence = 0;
 	network::GameState net_state;
 	network::Messenger net;
 
+	physics::trigger_array triggers;
+	physics::objects_array dynamics;
 	physics::World physics;	
 	std::chrono::milliseconds timestep{16};
-	
+
 	gui::Chat chat;
 	gui::Menu menu;	
 
+	void place_random_objects(float start_height, float map_width, int number_of_randoms);
+
+	std::array<anim, 4> anim_states;
+
+	//Temp leaderboards
+	std::vector<int> leader_board;
+	bool showleaderboard = false;
 	bool is_client{};
+
+	//test
+	std::array <id_and_model_place, 4> players_placed_objects_id;
+	bool buildmode = true;
+	bool give_players_objects = false;
+
+	//Random placed objects
+	std::array <id_and_model_place, 4> random_placed_objects_id;
 };
 
 

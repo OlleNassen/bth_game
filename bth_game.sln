@@ -3,14 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logic", "logic\logic.vcxproj", "{BAF7AF8B-F15D-4CE5-BDB9-F0C9B1203909}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network", "network\network.vcxproj", "{36AE2814-2DC7-4C15-A717-D5722002110F}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "physics", "physics\physics.vcxproj", "{16176C5D-BDEB-4F0C-BF6E-ACA0EFAC7C3F}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "resources", "resources\resources.vcxproj", "{CF7F7B0A-754E-428D-8DA8-EBBEEB76B85E}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "engine\engine.vcxproj", "{4B25CCE6-0448-482C-8E2E-A2F4A234FDF5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CF7F7B0A-754E-428D-8DA8-EBBEEB76B85E} = {CF7F7B0A-754E-428D-8DA8-EBBEEB76B85E}
@@ -20,14 +12,23 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "engine\engine.vcx
 		{BAF7AF8B-F15D-4CE5-BDB9-F0C9B1203909} = {BAF7AF8B-F15D-4CE5-BDB9-F0C9B1203909}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logic", "logic\logic.vcxproj", "{BAF7AF8B-F15D-4CE5-BDB9-F0C9B1203909}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "network", "network\network.vcxproj", "{36AE2814-2DC7-4C15-A717-D5722002110F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "physics", "physics\physics.vcxproj", "{16176C5D-BDEB-4F0C-BF6E-ACA0EFAC7C3F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "resources", "resources\resources.vcxproj", "{CF7F7B0A-754E-428D-8DA8-EBBEEB76B85E}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "graphics", "graphics\graphics.vcxproj", "{C917511D-BFE3-49E3-9AB1-490760826C21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
 		Release|x86 = Release|x86
+	    Release|x64 = Release|x64
+		Debug|x86 = Debug|x86
+		Debug|x64 = Debug|x64
+
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BAF7AF8B-F15D-4CE5-BDB9-F0C9B1203909}.Debug|x64.ActiveCfg = Debug|x64

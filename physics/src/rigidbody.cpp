@@ -1,76 +1,102 @@
-#include "Rigidbody.hpp"
-#include <iostream>
-#include <chrono>
+#include "rigidbody.hpp"
+
+#include <glm/gtc/constants.hpp>
 
 namespace physics
 {
 
-Rigidbody::Rigidbody(glm::vec2 start_force)
+void Rigidbody::update(float delta_seconds)
 {
-	this->converter = 0.2;
+	const float damping = 0.98f;
+	glm::vec3 acceleration = forces * inverse_mass;
+	velocity += acceleration * delta_seconds;
+	velocity *= damping;
 
-	//Massa är i kilo.
-	this->mass = 1.0f;
-	//Drag i float.
-	this->drag = 0.002f;
-	//Friktion i float
-	this->floor_drag = 0.1f;
-
-	//Gravitation i float.
-	this->gravity = 9.82 * converter; //(9.82f * 9.82f);// *converter;
-	gravity_active = true;
-	can_jump = false;
-
-	//Start kraft.
-	this->force = start_force;// *converter;
+	position += velocity * delta_seconds;
+	synch_collision_volumes();
 }
 
-Rigidbody::~Rigidbody()
-{
 
+void Rigidbody::synch_collision_volumes()
+{
+	box.position = position;
 }
 
-void Rigidbody::update()
+void Rigidbody::add_linear_impulse(const glm::vec3& impulse)
 {
-	if (gravity_active)
-		this->force.y += -this->gravity;
+	velocity += impulse;
+}
 
-	force.y += -this->force.y * this->drag;
+CollisionManifold find_collision_features(Rigidbody& left, Rigidbody& right)
+{
+	CollisionManifold result;
+	reset_collison_manifold(result);
+	result = find_collision_features(left.box, right.box);
 
-	if (force.x != 0)
+	return result;
+}
+
+void apply_impulse(Rigidbody& left, Rigidbody& right, const CollisionManifold& m, int c)
+{
+	float left_inverse_mass = left.inverse_mass;
+	float right_inverse_mass = right.inverse_mass;
+
+	float inverse_mass_sum = left_inverse_mass + right_inverse_mass;
+
+	if (inverse_mass_sum == 0.0f)
+		return;
+
+	glm::vec3 relative_velocity = right.velocity - left.velocity;
+	glm::vec3 relative_normal = m.normal;
+	relative_normal = glm::normalize(relative_normal);
+
+	if (glm::dot(relative_velocity, relative_normal) > 0.0f)
+		return;
+
+	float e = glm::min(left.restitution, right.restitution);
+	float numerator = (-(1.0f + e) * glm::dot(relative_velocity, relative_normal));
+	float j = numerator / inverse_mass_sum;
+
+	if (m.contacts.size() > 0 && j != 0.0f)
+		j /= m.contacts.size();
+
+	glm::vec3 impulse = relative_normal * j;
+	left.velocity -= impulse * left_inverse_mass;
+	right.velocity += impulse * right_inverse_mass;
+
+	glm::vec3 t = 
+		relative_velocity - 
+		(relative_normal * glm::dot(relative_velocity, relative_normal));
+
+	if (glm::abs(magnitude_squared(t)) < glm::epsilon<float>())
+		return;
+
+	t = glm::normalize(t);
+
+	numerator = -glm::dot(relative_velocity, t);
+	float jt = numerator / inverse_mass_sum;
+
+	if (m.contacts.size() > 0 && jt != 0.0f)
+		jt /= m.contacts.size();
+
+	if (glm::abs(jt) < glm::epsilon<float>())
+		return;
+
+	float friction = glm::sqrt(left.friction * right.friction);
+
+	if (jt > j * friction)
 	{
-		force.x += -this->force.x * this->floor_drag;
+		jt = j * friction;
+	}
+	else if (jt < -j * friction)
+	{
+		jt = -j * friction;
 	}
 
-	/*std::cout << "F.x " << force.x << " F.y " << force.y << std::endl;*/
-	this->force = (this->force * this->mass);
-}
-
-void Rigidbody::cancel_forces()
-{
-	force = glm::vec2(0.0, 0.0);
-}
-
-void Rigidbody::cancel_force_x()
-{
-	force = glm::vec2(0.0, force.y);
-}
-
-void Rigidbody::cancel_force_y()
-{
-	force = glm::vec2(force.x, 0.0);
-}
-
-void Rigidbody::add_force(glm::vec2 force_direction)
-{
-	this->force += force_direction;
-}
-
-glm::vec2 Rigidbody::get_force() const
-{
-	return force;
+	glm::vec3 tangent_impulse = t * jt;
+		
+	left.velocity -= tangent_impulse * left_inverse_mass;
+	right.velocity += tangent_impulse * right_inverse_mass;
 }
 
 }
-
-

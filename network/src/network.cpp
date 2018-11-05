@@ -11,17 +11,17 @@ int Messenger::id() const
 
 bool Messenger::connected() const 
 { 
-	return player_host.connected(); 
+	return true;// player_host.connected(); //true;
 }
 
 void Messenger::update(GameState& state, const char* ip_address)
 {	
 	if (ip_address)
 	{
-		player_host = Host{ip_address};
+		player_host = Host{ ip_address };
 		++player_id;
 	}
-
+	
 	if (player_id)
 	{
 		uint16 player_unput = state.inputs[player_id];
@@ -32,6 +32,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 	{
 		player_host.send(state);
 		player_host.receive(state.inputs[1]);	
+		
 	}
 }
 

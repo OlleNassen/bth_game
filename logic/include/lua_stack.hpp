@@ -2,14 +2,14 @@
 #define LUA_STACK_HPP
 
 #include <glm/glm.hpp>
+#include <flags.hpp>
+#include "input.hpp"
 
 struct lua_State;
 typedef int(*lua_CFunction)(lua_State *L);
 
 namespace logic
 {
-
-
 
 class LuaStack
 {
@@ -28,6 +28,13 @@ public:
 	void getglobal(const char* value);
 	void setglobal(const char* value);
 
+	void getfield(int index, const char * name);
+	void setfield(int index, const char* name);
+
+	void settable(int index);
+	void gettable(int index);
+
+
 	int top() const;
 	lua_CFunction tofunction(int index) const;
 	const char* tostring(int index) const;
@@ -45,12 +52,20 @@ public:
 	void push(const glm::vec3& value);
 	void push(const glm::vec4& value);
 
+	void push(const input& value);
+	void push(const anim& value);
+
 	void pop();
 	void clear();
 
-private:
+	void stack_dump();
+
 	lua_State* lua_state;
+private:
+	
 };
+
+
 
 }
 

@@ -66,6 +66,26 @@ void LuaStack::setglobal(const char* value)
 	lua_setglobal(lua_state, value);
 }
 
+void LuaStack::getfield(int index, const char * name)
+{
+	lua_getfield(lua_state, index, name);
+}
+
+void LuaStack::setfield(int index, const char * name)
+{
+	lua_setfield(lua_state, index, name);
+}
+
+void LuaStack::settable(int index)
+{
+	lua_settable(lua_state, index);
+}
+
+void LuaStack::gettable(int index)
+{
+	lua_gettable(lua_state, index);
+}
+
 int LuaStack::top() const
 {
 	return lua_gettop(lua_state);
@@ -166,17 +186,83 @@ void LuaStack::push(const glm::vec4& value)
 	}
 }
 
-void LuaStack::pop()
+void LuaStack::push(const input& value)
 {
-	lua_pop(lua_state, -1);
+	newtable();
+	int top = lua_gettop(lua_state);
+	const char* members[] = 
+	{ 
+		"up",
+		"left",
+		"down",
+		"right",
+		"jump",
+		"debug",
+		"select",
+		"cancel",
+		"rotate",
+		"refresh",
+		"menu",
+		"quit"
+	};
+
+	int i = 0;
+	for (auto* member : members)
+	{
+		push(member);
+		push(value[static_cast<button>(i)] 
+			== button_state::held);	
+		rawset(top);
+		++i;
+	}
 }
 
-void LuaStack::clear()
+void LuaStack::push(const anim& value)
+{
+	newtable();
+	int top = lua_gettop(lua_state);
+	const char* members[] =
+	{
+		"start_jump",
+		"in_jump",
+		"falling",
+		"landing",
+		"hanging_wall",
+		"connect_wall",
+		"jump_from_wall",
+		"idle",
+		"running",
+		"turning",
+		"sliding",
+		"hanging_left",
+		"hanging_right"
+	};
+
+	int i = 0;
+	for (auto* member : members)
+	{
+		push(member);
+		push(i);
+		rawset(top);
+		++i;
+	}
+
+	push("current");
+	push(static_cast<int>(value));
+	rawset(top);
+}
+
+void LuaStack::pop()
 {
 	lua_pop(lua_state, 1);
 }
 
-static void stack_dump(lua_State* lua_state) 
+void LuaStack::clear()
+{
+	lua_pop(lua_state, top());
+}
+
+void LuaStack::stack_dump()
 {
 	int top = lua_gettop(lua_state);
 	

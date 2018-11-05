@@ -1,30 +1,98 @@
 #include "model.hpp"
-#include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace graphics
 {
 
 Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh)
-	:
-	model{ model },
-	emissive_color{ emissive_color }
-{
-	this->mesh = mesh;
-}
-
-Model::~Model()
+	: mesh{mesh}
+	, model{ model }
+	, emissive_color{emissive_color}
 {
 }
 
-void Model::render(const Shader & shader, const Camera& camera, const PointLight& light)const
+void Model::create_animation_data(const std::string & file_path, anim enm)
+{
+	this->animation_handler.create_animation_data(file_path, enm);
+	is_animated = true;
+}
+anim Model::get_state()
+{
+	return this->animation_handler.current_state;
+}
+bool Model::get_animation_done(anim state)
+{
+	return this->animation_handler.get_animation_finished(state);
+}
+void Model::switch_animation(anim enm)
+{
+	this->animation_handler.switch_animation(enm);
+}
+
+void Model::move(glm::vec2 offset)
+{
+	//model = glm::translate(model, glm::vec3{ offset, 0.0f });
+	model[3][0] += offset.x;
+	model[3][1] += offset.y;
+}
+
+void Model::set_position(glm::vec2 position)
+{
+	//model = glm::translate(glm::mat4(1.f), glm::vec3{ position, 0.0f });
+	model[3][0] = position.x;
+	model[3][1] = position.y;
+	//model[3][2] = 0.0f;
+}
+
+void Model::rotate(float degree)
+{
+	/*glm::mat3 rotation{ model };
+	glm::vec3 translation{ model[3][0], model[3][1], model[3][2] };
+
+	model = glm::mat4{ 1.0f };
+	model = glm::translate(model, translation);
+	model = glm::rotate(model, glm::radians(degree), {0.0f, 0.0f, 1.0f});
+	model = model * glm::mat4{rotation};*/
+
+
+	//Works but not for all
+	/*model = glm::translate(model, { 0.0, center_pivot.x / 2, 0.0 });
+	model = glm::rotate(model, glm::radians(degree), { 1,0,0 });
+	model = glm::translate(model, { 0.0, -center_pivot.x / 2, 0.0 });*/
+
+	model = glm::rotate(model, glm::radians(degree), { 0, 0, 1 });
+}
+
+glm::vec3 Model::get_position()const
+{
+	return glm::vec3(model[3][0], model[3][1] + 3, model[3][2]);
+}
+
+
+float Model::get_y_position() const
+{
+	return this->model[3][1];
+}
+
+void Model::rotate(const glm::vec3 axis, float angle)
+{
+	model = glm::rotate(glm::mat4{ 1.0f }, angle, axis);
+}
+
+void Model::render(const Shader & shader, const Camera& camera, const std::array<PointLight, 4>& lights)const
 {
 	shader.uniform("model", model);
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
-	shader.uniform("view_pos", glm::vec3{ camera.position });
-	shader.uniform("light_pos", light.position);
-	shader.uniform("light_color", light.color);
+	shader.uniform("cam_pos", camera.position);
+	
+	shader.uniform("light_pos[0]", lights[0].position);
+	shader.uniform("light_pos[1]", lights[1].position);
+	shader.uniform("light_pos[2]", lights[2].position);
+	shader.uniform("light_pos[3]", lights[3].position);
+	
+	shader.uniform("light_color", lights[0].color);
 
 	shader.uniform("albedo_map", 0);
 	shader.uniform("normal_map", 1);
@@ -36,7 +104,7 @@ void Model::render(const Shader & shader, const Camera& camera, const PointLight
 	
 	if (is_animated)
 	{
-		shader.uniform("bone_mats", animation_handler.bone_mat_vector);
+		shader.uniform("bone_mats", this->animation_handler.bone_mat_vector);
 	}
 	
 	
@@ -49,9 +117,9 @@ void Model::render(const Shader & shader, const Camera& camera, const PointLight
 }
 
 
-void Model::update_animation(float time)
+void Model::update_animation(float time, anim& play_anim)
 {
-	this->animation_handler.update_animation(time);
+	this->animation_handler.update_animation(time, play_anim);
 }
 
 }

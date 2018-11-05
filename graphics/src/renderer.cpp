@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace graphics
@@ -18,24 +19,32 @@ Renderer::Renderer(GameScene* scene)
 	, irradiance_buffer{irradiance, skybox}
 	, prefilter_buffer{pre_filter, skybox, true}
 	, brdf_buffer{brdf, skybox, 3.f}
+	, leaderboard(projection)
 {
+
 	db_camera.position.z = 20.0f;
 	glViewport(0, 0, 1280, 720); // don't forget to configure the viewport to the capture dimensions.
 
-	dust_texture = new Texture("../resources/textures/dust_texture_1.png");
-	dust_particles = new FX(*dust_texture);
+	for (int i = 0; i < 4; ++i)
+	{
+		lights[i].position = glm::vec3{0,0,0};
+		lights[i].color = glm::vec3{1,1,1};
+	}
+
 }
 
 void Renderer::render(
 	const std::string* begin,
 	const std::string* end,
 	const std::array<std::string, 12>& buttons,
-	const std::vector<glm::vec2>& debug_positions,
-	bool is_menu,
-	bool connected,
-	bool debug)
+	const std::vector<glm::vec3>& debug_positions,
+	bool game_over)const
 {
-	glClearColor(1.0f, 0.8f, 0.0f, 0.f);
+	bool is_menu = (game_state & state::menu);
+	bool connected = (game_state & state::connected);
+	bool debug_active = (game_state & state::render_physics);
+	
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	scene_texture.bind_framebuffer();
@@ -45,50 +54,33 @@ void Renderer::render(
 	{
 		pbr.use();
 		pbr.uniform("brdf_lut", 6);
-		//pbr.uniform("irradiance_map", 7);
-		//pbr.uniform("prefilter_map", 8);
+		pbr.uniform("irradiance_map", 7);
+		pbr.uniform("prefilter_map", 8);
 
 		brdf_buffer.bind_texture(6);
-		//irradiance_buffer.bind_texture(7);
-		//prefilter_buffer.bind_texture(8);
+		irradiance_buffer.bind_texture(7);
+		prefilter_buffer.bind_texture(8);
 
 		render_character(pbr, 
-			game_camera, light, scene->models, player_count);
-		render_type(pbr, game_camera, light, scene->models);
+			game_camera, lights, scene->models, player_count);
+		render_type(pbr, game_camera, lights, scene->models);
 
-		//skybox_shader.use();
-		//prefilter_buffer.bind_texture(3);
-		//skybox.irradiance_render(skybox_shader, db_camera);
+		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
 
-		fx_dust.use();
-		fx_dust.uniform("particle_texture", 0);
-		dust_texture->bind(0);
-
-		//Get and set matrices
-		glm::vec3 start_point = glm::vec3(0, 0, 0);
-		glm::mat4 view_matrix = game_camera.view();
-		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
-		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
-		fx_dust.uniform("camera_right_worldspace", camera_right_vector);
-		fx_dust.uniform("camera_up_worldspace", camera_up_vector);
-		fx_dust.uniform("view", game_camera.view());
-		fx_dust.uniform("projection", game_camera.projection);
-		fx_dust.uniform("view_position", scene->v[0]);
-		fx_dust.uniform("particle_pivot", start_point);
-
-		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
 
 		glDisable(GL_DEPTH_TEST);
-		auto& s = lines;
 		if (debug_active)
 		{
-			s.use();
-			s.uniform("projection", game_camera.projection);
-			s.uniform("view", game_camera.view());
+			lines.use();
+			lines.uniform("projection", game_camera.projection);
+			lines.uniform("view", game_camera.view());
+			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
+
 	}
 	else if (!is_menu)
 	{
@@ -96,79 +88,71 @@ void Renderer::render(
 		pbr.uniform("brdf_lut", 6);
 		pbr.uniform("irradiance_map", 7);
 		pbr.uniform("prefilter_map", 8);
-		pbr.uniform("skybox", 9);
 
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
-		skybox.bind_texture(9);
 
 		if(debug)
 			render_character(pbr, 
-				db_camera, light, scene->models, 4);
-		render_type(pbr, db_camera, light, scene->models);
+				db_camera, lights, scene->models, 4);
+		render_type(pbr, db_camera, lights, scene->models);
 
 		skybox_shader.use();
-		//prefilter_buffer.bind_texture(8);
-		//skybox.irradiance_render(skybox_shader, db_camera);
 		skybox.render(skybox_shader, db_camera);
-		
-		//brdf.use();
-		//brdf_buffer.bind_texture(6);
-		//brdf_buffer.render_quad();
 
-		//Dust
-		fx_dust.use();
-		fx_dust.uniform("particle_texture", 0);
-		dust_texture->bind(0);
-
-		//Get and set matrices
-		glm::vec3 start_point = glm::vec3(0);
-		glm::mat4 view_matrix = db_camera.view();
-		glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
-		glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
-		fx_dust.uniform("camera_right_worldspace", camera_right_vector);
-		fx_dust.uniform("camera_up_worldspace", camera_up_vector);
-		fx_dust.uniform("view", db_camera.view());
-		fx_dust.uniform("projection", db_camera.projection);
-		fx_dust.uniform("view_position", scene->v[0]);
-		fx_dust.uniform("particle_pivot", start_point);
-		dust_particles->render_particles(*dust_particles->fx); //Orginally not const --> Till next, fix so the vao and vbo data is gathered
-
-		light_box.render(db_camera);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, game_camera);
 
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
-			auto& s = lines;
-			s.use();
-			s.uniform("projection", db_camera.projection);
-			s.uniform("view", db_camera.view());
-			s.uniform("line_color", glm::vec3(1.0, 0.0, 0.0));
+			lines.use();
+			lines.uniform("projection", db_camera.projection);
+			lines.uniform("view", db_camera.view());
+			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
-
 		}
-
 	}
 
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	post_proccessing.use();
-	post_proccessing.uniform("scene_texture", 0);
-	post_proccessing.uniform("depth_texture", 1);
-	post_proccessing.uniform("screen_warning", 2);
+	if (player_count > 1)
+	{
+		if (!is_menu)
+		{
+			post_proccessing.use();
+			post_proccessing.uniform("scene_texture", 0);
+			post_proccessing.uniform("depth_texture", 1);
+			post_proccessing.uniform("screen_warning", 2);
 
-	scene_texture.bind_texture(0);
-	scene_texture.bind_texture(1);
-	post_processing_effects.texture.bind(2);
+			scene_texture.bind_texture(0);
+			scene_texture.bind_texture(1);
+			post_processing_effects.texture.bind(2);
 
-	post_proccessing.uniform("pulse", post_processing_effects.glow_value);
-	post_processing_effects.render();
+			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
+			post_processing_effects.render();
+
+			//death_screen.render(death_screen_shader);
+		}
+	}
+	else
+	{
+		if (!is_menu)
+		{
+			loading_screen.render(loading_screen_shader);
+		}
+	}
+
 
 	{
 		glDisable(GL_DEPTH_TEST);
+
+		if (is_menu)
+		{
+			main_menu_screen.render(main_menu_shader);
+		}
 
 		// Text
 		gui.use();
@@ -177,10 +161,11 @@ void Renderer::render(
 			ui.render();
 		}
 
+
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 		text_shader.uniform("projection", projection);
-		text_shader.uniform("text_color", glm::vec3(0.1f, 0.1f, 0.1f));
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
 		auto offset = 0.0f;
 
@@ -196,75 +181,93 @@ void Renderer::render(
 		for (auto i = 0u; i < buttons.size(); ++i)
 			text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
 
-		if (!is_menu)
-			minimap.render(minimap_shader);
+		if (player_count > 1)
+		{
+			//leaderboard
+			if (game_over)
+			{
+				leaderboard.render(text_shader, text);
+			}
+
+			if (!is_menu)
+			{
+				minimap.render(minimap_shader);
+			}
+		}
 
 		glEnable(GL_DEPTH_TEST);
 	}
+
 }
 
 void Renderer::update(std::chrono::milliseconds delta,
+	const objects_array& dynamics,
 	const glm::vec2& cursor,
 	const std::array<glm::vec3, 4>& directions,
 	const std::string& data,
 	int num_players,
 	int id,
-	bool is_on,
-	bool move_char)
+	int new_game_state,
+	std::string scoreboard)
 {
-
-	using namespace std::chrono_literals;
+	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
+	player_count = num_players + 1;
+	game_state = new_game_state;
+	bool is_chat_on = (game_state & state::chat);
+	
+	using namespace std::chrono_literals;	
+	
 	time = data != log ? 0ms : time + delta;
 	log = data;
-	is_chat_visible = is_on || time < 3s;
+	is_chat_visible = is_chat_on || time < 3s;
+	loading_screen.timer += delta;
+	death_screen.timer += delta;
+	main_menu_screen.timer += delta;
 
-	player_count = num_players;
+	//Loading screen reset
+	if (loading_screen.timer > 4000ms)
+	{
+		loading_screen.timer = 0ms;
+	}
+	if (death_screen.timer > 1000ms)
+	{
+		death_screen.timer = 0ms;
+	}
+	if (main_menu_screen.timer > 1600ms)
+	{
+		main_menu_screen.timer = 0ms;
+	}
 
-	if (!is_on)
+	if (!is_chat_on)
 	{
 		//Dust Particles
-		randomizer = rand() % 100;
-		if (randomizer <= 40)
-		{
-			dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
-		}
+		fx_emitter.calculate_dust_data(delta, db_camera);
+		//dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
 
-		//update_particles(*dust_texture, fx_dust, "dust_texture", db_camera, id);
-		/*if (begin[0][button::glow] == button_state::pressed)
-		{
-			want_glow = !want_glow;
-		}
-
-		if (want_glow)
-		{
-			post_processing_effects.update(delta);
-		}
-		else
-		{
-			post_processing_effects.glow_value = 0;
-		}*/
+		//Steam Particles
+		//steam_particles->calculate_steam_data(*steam_particles->fx, scene->v, delta, db_camera);
+		fx_emitter.calculate_steam_data(delta, db_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 	}
 
 	if (scene->build_mode_active)
 	{
-		glm::vec2 build_pos[2];
+		//glm::vec2 build_pos[2];
 
 		//game_camera.update(delta, &scene->v[scene->placing_object_id], &scene->v[scene->placing_object_id + 1]);
 	}
-	else
+
+	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
+	ui.update();
+	minimap.update(scene->models, player_count);
+
+	for (int i = 0; i < 4; ++i)
 	{
-		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
+		lights[i].position = scene->models[i].get_position();
 	}
 
-	ui.update();
-
-
-
-	light.position += glm::vec3(sin(glfwGetTime()) / 10.f, 0.0, 0.0);
-	light_box.set_position(light.position);
-	minimap.update(scene->models, player_count);
+	leaderboard.update(std::move(scoreboard));
 
 }
 
