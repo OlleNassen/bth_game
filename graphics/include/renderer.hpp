@@ -25,6 +25,12 @@
 //test of new leaderboard
 #include <leaderboard.hpp>
 
+struct build_information
+{
+	std::vector<glm::vec3> build_positions;
+	bool can_place = true;
+};
+
 namespace graphics
 {
 
@@ -41,6 +47,8 @@ using objects_array = std::array<objects, 100>;
 // Olle
 // Edvard
 
+
+
 class Renderer
 {
 public:
@@ -51,6 +59,7 @@ public:
 		const std::string* end,
 		const std::array<std::string, 12>& buttons,
 		const std::vector<glm::vec3>& debug_positions,
+		const std::vector<build_information>& build_infos,
 		bool game_over) const;
 
 	void update(std::chrono::milliseconds delta,
@@ -131,6 +140,9 @@ private:
 	Shader main_menu_shader{
 		"../resources/shaders/main_menu_screen.vs",
 		"../resources/shaders/main_menu_screen.fs" };
+	Shader robot_shader{
+		"../resources/shaders/robots.vs",
+		"../resources/shaders/robots.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;

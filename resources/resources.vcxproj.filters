@@ -49,6 +49,8 @@
     <None Include="shaders\death_screen.vs" />
     <None Include="shaders\main_menu_screen.fs" />
     <None Include="shaders\main_menu_screen.vs" />
+    <None Include="shaders\robots.vs" />
+    <None Include="shaders\robots.fs" />
     <None Include="shaders\fx_blitz.fs" />
     <None Include="shaders\fx_blitz.vs" />
   </ItemGroup>

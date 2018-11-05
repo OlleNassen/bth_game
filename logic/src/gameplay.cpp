@@ -35,8 +35,7 @@ void Gameplay::refresh()
 	game_script.setup();
 }
 
-Output Gameplay::update(Input inputs,
-	std::array<logic::PlayerResult, 4>& player_results,
+LuaExport Gameplay::update(Input inputs,
 	int& current_state)
 {
 
@@ -82,11 +81,10 @@ Output Gameplay::update(Input inputs,
 
 	//Give up \Vincent
 	give_up(inputs);
-
-	player_results = game_script.player_results();
-
 	
-	return Output{game_script.game_over()};
+	game_script.update_export();
+
+	return game_script.data;
 }
 
 bool Gameplay::build_stage() const

@@ -71,7 +71,10 @@ public:
 	std::vector<glm::vec2> get_forces() const;
 	bool intersects(const int box_id, const int target_box_id);
 
+	bool overlapping(const int target_id);
+
 	std::vector<glm::vec3> get_all_debug()const;
+	std::vector<glm::vec3> get_debug_for(int id)const;
 
 	void rotate_static_box(int id);
 

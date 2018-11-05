@@ -69,12 +69,6 @@ Game::Game()
 		dynamics[i].impulse = { 0.0f, 0.0f };
 	}
 
-	for (int i = 0; i < 4; ++i)
-	{
-		std::string name = "P" + std::to_string(i+1);
-		player_results[i] = logic::PlayerResult{name, 0.0f};
-	}
-
 	for (auto& coll : level.coll_data)
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
@@ -111,10 +105,22 @@ void Game::run()
 void Game::render()
 {	
 	std::vector<glm::vec3> db_coll = physics.get_all_debug();
+
+	std::vector<build_information> build_info;
+	for (int i = 0; i < 4; i++)
+	{
+		int d_id = players_placed_objects_id[i].dynamics_id;
+		build_information info;
+		
+		info.build_positions = physics.get_debug_for(d_id);
+		info.can_place = players_placed_objects_id[i].can_place;
+
+		build_info.push_back(info);
+	}
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
-		db_coll, logic_out.game_over);
+		db_coll, build_info, lua_data.game_over);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -209,11 +215,20 @@ void Game::update(std::chrono::milliseconds delta)
 		for (auto& ppoi : players_placed_objects_id)
 		{
 			level.models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
+			ppoi.can_place = !physics.overlapping(ppoi.dynamics_id);
 		}
 	}
-	else
+	else if (give_players_objects == true)
 	{
 		give_players_objects = false;
+		for (auto& ppoi : players_placed_objects_id)
+		{
+			if (!ppoi.can_place)
+			{
+				dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
+				level.models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
+			}
+		}
 	}	
 
 	{
@@ -227,12 +242,12 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].impulse = dynamics[i].impulse;
 		}
 
-		logic_out = gameplay.update(
+		lua_data = gameplay.update(
 			{ delta, obj, triggers,
 			player_inputs, 
 			anim_states,
 			players_placed_objects_id },
-			player_results, game_state);
+			game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
 		{
@@ -243,8 +258,6 @@ void Game::update(std::chrono::milliseconds delta)
 			dynamics[i].impulse = obj[i].impulse;
 		}
 	}
-	
-
 
 		if (net.connected())
 		{
@@ -345,9 +358,6 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
-
-
-
 	physics.update(delta, dynamics, triggers, anim_states);
 
 	pack_data();
@@ -379,12 +389,15 @@ void Game::update(std::chrono::milliseconds delta)
 			if (in[button::right] >= button_state::pressed)
 				direction.x += 1.0f;
 		}
-		
+
 		using namespace std;
 		stringstream stream;
-		for (auto& p : player_results)	
-			stream << p.name << ": "
-			<< fixed << setprecision(2) << p.score << " | ";
+		for (int i = 0; i < 4; ++i)
+		{
+			stream << lua_data.names[i] << ": "
+				<< fixed << setprecision(2) 
+				<< lua_data.scores[i] << " | ";
+		}			
 		
 		string temp = stream.str();
 		renderer.update(delta,

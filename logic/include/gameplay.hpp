@@ -23,6 +23,7 @@ struct id_and_model_place
 {
 	int dynamics_id = 0;
 	int model_id = 0;
+	bool can_place = true;
 };
 
 namespace logic
@@ -41,12 +42,6 @@ struct Input
 	std::array<id_and_model_place, 4> players_placed_objects_id;
 };
 
-struct Output
-{
-	bool game_over;
-};
-
-
 
 template <typename T>
 using script_array = std::array<T, 10>;
@@ -58,8 +53,7 @@ public:
 
 	void refresh();
 
-	Output update(Input input,
-		std::array<logic::PlayerResult, 4>& player_results,
+	LuaExport update(Input input,
 		int& current_state);
 	bool build_stage() const;
 private:
