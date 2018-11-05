@@ -67,7 +67,6 @@ void Renderer::render(
 		render_character(robot_shader,
 			game_camera, lights, scene->moving_models, player_count);   
 
-
 		pbr.use();
 		pbr.uniform("brdf_lut", 6);
 		pbr.uniform("irradiance_map", 7);
@@ -78,6 +77,10 @@ void Renderer::render(
 		prefilter_buffer.bind_texture(8);
 		render_type(pbr, game_camera, lights, 
 			&scene->models[first_model], &scene->models[last_model]);
+
+		if (scene->moving_models.size() > 4)
+			render_type(pbr, game_camera, lights,
+				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
 		render_type(pbr, game_camera, lights,
 			&scene->models[0], &scene->models[3]);
@@ -140,6 +143,11 @@ void Renderer::render(
 		if(debug)
 			render_character(robot_shader,
 				game_camera, lights, scene->moving_models, 4);
+
+		if (scene->moving_models.size() > 4)
+			render_type(pbr, db_camera, lights,
+				&scene->moving_models[4], &scene->moving_models.back() + 1);
+
 		render_type(pbr, db_camera, lights, 
 			&scene->models[first_model], &scene->models[last_model]);
 
@@ -335,11 +343,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update();
-	minimap.update(scene->models, player_count);
+	minimap.update(scene->moving_models, player_count);
 
 	for (int i = 0; i < 4; ++i)
 	{
-		lights[i].position = scene->models[i].get_position();
+		lights[i].position = scene->moving_models[i].get_position();
 	}
 
 	leaderboard.update(std::move(scoreboard));

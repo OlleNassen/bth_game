@@ -109,14 +109,14 @@ int GameScene::add_object(collision_data& physics_data, int id)
 {
 	physics_data = objects[id].data;
 
-	models.emplace_back(objects[id].model);
+	moving_models.emplace_back(objects[id].model);
 
-	return models.size() - 1;
+	return moving_models.size() - 1;
 }
 
 void GameScene::rotate_object(int model_id)
 {
-	models[model_id].rotate(90.0f);
+	moving_models[model_id].rotate(90.0f);
 }
 
 }
