@@ -274,7 +274,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	last_model = 0;
 	for (auto i = 0u; i < scene->models.size(); ++i)
 	{
-		float culling_distance = 45.0f;
+		float culling_distance = 50.0f;
 		auto bottom = scene->moving_models[id].get_y_position() - culling_distance;
 		auto top = scene->moving_models[id].get_y_position() + culling_distance;
 		
