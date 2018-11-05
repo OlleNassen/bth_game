@@ -128,6 +128,9 @@ private:
 	Shader main_menu_shader{
 		"../resources/shaders/main_menu_screen.vs",
 		"../resources/shaders/main_menu_screen.fs" };
+	Shader robot_shader{
+		"../resources/shaders/robots.vs",
+		"../resources/shaders/robots.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
