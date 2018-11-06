@@ -200,6 +200,9 @@ private:
 	
 	//Timer text
 	Text timer_text;
+
+	//Build instructions
+	Text build_text;
 };
 
 

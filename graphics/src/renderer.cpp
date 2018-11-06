@@ -146,12 +146,18 @@ void Renderer::render(
 				line_debug(build_info[i].build_positions);
 				glEnable(GL_DEPTH_TEST);
 			}
+
+			glDisable(GL_DEPTH_TEST);			
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			build_text.render_text("Press 'Space' to place", 1280.f - 410, 10.f, 0.75f);
+			glEnable(GL_DEPTH_TEST);
 		}
 
 		glDisable(GL_DEPTH_TEST);
 		std::stringstream out_text;
 		out_text << std::fixed << std::setprecision(1) << print_time;
-
 		text_shader.use();
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));

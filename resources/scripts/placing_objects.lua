@@ -56,7 +56,6 @@ function update(delta_seconds, entity)
 	end
 
 	width = 20
-	height = 0
 
 	if entity.position.x < -width
 	then
@@ -64,6 +63,17 @@ function update(delta_seconds, entity)
 	elseif entity.position.x > width
 	then
 		entity.position.x = width
+	end
+	
+	maxHeight = 256.0
+	minHeight = 9.5
+
+	if entity.position.y < minHeight
+	then
+		entity.position.y  = minHeight
+	elseif entity.position.y > maxHeight
+	then
+		entity.position.y = maxHeight
 	end
 
 	entity.rotate_was_pressed = entity.button.rotate
