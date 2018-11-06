@@ -199,12 +199,12 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				collision_data data;
 				int model_id = level.add_object(data, 0);
-				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + (i * 2) }, { 0, 0 }, data.width, data.height, { 0, 0 });
+				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 20 }, { 0, 0 }, data.width, data.height, { 0, 0 });
 
 				players_placed_objects_id[i].model_id = model_id;
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
 
-				dynamics[dynamic_id].position = { 0, 16 + (i * 2) };
+				dynamics[dynamic_id].position = { 0, 20 };
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 				dynamics[dynamic_id].size = { data.width, data.height };
 				dynamics[dynamic_id].forces = { 0.0f, 0.0f };
@@ -238,7 +238,7 @@ void Game::update(std::chrono::milliseconds delta)
 				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
 			}
 		}
-	}	
+	}
 
 	{
 		logic::objects_array obj;
@@ -306,6 +306,12 @@ void Game::update(std::chrono::milliseconds delta)
 				level.moving_models[i].set_position(pos);
 		}
 	}
+
+	if (game_state & state::building)
+	{
+		level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3};
+	}
+
 
 	anim idle = anim::falling;
 

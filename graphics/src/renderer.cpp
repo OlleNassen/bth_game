@@ -305,8 +305,20 @@ void Renderer::update(std::chrono::milliseconds delta,
 	for (auto i = 0u; i < scene->models.size(); ++i)
 	{
 		float culling_distance = 50.0f;
-		auto bottom = scene->moving_models[id].get_y_position() - culling_distance;
-		auto top = scene->moving_models[id].get_y_position() + culling_distance;
+
+		auto bottom = 0.0f; // scene->moving_models[id].get_y_position() - culling_distance;
+		auto top = 0.0f; // scene->moving_models[id].get_y_position() + culling_distance;
+
+		if (game_state & state::building)
+		{
+			bottom = scene->v[id].y - culling_distance;
+			top = scene->v[id].y + culling_distance;
+		}
+		else
+		{
+			bottom = scene->moving_models[id].get_y_position() - culling_distance;
+			top = scene->moving_models[id].get_y_position() + culling_distance;
+		}		
 		
 		if (bottom < scene->models[i].get_y_position() && !first_model)
 		{
@@ -379,13 +391,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		fx_emitter.calculate_blitz_data(delta, game_camera);
 
 		db_camera.update(delta, directions[0], cursor);
-	}
-
-	if (scene->build_mode_active)
-	{
-		//glm::vec2 build_pos[2];
-
-		//game_camera.update(delta, &scene->v[scene->placing_object_id], &scene->v[scene->placing_object_id + 1]);
 	}
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
