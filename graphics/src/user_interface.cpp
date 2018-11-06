@@ -8,7 +8,7 @@ namespace graphics
 UserInterface::UserInterface()
 {
 	elements.fill({ {2.0f, 2.0f}, {1.0, 1.0}, { 0.05f, 0.09f }, 0.0f });
-	elements.front() = { { -0.5f, -1.0f },{ 0.8f, 0.3f },{ 1.0f, 0.25f }, 0.0f };
+	elements.front() = { { -0.5f, -0.9f },{ 0.8f, 0.3f },{ 1.0f, 0.25f }, 0.0f };
 	elements.at(1) = { {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f }, 0.0f };
 
 	
@@ -17,13 +17,14 @@ UserInterface::UserInterface()
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 	gl_buffer_data(GL_ARRAY_BUFFER, primitives::quad_uv, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), nullptr);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2) * 2, nullptr);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)sizeof(glm::vec2));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2) * 2, (void*)sizeof(glm::vec2));
 
 	rebind_buffers();
+	//arrow_textures.at(0).bind(0);
 	arrow_textures.at(0).load_texture("../resources/textures/player_icon.png");
-	gui_texture.bind(1);
+	//gui_texture.bind(1);
 	gui_texture.load_texture("../resources/textures/chat_texture.png");
 
 }
@@ -39,8 +40,8 @@ void UserInterface::render(const Shader &shader)const
 	shader.use();
 	shader.uniform("icon_texture", 0);
 	shader.uniform("gui_texture", 1);
-	gui_texture.bind(1);
-	//arrow_textures.at(0).bind(0);
+	
+	
 	glBindVertexArray(vao);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
@@ -90,6 +91,7 @@ void UserInterface::disable_chat()
 {
 	elements.front().position = glm::vec2(2.0f, 2.0f);
 	elements.at(1).position = glm::vec2(2.0f, 2.0f);
+	arrow_textures.at(0).bind(0);
 }
 
 void UserInterface::enable_chat()
@@ -100,6 +102,7 @@ void UserInterface::enable_chat()
 	{
 		elements.at(i).position = glm::vec2(2.0f, 2.0f);
 	}
+	gui_texture.bind(0);
 }
 
 
