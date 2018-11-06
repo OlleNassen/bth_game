@@ -68,7 +68,8 @@ void MeshLib::create_mesh_list()
 		"machine_1.ssp",					//40
 		"machine_2.ssp",					//41
 		"wall_slim.ssp",					//42
-		"hatch.ssp"							//43
+		"hatch.ssp",						//43
+		"wall_single.ssp"					//44		
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
