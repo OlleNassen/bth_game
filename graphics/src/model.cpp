@@ -82,29 +82,9 @@ void Model::rotate(const glm::vec3 axis, float angle)
 	model = glm::rotate(glm::mat4{ 1.0f }, angle, axis);
 }
 
-void Model::render(const Shader & shader, const Camera& camera, const std::array<PointLight, 14>& lights)const
+void Model::render(const Shader & shader)const
 {
 	shader.uniform("model", model);
-	shader.uniform("view", camera.view());
-	shader.uniform("projection", camera.projection);
-
-	shader.uniform("cam_pos", camera.position);
-	
-	int light_count = 0;
-
-	for (int i = 0; i < 9; i++)
-	{
-		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
-		{
-			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
-			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
-			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
-			light_count++;
-		}
-	}
-
-	shader.uniform("light_count", light_count);
-
 	shader.uniform("albedo_map", 0);
 	shader.uniform("normal_map", 1);
 	shader.uniform("roughness_metallic_ao_map", 2);
@@ -117,7 +97,6 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 	{
 		shader.uniform("bone_mats", this->animation_handler.bone_mat_vector);
 	}
-	
 	
 	mesh->textures[0].bind(0);
 	mesh->textures[1].bind(1);
