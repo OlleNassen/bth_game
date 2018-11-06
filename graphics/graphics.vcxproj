@@ -176,6 +176,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\death_screen.cpp" />
+    <ClCompile Include="src\finish_screen.cpp" />
     <ClCompile Include="src\fx.cpp" />
     <ClCompile Include="src\leaderboard.cpp" />
     <ClCompile Include="src\loading_screen.cpp" />
@@ -201,6 +202,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="include\death_screen.hpp" />
+    <ClInclude Include="include\finish_screen.hpp" />
     <ClInclude Include="include\fx.hpp" />
     <ClInclude Include="include\game_scene.hpp" />
     <ClInclude Include="include\helpers.hpp" />
