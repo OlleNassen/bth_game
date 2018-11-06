@@ -121,7 +121,8 @@ void Game::render()
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
-		db_coll, build_info, lua_data.game_over, lua_data.died);
+		db_coll, build_info, lua_data.game_over, lua_data.died,
+		lua_data.time);
 }
 
 void Game::update(std::chrono::milliseconds delta)

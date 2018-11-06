@@ -3,14 +3,17 @@ function setup(entity)
 	entity.done = false
 	entity.force_done = false
 	entity.clock = 0.0
+	entity.time = 0.0
 end
 
 place_speed = 10
+max_time = 10.0
 
 function update(delta_seconds, entity)
 
 	delta_place_speed = place_speed * delta_seconds
 	entity.clock = entity.clock + delta_seconds
+	entity.time = max_time - entity.clock
 
 	if entity.done == false
 	then
@@ -47,7 +50,7 @@ function update(delta_seconds, entity)
 
 	end
 
-	if entity.clock > 10.0
+	if entity.clock > max_time
 	then
 		entity.force_done = true
 	end

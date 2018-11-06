@@ -61,7 +61,8 @@ public:
 		const std::vector<glm::vec3>& debug_positions,
 		const std::vector<build_information>& build_infos,
 		bool game_over, 
-		std::array<bool, 4> died) const;
+		std::array<bool, 4> died,
+		float print_time) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -196,6 +197,8 @@ private:
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	Leaderboard leaderboard;
 	
+	//Timer text
+	Text timer_text;
 };
 
 

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <sstream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iomanip>
 
 namespace graphics
 {
@@ -59,7 +60,8 @@ void Renderer::render(
 	const std::array<std::string, 12>& buttons,
 	const std::vector<glm::vec3>& debug_positions,
 	const std::vector<build_information>& build_info,
-	bool game_over, std::array<bool, 4> died)const
+	bool game_over, std::array<bool, 4> died,
+	float print_time)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -145,6 +147,16 @@ void Renderer::render(
 				glEnable(GL_DEPTH_TEST);
 			}
 		}
+
+		glDisable(GL_DEPTH_TEST);
+		std::stringstream out_text;
+		out_text << std::fixed << std::setprecision(1) << print_time;
+
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		timer_text.render_text(out_text.str(), 10.f, 720.f - 45.f, 1.f);
+		glEnable(GL_DEPTH_TEST);
 	}
 	else if (!is_menu)
 	{

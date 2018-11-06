@@ -9,14 +9,18 @@ function setup(game)
 	game.died = {false, false, false, false}
 	game.clock = 0.0
 	game.winner = false
+	game.time = 0.0
 end
+
+max_time = 90.0
 
 function update(delta_seconds, game, entities)
 
 	game.clock = game.clock + delta_seconds
+	game.time = max_time - game.clock
 
 	--should be as long as a play time
-	if game.clock > 90.0 -- Deal out points and reset if timer is too high
+	if game.clock > max_time -- Deal out points and reset if timer is too high
 	then
 		while game.points > 0
 		do

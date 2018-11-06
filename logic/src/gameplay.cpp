@@ -38,13 +38,14 @@ void Gameplay::refresh()
 LuaExport Gameplay::update(Input inputs,
 	int& current_state)
 {
-
+	float time = -1.0f;
 	if (current_state & state::building)
 	{
 		players_done = 0;
 		for (int i = 0; i < 4; i++)
 		{
 			int d_id = inputs.players_placed_objects_id[i].dynamics_id;
+			time = placement_script.get_time(d_id);
 
 			if (placement_script.build_stage_force_done(d_id))
 			{
@@ -71,7 +72,6 @@ LuaExport Gameplay::update(Input inputs,
 				inputs.player_inputs[i],
 				d_id, inputs.anim_states[i]);
 		}		
-		
 	}
 
 	else if (current_state & state::playing)
@@ -85,6 +85,8 @@ LuaExport Gameplay::update(Input inputs,
 				i, inputs.anim_states[i]);
 		}
 		game_script.update(inputs.delta, inputs.triggers, &inputs.dynamics[0]);
+
+		time = game_script.get_time();
 	}
 	
 
@@ -92,6 +94,8 @@ LuaExport Gameplay::update(Input inputs,
 	give_up(inputs);
 	
 	game_script.update_export();
+
+	game_script.data.time = time;
 
 	return game_script.data;
 }
