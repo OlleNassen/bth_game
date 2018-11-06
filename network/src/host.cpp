@@ -37,7 +37,7 @@ Host::~Host()
 			enet_peer_disconnect(peer, 0);
 		}
 	}
-	
+
 	enet_host_flush(enet_host);
 	enet_host_destroy(enet_host);
 }
@@ -58,6 +58,7 @@ Host& Host::operator=(const Host& other)
 		peer = nullptr;
 
 	peers[0] = enet_host_connect(enet_host, &address, 2, 0);
+	is_client = true;
 
 	return *this;
 }
@@ -67,12 +68,17 @@ bool Host::connected() const
 	for (auto* peer : peers)
 		if (peer)
 			return true;
-		
+
 	return false;
 }
 
+bool Host::client() const
+{
+	return is_client;
+}
+
 void Host::send(uint16& input)
-{	
+{
 	if (enet_host)
 	{
 		auto* peer = peers[0];
@@ -80,12 +86,12 @@ void Host::send(uint16& input)
 		{
 			ENetPacket* enet_packet =
 				enet_packet_create(&input,
-				sizeof(uint16),
-				ENET_PACKET_FLAG_UNSEQUENCED
-				| ENET_PACKET_FLAG_NO_ALLOCATE);
+					sizeof(uint16),
+					ENET_PACKET_FLAG_UNSEQUENCED
+					| ENET_PACKET_FLAG_NO_ALLOCATE);
 			enet_peer_send(peer, 0, enet_packet);
 		}
-	}	
+	}
 }
 
 void Host::send(GameState& state)
@@ -100,35 +106,47 @@ void Host::send(GameState& state)
 		{
 			if (peer)
 			{
+				state.player_id = ++index;
 				ENetPacket* enet_packet =
 					enet_packet_create(&state,
 						sizeof(GameState),
 						ENET_PACKET_FLAG_UNSEQUENCED
 						| ENET_PACKET_FLAG_NO_ALLOCATE);
 				enet_peer_send(peer, 0, enet_packet);
+				enet_host_flush(enet_host);
 			}
 		}
+		state.player_id = 0;
 	}
 }
 
-void Host::receive(uint16& input)
+void Host::receive(uint16* input)
 {
 	if (enet_host)
 	{
-		ENetEvent event;
-		while (enet_host_service(enet_host, &event, 0) > 0)
+		ENetEvent eevent;
+		while (enet_host_service(enet_host, &eevent, 0) > 0)
 		{
-			switch (event.type)
+			switch (eevent.type)
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
-			{			
-				input = *reinterpret_cast<uint16*>(event.packet->data);
+			{
+				int index = 0;
+				for (auto* peer : peers)
+				{
+					++index;
+					if (peer == eevent.peer)
+					{
+						input[index] = *reinterpret_cast<uint16*>(eevent.packet->data);
+						break;
+					}					
+				}
 				break;
-			}			
-			case ENET_EVENT_TYPE_CONNECT: connect(event); break;
-			case ENET_EVENT_TYPE_DISCONNECT: disconnect(event); break;
 			}
-			enet_packet_destroy(event.packet);
+			case ENET_EVENT_TYPE_CONNECT: connect(eevent); break;
+			case ENET_EVENT_TYPE_DISCONNECT: disconnect(eevent); break;
+			}
+			enet_packet_destroy(eevent.packet);
 		}
 	}
 }
@@ -137,40 +155,51 @@ void Host::receive(GameState& state)
 {
 	if (enet_host)
 	{
-		ENetEvent event;
-		while (enet_host_service(enet_host, &event, 0) > 0)
+		ENetEvent eevent;
+		while (enet_host_service(enet_host, &eevent, 0) > 0)
 		{
-			switch (event.type)
+			switch (eevent.type)
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
-				state = *reinterpret_cast<GameState*>(event.packet->data);
+			{
+				state = *reinterpret_cast<GameState*>(eevent.packet->data);
 				break;
-			case ENET_EVENT_TYPE_CONNECT: connect(event); break;
-			case ENET_EVENT_TYPE_DISCONNECT: disconnect(event); break;
+			}			
+			case ENET_EVENT_TYPE_CONNECT: connect(eevent); break;
+			case ENET_EVENT_TYPE_DISCONNECT: disconnect(eevent); break;
 			}
-			enet_packet_destroy(event.packet);
+			enet_packet_destroy(eevent.packet);
 		}
 	}
 }
 
-void Host::connect(const ENetEvent& event)
+void Host::connect(const ENetEvent& eevent)
 {
 	std::cout << "Connected." << '\n';
 	++player_count;
 	for (auto& peer : peers)
+	{
 		if (peer == nullptr)
-			peer = event.peer;
+		{
+			peer = eevent.peer;
+			break;
+		}
+	}			
 }
 
-void Host::disconnect(const ENetEvent& event)
+void Host::disconnect(const ENetEvent& eevent)
 {
 	std::cout << "Diconnected." << '\n';
 	--player_count;
 	for (auto& peer : peers)
-		if (peer == event.peer)
+	{
+		if (peer == eevent.peer)
+		{
 			peer = nullptr;
+			break;
+		}
+	}			
 }
 
 
 }
-
