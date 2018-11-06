@@ -216,7 +216,7 @@ void Renderer::render(
 			}
 			if (finish[player_id])
 			{
-				finish_screen.render(finish_screen_shader, finish);
+				finish_screen.render(finish_screen_shader, player_id);
 			}
 		}
 	}

@@ -26,7 +26,7 @@ namespace graphics
 
 		std::chrono::milliseconds timer{ 0 };
 
-		void render(const Shader& finish_screen_shader, std::array<bool, 4> finished) const;
+		void render(const Shader& finish_screen_shader, int finished) const;
 
 	private:
 		unsigned int vao_id;
