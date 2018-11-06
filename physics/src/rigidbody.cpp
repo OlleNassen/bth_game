@@ -7,7 +7,7 @@ namespace physics
 
 void Rigidbody::update(float delta_seconds)
 {
-	const float damping = 0.98f;
+	const float damping = 0.99f;
 	glm::vec3 acceleration = forces * inverse_mass;
 	velocity += acceleration * delta_seconds;
 	velocity *= damping;
