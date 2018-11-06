@@ -21,6 +21,7 @@
 #include "loading_screen.hpp"
 #include "death_screen.hpp"
 #include "main_menu_screen.hpp"
+#include "finish_screen.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -61,7 +62,9 @@ public:
 		const std::vector<glm::vec3>& debug_positions,
 		const std::vector<build_information>& build_infos,
 		bool game_over, 
-		std::array<bool, 4> died) const;
+		std::array<bool, 4> died,
+		std::array<bool, 4> finish,
+		std::array<float, 4> scores) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -72,7 +75,9 @@ public:
 		int id,
 		int new_game_state,
 		std::string scoreboard, 
-		std::array<bool, 4> died);
+		std::array<bool, 4> died,
+		std::array<bool, 4> finish,
+		std::array<float, 4> scores);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -139,6 +144,9 @@ private:
 	Shader death_screen_shader{
 		"../resources/shaders/death_screen.vs",
 		"../resources/shaders/death_screen.fs" };
+	Shader finish_screen_shader{
+		"../resources/shaders/finish_screen.vs",
+		"../resources/shaders/finish_screen.fs" };
 	Shader main_menu_shader{
 		"../resources/shaders/main_menu_screen.vs",
 		"../resources/shaders/main_menu_screen.fs" };
@@ -185,6 +193,7 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
+	FinishScreen finish_screen;
 	int player_id;
 
 	FX fx_emitter;

@@ -119,7 +119,7 @@ void Game::render()
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
-		db_coll, build_info, lua_data.game_over, lua_data.died);
+		db_coll, build_info, lua_data.game_over, lua_data.died, lua_data.finished, lua_data.scores);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -366,7 +366,7 @@ void Game::update(std::chrono::milliseconds delta)
 			player_inputs[net.id()].cursor,
 			directions,
 			chat[1], player_count,
-			net.id(), game_state, temp, lua_data.died);
+			net.id(), game_state, temp, lua_data.died, lua_data.finished, lua_data.scores);
 	}
 }
 
