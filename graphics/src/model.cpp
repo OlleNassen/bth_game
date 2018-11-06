@@ -71,6 +71,11 @@ glm::vec3 Model::get_position()const
 	return glm::vec3(model[3][0], model[3][1] + 3, model[3][2]);
 }
 
+glm::vec3 Model::get_color() const
+{
+	return emissive_color;
+}
+
 
 float Model::get_y_position() const
 {
