@@ -25,6 +25,12 @@
 //test of new leaderboard
 #include <leaderboard.hpp>
 
+struct build_information
+{
+	std::vector<glm::vec3> build_positions;
+	int place_state = 1;
+};
+
 namespace graphics
 {
 
@@ -41,6 +47,8 @@ using objects_array = std::array<objects, 100>;
 // Olle
 // Edvard
 
+
+
 class Renderer
 {
 public:
@@ -51,7 +59,9 @@ public:
 		const std::string* end,
 		const std::array<std::string, 12>& buttons,
 		const std::vector<glm::vec3>& debug_positions,
-		bool game_over) const;
+		const std::vector<build_information>& build_infos,
+		bool game_over, 
+		std::array<bool, 4> died) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -61,7 +71,8 @@ public:
 		int num_players,
 		int id,
 		int new_game_state,
-		std::string scoreboard);
+		std::string scoreboard, 
+		std::array<bool, 4> died);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -110,6 +121,9 @@ private:
 	Shader fx_steam{ 
 		"../resources/shaders/fx_steam.vs",
 		"../resources/shaders/fx_steam.fs" };
+	Shader fx_blitz{
+		"../resources/shaders/fx_blitz.vs",
+		"../resources/shaders/fx_blitz.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
@@ -128,6 +142,9 @@ private:
 	Shader main_menu_shader{
 		"../resources/shaders/main_menu_screen.vs",
 		"../resources/shaders/main_menu_screen.fs" };
+	Shader robot_shader{
+		"../resources/shaders/robots.vs",
+		"../resources/shaders/robots.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -154,7 +171,10 @@ private:
 
 	PostProcessingEffects post_processing_effects;
 
-	std::array<PointLight, 4> lights;
+	std::array<PointLight, 14> lights;
+
+	int first_model = 0;
+	int last_model = 0;
 
 	int player_count{0};
 	glm::vec2 v[4];
@@ -165,6 +185,7 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
+	int player_id;
 
 	FX fx_emitter;
 
@@ -179,17 +200,17 @@ private:
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T& data)
+void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T* first, const T* last)
 {
-	for (auto i = 4u; i < data.size(); ++i)
+	for (auto it = first; it != last; ++it)
 	{
-		const auto& renderable = data[i];
+		const auto& renderable = *it;
 		renderable.render(shader, camera, lights);
 	}
 }
 
 template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T& data, int num_players)
+void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T& data, int num_players)
 {
 	for (auto i = 0; i < num_players; ++i)
 	{

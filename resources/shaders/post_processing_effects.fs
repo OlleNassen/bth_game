@@ -25,7 +25,7 @@ float znear = 0.1; //camera clipping start
 float zfar = 100.0; //camera clipping end
 
 int samples = 4; //samples on the first ring
-int rings = 4; //ring count
+int rings = 2; //ring count
 
 bool manualdof = true; //manual dof calculation
 float ndofstart = 0.0; //near dof blur start

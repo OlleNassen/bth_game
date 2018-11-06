@@ -36,6 +36,7 @@ public:
 	~GameScene();
 
 	glm::vec2 v[4];
+	std::vector<Model> moving_models;
 	std::vector<Model> models;
 	std::vector<collision_data> coll_data;
 
