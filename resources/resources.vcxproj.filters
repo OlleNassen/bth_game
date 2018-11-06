@@ -53,5 +53,7 @@
     <None Include="shaders\robots.fs" />
     <None Include="shaders\fx_blitz.fs" />
     <None Include="shaders\fx_blitz.vs" />
+    <None Include="shaders\finish_screen.fs" />
+    <None Include="shaders\finish_screen.vs" />
   </ItemGroup>
 </Project>

@@ -59,7 +59,10 @@ void Renderer::render(
 	const std::array<std::string, 12>& buttons,
 	const std::vector<glm::vec3>& debug_positions,
 	const std::vector<build_information>& build_info,
-	bool game_over, std::array<bool, 4> died)const
+	bool game_over, 
+	std::array<bool, 4> died,
+	std::array<bool, 4> finish,
+	std::array<float, 4> scores)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -212,6 +215,10 @@ void Renderer::render(
 			{
 				death_screen.render(death_screen_shader);
 			}
+			if (finish[player_id])
+			{
+				finish_screen.render(finish_screen_shader, player_id);
+			}
 			gui.use();
 
 			ui.render(gui);
@@ -292,6 +299,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int new_game_state,
 	std::string scoreboard, 
 	std::array<bool, 4> died,
+	std::array<bool, 4> finish,
+	std::array<float, 4> scores,
 	float goal_height)
 {
 	first_model = 0;
@@ -331,40 +340,56 @@ void Renderer::update(std::chrono::milliseconds delta,
 	time = data != log ? 0ms : time + delta;
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
-	loading_screen.timer += delta;
+	
+	//Death screen update
 	if (died[id])
 	{
 		death_screen.timer += delta;
 	}
-	main_menu_screen.timer += delta;
+	else
+	{
+		death_screen.timer = 0ms;
+	}
 
-	//Loading screen reset
+	//Loading screen update
 	if (loading_screen.timer > 4000ms)
 	{
 		loading_screen.timer = 0ms;
 	}
-	if (!died[id])
+	else
 	{
-		death_screen.timer = 0ms;
+		loading_screen.timer += delta;
 	}
-	/*if (death_screen.timer > 1000ms)
-	{
-		death_screen.timer = 0ms;
-	}*/
+
+	//Main menu update
 	if (main_menu_screen.timer > 1600ms)
 	{
 		main_menu_screen.timer = 0ms;
+	}
+	else
+	{
+		main_menu_screen.timer += delta;
+	}
+
+	//Finish screen update
+	if (finish[id])
+	{
+		finish_screen.timer += delta;
+	}
+	else
+	{
+		finish_screen.timer = 0ms;
 	}
 
 	if (!is_chat_on)
 	{
 		//Dust Particles
 		fx_emitter.calculate_dust_data(delta, game_camera);
-		//dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
 
 		//Steam Particles
-		//steam_particles->calculate_steam_data(*steam_particles->fx, scene->v, delta, db_camera);
 		fx_emitter.calculate_steam_data(delta, game_camera);
+
+		//Blitz Particles
 		fx_emitter.calculate_blitz_data(delta, game_camera);
 
 		db_camera.update(delta, directions[0], cursor);

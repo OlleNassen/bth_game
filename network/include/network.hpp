@@ -10,8 +10,6 @@ namespace network
 class Messenger
 {
 public:
-	Messenger() : init{}, player_host{} {}
-
 	int id() const;
 	bool connected() const;
 	void update(GameState& state, const char* ip_address);

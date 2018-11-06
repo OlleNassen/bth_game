@@ -35,8 +35,8 @@ public:
 	glm::vec3 get_color()const;
 	void rotate(const glm::vec3 axis, float angle);	
 	float get_y_position() const;
-	void render(const Shader & shader, const Camera& camera, 
-		const std::array<PointLight, 14>&  lights)const;
+
+	void render(const Shader & shader)const;
 	void update_animation(float time, anim& play_anim);
 
 private:
