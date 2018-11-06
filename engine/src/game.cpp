@@ -23,8 +23,6 @@ Game::Game()
 	anim_states[2] = anim::idle;
 	anim_states[3] = anim::idle;
 
-
-
 	window.assign_key(logic::button::up, GLFW_KEY_W);
 	window.assign_key(logic::button::left, GLFW_KEY_A);
 	window.assign_key(logic::button::down, GLFW_KEY_S);
@@ -285,12 +283,20 @@ void Game::update(std::chrono::milliseconds delta)
 
 				if (player_inputs[i][logic::button::right] == logic::button_state::held)
 				{
-					if (level.moving_models[i].get_state() != anim::hanging_right && level.moving_models[i].get_state() != anim::hanging_left && level.moving_models[i].get_state() != anim::turning && level.moving_models[i].get_state() != anim::connect_wall && level.moving_models[i].get_state() != anim::jump_from_wall)
+					if (level.moving_models[i].get_state() != anim::hanging_right && 
+						level.moving_models[i].get_state() != anim::hanging_left && 
+						level.moving_models[i].get_state() != anim::turning && 
+						level.moving_models[i].get_state() != anim::connect_wall && 
+						level.moving_models[i].get_state() != anim::jump_from_wall)
 						level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
 				}
 				else if (player_inputs[i][logic::button::left] == logic::button_state::held)
 				{
-					if (level.moving_models[i].get_state() != anim::hanging_right && level.moving_models[i].get_state() != anim::hanging_left && level.moving_models[i].get_state() != anim::turning && level.moving_models[i].get_state() != anim::connect_wall  && level.moving_models[i].get_state() != anim::jump_from_wall)
+					if (level.moving_models[i].get_state() != anim::hanging_right && 
+						level.moving_models[i].get_state() != anim::hanging_left && 
+						level.moving_models[i].get_state() != anim::turning && 
+						level.moving_models[i].get_state() != anim::connect_wall  && 
+						level.moving_models[i].get_state() != anim::jump_from_wall)
 						level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 				}
 
