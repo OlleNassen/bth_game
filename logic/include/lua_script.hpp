@@ -27,6 +27,7 @@ public:
 	std::array<bool, 4> died;
 	std::array<bool, 4> finished;
 	bool game_over;
+	float goal_height;
 };
 
 class objects

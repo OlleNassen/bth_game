@@ -291,7 +291,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int id,
 	int new_game_state,
 	std::string scoreboard, 
-	std::array<bool, 4> died)
+	std::array<bool, 4> died,
+	float goal_height)
 {
 	first_model = 0;
 	last_model = 0;
@@ -384,7 +385,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update(scene->models, player_count, game_camera.position);
 
-	minimap.update(scene->models, player_count);
+	minimap.update(scene->models, player_count, goal_height);
 
 	for (int i = 0; i < 4; ++i)
 	{

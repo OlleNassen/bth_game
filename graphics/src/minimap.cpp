@@ -17,12 +17,12 @@ Minimap::Minimap()
 	
 }
 
-void Minimap::update(const std::vector<Model>& models, int players)
+void Minimap::update(const std::vector<Model>& models, int players, float goal_height)
 {
 	player_count = players;
 	for (auto i = 1u; i <= player_count; i++)
 	{
-		this->map_elements[i].position.y = models[i - 1].get_y_position()/171 -0.9;
+		this->map_elements[i].position.y = models[i - 1].get_y_position()/goal_height -0.9;
 		this->map_elements[i].color = models[i - 1].get_color();		
 	}
 }

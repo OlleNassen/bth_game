@@ -290,6 +290,10 @@ void GameScript::update_export()
 
 	stack.getfield(top, "winner");
 	data.game_over = stack.toboolean(-1);
+
+	stack.getfield(top, "goal");
+	data.goal_height = stack.tonumber(-1);
+
 	stack.clear();
 
 
