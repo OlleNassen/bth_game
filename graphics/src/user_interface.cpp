@@ -8,9 +8,9 @@ namespace graphics
 UserInterface::UserInterface()
 {
 	elements.fill({ {2.0f, 2.0f}, {1.0, 1.0}, { 0.05f, 0.05f }, 0.0f });
-	elements.front() = { { -0.5f, -0.9f },{ 0.8f, 0.3f },{ 1.0f, 0.25f }, 0.0f };
-	elements.at(1) = { {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f }, 0.0f };
-
+	elements.front() = { { 0.5f, -0.1f },{ 0.8f, 0.3f },{ 0.7f, 0.25f }, 0.0f };
+	elements.at(1) = { {0.5f, -0.1f}, {1.0, 1.0}, { 0.7f, 0.7f }, 0.0f };
+	active_texture = 0;
 	
 	glBindVertexArray(vao);
 
@@ -22,10 +22,8 @@ UserInterface::UserInterface()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2) * 2, (void*)sizeof(glm::vec2));
 
 	rebind_buffers();
-	//arrow_textures.at(0).bind(0);
-	arrow_textures.at(0).load_texture("../resources/textures/player_arrow.png");
-	//gui_texture.bind(1);
-	gui_texture.load_texture("../resources/textures/chat_texture.png");
+	gui_textures.at(0).load_texture("../resources/textures/player_arrow.png");
+	gui_textures.at(1).load_texture("../resources/textures/chat_texture.png");
 
 }
 
@@ -40,7 +38,7 @@ void UserInterface::render(const Shader &shader)const
 	shader.use();
 	shader.uniform("icon_texture", 0);
 	shader.uniform("gui_texture", 1);
-	arrow_textures.at(0).bind(0);
+	gui_textures.at(active_texture).bind(0);
 	
 	glBindVertexArray(vao);
 
@@ -91,7 +89,7 @@ void UserInterface::disable_chat()
 {
 	elements.front().position = glm::vec2(2.0f, 2.0f);
 	elements.at(1).position = glm::vec2(2.0f, 2.0f);
-	arrow_textures.at(0).bind(0);
+	active_texture = 0;
 }
 
 void UserInterface::enable_chat()
@@ -102,7 +100,7 @@ void UserInterface::enable_chat()
 	{
 		elements.at(i).position = glm::vec2(2.0f, 2.0f);
 	}
-	gui_texture.bind(0);
+	active_texture = 1;
 }
 
 

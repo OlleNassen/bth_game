@@ -55,8 +55,8 @@ private:
 	VertexArray vao;
 	Buffer vertex_buffer;
 	Buffer gui_buffer;
-	std::array<Texture, 10> arrow_textures;
-	Texture gui_texture;
+	std::array<Texture, 10> gui_textures;
+	unsigned int active_texture;
 	std::array<GuiElement, 100> elements;
 };
 
