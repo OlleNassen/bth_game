@@ -26,7 +26,7 @@ Renderer::Renderer(GameScene* scene)
 	glViewport(0, 0, 1280, 720); // don't forget to configure the viewport to the capture dimensions.
 	
 	//Player Light
-	lights[0].color = glm::vec3{ 1.0f, 0.0f, 0.0f };
+	lights[0].color = glm::vec3{ 9.0f, 1.0f, 1.0f };
 	lights[0].intensity = 30;
 	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
 	lights[1].intensity = 30;
