@@ -82,7 +82,7 @@ void Model::rotate(const glm::vec3 axis, float angle)
 	model = glm::rotate(glm::mat4{ 1.0f }, angle, axis);
 }
 
-void Model::render(const Shader & shader, const Camera& camera, const std::array<PointLight, 14>& lights)const
+void Model::render(const Shader & shader)const
 {
 	shader.uniform("model", model);
 	shader.uniform("view", camera.view());
@@ -117,7 +117,6 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 	{
 		shader.uniform("bone_mats", this->animation_handler.bone_mat_vector);
 	}
-	
 	
 	mesh->textures[0].bind(0);
 	mesh->textures[1].bind(1);
