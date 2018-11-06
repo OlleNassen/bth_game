@@ -56,7 +56,8 @@ public:
 	
 	unsigned int randomizer = 0;
 
-	void render_particles(const Shader& dust,
+	void render_particles(
+		const Shader& dust,
 		const Shader& spark,
 		const Shader& steam,
 		const Shader& blitz,

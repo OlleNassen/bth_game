@@ -3,8 +3,8 @@ namespace graphics
 {
 
 FX::FX()
-	:dust("../resources/textures/fx/dust_texture_1.png")
-	,spark("../resources/textures/fx/spark_texture.png")
+	:dust("../resources/textures/fx/dust_texture.png")
+	,spark("../resources/textures/fx/dust_texture.png")
 	,steam("../resources/textures/fx/steam_texture.png")
 	,blitz("../resources/textures/fx/blitz_texture.png")
 	,fire("../resources/textures/fx/fire_texture.png")
@@ -104,7 +104,7 @@ void FX::render_particles(const Shader& dust,
 	blitz.uniform("particle_pivot", start_point);
 	render_particles(fx_blitz);
 
-	//FX - Fire
+	////FX - Fire
 	fire.use();
 	fire.uniform("particle_texture", 0);
 	this->fire.bind(0);
@@ -382,9 +382,9 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 					else if (rand_dir_gen == 7)
 						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
 
-					fx_spark.particle_container[particle_index].r = 250.0f;
-					fx_spark.particle_container[particle_index].g = 250.0f;
-					fx_spark.particle_container[particle_index].b = 250.0f;
+					fx_spark.particle_container[particle_index].r = 250;
+					fx_spark.particle_container[particle_index].g = 250;
+					fx_spark.particle_container[particle_index].b = 250;
 
 					fx_spark.particle_container[particle_index].a = 255;
 					fx_spark.particle_container[particle_index].size = 0.3f;
@@ -436,9 +436,9 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 					else if (rand_dir_gen == 7)
 						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
 
-					fx_spark.particle_container[particle_index].r = 250.0f;
-					fx_spark.particle_container[particle_index].g = 250.0f;
-					fx_spark.particle_container[particle_index].b = 250.0f;
+					fx_spark.particle_container[particle_index].r = 250;
+					fx_spark.particle_container[particle_index].g = 250;
+					fx_spark.particle_container[particle_index].b = 250;
 
 					fx_spark.particle_container[particle_index].a = 255;
 					fx_spark.particle_container[particle_index].size = 0.3f;
@@ -490,9 +490,9 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 					else if (rand_dir_gen == 7)
 						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
 
-					fx_spark.particle_container[particle_index].r = 250.0f;
-					fx_spark.particle_container[particle_index].g = 250.0f;
-					fx_spark.particle_container[particle_index].b = 250.0f;
+					fx_spark.particle_container[particle_index].r = 250;
+					fx_spark.particle_container[particle_index].g = 250;
+					fx_spark.particle_container[particle_index].b = 250;
 
 					fx_spark.particle_container[particle_index].a = 255;
 					fx_spark.particle_container[particle_index].size = 0.3f;
@@ -523,21 +523,21 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 
 			//Set colors in the color data
 			fx_spark.particle_container[i].r = fx_spark.particle_container[i].r * (fx_spark.particle_container[i].life + fx_spark.particle_container[i].r_amp);// +fx_spark.particle_container[i].r_amp);
-			if (fx_spark.particle_container[i].r < 229.0f)
+			if (fx_spark.particle_container[i].r < 229)
 			{
-				fx_spark.particle_container[i].r = 229.0f;
+				fx_spark.particle_container[i].r = 229;
 			}
 
 			fx_spark.particle_container[i].g = fx_spark.particle_container[i].g * (fx_spark.particle_container[i].life + fx_spark.particle_container[i].g_amp);// +fx_spark.particle_container[i].g_amp);
-			if (fx_spark.particle_container[i].g < 79.0f)
+			if (fx_spark.particle_container[i].g < 79)
 			{
-				fx_spark.particle_container[i].g = 79.0f;
+				fx_spark.particle_container[i].g = 79;
 			}
 
 			fx_spark.particle_container[i].b = (fx_spark.particle_container[i].b * fx_spark.particle_container[i].life) / 100.0f;
-			if (fx_spark.particle_container[i].b <= 0.0f)
+			if (fx_spark.particle_container[i].b <= 0)
 			{
-				fx_spark.particle_container[i].b = 0.0f;
+				fx_spark.particle_container[i].b = 0;
 			}
 
 			fx_spark.color_data[4 * fx_spark.total_particle_count + 0] = fx_spark.particle_container[i].r;
@@ -549,9 +549,6 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 		{
 			//They ded, hide 'em
 			fx_spark.particle_container[i].camera_distance = -1.0f;
-			fx_spark.color_data[4 * fx_spark.total_particle_count + 0] = fx_spark.particle_container[i].r;
-			fx_spark.color_data[4 * fx_spark.total_particle_count + 1] = fx_spark.particle_container[i].g;
-			fx_spark.color_data[4 * fx_spark.total_particle_count + 2] = fx_spark.particle_container[i].b;
 			fx_spark.position_data[4 * fx_spark.total_particle_count + 3] = 0;
 		}
 		fx_spark.total_particle_count++;
@@ -619,9 +616,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 225;
-					fx_steam.particle_container[particle_index].g = 225;
-					fx_steam.particle_container[particle_index].b = 225;
+					fx_steam.particle_container[particle_index].r = 180;
+					fx_steam.particle_container[particle_index].g = 180;
+					fx_steam.particle_container[particle_index].b = 180;
 					
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -673,9 +670,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 225;
-					fx_steam.particle_container[particle_index].g = 225;
-					fx_steam.particle_container[particle_index].b = 225;
+					fx_steam.particle_container[particle_index].r = 180;
+					fx_steam.particle_container[particle_index].g = 180;
+					fx_steam.particle_container[particle_index].b = 180;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -719,9 +716,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 225;
-					fx_steam.particle_container[particle_index].g = 225;
-					fx_steam.particle_container[particle_index].b = 225;
+					fx_steam.particle_container[particle_index].r = 180;
+					fx_steam.particle_container[particle_index].g = 180;
+					fx_steam.particle_container[particle_index].b = 180;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -765,9 +762,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 225;
-					fx_steam.particle_container[particle_index].g = 225;
-					fx_steam.particle_container[particle_index].b = 225;
+					fx_steam.particle_container[particle_index].r = 180;
+					fx_steam.particle_container[particle_index].g = 180;
+					fx_steam.particle_container[particle_index].b = 180;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -819,9 +816,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 225;
-					fx_steam.particle_container[particle_index].g = 225;
-					fx_steam.particle_container[particle_index].b = 225;
+					fx_steam.particle_container[particle_index].r = 180;
+					fx_steam.particle_container[particle_index].g = 180;
+					fx_steam.particle_container[particle_index].b = 180;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -873,9 +870,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 225;
-					fx_steam.particle_container[particle_index].g = 225;
-					fx_steam.particle_container[particle_index].b = 225;
+					fx_steam.particle_container[particle_index].r = 180;
+					fx_steam.particle_container[particle_index].g = 180;
+					fx_steam.particle_container[particle_index].b = 180;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -927,9 +924,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 225;
-					fx_steam.particle_container[particle_index].g = 225;
-					fx_steam.particle_container[particle_index].b = 225;
+					fx_steam.particle_container[particle_index].r = 180;
+					fx_steam.particle_container[particle_index].g = 180;
+					fx_steam.particle_container[particle_index].b = 180;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -981,9 +978,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 225;
-					fx_steam.particle_container[particle_index].g = 225;
-					fx_steam.particle_container[particle_index].b = 225;
+					fx_steam.particle_container[particle_index].r = 180;
+					fx_steam.particle_container[particle_index].g = 180;
+					fx_steam.particle_container[particle_index].b = 180;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1035,9 +1032,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 225;
-					fx_steam.particle_container[particle_index].g = 225;
-					fx_steam.particle_container[particle_index].b = 225;
+					fx_steam.particle_container[particle_index].r = 180;
+					fx_steam.particle_container[particle_index].g = 180;
+					fx_steam.particle_container[particle_index].b = 180;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1089,9 +1086,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 225;
-					fx_steam.particle_container[particle_index].g = 225;
-					fx_steam.particle_container[particle_index].b = 225;
+					fx_steam.particle_container[particle_index].r = 180;
+					fx_steam.particle_container[particle_index].g = 180;
+					fx_steam.particle_container[particle_index].b = 180;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1544,6 +1541,7 @@ void FX::calculate_blitz_data(std::chrono::milliseconds delta, const Camera & ca
 
 void FX::calculate_fire_data(std::chrono::milliseconds delta, const Camera & camera)
 {
+	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
 	auto& fx_fire = *fx_fire_ptr;
 
@@ -1556,7 +1554,7 @@ void FX::calculate_fire_data(std::chrono::milliseconds delta, const Camera & cam
 	//Update data for particles
 	if (fx_fire.total_particle_count <= MAX_PARTICLES)
 	{
-		if (randomizer <= 20)
+		if (randomizer <= 35)
 		{
 			for (auto i = 0u; i < fx_fire.nr_of_particles; i++)
 			{
@@ -1570,23 +1568,24 @@ void FX::calculate_fire_data(std::chrono::milliseconds delta, const Camera & cam
 				int particle_index = fx_fire.last_used_particle;
 
 				//Set default values for the particles, first off life and position.
-				fx_fire.particle_container[particle_index].random_amp = static_cast<float>(rand() % 6 + 2);
+				fx_fire.particle_container[particle_index].random_amp = (static_cast<float>(rand() % 200) / 200.0f) + 2;
 				fx_fire.particle_container[particle_index].life = 1.0f;
+				fx_fire.particle_container[particle_index].g_amp = 1.0f;
 				//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-				fx_fire.particle_container[particle_index].pos = glm::vec3(0);//glm::vec3(-13.52f, 16.45f, -28.15f);
+				fx_fire.particle_container[particle_index].pos = glm::vec3(-13.52f, 16.45f, -28.15f);
 
 				//Create a direction for the particles to travel
-				glm::vec3 main_dir = glm::vec3(0, 20, 0);
+				glm::vec3 main_dir = glm::vec3(0, 60, -1);
 
 				fx_fire.particle_container[particle_index].speed = main_dir;
 
 				//Set colors, if you want color from texture, don't change the color
-				fx_fire.particle_container[particle_index].r = 255;
-				fx_fire.particle_container[particle_index].g = 255;
+				fx_fire.particle_container[particle_index].r = 250;
+				fx_fire.particle_container[particle_index].g = 150;
 				fx_fire.particle_container[particle_index].b = 0;
 
-				fx_fire.particle_container[particle_index].a = 255;
-				fx_fire.particle_container[particle_index].size = 2.0f;
+				fx_fire.particle_container[particle_index].a = 250;
+				fx_fire.particle_container[particle_index].size = 5.0f;
 			}
 		}
 	}
@@ -1597,42 +1596,64 @@ void FX::calculate_fire_data(std::chrono::milliseconds delta, const Camera & cam
 	{
 		//Update life with delta time
 		fx_fire.particle_container[i].life -= (seconds.count() / fx_fire.particle_container[i].random_amp);
-		//data.particle_container[i].life -= (seconds.count() / 3.0f);
 
 		if (fx_fire.particle_container[i].life > 0.0f)
 		{
-			//data.particle_container[i].speed += * seconds.count();
-			fx_fire.particle_container[i].pos += fx_fire.particle_container[i].speed / 70.0f * seconds.count();
+			fx_fire.particle_container[i].pos += fx_fire.particle_container[i].speed / 10.0f * seconds.count();
 			fx_fire.particle_container[i].camera_distance = glm::length(fx_fire.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
 			fx_fire.position_data[4 * fx_fire.total_particle_count + 0] = fx_fire.particle_container[i].pos.x;
 			fx_fire.position_data[4 * fx_fire.total_particle_count + 1] = fx_fire.particle_container[i].pos.y;
 			fx_fire.position_data[4 * fx_fire.total_particle_count + 2] = fx_fire.particle_container[i].pos.z;
-			fx_fire.position_data[4 * fx_fire.total_particle_count + 3] = fx_fire.particle_container[i].size * (abs(fx_fire.particle_container[i].life - 1) * 2);
-
-
-			float a = static_cast<float>(fx_fire.particle_container[i].a);
-			a *= fx_fire.particle_container[i].life;
-			GLubyte b = static_cast<GLubyte>(a);
+			fx_fire.position_data[4 * fx_fire.total_particle_count + 3] = fx_fire.particle_container[i].size * (abs(fx_fire.particle_container[i].life - 1));
 
 			//Set colors in the color data
 			//Red
-			fx_fire.color_data[4 * fx_fire.total_particle_count + 0] = fx_fire.particle_container[i].r * fx_fire.particle_container[i].life;
+			unsigned char temp_red = fx_fire.particle_container[i].r;
+			temp_red *= fx_fire.particle_container[i].life;
+			if (temp_red <= 3)
+			{
+				temp_red = 3;
+			}
+			fx_fire.color_data[4 * fx_fire.total_particle_count + 0] = temp_red;
 
 			//Green
-			fx_fire.color_data[4 * fx_fire.total_particle_count + 1] = fx_fire.particle_container[i].g * fx_fire.particle_container[i].life * 2;
+			unsigned char temp_green = fx_fire.particle_container[i].g;
+			temp_green *= fx_fire.particle_container[i].life / 2.0f;
+			if (temp_green <= 3)
+			{
+				temp_green = 3;
+			}
+			fx_fire.color_data[4 * fx_fire.total_particle_count + 1] = temp_green;
 
 			//Blue
-			fx_fire.color_data[4 * fx_fire.total_particle_count + 2] = fx_fire.particle_container[i].b;
+			fx_fire.color_data[4 * fx_fire.total_particle_count + 2] = 0;
 
 			//Alpha
-			fx_fire.color_data[4 * fx_fire.total_particle_count + 3] = fx_fire.particle_container[i].a * fx_fire.particle_container[i].life;
+			float temp_alpha = fx_fire.particle_container[i].a;
+			if (fx_fire.particle_container[i].life <= 0.5f)
+			{
+				fx_fire.particle_container[i].g_amp -= (seconds.count() / fx_fire.particle_container[i].random_amp);
+				temp_alpha *= fx_fire.particle_container[i].g_amp;
+			}
+			else if (fx_fire.particle_container[i].life <= 0.1f)
+			{
+				temp_alpha = 0;
+			}
+			else
+			{
+				temp_alpha = fx_fire.particle_container[i].a;
+			}
+			fx_fire.color_data[4 * fx_fire.total_particle_count + 3] = temp_alpha;
 		}
 		else
 		{
 			//They ded, hide 'em
 			fx_fire.particle_container[i].camera_distance = -1.0f;
+			fx_fire.position_data[4 * fx_fire.total_particle_count + 0] = 0;
+			fx_fire.position_data[4 * fx_fire.total_particle_count + 1] = 0;
+			fx_fire.position_data[4 * fx_fire.total_particle_count + 2] = 0;
 			fx_fire.position_data[4 * fx_fire.total_particle_count + 3] = 0;
 		}
 		fx_fire.total_particle_count++;
