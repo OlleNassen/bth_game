@@ -7,7 +7,7 @@ namespace graphics
 
 UserInterface::UserInterface()
 {
-	elements.fill({ {2.0f, 2.0f}, {1.0, 1.0}, { 0.05f, 0.09f }, 0.0f });
+	elements.fill({ {2.0f, 2.0f}, {1.0, 1.0}, { 0.05f, 0.05f }, 0.0f });
 	elements.front() = { { -0.5f, -0.9f },{ 0.8f, 0.3f },{ 1.0f, 0.25f }, 0.0f };
 	elements.at(1) = { {-0.5f, -0.6f}, {1.0, 1.0}, { 1.0f, 0.7f }, 0.0f };
 
@@ -23,7 +23,7 @@ UserInterface::UserInterface()
 
 	rebind_buffers();
 	//arrow_textures.at(0).bind(0);
-	arrow_textures.at(0).load_texture("../resources/textures/player_icon.png");
+	arrow_textures.at(0).load_texture("../resources/textures/player_arrow.png");
 	//gui_texture.bind(1);
 	gui_texture.load_texture("../resources/textures/chat_texture.png");
 
@@ -40,7 +40,7 @@ void UserInterface::render(const Shader &shader)const
 	shader.use();
 	shader.uniform("icon_texture", 0);
 	shader.uniform("gui_texture", 1);
-	
+	arrow_textures.at(0).bind(0);
 	
 	glBindVertexArray(vao);
 

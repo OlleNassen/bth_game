@@ -13,6 +13,8 @@ out vec2 texture_coord;
 //uniform bool is_arrow;
 //uniform mat4 rotation_matrix;
 mat4 rm;
+mat4 sm = mat4(1.0);
+mat4 tm = mat4(1.0);
 
 mat4 rotationMatrix(vec3 axis, float angle)
 {
@@ -31,9 +33,13 @@ void main()
 {
     vs_color = color;
 	texture_coord = uv;
+	sm[0][0] = scale.x;
+	sm[1][1] = scale.y;
+	tm[3][0] = position.x;
+	tm[3][1] = position.y;
 	rm = rotationMatrix(vec3(0.0, 0.0, 1.0), angle); 
-	gl_Position = vec4(vertex_position * scale + position, 0.0, 1.0);
+	//gl_Position = (rm * sm )* vec4(vertex_position + position, 0.0, 1.0);
 	//if(is_arrow)
-	//	gl_Position = rm * vec4(vertex_position * scale + position, 0.0, 1.0);
+	gl_Position = (tm * rm * sm) * vec4(vertex_position, 0.0, 1.0);
 
 }
