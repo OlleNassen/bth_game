@@ -374,7 +374,7 @@ void Game::pack_data()
 {	
 	for (int i = 0; i < 4; ++i)
 	{
-		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
+		net_state.inputs[i] = player_inputs[i];
 	}
 
 	for (auto i = 0u; i < dynamics.size(); ++i)
@@ -390,11 +390,11 @@ void Game::unpack_data()
 	{
 		if (i != net.id())
 		{
-			player_inputs[i] = logic::input{net_state.inputs[i]};
+			player_inputs[i] = net_state.inputs[i];
 		}		
 	}
 	
-	if (state_sequence != net_state.sequence)
+	//if (state_sequence != net_state.sequence)
 	{
 		state_sequence = net_state.sequence;
 		player_count = net_state.player_count;

@@ -46,7 +46,7 @@ Host::Host(const Host& other)
 {
 	enet_host = enet_host_create(nullptr, 1, 2, 0, 0);
 	address = other.address;
-	peers[0] = enet_host_connect(enet_host, &address, 2, 0);
+	enet_host_connect(enet_host, &address, 2, 0);
 }
 
 Host& Host::operator=(const Host& other)
@@ -57,7 +57,7 @@ Host& Host::operator=(const Host& other)
 	for (auto& peer : peers)
 		peer = nullptr;
 
-	peers[0] = enet_host_connect(enet_host, &address, 2, 0);
+	enet_host_connect(enet_host, &address, 2, 0);
 	is_client = true;
 
 	return *this;
@@ -121,7 +121,7 @@ void Host::send(GameState& state)
 	}
 }
 
-void Host::receive(uint16* input)
+void Host::receive(logic::input* input)
 {
 	if (enet_host)
 	{

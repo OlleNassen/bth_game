@@ -17,7 +17,7 @@ bool Messenger::connected() const
 void Messenger::update(GameState& state, const char* ip_address)
 {
 	if (ip_address)
-		player_host = Host{ ip_address };		
+		player_host = Host{ip_address};		
 
 	if (player_host.client())
 	{

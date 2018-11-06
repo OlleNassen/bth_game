@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <glm/glm.hpp>
+#include "../../logic/include/input.hpp"
 
 namespace network
 {
@@ -40,8 +41,8 @@ public:
 class GameInput
 {
 public:
-	uint32 id = 0;
-	uint32 data = 0;
+	int id = 0;
+	logic::input data;
 };
 
 class GameObject
@@ -56,7 +57,7 @@ class GameState
 public:
 
 	GameObject game_objects[100];
-	uint16 inputs[4] = {0};
+	logic::input inputs[4]{};
 	uint32 sequence = 0;
 	uint8 player_count = 1;
 	uint8 player_id = 0;
