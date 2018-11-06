@@ -210,11 +210,11 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
-			if (died[player_id])
+			if (finish[player_id] && died[player_id])
 			{
 				death_screen.render(death_screen_shader);
 			}
-			if (finish[player_id])
+			if (finish[player_id] && !died[player_id])
 			{
 				finish_screen.render(finish_screen_shader, player_id);
 			}
@@ -272,7 +272,7 @@ void Renderer::render(
 				leaderboard.render(text_shader, text);
 			}
 
-			if (!is_menu)
+			if (!is_menu && !finish[player_id] && !died[player_id])
 			{
 				minimap.render(minimap_shader);
 			}
@@ -291,7 +291,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int num_players,
 	int id,
 	int new_game_state,
-	std::string scoreboard, 
+	std::string scoreboard,
 	std::array<bool, 4> died,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores)
@@ -303,7 +303,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		float culling_distance = 50.0f;
 		auto bottom = scene->moving_models[id].get_y_position() - culling_distance;
 		auto top = scene->moving_models[id].get_y_position() + culling_distance;
-		
+
 		if (bottom < scene->models[i].get_y_position() && !first_model)
 		{
 			first_model = i;
@@ -321,21 +321,21 @@ void Renderer::update(std::chrono::milliseconds delta,
 			last_model = scene->models.size() - 1;
 		}
 	}
-	
+
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
 	player_count = num_players;
 	game_state = new_game_state;
 	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
-	
-	using namespace std::chrono_literals;	
-	
+
+	using namespace std::chrono_literals;
+
 	time = data != log ? 0ms : time + delta;
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
-	
+
 	//Death screen update
-	if (died[id])
+	if (died[id] && finish[id])
 	{
 		death_screen.timer += delta;
 	}
@@ -365,7 +365,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	}
 
 	//Finish screen update
-	if (finish[id])
+	if (finish[id] && !died[id])
 	{
 		finish_screen.timer += delta;
 	}
@@ -378,6 +378,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		//Dust Particles
 		fx_emitter.calculate_dust_data(delta, game_camera);
+
+		//Spark Particles
+		fx_emitter.calculate_spark_data(delta, game_camera);
 
 		//Steam Particles
 		fx_emitter.calculate_steam_data(delta, game_camera);
