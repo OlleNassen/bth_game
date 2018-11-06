@@ -17,6 +17,7 @@ namespace logic
 {
 
 using trigger_array = std::array<int, 100>;
+using trigger_type_array = std::array<int, 100>; // Test for triggers
 
 struct LuaExport
 {
