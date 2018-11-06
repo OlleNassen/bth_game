@@ -37,6 +37,13 @@ public:
 	float y;
 };
 
+class GameInput
+{
+public:
+	uint32 id = 0;
+	uint32 data = 0;
+};
+
 class GameObject
 {
 public:

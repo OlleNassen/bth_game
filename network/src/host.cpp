@@ -77,7 +77,7 @@ bool Host::client() const
 	return is_client;
 }
 
-void Host::send(uint16& input)
+void Host::send(GameInput& input)
 {
 	if (enet_host)
 	{
@@ -86,10 +86,11 @@ void Host::send(uint16& input)
 		{
 			ENetPacket* enet_packet =
 				enet_packet_create(&input,
-					sizeof(uint16),
+					sizeof(GameInput),
 					ENET_PACKET_FLAG_UNSEQUENCED
 					| ENET_PACKET_FLAG_NO_ALLOCATE);
 			enet_peer_send(peer, 0, enet_packet);
+			enet_host_flush(enet_host);
 		}
 	}
 }
@@ -131,16 +132,8 @@ void Host::receive(uint16* input)
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
 			{
-				int index = 0;
-				for (auto* peer : peers)
-				{
-					++index;
-					if (peer == eevent.peer)
-					{
-						input[index] = *reinterpret_cast<uint16*>(eevent.packet->data);
-						break;
-					}					
-				}
+				GameInput g = *reinterpret_cast<GameInput*>(eevent.packet->data);
+				input[g.id] = g.data;
 				break;
 			}
 			case ENET_EVENT_TYPE_CONNECT: connect(eevent); break;
