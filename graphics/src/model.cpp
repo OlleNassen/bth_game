@@ -92,7 +92,7 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 	
 	int light_count = 0;
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{
