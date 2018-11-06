@@ -22,7 +22,8 @@ namespace graphics
 		Texture finish_2_2;
 		Texture finish_3_1;
 		Texture finish_3_2;
-		Texture finish_4;
+		Texture finish_4_1;
+		Texture finish_4_2;
 
 		std::chrono::milliseconds timer{ 0 };
 

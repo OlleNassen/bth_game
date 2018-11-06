@@ -10,7 +10,8 @@ namespace graphics
 		,finish_2_2("../resources/textures/finish_screen/finish_2.2.png")
 		,finish_3_1("../resources/textures/finish_screen/finish_3.1.png")
 		,finish_3_2("../resources/textures/finish_screen/finish_3.2.png")
-		,finish_4("../resources/textures/finish_screen/finish_4.png")
+		,finish_4_1("../resources/textures/finish_screen/finish_4.1.png")
+		,finish_4_2("../resources/textures/finish_screen/finish_4.2.png")
 
 	{
 		glGenVertexArrays(1, &vao_id);
@@ -79,9 +80,13 @@ namespace graphics
 			{
 				this->finish_escaped.bind(0);
 			}
-			else if (timer > 1500ms)
+			else if (timer > 1500ms && timer <= 3000ms)
 			{
-				this->finish_4.bind(0);
+				this->finish_4_1.bind(0);
+			}
+			else if (timer > 3000ms)
+			{
+				this->finish_4_2.bind(0);
 			}
 		}
 
