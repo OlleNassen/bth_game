@@ -16,6 +16,6 @@ public:
 	KeyFrame* keyframes;
 
 private:
-	void animationLoader(const char* fileName);
+	bool animationLoader(const char* fileName);
 };
 

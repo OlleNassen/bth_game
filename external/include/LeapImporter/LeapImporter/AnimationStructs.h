@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 
+
 struct KeyFrame {
 	float time;
 	float translation[3];

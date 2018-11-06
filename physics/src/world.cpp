@@ -206,27 +206,26 @@ void World::update(
 		points[2].x += bodies[i].box.size.x * 1.01f;
 
 		points[3].y -= bodies[i].box.size.y * 1.01f;
-		points[3].x += bodies[i].box.size.x * 0.95f;
+		points[3].x += bodies[i].box.size.x * 0.90f;
 											  
 		points[4].y -= bodies[i].box.size.y * 1.01f;
-		points[4].x -= bodies[i].box.size.x * 0.95f;
+		points[4].x -= bodies[i].box.size.x * 0.90f;
 		
 		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || anim_states[i] == anim::hanging_right)
 			for (auto& walls : statics)
 			{
-				if (point_in_obb(points[0], walls.box) /*|| point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box)*/)
+				if (point_in_obb(points[0], walls.box))// || point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box))
 				{
 					anim_states[i] = anim::landing;
-					//stop = true;
+					stop = true;
 				}
 			}
 
 		if (!stop)
 		{
-			//std::cout << i << "   " << points[0].x << std::endl;
 			if (points[0].x > 19.3f || points[0].x < -19.3f)
 			{
-				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump)
+				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump/* || anim_states[i] == anim::idle || anim_states[i] == anim::running*/)
 				{
 
 					for (auto& walls : statics)
@@ -301,6 +300,49 @@ bool World::intersects(const int box_id, const int target_box_id)
 	return intersection;
 }
 
+bool World::overlapping(const int target_id)
+{
+	auto& left = bodies[target_id];
+
+	for (auto& right : statics)
+	{
+		CollisionManifold result;
+		reset_collison_manifold(result);
+
+		result = find_collision_features(left, right);
+
+		if (result.colliding)
+		{
+			return true;
+		}
+	}
+
+	for (int i = 0; i < bodies.size(); i++)
+	{
+		if (target_id != i)
+		{
+			Rigidbody &right = bodies[i];
+			CollisionManifold result;
+			reset_collison_manifold(result);
+
+			result = find_collision_features(left, right);
+
+			if (result.colliding)
+			{
+				return true;
+			}
+		}
+	}
+
+	//Add this for "spawn" protection
+	/*if (glm::distance(left.position, glm::vec3(0.0f, 0.0f, 0.0f)) < 5.0f)
+	{
+		return true;
+	}*/
+
+	return false;
+}
+
 std::vector<glm::vec3> World::get_all_debug() const
 {
 	std::vector<glm::vec3> out_vertices;
@@ -325,6 +367,20 @@ std::vector<glm::vec3> World::get_all_debug() const
 		{
 			out_vertices.push_back(vertex);
 		}
+	}
+
+	return out_vertices;
+}
+
+std::vector<glm::vec3> World::get_debug_for(int id) const
+{
+	std::vector<glm::vec3> out_vertices;
+
+	std::vector<Point> vertices = get_vertices(bodies[id].box);
+
+	for (auto& vertex : vertices)
+	{
+		out_vertices.push_back(vertex);
 	}
 
 	return out_vertices;
