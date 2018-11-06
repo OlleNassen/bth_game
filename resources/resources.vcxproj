@@ -127,6 +127,8 @@
     <None Include="shaders\brdf.vs" />
     <None Include="shaders\death_screen.fs" />
     <None Include="shaders\death_screen.vs" />
+    <None Include="shaders\finish_screen.fs" />
+    <None Include="shaders\finish_screen.vs" />
     <None Include="shaders\fx_blitz.fs" />
     <None Include="shaders\fx_blitz.vs" />
     <None Include="shaders\fx_dust.fs" />
