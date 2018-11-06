@@ -118,7 +118,6 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 		shader.uniform("bone_mats", this->animation_handler.bone_mat_vector);
 	}
 	
-	
 	mesh->textures[0].bind(0);
 	mesh->textures[1].bind(1);
 	mesh->textures[2].bind(2);

@@ -25,25 +25,29 @@ public:
 	Host& operator=(const Host& other);
 
 	bool connected() const;
+	bool client() const;
 
 	void send(uint16& input);
 	void send(GameState& state);
-	void receive(uint16& input);
+	void receive(uint16* input);
 	void receive(GameState& state);
 
 private:
-	void connect(const ENetEvent& event);
-	void disconnect(const ENetEvent& event);
+	void connect(const ENetEvent& eevent);
+	void disconnect(const ENetEvent& eevent);
 
 	uint8 player_count = 1;
 	uint32 sequence = 0;
-	
+
 	ENetAddress address;
 	ENetHost* enet_host;
-	ENetPeer* peers[4] = {nullptr};	
+	ENetPeer* peers[4] = { nullptr };
+
+	bool is_client = false;
 };
 
 }
 
 #endif
+
 
