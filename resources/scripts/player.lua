@@ -215,11 +215,11 @@ function update(delta_seconds, entity)
 			entity.impulse.x = 0
 			
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 35
+			entity.impulse.y = 37
 			entity.impulse.x = -25
 			entity.can_walljump = true --false
 		end
-		--entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
+		entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 18) 
 	end
 
 	if entity.anim.current == entity.anim.hanging_left
@@ -236,11 +236,11 @@ function update(delta_seconds, entity)
 			entity.impulse.x = 0
 			
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 35
+			entity.impulse.y = 37
 			entity.impulse.x = 25
 			entity.can_walljump = true --false
 		end
-		--entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
+		entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 18) 
 	end
 
 	--Cap the velocity/entity.forces.x
