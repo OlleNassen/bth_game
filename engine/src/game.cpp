@@ -361,7 +361,8 @@ void Game::update(std::chrono::milliseconds delta)
 			player_inputs[net.id()].cursor,
 			directions,
 			chat[1], player_count,
-			net.id(), game_state, temp, lua_data.died);
+			net.id(), game_state, temp, lua_data.died,
+			lua_data.time);
 	}
 }
 

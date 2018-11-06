@@ -297,7 +297,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int id,
 	int new_game_state,
 	std::string scoreboard, 
-	std::array<bool, 4> died)
+	std::array<bool, 4> died,
+	float print_time)
 {
 	first_model = 0;
 	last_model = 0;
@@ -325,6 +326,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 		}
 	}
 	
+	if (game_state & state::playing && print_time <= 15.0f)
+	{
+		post_processing_effects.update(delta);
+	}
+
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
 	player_count = num_players;
 	game_state = new_game_state;

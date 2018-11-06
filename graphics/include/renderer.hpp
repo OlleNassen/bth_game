@@ -73,7 +73,8 @@ public:
 		int id,
 		int new_game_state,
 		std::string scoreboard, 
-		std::array<bool, 4> died);
+		std::array<bool, 4> died,
+		float print_time);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
