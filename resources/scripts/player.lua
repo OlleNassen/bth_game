@@ -9,6 +9,10 @@ function setup(entity)
 	entity.max_air_speed = 14
  	entity.acceleration = 580000
 	entity.jump_timer = 0
+
+
+	entity.ungrounded_time = 0
+	entity.jump_forgiveness_time = 0.5
 end
 
 function update(delta_seconds, entity)
@@ -145,6 +149,7 @@ function update(delta_seconds, entity)
 
 	if entity.anim.current == entity.anim.landing
 	then
+		entity.ungrounded_time = 0
 		entity.can_jump = true
 		entity.can_walljump = true
 		if entity.button.right
@@ -171,10 +176,24 @@ function update(delta_seconds, entity)
 
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
-
 	end
 
-	if entity.anim.current == entity.anim.falling
+
+	--Test for jumpforgiveness
+	--[[if entity.ungrounded_time > entity.jump_forgiveness_time and entity.anim.current == entity.anim.falling
+	then
+			entity.can_jump = false
+	else
+			entity.ungrounded_time = entity.ungrounded_time + delta_seconds
+			entity.can_jump = true
+	end]]--
+	
+
+
+
+
+
+	if entity.anim.current == entity.anim.falling 
 	then
 		if entity.button.right 
 		then
@@ -203,6 +222,9 @@ function update(delta_seconds, entity)
 
 	if entity.anim.current == entity.anim.hanging_right
 	then
+		--Test for jumpforgiveness
+		entity.ungrounded_time = 0
+
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
 		then
@@ -224,6 +246,9 @@ function update(delta_seconds, entity)
 
 	if entity.anim.current == entity.anim.hanging_left
 	then
+		--Test for jumpforgiveness
+		entity.ungrounded_time = 0
+
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
 		then
@@ -270,5 +295,5 @@ function update(delta_seconds, entity)
 
 	--entity.velocity.y = delta_seconds * 100 * entity.direction.z
 
-	entity.forces.y = entity.forces.y - 6400--6400
+	entity.forces.y = entity.forces.y - 6400
 end
