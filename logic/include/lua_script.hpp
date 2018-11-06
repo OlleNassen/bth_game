@@ -72,6 +72,7 @@ public:
 	void update(
 		std::chrono::milliseconds delta,
 		const trigger_array& triggers,
+		const trigger_type_array& types,
 		objects* players);
 
 	void update_export();

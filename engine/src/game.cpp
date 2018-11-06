@@ -195,8 +195,8 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < 4; i++)
 			{
 				collision_data data;
-				int model_id = level.add_object(data, 0);
-				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + (i * 2) }, { 0, 0 }, data.width, data.height, { 0, 0 });
+				int model_id = level.add_object(data, placed_objects_list_id);
+				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + (i * 2) }, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
 
 				players_placed_objects_id[i].model_id = model_id;
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
@@ -252,7 +252,8 @@ void Game::update(std::chrono::milliseconds delta)
 			{ delta, obj, triggers,
 			player_inputs, 
 			anim_states,
-			players_placed_objects_id },
+			players_placed_objects_id,
+			triggers_types },
 			game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -319,7 +320,7 @@ void Game::update(std::chrono::milliseconds delta)
 			level.models[i].update_animation((float)delta.count(), idle);
 
 
-	physics.update(delta, dynamics, triggers, anim_states);
+	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 
 	pack_data();
 	net.update(net_state, str);

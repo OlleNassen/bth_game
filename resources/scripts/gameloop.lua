@@ -93,14 +93,52 @@ function update(delta_seconds, game, entities)
 		--Check if players dead
 	for i = 1, 4, 1
 	do
+		--if entities[i].triggered >= 4 and not game.finished[i]
+		--then
+		--	game.points = game.points - 1
+		--
+		--	game.finished[i] = true
+		--	game.died[i] = true
+		--	entities[i].position.x = -2000
+		--	entities[i].position.y = -2000
+		--end
+
 		if entities[i].triggered >= 4 and not game.finished[i]
 		then
-			game.points = game.points - 1
 
-			game.finished[i] = true
-			game.died[i] = true
-			entities[i].position.x = -2000
-			entities[i].position.y = -2000
+			--spike_trap
+			if entities[i].triggered_type == 0
+			then
+				game.finished[i] = true
+				entities[i].position.y = -2000
+				entities[i].position.x = -2000
+
+				game.points = game.points - 1
+
+				--print("death")
+			end
+
+			--sticky_platform
+			if entities[i].triggered_type == 3
+			then
+				
+				if entities[i].velocity.x >= 9
+				then
+					entities[i].velocity.x = 1
+				
+				elseif entities[i].velocity.x <= -9
+				then
+					entities[i].velocity.x = -1
+				end
+				--print("slow_platform")
+			end
+
+			--standard_platform
+			if entities[i].triggered_type == 6
+			then
+
+				--print("standard_platform")
+			end
 		end
 	end
 
@@ -111,5 +149,4 @@ function update(delta_seconds, game, entities)
 			game.winner = true
 		end
 	end
-
 end

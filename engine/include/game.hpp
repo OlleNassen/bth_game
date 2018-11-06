@@ -49,6 +49,8 @@ private:
 	logic::input player_inputs[4];
 	logic::input* local_input{ &player_inputs[0] };
 	logic::LuaExport lua_data;
+
+	logic::trigger_type_array triggers_types; //test for triggers
 	
 	network::uint8 player_count = 1;
 	network::uint32 state_sequence = 0;
@@ -80,6 +82,10 @@ private:
 
 	//Random placed objects
 	std::array <id_and_model_place, 4> random_placed_objects_id;
+
+	//test trigger
+	int placed_objects_list_id = 3;
+	int placed_objects_array[4] = { 0,3,6,7 };
 };
 
 

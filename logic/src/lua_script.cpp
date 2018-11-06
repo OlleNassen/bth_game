@@ -202,6 +202,7 @@ void GameScript::setup()
 void GameScript::update(
 	std::chrono::milliseconds delta,
 	const trigger_array& triggers,
+	const trigger_type_array& types,
 	objects* players)
 {
 
@@ -241,6 +242,40 @@ void GameScript::update(
 		stack.clear();
 	}
 
+	//test for triggers
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("triggered_type");
+			stack.push(types[i - 1]);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("velocity");
+			stack.push(players[i - 1].velocity);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
+
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);
 	stack.getglobal("game");
@@ -262,6 +297,25 @@ void GameScript::update(
 
 		stack.clear();
 	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; ++i)
+		{
+			stack.rawget(top, i);
+			stack.getfield(-1, "velocity");
+			stack.getfield(-1, "x");
+			stack.getfield(-2, "y");
+			players[i - 1].velocity.x = stack.tonumber(-2);
+			players[i - 1].velocity.y = stack.tonumber(-1);
+
+
+		}
+
+		stack.clear();
+	}
+
 }
 
 void GameScript::update_export()
