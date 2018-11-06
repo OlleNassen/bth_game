@@ -238,7 +238,7 @@ void render_type(const Shader& shader, const Camera& camera, const std::array<Po
 	for (auto it = first; it != last; ++it)
 	{
 		const auto& renderable = *it;
-		renderable.render(shader);
+		renderable.render(shader, camera, lights);
 	}
 }
 
@@ -270,7 +270,7 @@ void render_character(const Shader& shader, const Camera& camera, const std::arr
 	for (auto i = 0; i < num_players; ++i)
 	{
 		const auto& renderable = data[i];
-		renderable.render(shader);
+		renderable.render(shader, camera, lights);
 	}
 }
 
