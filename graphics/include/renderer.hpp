@@ -129,6 +129,9 @@ private:
 	Shader fx_blitz{
 		"../resources/shaders/fx_blitz.vs",
 		"../resources/shaders/fx_blitz.fs" };
+	Shader fx_fire{
+		"../resources/shaders/fx_fire.vs",
+		"../resources/shaders/fx_fire.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };

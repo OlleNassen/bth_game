@@ -3,19 +3,22 @@ namespace graphics
 {
 
 FX::FX()
-	:dust("../resources/textures/dust_texture_1.png")
-	,spark("../resources/textures/spark_texture.png")
-	,steam("../resources/textures/steam_texture.png")
-	,blitz("../resources/textures/blitz_texture.png")
+	:dust("../resources/textures/fx/dust_texture_1.png")
+	,spark("../resources/textures/fx/spark_texture.png")
+	,steam("../resources/textures/fx/steam_texture.png")
+	,blitz("../resources/textures/fx/blitz_texture.png")
+	,fire("../resources/textures/fx/fire_texture.png")
 {
 	auto& fx_dust = *fx_dust_ptr;
 	auto& fx_spark = *fx_spark_ptr;
 	auto& fx_steam = *fx_steam_ptr;
 	auto& fx_blitz = *fx_blitz_ptr;
+	auto& fx_fire = *fx_fire_ptr;
 	gen_particle_buffer(fx_dust);
 	gen_particle_buffer(fx_spark);
 	gen_particle_buffer(fx_steam);
 	gen_particle_buffer(fx_blitz);
+	gen_particle_buffer(fx_fire);
 }
 
 void FX::gen_particle_buffer(FXdata & particle)
@@ -39,12 +42,14 @@ void FX::render_particles(const Shader& dust,
 	const Shader& spark,
 	const Shader& steam,
 	const Shader& blitz,
+	const Shader& fire,
 	const Camera& camera) const
 {
 	auto& fx_dust = *fx_dust_ptr;
 	auto& fx_spark = *fx_spark_ptr;
 	auto& fx_steam = *fx_steam_ptr;
 	auto& fx_blitz = *fx_blitz_ptr;
+	auto& fx_fire = *fx_fire_ptr;
 
 	glm::vec3 start_point = glm::vec3(0, 0, 0);
 	glm::mat4 view_matrix = camera.view();
@@ -98,6 +103,18 @@ void FX::render_particles(const Shader& dust,
 	//steam.uniform("view_position", scene->v[0]);
 	blitz.uniform("particle_pivot", start_point);
 	render_particles(fx_blitz);
+
+	//FX - Fire
+	fire.use();
+	fire.uniform("particle_texture", 0);
+	this->fire.bind(0);
+	fire.uniform("camera_right_worldspace", camera_right_vector);
+	fire.uniform("camera_up_worldspace", camera_up_vector);
+	fire.uniform("view", camera.view());
+	fire.uniform("projection", camera.projection);
+	//steam.uniform("view_position", scene->v[0]);
+	fire.uniform("particle_pivot", start_point);
+	render_particles(fx_fire);
 }
 
 void FX::render_particles(const FXdata& data) const
@@ -1158,6 +1175,112 @@ void FX::calculate_blitz_data(std::chrono::milliseconds delta, const Camera & ca
 	glBindBuffer(GL_ARRAY_BUFFER, fx_blitz.color_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_blitz.total_particle_count * 4 * sizeof(GLubyte), fx_blitz.color_data);
+}
+
+void FX::calculate_fire_data(std::chrono::milliseconds delta, const Camera & camera)
+{
+	std::chrono::duration<float> seconds = delta;
+	auto& fx_fire = *fx_fire_ptr;
+
+	fx_fire.default_x = 0.0f;
+	fx_fire.default_y = 0.0f;
+	fx_fire.default_z = 0.0f;
+	fx_fire.nr_of_particles = 1;
+	randomizer = rand() % 100;
+
+	//Update data for particles
+	if (fx_fire.total_particle_count <= MAX_PARTICLES)
+	{
+		if (randomizer <= 20)
+		{
+			for (auto i = 0u; i < fx_fire.nr_of_particles; i++)
+			{
+				//Create a random position here
+				fx_fire.random_x = static_cast<float>(rand() % 40) - 20.0f;
+				fx_fire.random_y = static_cast<float>(rand() % 60);
+				fx_fire.random_z = static_cast<float>(rand() % 20) - 12.0f;
+
+				//Find and update the last used particle
+				fx_fire.last_used_particle = find_unused_particle(fx_fire.particle_container, fx_fire.last_used_particle);
+				int particle_index = fx_fire.last_used_particle;
+
+				//Set default values for the particles, first off life and position.
+				fx_fire.particle_container[particle_index].random_amp = static_cast<float>(rand() % 6 + 2);
+				fx_fire.particle_container[particle_index].life = 1.0f;
+				//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+				fx_fire.particle_container[particle_index].pos = glm::vec3(0);//glm::vec3(-13.52f, 16.45f, -28.15f);
+
+				//Create a direction for the particles to travel
+				glm::vec3 main_dir = glm::vec3(0, 20, 0);
+
+				fx_fire.particle_container[particle_index].speed = main_dir;
+
+				//Set colors, if you want color from texture, don't change the color
+				fx_fire.particle_container[particle_index].r = 255;
+				fx_fire.particle_container[particle_index].g = 255;
+				fx_fire.particle_container[particle_index].b = 0;
+
+				fx_fire.particle_container[particle_index].a = 255;
+				fx_fire.particle_container[particle_index].size = 2.0f;
+			}
+		}
+	}
+
+	fx_fire.total_particle_count = 0;
+	//Update movement
+	for (int i = 0; i < MAX_PARTICLES; i++)
+	{
+		//Update life with delta time
+		fx_fire.particle_container[i].life -= (seconds.count() / fx_fire.particle_container[i].random_amp);
+		//data.particle_container[i].life -= (seconds.count() / 3.0f);
+
+		if (fx_fire.particle_container[i].life > 0.0f)
+		{
+			//data.particle_container[i].speed += * seconds.count();
+			fx_fire.particle_container[i].pos += fx_fire.particle_container[i].speed / 70.0f * seconds.count();
+			fx_fire.particle_container[i].camera_distance = glm::length(fx_fire.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			fx_fire.position_data[4 * fx_fire.total_particle_count + 0] = fx_fire.particle_container[i].pos.x;
+			fx_fire.position_data[4 * fx_fire.total_particle_count + 1] = fx_fire.particle_container[i].pos.y;
+			fx_fire.position_data[4 * fx_fire.total_particle_count + 2] = fx_fire.particle_container[i].pos.z;
+			fx_fire.position_data[4 * fx_fire.total_particle_count + 3] = fx_fire.particle_container[i].size * (abs(fx_fire.particle_container[i].life - 1) * 2);
+
+
+			float a = static_cast<float>(fx_fire.particle_container[i].a);
+			a *= fx_fire.particle_container[i].life;
+			GLubyte b = static_cast<GLubyte>(a);
+
+			//Set colors in the color data
+			//Red
+			fx_fire.color_data[4 * fx_fire.total_particle_count + 0] = fx_fire.particle_container[i].r * fx_fire.particle_container[i].life;
+
+			//Green
+			fx_fire.color_data[4 * fx_fire.total_particle_count + 1] = fx_fire.particle_container[i].g * fx_fire.particle_container[i].life * 2;
+
+			//Blue
+			fx_fire.color_data[4 * fx_fire.total_particle_count + 2] = fx_fire.particle_container[i].b;
+
+			//Alpha
+			fx_fire.color_data[4 * fx_fire.total_particle_count + 3] = fx_fire.particle_container[i].a * fx_fire.particle_container[i].life;
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_fire.particle_container[i].camera_distance = -1.0f;
+			fx_fire.position_data[4 * fx_fire.total_particle_count + 3] = 0;
+		}
+		fx_fire.total_particle_count++;
+	}
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, fx_fire.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_fire.total_particle_count * 4 * sizeof(GLfloat), fx_fire.position_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, fx_fire.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_fire.total_particle_count * 4 * sizeof(GLubyte), fx_fire.color_data);
 }
 
 }
