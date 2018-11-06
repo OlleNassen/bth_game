@@ -313,10 +313,10 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 	fx_spark.default_x = 0.0f;
 	fx_spark.default_y = 0.0f;
 	fx_spark.default_z = 0.0f;
-	fx_spark.nr_of_particles = 10;
+	fx_spark.nr_of_particles = 1;
 
 	//Update data for particles
-	if (fx_spark.total_particle_count <= MAX_DUST_PARTICLES)
+	if (fx_spark.total_particle_count <= MAX_PARTICLES)
 	{
 		for (auto i = 0u; i < fx_spark.nr_of_particles; i++)
 		{
@@ -400,7 +400,7 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 	fx_spark.total_particle_count = 0;
 
 	//Update movement
-	for (int i = 0; i < MAX_DUST_PARTICLES; i++)
+	for (int i = 0; i < MAX_PARTICLES; i++)
 	{
 		//Update life with delta time
 		fx_spark.particle_container[i].life -= (seconds.count() / fx_spark.particle_container[i].random_amp);
