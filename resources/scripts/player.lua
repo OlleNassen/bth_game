@@ -179,14 +179,14 @@ function update(delta_seconds, entity)
 	end
 
 
-	--Test for jumpforgiveness
-	--[[if entity.ungrounded_time > entity.jump_forgiveness_time and entity.anim.current == entity.anim.falling
+	--Test for jumpforgiveness Doesn't work at the moment
+	if entity.ungrounded_time > entity.jump_forgiveness_time and entity.anim.current == entity.anim.falling and  entity.can_jump == false
 	then
 			entity.can_jump = false
 	else
 			entity.ungrounded_time = entity.ungrounded_time + delta_seconds
 			entity.can_jump = true
-	end]]--
+	end
 	
 
 
