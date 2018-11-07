@@ -55,5 +55,7 @@
     <None Include="shaders\fx_blitz.vs" />
     <None Include="shaders\finish_screen.fs" />
     <None Include="shaders\finish_screen.vs" />
+    <None Include="shaders\fx_fire.fs" />
+    <None Include="shaders\fx_fire.vs" />
   </ItemGroup>
 </Project>

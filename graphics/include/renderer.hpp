@@ -129,6 +129,9 @@ private:
 	Shader fx_blitz{
 		"../resources/shaders/fx_blitz.vs",
 		"../resources/shaders/fx_blitz.fs" };
+	Shader fx_fire{
+		"../resources/shaders/fx_fire.vs",
+		"../resources/shaders/fx_fire.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
@@ -235,7 +238,7 @@ void render_type(const Shader& shader, const Camera& camera, const std::array<Po
 	for (auto it = first; it != last; ++it)
 	{
 		const auto& renderable = *it;
-		renderable.render(shader);
+		renderable.render(shader, camera, lights);
 	}
 }
 
@@ -267,7 +270,7 @@ void render_character(const Shader& shader, const Camera& camera, const std::arr
 	for (auto i = 0; i < num_players; ++i)
 	{
 		const auto& renderable = data[i];
-		renderable.render(shader);
+		renderable.render(shader, camera, lights);
 	}
 }
 
