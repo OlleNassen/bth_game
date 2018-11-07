@@ -83,14 +83,16 @@ LuaExport Gameplay::update(Input inputs,
 				inputs.dynamics[i],
 				inputs.player_inputs[i],
 				i, inputs.anim_states[i]);
-			//if (i == 0)
-			//{
-			//	std::cout << "X:" << inputs.dynamics[i].velocity.x << " Y:" << inputs.dynamics[i].velocity.y << std::endl; // test triggers
-			//}
+			if (i == 0)
+			{
+				//std::cout << "X:" << inputs.dynamics[i].velocity.x << " Y:" << inputs.dynamics[i].velocity.y << std::endl; // test triggers
+				//std::cout << "X:" << inputs.dynamics[i].forces.x << " Y:" << inputs.dynamics[i].forces.y << std::endl;
+			}
 		}
-		game_script.update(inputs.delta, inputs.triggers, inputs.triggers_types, &inputs.dynamics[0]);
+		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0]);
 
 		//std::cout << "			X2:" << inputs.dynamics[0].velocity.x << " Y2:" << inputs.dynamics[0].velocity.y << std::endl; // test triggers
+		//std::cout << "			X2:" << inputs.dynamics[0].forces.x << " Y2:" << inputs.dynamics[0].forces.y << std::endl;
 	}
 	
 

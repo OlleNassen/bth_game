@@ -84,7 +84,7 @@ private:
 	std::array <id_and_model_place, 4> random_placed_objects_id;
 
 	//test trigger
-	int placed_objects_list_id = 3;
+	int placed_objects_list_id = 7;
 	int placed_objects_array[4] = { 0,3,6,7 };
 };
 

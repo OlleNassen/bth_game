@@ -71,6 +71,7 @@ public:
 	void setup();
 	void update(
 		std::chrono::milliseconds delta,
+		const input& i,
 		const trigger_array& triggers,
 		const trigger_type_array& types,
 		objects* players);

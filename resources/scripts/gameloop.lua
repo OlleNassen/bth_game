@@ -9,6 +9,14 @@ function setup(game)
 	game.died = {false, false, false, false}
 	game.clock = 0.0
 	game.winner = false
+
+	game.speed_boost_timer = {0.0, 0.0, 0.0, 0.0}
+	game.speed_boost_triggerd = { false, false, false, false }
+	game.max_speed = 8500
+	game.max_speed_boost = game.max_speed * 2
+	game.max_velocity = 15
+	game.max_velocity_boost = game.max_velocity * 2
+
 end
 
 function update(delta_seconds, game, entities)
@@ -122,13 +130,15 @@ function update(delta_seconds, game, entities)
 			if entities[i].triggered_type == 3
 			then
 				
-				if entities[i].velocity.x >= 9
+				if entities[i].velocity.x >= 7.5
 				then
-					entities[i].velocity.x = 1
+					--entities[i].velocity.x = 1
+					entities[i].forces.x = entities[i].forces.x - (entities[i].forces.x / 1.5)
 				
-				elseif entities[i].velocity.x <= -9
+				elseif entities[i].velocity.x <= -7.5
 				then
-					entities[i].velocity.x = -1
+					--entities[i].velocity.x = -1
+					entities[i].forces.x = entities[i].forces.x - (entities[i].forces.x / 1.5)
 				end
 				--print("slow_platform")
 			end
@@ -139,7 +149,42 @@ function update(delta_seconds, game, entities)
 
 				--print("standard_platform")
 			end
+
+			--speed_boost
+			if entities[i].triggered_type == 7 and game.speed_boost_triggerd[i] == false
+			then
+				game.speed_boost_triggerd[i] = true
+				game.speed_boost_timer[i] = 0.0
+				--print("Sprint_boost")
+			end
 		end
+
+		if	game.speed_boost_triggerd[i] == true and game.speed_boost_timer[i] <= 5.0
+		then
+			if entities[i].velocity.x < game.max_velocity_boost and entities[i].velocity.x > 0 and entities.button.right
+			then
+				entities[i].forces.x = game.max_speed_boost --right
+
+			elseif entities[i].velocity.x > -game.max_velocity_boost and entities[i].velocity.x < 0 and entities.button.left
+			then 
+				entities[i].forces.x = -game.max_speed_boost --left
+
+			end
+			--elseif entities[i].velocity.x >= (game.max_velocity_boost)
+			--then 
+			--	entities[i].velocity.x  = (game.max_velocity_boost)
+			--end
+		end
+
+		if	game.speed_boost_timer[i] <= 5.0
+		then
+			game.speed_boost_timer[i] = game.speed_boost_timer[i] + delta_seconds
+
+		elseif	game.speed_boost_timer[i] >= 5.0
+		then
+			game.speed_boost_triggerd[i] = false
+		end
+
 	end
 
 	for i = 1, 4, 1
