@@ -223,9 +223,7 @@ void Renderer::render(
 			{
 				finish_screen.render(finish_screen_shader, player_id);
 			}
-			gui.use();
-
-			ui.render(gui);
+			
 		}
 	}
 	else
@@ -285,6 +283,9 @@ void Renderer::render(
 			if (!is_menu && !finish[player_id] && !died[player_id])
 			{
 				minimap.render(minimap_shader);
+				gui.use();
+
+				ui.render(gui);
 			}
 		}
 
@@ -418,9 +419,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 	}
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
-	ui.update(scene->models, player_count, game_camera.position);
+	ui.update(scene->moving_models, player_count, game_camera.position);
 
-	minimap.update(scene->models, player_count, goal_height);
+	minimap.update(scene->moving_models, player_count, goal_height);
 
 	for (int i = 0; i < 4; ++i)
 	{
