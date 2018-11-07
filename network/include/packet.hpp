@@ -20,9 +20,10 @@ using uint64 = std::uint64_t;
 
 enum class SessionState : uint8
 {
+	none,
 	waiting,
 	building,
-	playing,
+	playing
 };
 
 class Vec2
@@ -61,7 +62,7 @@ public:
 	uint32 sequence = 0;
 	uint8 player_count = 1;
 	uint8 player_id = 0;
-	SessionState state = SessionState::waiting;
+	SessionState state = SessionState::none;
 };
 
 class Queue

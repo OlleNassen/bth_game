@@ -12,7 +12,6 @@ Game::Game()
 	: window(settings.get_window_settings().resolution
 	, settings.get_window_settings().fullscreen
 	, "Scrap Escape")
-
 	, mesh_lib{0}
 	, object_lib{1}
 	, level{"../resources/level/level.ssp", &mesh_lib, &object_lib}
@@ -129,6 +128,15 @@ void Game::update(std::chrono::milliseconds delta)
 
 
 	int game_state = 0;
+
+	if (net_state.state == network::SessionState::waiting)
+	{
+		net_state.state = network::SessionState::none;
+		game_state = (game_state | state::building);
+		gameplay.refresh();
+
+	}
+		
 
 	if (menu.on())
 		game_state = (game_state | state::menu);
@@ -382,6 +390,9 @@ void Game::pack_data()
 		net_state.game_objects[i].position = dynamics[i].position;
 		net_state.game_objects[i].velocity = dynamics[i].velocity;
 	}
+
+	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0)
+		net_state.state = network::SessionState::waiting;
 }
 
 void Game::unpack_data()
