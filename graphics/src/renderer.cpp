@@ -232,7 +232,7 @@ void Renderer::render(
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	if (player_count > 0)
+	if (player_count > 3)
 	{
 		if (!is_menu)
 		{
@@ -256,8 +256,9 @@ void Renderer::render(
 			}
 			if (finish[player_id] && !died[player_id])
 			{
-				finish_screen.render(finish_screen_shader, player_id);
+				finish_screen.render(finish_screen_shader, finish);
 			}
+			glEnable(GL_DEPTH_TEST);
 		}
 	}
 	else
