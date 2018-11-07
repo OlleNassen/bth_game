@@ -24,8 +24,6 @@ void Minimap::update(const std::vector<Model>& models, int players)
 	{
 		this->map_elements[i].position.y = models[i - 1].get_y_position() / 171 - 0.9;
 		this->map_elements[i].color = models[i - 1].emissive_color;
-		
-
 	}
 }
 
