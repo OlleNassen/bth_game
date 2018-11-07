@@ -122,6 +122,7 @@ function update(delta_seconds, game, entities)
 			if entities[i].triggered_type == 0
 			then
 				game.finished[i] = true
+				game.died[i] = true
 				entities[i].position.y = -2000
 				entities[i].position.x = -2000
 

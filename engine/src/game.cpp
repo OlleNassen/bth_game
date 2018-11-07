@@ -218,8 +218,8 @@ void Game::update(std::chrono::milliseconds delta)
 				placed_objects_list_id = placed_objects_array[i];//random_picked_object();
 
 				collision_data data;
-				int model_id = level.add_object(data, 0);
-				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + (i * 2) }, { 0, 0 }, data.width, data.height, { 0, 0 });
+				int model_id = level.add_object(data, placed_objects_list_id);
+				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + (i * 2) }, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
 
 				players_placed_objects_id[i].model_id = model_id;
 				players_placed_objects_id[i].dynamics_id = dynamic_id;

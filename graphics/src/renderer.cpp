@@ -248,6 +248,8 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
+			glDisable(GL_DEPTH_TEST);
+
 			if (finish[player_id] && died[player_id])
 			{
 				death_screen.render(death_screen_shader);
@@ -373,7 +375,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 		}
 	}
 	
-	if (game_state & state::playing && print_time <= 15.0f)
+	if (game_state & state::building)
+	{
+		post_processing_effects.glow_value = 0.0f;
+	}
+	else if (game_state & state::playing && print_time <= 15.0f)
 	{
 		post_processing_effects.update(delta);
 	}

@@ -396,6 +396,10 @@ void GameScript::update_export()
 		stack.getfield(top, "finished");
 		stack.rawget(-1, i);
 		data.finished[i - 1] = stack.toboolean(-1);
+
+		//std::cout<< data.died[i - 1] << '\n';
+		//std::cout << data.finished[i - 1] << '\n';
+
 	}
 
 	stack.getfield(top, "winner");

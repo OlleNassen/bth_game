@@ -88,8 +88,6 @@ LuaExport Gameplay::update(Input inputs,
 
 		time = game_script.get_time();
 
-		}
-
 		//std::cout << "			X2:" << inputs.dynamics[0].velocity.x << " Y2:" << inputs.dynamics[0].velocity.y << std::endl; // test triggers
 		//std::cout << "			X2:" << inputs.dynamics[0].forces.x << " Y2:" << inputs.dynamics[0].forces.y << std::endl;
 	}
