@@ -68,7 +68,10 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 		}
 	}
 
-	std::sort(models.begin(), models.end(), [](const auto& left, const auto& right)
+	std::vector<Model>::iterator beg = models.begin();
+	beg += 9;
+
+	std::sort(beg, models.end(), [](const auto& left, const auto& right)
 	{
 		return left.get_y_position() < right.get_y_position();
 	});
@@ -108,10 +111,17 @@ void GameScene::inititate_object(CustomLevel& objects, MeshLib* object_lib)
 int GameScene::add_object(collision_data& physics_data, int id)
 {
 	physics_data = objects[id].data;
-
-	moving_models.emplace_back(objects[id].model);
+	moving_models.push_back(objects[id].model);
 
 	return moving_models.size() - 1;
+}
+
+void GameScene::clear_object()
+{
+	while (moving_models.size() > 4)
+	{
+		moving_models.pop_back();
+	}
 }
 
 void GameScene::rotate_object(int model_id)

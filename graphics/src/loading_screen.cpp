@@ -37,7 +37,7 @@ void graphics::LoadingScreen::render(const Shader& loading_screen_shader) const
 		loading_screen_shader.uniform("loading_texture", 0);
 		this->waiting_3.bind(0);
 	}
-	else if (timer >= 3000ms && timer <= 4000ms)
+	else if (timer >= 3000ms)
 	{
 		loading_screen_shader.uniform("loading_texture", 0);
 		this->waiting_4.bind(0);
