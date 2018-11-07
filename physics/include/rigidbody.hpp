@@ -24,6 +24,8 @@ public:
 	float restitution = 0.4f;
 	float friction = 0.95f;
 
+	int trigger_type = -1;
+
 	OBB box;
 };
 

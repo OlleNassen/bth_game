@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <sstream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iomanip>
 
 namespace graphics
 {
@@ -66,7 +67,8 @@ void Renderer::render(
 	bool game_over, 
 	std::array<bool, 4> died,
 	std::array<bool, 4> finish,
-	std::array<float, 4> scores)const
+	std::array<float, 4> scores,
+	float print_time)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -107,7 +109,7 @@ void Renderer::render(
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
 		render_type(pbr, game_camera, lights,
-			&scene->models[0], &scene->models[3]);
+			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
@@ -125,7 +127,16 @@ void Renderer::render(
 			glEnable(GL_DEPTH_TEST);
 		}
 
-		if(game_state & state::building)
+		/*if (game_state & state::waiting)
+		{
+			glDisable(GL_DEPTH_TEST);
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			build_text.render_text("Press 'Space' to start", 1280.f - 410, 10.f, 0.75f);
+			glEnable(GL_DEPTH_TEST);
+		}
+		else */if (game_state & state::building)
 		{
 			int max = build_info.size();
 			for (int i = 0; i < max; i++)
@@ -151,7 +162,30 @@ void Renderer::render(
 				line_debug(build_info[i].build_positions);
 				glEnable(GL_DEPTH_TEST);
 			}
+
+			glDisable(GL_DEPTH_TEST);			
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			build_text.render_text("Press 'Space' to place", 1280.f - 410, 10.f, 0.75f);
+			glEnable(GL_DEPTH_TEST);
+
+			glDisable(GL_DEPTH_TEST);
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			build_text.render_text("Build Stage", 1280.f - 210, 720.f - 35.f, 0.75f);
+			glEnable(GL_DEPTH_TEST);
 		}
+
+		glDisable(GL_DEPTH_TEST);
+		std::stringstream out_text;
+		out_text << std::fixed << std::setprecision(1) << print_time;
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		timer_text.render_text(out_text.str(), 10.f, 720.f - 45.f, 1.f);
+		glEnable(GL_DEPTH_TEST);
 	}
 	else if (!is_menu)
 	{
@@ -176,7 +210,7 @@ void Renderer::render(
 			&scene->models[first_model], &scene->models[last_model]);
 
 		render_type(pbr, db_camera, lights,
-			&scene->models[0], &scene->models[3]);
+			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, db_camera);
@@ -213,6 +247,8 @@ void Renderer::render(
 
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
+
+			glDisable(GL_DEPTH_TEST);
 
 			if (finish[player_id] && died[player_id])
 			{
@@ -298,16 +334,29 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::string scoreboard,
 	std::array<bool, 4> died,
 	std::array<bool, 4> finish,
-	std::array<float, 4> scores)
+	std::array<float, 4> scores,
+	float print_time)
 {
-	first_model = 0;
-	last_model = 0;
-	for (auto i = 0u; i < scene->models.size(); ++i)
+	first_model = 9;
+	last_model = 9;
+	for (auto i = 9u; i < scene->models.size(); ++i)
 	{
 		float culling_distance = 50.0f;
-		auto bottom = scene->moving_models[id].get_y_position() - culling_distance;
-		auto top = scene->moving_models[id].get_y_position() + culling_distance;
 
+		auto bottom = 0.0f; // scene->moving_models[id].get_y_position() - culling_distance;
+		auto top = 0.0f; // scene->moving_models[id].get_y_position() + culling_distance;
+
+		if (game_state & state::building)
+		{
+			bottom = scene->v[id].y - culling_distance;
+			top = scene->v[id].y + culling_distance;
+		}
+		else
+		{
+			bottom = scene->moving_models[id].get_y_position() - culling_distance;
+			top = scene->moving_models[id].get_y_position() + culling_distance;
+		}		
+		
 		if (bottom < scene->models[i].get_y_position() && !first_model)
 		{
 			first_model = i;
@@ -324,6 +373,15 @@ void Renderer::update(std::chrono::milliseconds delta,
 		{
 			last_model = scene->models.size() - 1;
 		}
+	}
+	
+	if (game_state & state::building)
+	{
+		post_processing_effects.glow_value = 0.0f;
+	}
+	else if (game_state & state::playing && print_time <= 15.0f)
+	{
+		post_processing_effects.update(delta);
 	}
 
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
@@ -398,14 +456,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 		db_camera.update(delta, directions[0], cursor);
 	}
 
-	if (scene->build_mode_active)
-	{
-		//glm::vec2 build_pos[2];
-
-		//game_camera.update(delta, &scene->v[scene->placing_object_id], &scene->v[scene->placing_object_id + 1]);
-	}
-
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
+
 	ui.update();
 	minimap.update(scene->moving_models, player_count);
 
