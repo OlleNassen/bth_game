@@ -12,9 +12,9 @@ function setup(game)
 
 	game.speed_boost_timer = {0.0, 0.0, 0.0, 0.0}
 	game.speed_boost_triggerd = { false, false, false, false }
-	game.max_speed = 8500
+	game.max_speed = 8700
 	game.max_speed_boost = game.max_speed * 1.6
-	game.max_velocity = 15
+	game.max_velocity = 16
 	game.max_velocity_boost = game.max_velocity * 1.6
 
 end
