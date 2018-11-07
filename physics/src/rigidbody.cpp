@@ -22,7 +22,7 @@ void Rigidbody::synch_collision_volumes()
 	box.position = position;
 }
 
-void Rigidbody::add_linear_impulse(const glm::vec3& impulse)
+void Rigidbody::add_linear_impulse(const glm::vec3& impulse) 
 {
 	velocity += impulse;
 }
