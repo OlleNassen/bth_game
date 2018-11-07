@@ -65,7 +65,6 @@ public:
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
-		std::array<bool, 4> died,
 		float print_time) const;
 
 	void update(std::chrono::milliseconds delta,
@@ -80,7 +79,6 @@ public:
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
-		std::array<bool, 4> died,
 		float print_time);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)

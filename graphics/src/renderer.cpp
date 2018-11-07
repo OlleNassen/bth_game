@@ -68,7 +68,6 @@ void Renderer::render(
 	std::array<bool, 4> died,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
-	bool game_over, std::array<bool, 4> died,
 	float print_time)const
 {
 	bool is_menu = (game_state & state::menu);
@@ -334,8 +333,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<bool, 4> died,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
-	std::string scoreboard, 
-	std::array<bool, 4> died,
 	float print_time)
 {
 	first_model = 9;
