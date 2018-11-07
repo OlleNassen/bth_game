@@ -31,7 +31,7 @@ void PostProcessingEffects::render() const
 void PostProcessingEffects::update(std::chrono::milliseconds delta)
 {
 	duration += delta;
-	glow_value = std::cos(2 * duration.count());
+	glow_value = std::cos(4 * duration.count());
 }
 
 void PostProcessingEffects::initialize_textures()

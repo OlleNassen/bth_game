@@ -118,7 +118,8 @@ void Game::render()
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
-		db_coll, build_info, lua_data.game_over, lua_data.died, lua_data.finished, lua_data.scores);
+		db_coll, build_info, lua_data.game_over, lua_data.died, 
+		lua_data.finished, lua_data.scores, lua_data.time);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -149,7 +150,17 @@ void Game::update(std::chrono::milliseconds delta)
 	if (net.connected())
 		game_state = (game_state | state::connected);
 
-	if (gameplay.build_stage())
+	/*static glm::vec2 temp = dynamics[0].position;
+	if (temp == dynamics[0].position)
+	{
+		game_state = (game_state | state::waiting);
+
+		if ((*local_input)[logic::button::jump] == logic::button_state::pressed)
+		{
+			dynamics[0].position.x += 1;
+		}
+	}
+	else */if (gameplay.build_stage())
 	{
 		game_state = (game_state | state::building);
 	}
@@ -207,13 +218,13 @@ void Game::update(std::chrono::milliseconds delta)
 				placed_objects_list_id = placed_objects_array[i];//random_picked_object();
 
 				collision_data data;
-				int model_id = level.add_object(data, placed_objects_list_id);
-				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + (i * 2) }, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
+				int model_id = level.add_object(data, 0);
+				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + (i * 2) }, { 0, 0 }, data.width, data.height, { 0, 0 });
 
 				players_placed_objects_id[i].model_id = model_id;
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
 
-				dynamics[dynamic_id].position = { 0, 16 + (i * 2) };
+				dynamics[dynamic_id].position = { 0, 20 };
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 				dynamics[dynamic_id].size = { data.width, data.height };
 				dynamics[dynamic_id].forces = { 0.0f, 0.0f };
@@ -241,13 +252,13 @@ void Game::update(std::chrono::milliseconds delta)
 		give_players_objects = false;
 		for (auto& ppoi : players_placed_objects_id)
 		{
-			if (ppoi.place_state == 0)
+			if (ppoi.place_state == 0 || ppoi.place_state == 1)
 			{
 				dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
 				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
 			}
 		}
-	}	
+	}
 
 	{
 		logic::objects_array obj;
@@ -325,6 +336,12 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
+	if (game_state & state::building)
+	{
+		level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3};
+	}
+
+
 	anim idle = anim::falling;
 
 	for (int i = 4; i < level.models.size(); i++)
@@ -379,7 +396,8 @@ void Game::update(std::chrono::milliseconds delta)
 			player_inputs[net.id()].cursor,
 			directions,
 			chat[1], player_count,
-			net.id(), game_state, temp, lua_data.died, lua_data.finished, lua_data.scores);
+			net.id(), game_state, temp, lua_data.died, 
+			lua_data.finished, lua_data.scores, lua_data.time);
 	}
 }
 
