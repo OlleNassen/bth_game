@@ -107,7 +107,7 @@ void Renderer::render(
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
 		render_type(pbr, game_camera, lights,
-			&scene->models[0], &scene->models[3]);
+			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
@@ -176,7 +176,7 @@ void Renderer::render(
 			&scene->models[first_model], &scene->models[last_model]);
 
 		render_type(pbr, db_camera, lights,
-			&scene->models[0], &scene->models[3]);
+			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, db_camera);
@@ -300,9 +300,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores)
 {
-	first_model = 0;
-	last_model = 0;
-	for (auto i = 0u; i < scene->models.size(); ++i)
+	first_model = 9;
+	last_model = 9;
+	for (auto i = 9u; i < scene->models.size(); ++i)
 	{
 		float culling_distance = 50.0f;
 		auto bottom = scene->moving_models[id].get_y_position() - culling_distance;
