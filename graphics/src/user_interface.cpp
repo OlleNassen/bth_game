@@ -98,8 +98,8 @@ void UserInterface::disable_chat()
 
 void UserInterface::enable_chat()
 {
-	elements.front().position = glm::vec2(-0.5f, -1.0f);
-	elements.at(1).position = glm::vec2(-0.5f, -0.6f);
+	elements.front().position = glm::vec2(-15.f, -1.0f);
+	elements.at(1).position = glm::vec2(-15.f, -0.6f);
 	for (int i = 2; i < 6; i++)
 	{
 		elements.at(i).position = glm::vec2(2.0f, 2.0f);
