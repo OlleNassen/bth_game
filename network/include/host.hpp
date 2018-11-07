@@ -27,9 +27,9 @@ public:
 	bool connected() const;
 	bool client() const;
 
-	void send(uint16& input);
+	void send(GameInput& input);
 	void send(GameState& state);
-	void receive(uint16* input);
+	void receive(logic::input* input);
 	void receive(GameState& state);
 
 private:

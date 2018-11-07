@@ -48,7 +48,7 @@ public:
 	void disable_chat();
 	void enable_chat();
 	PlayerArrows player_arrows;
-private:
+protected:
 
 	void rebind_buffers();
 
