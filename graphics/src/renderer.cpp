@@ -233,7 +233,7 @@ void Renderer::render(
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	if (player_count > 3)
+	if (player_count > 0)
 	{
 		if (!is_menu)
 		{
