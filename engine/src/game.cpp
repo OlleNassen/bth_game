@@ -133,10 +133,11 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		net_state.state = network::SessionState::none;
 		game_state = (game_state | state::building);
+		physics.clear_object();
+		level.clear_object();
 		gameplay.refresh();
-
-	}
-		
+		give_players_objects = false;
+	}	
 
 	if (menu.on())
 		game_state = (game_state | state::menu);

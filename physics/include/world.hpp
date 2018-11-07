@@ -76,6 +76,8 @@ public:
 	std::vector<glm::vec3> get_all_debug()const;
 	std::vector<glm::vec3> get_debug_for(int id)const;
 
+	void clear_object();
+
 	void rotate_static_box(int id);
 
 	bool rw[4];
