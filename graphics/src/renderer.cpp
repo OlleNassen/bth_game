@@ -410,7 +410,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 	}
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
-	ui.update(scene->moving_models, player_count, game_camera.position);
+	ui.update(scene->moving_models, 
+		player_count, 
+		game_camera.position, 
+		died);
 
 	minimap.update(scene->moving_models, player_count, goal_height);
 

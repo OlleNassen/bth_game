@@ -27,10 +27,14 @@ UserInterface::UserInterface()
 
 }
 
-void UserInterface::update(const std::vector<Model> &models, int players, glm::vec3 &camera_pos)
+void UserInterface::update(const std::vector<Model> &models, int players, glm::vec3 &camera_pos, const std::array<bool, 4> &died)
 {
 	rebind_buffers();
-	player_arrows.update(models, players, elements, camera_pos);
+	for (auto i = 0; i < died.size(); i++)
+	{
+
+	}
+	player_arrows.update(models, players, elements, camera_pos, died);
 }
 
 void UserInterface::render(const Shader &shader)const
@@ -130,31 +134,37 @@ PlayerArrows::PlayerArrows()
 
 }
 
-void PlayerArrows::update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements, glm::vec3 &camera_pos)
+void PlayerArrows::update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements, glm::vec3 &camera_pos, const std::array<bool, 4> &died)
 {
 	for (int i = 0; i < players; i++)
 	{
-		player_positions[i] = glm::vec2(models.at(i).get_position());
-	
+		if (!died[i])
 		{
+			player_positions[i] = glm::vec2(models.at(i).get_position());
+
+
 			if (abs(player_positions[i].x - camera_pos.x) > 23
 				|| abs(player_positions[i].y - camera_pos.y) > 16)
 			{
-				
+
 				visible[i] = false;
 				player_vector[i] = player_positions[i] - glm::vec2(camera_pos.x, camera_pos.y);
 				elements.at(i + 2).position = (glm::normalize(player_vector[i]) * 0.9f);
 				elements.at(i + 2).position.x *= 0.6f;
 				player_vector[i].y *= -1;
 
-				elements.at(i+2).angle = std::atan2(player_vector[i].y, player_vector[i].x);
+				elements.at(i + 2).angle = std::atan2(player_vector[i].y, player_vector[i].x);
 			}
 			else
-			{				
+			{
 				visible[i] = true;
 				elements.at(i + 2).position = glm::vec2(2.0f, 2.0f);
 			}
-		}		
+		}
+		else
+		{
+			elements.at(i + 2).position = glm::vec2(2.0f, 2.0f);
+		}
 	}		
 }
 
