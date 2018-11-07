@@ -256,8 +256,9 @@ void Renderer::render(
 			}
 			if (finish[player_id] && !died[player_id])
 			{
-				finish_screen.render(finish_screen_shader, player_id);
+				finish_screen.render(finish_screen_shader, finish);
 			}
+			glEnable(GL_DEPTH_TEST);
 		}
 	}
 	else
