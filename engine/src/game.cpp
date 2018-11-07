@@ -204,7 +204,7 @@ void Game::update(std::chrono::milliseconds delta)
 			players_placed_objects_id.fill({ 0, 0, 0 });
 			for (int i = 0; i < 4; i++)
 			{
-				placed_objects_list_id = random_picked_object();
+				placed_objects_list_id = placed_objects_array[i];//random_picked_object();
 
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);
