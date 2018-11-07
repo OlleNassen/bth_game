@@ -126,7 +126,6 @@ void Game::update(std::chrono::milliseconds delta)
 	using std::cout;
 	constexpr char nl = '\n';
 
-
 	int game_state = 0;
 
 	if (net_state.state == network::SessionState::waiting)
@@ -136,6 +135,8 @@ void Game::update(std::chrono::milliseconds delta)
 		physics.clear_object();
 		level.clear_object();
 		gameplay.refresh();
+		for (int i = 4; i < dynamics.size(); ++i)
+			dynamics[i].position = glm::vec2(-2000000.f, -2000000.f);
 		give_players_objects = false;
 	}	
 
