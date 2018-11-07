@@ -201,10 +201,11 @@ void GameScript::setup()
 
 void GameScript::update(
 	std::chrono::milliseconds delta,
+	const input& i,
 	const trigger_array& triggers,
+	const trigger_type_array& types,
 	objects* players)
 {
-
 	{
 		stack.getglobal("game");
 		stack.clear();
@@ -241,6 +242,65 @@ void GameScript::update(
 		stack.clear();
 	}
 
+	//test for triggers
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		stack.push("button");
+		stack.push(i);
+		stack.rawset(top);
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("triggered_type");
+			stack.push(types[i - 1]);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("velocity");
+			stack.push(players[i - 1].velocity);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("forces");
+			stack.push(players[i - 1].forces);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
+
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);
 	stack.getglobal("game");
@@ -262,6 +322,43 @@ void GameScript::update(
 
 		stack.clear();
 	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; ++i)
+		{
+			stack.rawget(top, i);
+			stack.getfield(-1, "velocity");
+			stack.getfield(-1, "x");
+			stack.getfield(-2, "y");
+			players[i - 1].velocity.x = stack.tonumber(-2);
+			players[i - 1].velocity.y = stack.tonumber(-1);
+
+
+		}
+
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; ++i)
+		{
+			stack.rawget(top, i);
+			stack.getfield(-1, "forces");
+			stack.getfield(-1, "x");
+			stack.getfield(-2, "y");
+			players[i - 1].forces.x = stack.tonumber(-2);
+			players[i - 1].forces.y = stack.tonumber(-1);
+
+
+		}
+
+		stack.clear();
+	}
+
 }
 
 void GameScript::update_export()

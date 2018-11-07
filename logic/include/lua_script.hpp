@@ -17,6 +17,7 @@ namespace logic
 {
 
 using trigger_array = std::array<int, 100>;
+using trigger_type_array = std::array<int, 100>; // Test for triggers
 
 struct LuaExport
 {
@@ -70,7 +71,9 @@ public:
 	void setup();
 	void update(
 		std::chrono::milliseconds delta,
+		const input& i,
 		const trigger_array& triggers,
+		const trigger_type_array& types,
 		objects* players);
 
 	void update_export();

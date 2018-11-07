@@ -42,12 +42,13 @@ public:
 using objects_array = std::array<objects, 100>;
 using trigger_array = std::array<int, 100>;
 
+using trigger_type_array = std::array<int, 100>; // Test for triggers
 
 
 class World
 {
 public:
-	int add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force);
+	int add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force, int trigger_type = -1);
 	int add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
 
 	//Dynamic
@@ -66,6 +67,7 @@ public:
 		std::chrono::milliseconds delta,
 		objects_array& dynamics,
 		trigger_array& triggers,
+		trigger_type_array& triggers_types,
 		std::array<anim, 4>& anim_states);
 
 	std::vector<glm::vec2> get_forces() const;
