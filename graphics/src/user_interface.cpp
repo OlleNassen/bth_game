@@ -8,8 +8,8 @@ namespace graphics
 UserInterface::UserInterface()
 {
 	elements.fill({ {2.0f, 2.0f}, {1.0, 1.0}, { 0.05f, 0.05f }, 0.0f });
-	elements.front() = { { 0.5f, -0.1f },{ 0.8f, 0.3f },{ 0.7f, 0.25f }, 0.0f };
-	elements.at(1) = { {0.5f, -0.1f}, {1.0, 1.0}, { 0.7f, 0.7f }, 0.0f };
+	elements.front() = { { 0.5f, -0.5f },{ 0.8f, 0.3f },{ 0.7f, 0.25f }, 0.0f };
+	elements.at(1) = { {0.5f, -0.5f}, {1.0, 1.0}, { 0.7f, 0.7f }, 0.0f };
 	active_texture = 0;
 	
 	glBindVertexArray(vao);
@@ -124,25 +124,9 @@ void UserInterface::rebind_buffers()
 		(void*)(sizeof(glm::vec2) * 3));
 }
 
-//void UserInterface::render_arrows()
-//{
-//	elements.at(0).position = glm::vec2(2.0f, 2.0f);
-//	
-//
-//	render();
-//}
-//
-//void UserInterface::render_chat() 
-//{
-//	elements.front().position = glm::vec2(2.0f, 2.0f);
-//	elements.at(1).position = glm::vec2(2.0f, 2.0f);
-//	render();
-//}
-
 PlayerArrows::PlayerArrows()
 {
 	visible.fill(true);
-	//arrow_matrix = glm::mat4(1.0f);
 
 }
 
@@ -151,7 +135,7 @@ void PlayerArrows::update(const std::vector<Model> &models, int players, std::ar
 	for (int i = 0; i < players; i++)
 	{
 		player_positions[i] = glm::vec2(models.at(i).get_position());
-		//if (i > 0)
+	
 		{
 			if (abs(player_positions[i].x - camera_pos.x) > 23
 				|| abs(player_positions[i].y - camera_pos.y) > 16)
@@ -160,22 +144,10 @@ void PlayerArrows::update(const std::vector<Model> &models, int players, std::ar
 				visible[i] = false;
 				player_vector[i] = player_positions[i] - glm::vec2(camera_pos.x, camera_pos.y);
 				elements.at(i + 2).position = (glm::normalize(player_vector[i]) * 0.9f);
-				/*std::cout << player_positions[0].x << "\t" << player_positions[0].y << std::endl;
-				std::cout << player_positions[i].x << "\t" << player_positions[i].y << std::endl;
-				*/
-				//elements.at(i + 2).position = glm::vec2(.0f, .9f);
+				elements.at(i + 2).position.x *= 0.6f;
 				player_vector[i].y *= -1;
 
 				elements.at(i+2).angle = std::atan2(player_vector[i].y, player_vector[i].x);
-
-				/*if(player_positions[i].x - player_positions[0].x > 0)
-					elements.at(i + 2).position.x = 0.9f;
-				else 
-					elements.at(i + 2).position.x = -0.9f;
-				if(player_positions[i].y - player_positions[0].y > 0)*/
-
-				/*arrow_matrix = glm::mat4(1.0f);
-				arrow_matrix = glm::rotate(arrow_matrix, elements.at(i + 2).angle, glm::vec3(0.0, 0.0, 1.0));*/
 			}
 			else
 			{				
@@ -183,22 +155,7 @@ void PlayerArrows::update(const std::vector<Model> &models, int players, std::ar
 				elements.at(i + 2).position = glm::vec2(2.0f, 2.0f);
 			}
 		}		
-	}	
-		//std::cout << elements.at(2).angle << "\n";
-	
-}
-
-void PlayerArrows::render() const
-{
-	//beräkna vektor mellan spelarna
-	//beräkna matrix för position, rotation, scale
-	//uppdatera attributes
-	//lägg in i array
-	//rita ut
-	/*for (int i = 0; i<player_count; i++)
-	{
-		if(!visible[i])*/
-
+	}		
 }
 
 }

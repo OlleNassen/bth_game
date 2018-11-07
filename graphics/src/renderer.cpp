@@ -243,15 +243,6 @@ void Renderer::render(
 			main_menu_screen.render(main_menu_shader);
 		}
 
-		// Text
-		//gui.use();
-		//if (is_chat_visible)
-		//{
-
-		//}
-		///*else
-		//	ui.render_arrows();*/
-		//ui.render(gui);
 
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
