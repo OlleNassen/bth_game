@@ -10,7 +10,8 @@ enum state : int
 	building = 1 << 4,
 	chat = 1 << 5,
 	render_physics = 1 << 6,
-	playing = 1 << 7
+	playing = 1 << 7,
+	waiting = 1 << 8
 };
 
 enum class anim 

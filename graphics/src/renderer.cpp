@@ -120,7 +120,16 @@ void Renderer::render(
 			glEnable(GL_DEPTH_TEST);
 		}
 
-		if(game_state & state::building)
+		if (game_state & state::waiting)
+		{
+			glDisable(GL_DEPTH_TEST);
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			build_text.render_text("Press 'Space' to start", 1280.f - 410, 10.f, 0.75f);
+			glEnable(GL_DEPTH_TEST);
+		}
+		else if (game_state & state::building)
 		{
 			int max = build_info.size();
 			for (int i = 0; i < max; i++)
@@ -152,6 +161,13 @@ void Renderer::render(
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 			build_text.render_text("Press 'Space' to place", 1280.f - 410, 10.f, 0.75f);
+			glEnable(GL_DEPTH_TEST);
+
+			glDisable(GL_DEPTH_TEST);
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			build_text.render_text("Build Stage", 1280.f - 210, 720.f - 35.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 		}
 
@@ -400,6 +416,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	}
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
+
 	ui.update();
 	minimap.update(scene->moving_models, player_count);
 

@@ -142,7 +142,17 @@ void Game::update(std::chrono::milliseconds delta)
 	if (net.connected())
 		game_state = (game_state | state::connected);
 
-	if (gameplay.build_stage())
+	static glm::vec2 temp = dynamics[0].position;
+	if (temp == dynamics[0].position)
+	{
+		game_state = (game_state | state::waiting);
+
+		if ((*local_input)[logic::button::jump] == logic::button_state::pressed)
+		{
+			dynamics[0].position.x += 1;
+		}
+	}
+	else if (gameplay.build_stage())
 	{
 		game_state = (game_state | state::building);
 	}
@@ -232,7 +242,7 @@ void Game::update(std::chrono::milliseconds delta)
 		give_players_objects = false;
 		for (auto& ppoi : players_placed_objects_id)
 		{
-			if (ppoi.place_state == 0)
+			if (ppoi.place_state == 0 || ppoi.place_state == 1)
 			{
 				dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
 				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
