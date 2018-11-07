@@ -12,7 +12,6 @@ Game::Game()
 	: window(settings.get_window_settings().resolution
 	, settings.get_window_settings().fullscreen
 	, "Scrap Escape")
-
 	, mesh_lib{0}
 	, object_lib{1}
 	, level{"../resources/level/level.ssp", &mesh_lib, &object_lib}
@@ -22,8 +21,6 @@ Game::Game()
 	anim_states[1] = anim::idle;
 	anim_states[2] = anim::idle;
 	anim_states[3] = anim::idle;
-
-
 
 	window.assign_key(logic::button::up, GLFW_KEY_W);
 	window.assign_key(logic::button::left, GLFW_KEY_A);
@@ -121,8 +118,7 @@ void Game::render()
 	
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
-		db_coll, build_info, lua_data.game_over, lua_data.died,
-		lua_data.time);
+		db_coll, build_info, lua_data.game_over, lua_data.died, lua_data.finished, lua_data.scores, lua_data.time);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -133,6 +129,15 @@ void Game::update(std::chrono::milliseconds delta)
 
 	int game_state = 0;
 
+	if (net_state.state == network::SessionState::waiting)
+	{
+		net_state.state = network::SessionState::none;
+		game_state = (game_state | state::building);
+		gameplay.refresh();
+
+	}
+		
+
 	if (menu.on())
 		game_state = (game_state | state::menu);
 
@@ -142,7 +147,7 @@ void Game::update(std::chrono::milliseconds delta)
 	if (net.connected())
 		game_state = (game_state | state::connected);
 
-	static glm::vec2 temp = dynamics[0].position;
+	/*static glm::vec2 temp = dynamics[0].position;
 	if (temp == dynamics[0].position)
 	{
 		game_state = (game_state | state::waiting);
@@ -152,7 +157,7 @@ void Game::update(std::chrono::milliseconds delta)
 			dynamics[0].position.x += 1;
 		}
 	}
-	else if (gameplay.build_stage())
+	else */if (gameplay.build_stage())
 	{
 		game_state = (game_state | state::building);
 	}
@@ -296,12 +301,20 @@ void Game::update(std::chrono::milliseconds delta)
 
 				if (player_inputs[i][logic::button::right] == logic::button_state::held)
 				{
-					if (level.moving_models[i].get_state() != anim::hanging_right && level.moving_models[i].get_state() != anim::hanging_left && level.moving_models[i].get_state() != anim::turning && level.moving_models[i].get_state() != anim::connect_wall && level.moving_models[i].get_state() != anim::jump_from_wall)
+					if (level.moving_models[i].get_state() != anim::hanging_right && 
+						level.moving_models[i].get_state() != anim::hanging_left && 
+						level.moving_models[i].get_state() != anim::turning && 
+						level.moving_models[i].get_state() != anim::connect_wall && 
+						level.moving_models[i].get_state() != anim::jump_from_wall)
 						level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
 				}
 				else if (player_inputs[i][logic::button::left] == logic::button_state::held)
 				{
-					if (level.moving_models[i].get_state() != anim::hanging_right && level.moving_models[i].get_state() != anim::hanging_left && level.moving_models[i].get_state() != anim::turning && level.moving_models[i].get_state() != anim::connect_wall  && level.moving_models[i].get_state() != anim::jump_from_wall)
+					if (level.moving_models[i].get_state() != anim::hanging_right && 
+						level.moving_models[i].get_state() != anim::hanging_left && 
+						level.moving_models[i].get_state() != anim::turning && 
+						level.moving_models[i].get_state() != anim::connect_wall  && 
+						level.moving_models[i].get_state() != anim::jump_from_wall)
 						level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 				}
 
@@ -377,8 +390,7 @@ void Game::update(std::chrono::milliseconds delta)
 			player_inputs[net.id()].cursor,
 			directions,
 			chat[1], player_count,
-			net.id(), game_state, temp, lua_data.died,
-			lua_data.time);
+			net.id(), game_state, temp, lua_data.died, lua_data.finished, lua_data.scores, lua_data.time);
 	}
 }
 
@@ -386,7 +398,7 @@ void Game::pack_data()
 {	
 	for (int i = 0; i < 4; ++i)
 	{
-		net_state.inputs[i] = static_cast<logic::uint16>(player_inputs[i]);
+		net_state.inputs[i] = player_inputs[i];
 	}
 
 	for (auto i = 0u; i < dynamics.size(); ++i)
@@ -394,6 +406,9 @@ void Game::pack_data()
 		net_state.game_objects[i].position = dynamics[i].position;
 		net_state.game_objects[i].velocity = dynamics[i].velocity;
 	}
+
+	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0)
+		net_state.state = network::SessionState::waiting;
 }
 
 void Game::unpack_data()
@@ -402,11 +417,11 @@ void Game::unpack_data()
 	{
 		if (i != net.id())
 		{
-			player_inputs[i] = logic::input{net_state.inputs[i]};
+			player_inputs[i] = net_state.inputs[i];
 		}		
 	}
 	
-	if (state_sequence != net_state.sequence)
+	//if (state_sequence != net_state.sequence)
 	{
 		state_sequence = net_state.sequence;
 		player_count = net_state.player_count;

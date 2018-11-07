@@ -92,7 +92,7 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 	
 	int light_count = 0;
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{
@@ -117,7 +117,6 @@ void Model::render(const Shader & shader, const Camera& camera, const std::array
 	{
 		shader.uniform("bone_mats", this->animation_handler.bone_mat_vector);
 	}
-	
 	
 	mesh->textures[0].bind(0);
 	mesh->textures[1].bind(1);

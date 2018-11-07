@@ -3,7 +3,7 @@ function setup(game)
 	game.points = 0 -- do not change this, edit value in update loop
 	game.max_points = 10
 	--4 playerscores:
-	game.names = {"ole", "ed", "pet", "osby"}
+	game.names = {"p1", "p2", "p3", "p4"}
 	game.scores = { 0, 0, 0, 0 }
 	game.finished = { false, false, false, false }
 	game.died = {false, false, false, false}

@@ -4,6 +4,7 @@
 
 enum state : int
 {
+	waiting = 1 << 0,
 	debug = 1 << 1,
 	connected = 1 << 2,
 	menu = 1 << 3,

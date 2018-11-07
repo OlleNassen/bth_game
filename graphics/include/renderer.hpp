@@ -21,6 +21,7 @@
 #include "loading_screen.hpp"
 #include "death_screen.hpp"
 #include "main_menu_screen.hpp"
+#include "finish_screen.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -62,6 +63,9 @@ public:
 		const std::vector<build_information>& build_infos,
 		bool game_over, 
 		std::array<bool, 4> died,
+		std::array<bool, 4> finish,
+		std::array<float, 4> scores,
+		std::array<bool, 4> died,
 		float print_time) const;
 
 	void update(std::chrono::milliseconds delta,
@@ -73,6 +77,9 @@ public:
 		int id,
 		int new_game_state,
 		std::string scoreboard, 
+		std::array<bool, 4> died,
+		std::array<bool, 4> finish,
+		std::array<float, 4> scores,
 		std::array<bool, 4> died,
 		float print_time);
 
@@ -126,6 +133,9 @@ private:
 	Shader fx_blitz{
 		"../resources/shaders/fx_blitz.vs",
 		"../resources/shaders/fx_blitz.fs" };
+	Shader fx_fire{
+		"../resources/shaders/fx_fire.vs",
+		"../resources/shaders/fx_fire.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
@@ -141,6 +151,9 @@ private:
 	Shader death_screen_shader{
 		"../resources/shaders/death_screen.vs",
 		"../resources/shaders/death_screen.fs" };
+	Shader finish_screen_shader{
+		"../resources/shaders/finish_screen.vs",
+		"../resources/shaders/finish_screen.fs" };
 	Shader main_menu_shader{
 		"../resources/shaders/main_menu_screen.vs",
 		"../resources/shaders/main_menu_screen.fs" };
@@ -187,6 +200,7 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
+	FinishScreen finish_screen;
 	int player_id;
 
 	FX fx_emitter;
@@ -209,6 +223,27 @@ private:
 template <typename T>
 void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T* first, const T* last)
 {
+	shader.use();
+	shader.uniform("view", camera.view());
+	shader.uniform("projection", camera.projection);
+
+	shader.uniform("cam_pos", camera.position);
+
+	int light_count = 0;
+
+	for (int i = 0; i < 9; i++)
+	{
+		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
+		{
+			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
+			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
+			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
+			light_count++;
+		}
+	}
+
+	shader.uniform("light_count", light_count);
+
 	for (auto it = first; it != last; ++it)
 	{
 		const auto& renderable = *it;
@@ -219,6 +254,28 @@ void render_type(const Shader& shader, const Camera& camera, const std::array<Po
 template <typename T>
 void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T& data, int num_players)
 {
+	shader.use();
+	shader.uniform("view", camera.view());
+	shader.uniform("projection", camera.projection);
+
+	shader.uniform("cam_pos", camera.position);
+
+	int light_count = 0;
+
+	for (int i = 0; i < 9; i++)
+	{
+		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
+		{
+			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
+			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
+			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
+			light_count++;
+		}
+	}
+
+	shader.uniform("light_count", light_count);
+
+
 	for (auto i = 0; i < num_players; ++i)
 	{
 		const auto& renderable = data[i];

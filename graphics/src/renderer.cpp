@@ -27,7 +27,7 @@ Renderer::Renderer(GameScene* scene)
 	glViewport(0, 0, 1280, 720); // don't forget to configure the viewport to the capture dimensions.
 	
 	//Player Light
-	lights[0].color = glm::vec3{ 1.0f, 0.0f, 0.0f };
+	lights[0].color = glm::vec3{ 9.0f, 1.0f, 1.0f };
 	lights[0].intensity = 30;
 	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
 	lights[1].intensity = 30;
@@ -38,7 +38,7 @@ Renderer::Renderer(GameScene* scene)
 
 	//Map Light
 	lights[4].position = glm::vec3{ -5.625,0,-20 };
-	lights[4].color = glm::vec3{ 1,0.48,0 };
+	lights[4].color = glm::vec3{ 1,0.38,0 };
 	lights[5].position = glm::vec3{ -5.32,40,-20 };
 	lights[5].color = glm::vec3{ 0,0.82,1 };
 	lights[6].position = glm::vec3{ 15.821,80,-20 };
@@ -47,8 +47,12 @@ Renderer::Renderer(GameScene* scene)
 	lights[7].color = glm::vec3{ 0,0.82,1 };
 	lights[8].position = glm::vec3{ 13.34,160,-20 };
 	lights[8].color = glm::vec3{ 1,0.48,0 };
+	lights[9].position = glm::vec3{ -11.853,200,-20 };
+	lights[9].color = glm::vec3{ 0,0.82,1 };
+	lights[10].position = glm::vec3{ 13.34,240,-20 };
+	lights[10].color = glm::vec3{ 1,0.48,0 };
 
-	for (int i = 4; i < 9; i++)
+	for (int i = 4; i < 12; i++)
 	{
 		lights[i].intensity = 200;
 	}
@@ -60,6 +64,10 @@ void Renderer::render(
 	const std::array<std::string, 12>& buttons,
 	const std::vector<glm::vec3>& debug_positions,
 	const std::vector<build_information>& build_info,
+	bool game_over, 
+	std::array<bool, 4> died,
+	std::array<bool, 4> finish,
+	std::array<float, 4> scores,
 	bool game_over, std::array<bool, 4> died,
 	float print_time)const
 {
@@ -102,12 +110,12 @@ void Renderer::render(
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
 		render_type(pbr, game_camera, lights,
-			&scene->models[0], &scene->models[3]);
+			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, game_camera);
 
-		fx_emitter.render_particles(fx_dust, fx_blitz, fx_spark, fx_steam, game_camera);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
 
 		glDisable(GL_DEPTH_TEST);
 		if (debug_active)
@@ -120,7 +128,7 @@ void Renderer::render(
 			glEnable(GL_DEPTH_TEST);
 		}
 
-		if (game_state & state::waiting)
+		/*if (game_state & state::waiting)
 		{
 			glDisable(GL_DEPTH_TEST);
 			text_shader.use();
@@ -129,7 +137,7 @@ void Renderer::render(
 			build_text.render_text("Press 'Space' to start", 1280.f - 410, 10.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 		}
-		else if (game_state & state::building)
+		else */if (game_state & state::building)
 		{
 			int max = build_info.size();
 			for (int i = 0; i < max; i++)
@@ -203,12 +211,12 @@ void Renderer::render(
 			&scene->models[first_model], &scene->models[last_model]);
 
 		render_type(pbr, db_camera, lights,
-			&scene->models[0], &scene->models[3]);
+			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
 		skybox.render(skybox_shader, db_camera);
 
-		fx_emitter.render_particles(fx_dust, fx_blitz, fx_spark, fx_steam, game_camera);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
 
 		if (debug_active)
 		{
@@ -241,9 +249,13 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
-			if (died[player_id])
+			if (finish[player_id] && died[player_id])
 			{
 				death_screen.render(death_screen_shader);
+			}
+			if (finish[player_id] && !died[player_id])
+			{
+				finish_screen.render(finish_screen_shader, player_id);
 			}
 		}
 	}
@@ -299,7 +311,7 @@ void Renderer::render(
 				leaderboard.render(text_shader, text);
 			}
 
-			if (!is_menu)
+			if (!is_menu && !finish[player_id] && !died[player_id])
 			{
 				minimap.render(minimap_shader);
 			}
@@ -318,13 +330,17 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int num_players,
 	int id,
 	int new_game_state,
+	std::string scoreboard,
+	std::array<bool, 4> died,
+	std::array<bool, 4> finish,
+	std::array<float, 4> scores,
 	std::string scoreboard, 
 	std::array<bool, 4> died,
 	float print_time)
 {
-	first_model = 0;
-	last_model = 0;
-	for (auto i = 0u; i < scene->models.size(); ++i)
+	first_model = 9;
+	last_model = 9;
+	for (auto i = 9u; i < scene->models.size(); ++i)
 	{
 		float culling_distance = 50.0f;
 
@@ -370,47 +386,69 @@ void Renderer::update(std::chrono::milliseconds delta,
 	game_state = new_game_state;
 	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
-	
-	using namespace std::chrono_literals;	
-	
+
+	using namespace std::chrono_literals;
+
 	time = data != log ? 0ms : time + delta;
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
-	loading_screen.timer += delta;
-	if (died[id])
+
+	//Death screen update
+	if (died[id] && finish[id])
 	{
 		death_screen.timer += delta;
 	}
-	main_menu_screen.timer += delta;
+	else
+	{
+		death_screen.timer = 0ms;
+	}
 
-	//Loading screen reset
+	//Loading screen update
 	if (loading_screen.timer > 4000ms)
 	{
 		loading_screen.timer = 0ms;
 	}
-	if (!died[id])
+	else
 	{
-		death_screen.timer = 0ms;
+		loading_screen.timer += delta;
 	}
-	/*if (death_screen.timer > 1000ms)
-	{
-		death_screen.timer = 0ms;
-	}*/
+
+	//Main menu update
 	if (main_menu_screen.timer > 1600ms)
 	{
 		main_menu_screen.timer = 0ms;
+	}
+	else
+	{
+		main_menu_screen.timer += delta;
+	}
+
+	//Finish screen update
+	if (finish[id] && !died[id])
+	{
+		finish_screen.timer += delta;
+	}
+	else
+	{
+		finish_screen.timer = 0ms;
 	}
 
 	if (!is_chat_on)
 	{
 		//Dust Particles
 		fx_emitter.calculate_dust_data(delta, game_camera);
-		//dust_particles->calculate_dust_data(*dust_particles->fx, scene->v, delta, db_camera);
+
+		//Spark Particles
+		fx_emitter.calculate_spark_data(delta, game_camera);
 
 		//Steam Particles
-		//steam_particles->calculate_steam_data(*steam_particles->fx, scene->v, delta, db_camera);
 		fx_emitter.calculate_steam_data(delta, game_camera);
+
+		//Blitz Particles
 		fx_emitter.calculate_blitz_data(delta, game_camera);
+
+		//Fire Particles
+		fx_emitter.calculate_fire_data(delta, game_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 	}

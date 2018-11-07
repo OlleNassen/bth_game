@@ -15,25 +15,26 @@ bool Messenger::connected() const
 }
 
 void Messenger::update(GameState& state, const char* ip_address)
-{	
+{
 	if (ip_address)
+		player_host = Host{ip_address};		
+
+	if (player_host.client())
 	{
-		player_host = Host{ ip_address };
-		++player_id;
-	}
-	
-	if (player_id)
-	{
-		uint16 player_unput = state.inputs[player_id];
-		player_host.send(player_unput);
+		GameInput send_data;
+		send_data.data = state.inputs[player_id];
+		send_data.id = player_id;
+		
+		player_host.send(send_data);
 		player_host.receive(state);
 	}
 	else
-	{
+	{	
 		player_host.send(state);
-		player_host.receive(state.inputs[1]);	
-		
+		player_host.receive(state.inputs);
 	}
+
+	player_id = state.player_id;
 }
 
 }
