@@ -194,6 +194,8 @@ void Game::update(std::chrono::milliseconds delta)
 			players_placed_objects_id.fill({ 0, 0, 0 });
 			for (int i = 0; i < 4; i++)
 			{
+				placed_objects_list_id = random_picked_object();
+
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);
 				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + (i * 2) }, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
@@ -479,5 +481,7 @@ void Game::place_random_objects(float start_height, float map_width, int number_
 		level.moving_models[model_id].set_position(dynamics[dynamic_id].position);
 
 	}
+
+
 
 }
