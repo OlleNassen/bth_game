@@ -31,7 +31,7 @@ bool manualdof = true; //manual dof calculation
 float ndofstart = 0.0; //near dof blur start
 float ndofdist = 0.0; //near dof blur falloff distance
 float fdofstart = 26.0; //far dof blur start
-float fdofdist = 10.0; //far dof blur falloff distance
+float fdofdist = 40.0; //far dof blur falloff distance
 
 float CoC = 0.03;//circle of confusion size in mm (35mm film = 0.03mm)
 
