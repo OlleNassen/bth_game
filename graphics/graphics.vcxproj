@@ -170,6 +170,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\player_arrows.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\animation_handler.cpp" />
     <ClCompile Include="src\animation_logic.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -214,6 +217,9 @@
     <ClInclude Include="include\mesh_lib.hpp" />
     <ClInclude Include="include\minimap.hpp" />
     <ClInclude Include="include\model.hpp" />
+    <ClInclude Include="include\player_arrows.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="include\post_processing_effects.hpp" />
     <ClInclude Include="include\primitives.hpp" />
     <ClInclude Include="include\renderer.hpp" />

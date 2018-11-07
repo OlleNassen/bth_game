@@ -29,6 +29,7 @@ public:
 	std::array<bool, 4> finished;
 	bool game_over;
 	float time;
+	float goal_height;
 };
 
 class objects

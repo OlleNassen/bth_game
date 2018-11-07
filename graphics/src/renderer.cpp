@@ -227,6 +227,7 @@ void Renderer::render(
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
+
 	}
 
 	// Post Processing Effects
@@ -278,13 +279,6 @@ void Renderer::render(
 			main_menu_screen.render(main_menu_shader);
 		}
 
-		// Text
-		gui.use();
-		if (is_chat_visible)
-		{
-			ui.render();
-		}
-
 
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
@@ -316,6 +310,9 @@ void Renderer::render(
 			if (!is_menu && !finish[player_id] && !died[player_id])
 			{
 				minimap.render(minimap_shader);
+				gui.use();
+
+				ui.render(gui);
 			}
 		}
 
@@ -336,7 +333,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<bool, 4> died,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
-	float print_time)
+	float print_time,
+	float goal_height)
 {
 	first_model = 9;
 	last_model = 9;
@@ -455,12 +453,20 @@ void Renderer::update(std::chrono::milliseconds delta,
 		fx_emitter.calculate_fire_data(delta, game_camera);
 
 		db_camera.update(delta, directions[0], cursor);
+		ui.disable_chat();
+	}
+	else
+	{
+		ui.enable_chat();
 	}
 
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
+	ui.update(scene->moving_models, 
+		player_count, 
+		game_camera.position, 
+		died);
 
-	ui.update();
-	minimap.update(scene->moving_models, player_count);
+	minimap.update(scene->moving_models, player_count, goal_height);
 
 	for (int i = 0; i < 4; ++i)
 	{

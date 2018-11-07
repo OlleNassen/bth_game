@@ -397,7 +397,7 @@ void Game::update(std::chrono::milliseconds delta)
 			directions,
 			chat[1], player_count,
 			net.id(), game_state, temp, lua_data.died, 
-			lua_data.finished, lua_data.scores, lua_data.time);
+			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height);
 	}
 }
 
