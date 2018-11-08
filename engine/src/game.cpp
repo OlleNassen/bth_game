@@ -400,6 +400,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 		if (lua_data.died[net.id()] || lua_data.finished[net.id()])
 		{
+			//Spectator
 			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
 			{
 				watching = (watching + 1) % 4;
@@ -417,16 +418,16 @@ void Game::update(std::chrono::milliseconds delta)
 
 			if ((*local_input)[logic::button::left] == logic::button_state::pressed)
 			{
-				watching = (watching - 1) % 4;
+				watching = abs(watching - 1) % 4;
 
 				if (waiting == net.id())
 				{
-					watching = (watching - 1) % 4;
+					watching = abs(watching - 1) % 4;
 				}
 
 				if (lua_data.died[watching] || lua_data.finished[watching])
 				{
-					watching = (watching - 1) % 4;
+					watching = abs(watching - 1) % 4;
 				}
 			}
 		}
