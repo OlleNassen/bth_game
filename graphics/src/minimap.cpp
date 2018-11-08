@@ -23,7 +23,7 @@ void Minimap::update(const std::vector<Model>& models, int players, float goal_h
 	for (auto i = 1u; i <= player_count; i++)
 	{
 		this->map_elements[i].position.y = models[i - 1].get_y_position()/goal_height -0.9;
-		this->map_elements[i].color = models[i - 1].get_color();		
+		this->map_elements[i].color = models[i - 1].emissive_color;
 	}
 }
 
