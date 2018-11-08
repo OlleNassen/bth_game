@@ -1,5 +1,5 @@
 function setup(game)
-	game.goal = 6--258
+	game.goal = 258
 	game.points = 0 -- do not change this, edit value in update loop
 	game.max_points = 10
 	--4 playerscores:
@@ -133,11 +133,6 @@ function update(delta_seconds, game, entities)
 
 	for i = 1, 4, 1
 	do
-		if i == 1
-		then
-			print(entities[i].position.y)
-		end
-
 		if game.died[i] == true or game.finished[i]
 		then
 			entities[i].impulse.y = -entities[i].velocity.y
