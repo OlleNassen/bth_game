@@ -1,5 +1,5 @@
 function setup(game)
-	game.goal = 258
+	game.goal = 6--258
 	game.points = 0 -- do not change this, edit value in update loop
 	game.max_points = 10
 	--4 playerscores:
@@ -120,69 +120,7 @@ function update(delta_seconds, game, entities)
 				game.points = game.points - 1
 
 			end
-
-		--	--sticky_platform
-		--	if entities[i].triggered_type == 3
-		--	then
-		--		
-		--		if entities[i].velocity.x >= game.max_velocity and entities[i].velocity.x > 0 --right
-		--		then
-		--			--entities[i].velocity.x = 1
-		--			entities[i].forces.x = entities[i].forces.x - (entities[i].forces.x / 1.5) 
-		--		
-		--		elseif entities[i].velocity.x <= -game.max_velocity and entities[i].velocity.x < 0 --left
-		--		then
-		--			--entities[i].velocity.x = -1
-		--			entities[i].forces.x = entities[i].forces.x - (entities[i].forces.x / 1.5)
-		--		end
-		--	end
-		--
-		--	----standard_platform
-		--	--if entities[i].triggered_type == 6
-		--	--then
-		--	--
-		--	--end
-		--
-		--	--speed_boost
-		--	if entities[i].triggered_type == 7 and game.speed_boost_triggerd[i] == false
-		--	then
-		--		game.speed_boost_triggerd[i] = true
-		--		game.speed_boost_timer[i] = 0.0
-		--	end
-		--end
-		--
-		--if	game.speed_boost_triggerd[i] == true and game.speed_boost_timer[i] <= 5.0
-		--then
-		--	if entities[i].velocity.x < game.max_velocity_boost and entities[i].velocity.x > -game.max_velocity_boost and entities.button.right
-		--	then
-		--		if entities[i].velocity.x > 0
-		--		then
-		--			entities[i].forces.x = game.max_speed_boost * 1.2 --right
-		--		else
-		--			entities[i].forces.x = game.max_speed_boost * 0.6
-		--		end
-		--
-		--	elseif entities[i].velocity.x > -game.max_velocity_boost and entities[i].velocity.x < game.max_velocity_boost and entities.button.left
-		--	then 
-		--		if entities[i].velocity.x < 0
-		--		then
-		--			entities[i].forces.x = -game.max_speed_boost * 1.2 --left
-		--		else
-		--			entities[i].forces.x = -game.max_speed_boost * 0.6
-		--		end
-		--
-		--	end
-		--end
-		--
-		--if	game.speed_boost_timer[i] <= 5.0
-		--then
-		--	game.speed_boost_timer[i] = game.speed_boost_timer[i] + delta_seconds
-		--
-		--elseif	game.speed_boost_timer[i] >= 5.0
-		--then
-		--	game.speed_boost_triggerd[i] = false
-		--end
-
+		end
 	end
 
 	for i = 1, 4, 1
@@ -190,6 +128,20 @@ function update(delta_seconds, game, entities)
 		if game.scores[i] > game.max_points
 		then
 			game.winner = true
+		end
+	end
+
+	for i = 1, 4, 1
+	do
+		if i == 1
+		then
+			print(entities[i].position.y)
+		end
+
+		if game.died[i] == true or game.finished[i]
+		then
+			entities[i].impulse.y = -entities[i].velocity.y
+			--print(entities[i].position.y)
 		end
 	end
 end

@@ -13,8 +13,8 @@ function setup(entity)
 	--trigger
 	entity.speed_boost_timer = 0.0
 	entity.speed_boost_triggerd = false
-	entity.max_speed_boost = game.maxSpeed * 2
-	entity.max_velocity_boost = game.max_velocity * 1.3
+	entity.max_speed_boost = entity.maxSpeed * 2
+	entity.max_velocity_boost = entity.max_velocity * 1.3
 
 
 	entity.ungrounded_time = 0
@@ -308,17 +308,16 @@ function update(delta_seconds, entity)
 	--trigger
 	if entity.triggered >= 4
 	then
-
 		--sticky_platform
 		if entity.triggered_type == 3
 		then
 			
-			if entity.velocity.x >= game.max_velocity and entity.velocity.x > 0 --right
+			if entity.velocity.x >= entity.max_velocity and entity.velocity.x > 0 --right
 			then
 				--entity.velocity.x = 1
 				entity.forces.x = entity.forces.x - (entity.forces.x / 1.5) 
 			
-			elseif entity.velocity.x <= -game.max_velocity and entity.velocity.x < 0 --left
+			elseif entity.velocity.x <= -entity.max_velocity and entity.velocity.x < 0 --left
 			then
 				--entity.velocity.x = -1
 				entity.forces.x = entity.forces.x - (entity.forces.x / 1.5)
@@ -332,43 +331,45 @@ function update(delta_seconds, entity)
 		--end
 
 		--speed_boost
-		if entity.triggered_type == 7 and game.speed_boost_triggerd == false
+		if entity.triggered_type == 7 and entity.speed_boost_triggerd == false
 		then
-			game.speed_boost_triggerd = true
-			game.speed_boost_timer = 0.0
+			entity.speed_boost_triggerd = true
+			entity.speed_boost_timer = 0.0
+
+			print("Sprint_boost")
 		end
 	end
 
-	if	game.speed_boost_triggerd == true and game.speed_boost_timer <= 5.0
+	if	entity.speed_boost_triggerd == true and entity.speed_boost_timer <= 5.0
 	then
-		if entity.velocity.x < game.max_velocity_boost and entity.velocity.x > -game.max_velocity_boost and entities.button.right
+		if entity.velocity.x < entity.max_velocity_boost and entity.velocity.x > -entity.max_velocity_boost and entity.button.right
 		then
 			if entity.velocity.x > 0
 			then
-				entity.forces.x = game.max_speed_boost * 1.2 --right
+				entity.forces.x = entity.max_speed_boost * 1.2 --right
 			else
-				entity.forces.x = game.max_speed_boost * 0.6
+				entity.forces.x = entity.max_speed_boost * 0.6
 			end
 
-		elseif entity.velocity.x > -game.max_velocity_boost and entity.velocity.x < game.max_velocity_boost and entities.button.left
+		elseif entity.velocity.x > -entity.max_velocity_boost and entity.velocity.x < entity.max_velocity_boost and entity.button.left
 		then 
 			if entity.velocity.x < 0
 			then
-				entity.forces.x = -game.max_speed_boost * 1.2 --left
+				entity.forces.x = -entity.max_speed_boost * 1.2 --left
 			else
-				entity.forces.x = -game.max_speed_boost * 0.6
+				entity.forces.x = -entity.max_speed_boost * 0.6
 			end
 
 		end
 	end
 
-	if	game.speed_boost_timer <= 5.0
+	if	entity.speed_boost_timer <= 5.0
 	then
-		game.speed_boost_timer = game.speed_boost_timer + delta_seconds
+		entity.speed_boost_timer = entity.speed_boost_timer + delta_seconds
 
-	elseif	game.speed_boost_timer >= 5.0
+	elseif	entity.speed_boost_timer >= 5.0
 	then
-		game.speed_boost_triggerd = false
+		entity.speed_boost_triggerd = false
 	end
 
 
