@@ -136,7 +136,8 @@ void Renderer::render(
 			build_text.render_text("Press 'Space' to start", 1280.f - 410, 10.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 		}
-		else */if (game_state & state::building)
+		else */
+		if (game_state & state::building)
 		{
 			int max = build_info.size();
 			for (int i = 0; i < max; i++)
@@ -167,7 +168,7 @@ void Renderer::render(
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Press 'Space' to place", 1280.f - 410, 10.f, 0.75f);
+			build_text.render_text("Press 'Space' to place object", 1280.f - 540, 10.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 
 			glDisable(GL_DEPTH_TEST);
