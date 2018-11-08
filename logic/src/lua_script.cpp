@@ -32,6 +32,8 @@ void PlayerScript::update(
 	objects& object, 
 	const input& i, 
 	int index,
+	const int& trigger,
+	const int& type,
 	anim& anim_state)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
@@ -72,6 +74,25 @@ void PlayerScript::update(
 		stack.push("impulse");
 		stack.push(object.impulse);
 		stack.rawset(top);
+		stack.clear();
+	}
+
+	//test for trigger
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		stack.push("triggered");
+		stack.push(trigger);
+		stack.rawset(top);
+		stack.clear();
+	}
+
+	{
+		stack.getglobal(name.c_str()
+		);
+		int top = stack.top();
+		stack.push("triggered_type");
+		stack.push(type);
 		stack.clear();
 	}
 
@@ -215,8 +236,6 @@ void GameScript::setup()
 void GameScript::update(
 	std::chrono::milliseconds delta,
 	const input& i,
-	const trigger_array& triggers,
-	const trigger_type_array& types,
 	objects* players)
 {
 	{
@@ -239,45 +258,15 @@ void GameScript::update(
 		stack.clear();
 	}
 
-	{
-		stack.getglobal("entities");
-		int top = stack.top();
 
-		for (int i = 1; i <= 4; i++)
-		{
-			stack.rawget(top, i);
-			int top_pos = stack.top();
-
-			stack.push("triggered");
-			stack.push(triggers[i - 1]);
-			stack.rawset(top_pos);
-		}
-		stack.clear();
-	}
 
 	//test for triggers
-	{
+/*	{
 		stack.getglobal("entities");
 		int top = stack.top();
 		stack.push("button");
 		stack.push(i);
 		stack.rawset(top);
-		stack.clear();
-	}
-
-	{
-		stack.getglobal("entities");
-		int top = stack.top();
-
-		for (int i = 1; i <= 4; i++)
-		{
-			stack.rawget(top, i);
-			int top_pos = stack.top();
-
-			stack.push("triggered_type");
-			stack.push(types[i - 1]);
-			stack.rawset(top_pos);
-		}
 		stack.clear();
 	}
 
@@ -311,7 +300,7 @@ void GameScript::update(
 			stack.rawset(top_pos);
 		}
 		stack.clear();
-	}
+	}*/
 
 
 	stack.getglobal("update");
@@ -336,7 +325,7 @@ void GameScript::update(
 		stack.clear();
 	}
 
-	{
+	/*{
 		stack.getglobal("entities");
 		int top = stack.top();
 		for (int i = 1; i <= 4; ++i)
@@ -370,7 +359,7 @@ void GameScript::update(
 		}
 
 		stack.clear();
-	}
+	}*/
 
 }
 

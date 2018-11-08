@@ -82,9 +82,12 @@ LuaExport Gameplay::update(Input inputs,
 				inputs.delta,
 				inputs.dynamics[i],
 				inputs.player_inputs[i],
-				i, inputs.anim_states[i]);
+				i,
+				inputs.triggers[i], 
+				inputs.triggers_types[i],
+				inputs.anim_states[i]);
 		}
-		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0]);
+		game_script.update(inputs.delta, inputs.player_inputs[0], &inputs.dynamics[0]);
 
 		time = game_script.get_time();
 

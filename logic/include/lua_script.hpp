@@ -54,6 +54,8 @@ public:
 		objects& object, 
 		const input& i, 
 		int index,
+		const int& trigger,
+		const int& type,
 		anim& anim_state);
 		bool rw[4], lw[4];
 
@@ -75,8 +77,6 @@ public:
 	void update(
 		std::chrono::milliseconds delta,
 		const input& i,
-		const trigger_array& triggers,
-		const trigger_type_array& types,
 		objects* players);
 
 	void update_export();
