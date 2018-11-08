@@ -22,6 +22,7 @@
 #include "death_screen.hpp"
 #include "main_menu_screen.hpp"
 #include "finish_screen.hpp"
+#include "overlays.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -191,6 +192,7 @@ private:
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
 	FinishScreen finish_screen;
+	Overlays overlays;
 	int player_id;
 
 	FX fx_emitter;
