@@ -6,6 +6,7 @@
 #include <vector>
 #include <chrono>
 
+#include <audio.hpp>
 #include <renderer.hpp>
 #include <network.hpp>
 #include <gameplay.hpp>
