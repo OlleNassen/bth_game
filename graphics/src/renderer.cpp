@@ -253,11 +253,11 @@ void Renderer::render(
 
 			if (finish[player_id] && died[player_id])
 			{
-				death_screen.render(death_screen_shader);
+				death_screen.render(overlay_shader);
 			}
 			if (finish[player_id] && !died[player_id])
 			{
-				finish_screen.render(finish_screen_shader, finish);
+				finish_screen.render(overlay_shader, finish);
 			}
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -266,7 +266,7 @@ void Renderer::render(
 	{
 		if (!is_menu)
 		{
-			loading_screen.render(loading_screen_shader);
+			loading_screen.render(overlay_shader);
 		}
 	}
 
@@ -276,7 +276,7 @@ void Renderer::render(
 
 		if (is_menu)
 		{
-			main_menu_screen.render(main_menu_shader);
+			main_menu_screen.render(overlay_shader);
 		}
 
 
