@@ -395,45 +395,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
 
-	//Death screen update
-	if (died[id] && finish[id])
-	{
-		death_screen.timer += delta;
-	}
-	else
-	{
-		death_screen.timer = 0ms;
-	}
-
-	//Loading screen update
-	if (loading_screen.timer > 4000ms)
-	{
-		loading_screen.timer = 0ms;
-	}
-	else
-	{
-		loading_screen.timer += delta;
-	}
-
-	//Main menu update
-	if (main_menu_screen.timer > 1600ms)
-	{
-		main_menu_screen.timer = 0ms;
-	}
-	else
-	{
-		main_menu_screen.timer += delta;
-	}
-
-	//Finish screen update
-	if (finish[id] && !died[id])
-	{
-		finish_screen.timer += delta;
-	}
-	else
-	{
-		finish_screen.timer = 0ms;
-	}
+	
 
 	if (!is_chat_on)
 	{

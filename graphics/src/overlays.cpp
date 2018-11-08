@@ -26,9 +26,88 @@ Overlays::Overlays()
 {
 
 }
-
-void Overlays::render(const Shader & shader)
+void Overlays::update(
+	std::chrono::milliseconds delta,
+	bool died,
+	bool finish)
 {
+	using namespace std::chrono_literals;
+	
+	//Death screen update
+	if (died && finish)
+	{
+		death_timer += delta;
+	}
+	else
+	{
+		death_timer = 0ms;
+	}
+
+	//Loading screen update
+	if (loading_timer > 4000ms)
+	{
+		loading_timer = 0ms;
+	}
+	else
+	{
+		loading_timer += delta;
+	}
+
+	//Main menu update
+	if (main_menu_timer > 1600ms)
+	{
+		main_menu_timer = 0ms;
+	}
+	else
+	{
+		main_menu_timer += delta;
+	}
+
+	//Finish screen update
+	if (finish && !died)
+	{
+		finished_timer += delta;
+	}
+	else
+	{
+		finished_timer = 0ms;
+	}
+}
+
+void Overlays::render(const Shader & shader) const
+{
+	using namespace std::chrono_literals;
+	shader.use();
+	if (death_timer <= 50ms)
+	{
+		shader.uniform("overlay_texture", 0);
+		death_1.bind(0);
+	}
+	else if (death_timer >= 50ms && death_timer <= 100ms)
+	{
+		shader.uniform("overlay_texture", 0);
+		death_2.bind(0);
+	}
+	else if (death_timer >= 100ms && death_timer <= 150ms)
+	{
+		shader.uniform("overlay_texture", 0);
+		death_3.bind(0);
+	}
+	else if (death_timer >= 150ms && death_timer <= 200ms)
+	{
+		shader.uniform("overlay_texture", 0);
+		death_4.bind(0);
+	}
+	else if (death_timer >= 200ms && death_timer <= 250ms)
+	{
+		shader.uniform("overlay_texture", 0);
+		death_5.bind(0);
+	}
+	else if (death_timer >= 250ms)
+	{
+		shader.uniform("overlay_texture", 0);
+		death_6.bind(0);
+	}
 }
 
 }

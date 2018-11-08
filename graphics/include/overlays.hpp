@@ -1,10 +1,13 @@
 #ifndef OVERLAYS_HPP
 #define OVERLAYS_HPP
+
+#include <chrono>
+#include <array>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include "primitives.hpp"
 #include "texture.hpp"
-#include <chrono>
+
 #include "shader.hpp"
 
 namespace graphics
@@ -27,6 +30,22 @@ class Overlays
 public:
 	Overlays();
 
+	void update(
+		std::chrono::milliseconds delta,
+		std::array<bool, 4> died,
+		std::array<bool, 4> finish,
+		std::array<float, 4> scores);
+	void render(const Shader& shader) const;
+
+private:
+	OverlayScreen overlay;
+	
+	std::chrono::milliseconds main_menu_timer{0};
+	std::chrono::milliseconds finished_timer{0};
+	std::chrono::milliseconds waiting_timer{0};
+	std::chrono::milliseconds death_timer{0};
+	std::chrono::milliseconds loading_timer{0};
+	
 	Texture main_menu_1{ "../resources/textures/main_menu_screen/mainmenu_no_battery.png" };
 	Texture main_menu_2{ "../resources/textures/main_menu_screen/mainmenu_low_battery.png" };
 
@@ -51,16 +70,7 @@ public:
 	Texture death_4{"../resources/textures/death_screen/death_4.png"};
 	Texture death_5{"../resources/textures/death_screen/death_5.png"};
 	Texture death_6{"../resources/textures/death_screen/death_6.png"};
-
-	void render(const Shader& shader);
-private:
-	std::chrono::milliseconds main_menu_timer{0};
-	std::chrono::milliseconds finished_timer{0};
-	std::chrono::milliseconds waiting_timer{0};
-	std::chrono::milliseconds death_timer{0};
-
-
-	OverlayScreen overlay;
+	
 };
 
 }
