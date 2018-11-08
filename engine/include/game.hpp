@@ -89,6 +89,9 @@ private:
 
 	int random_picked_object() { return 7;/*placed_objects_array[rand() % 4];*/ };
 	std::array<int, 4> random_indexes();
+
+	//spectator
+	int watching = 0;
 };
 
 

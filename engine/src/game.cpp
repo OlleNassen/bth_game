@@ -139,6 +139,7 @@ void Game::update(std::chrono::milliseconds delta)
 		for (int i = 4; i < dynamics.size(); ++i)
 			dynamics[i].position = glm::vec2(-2000000.f, -2000000.f);
 		give_players_objects = false;
+		watching = net.id();
 	}	
 
 	if (menu.on())
@@ -396,8 +397,6 @@ void Game::update(std::chrono::milliseconds delta)
 				<< lua_data.scores[i] << " | ";
 		}			
 		
-		static int watching = net.id();
-
 		if (lua_data.died[net.id()] || lua_data.finished[net.id()])
 		{
 			//Spectator
