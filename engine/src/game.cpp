@@ -164,6 +164,10 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		game_state = (game_state | state::building);
 	}
+	else if (gameplay.pre_playing_stage())
+	{
+		game_state = (game_state | state::pre_playing);
+	}
 	else
 	{
 		game_state = (game_state | state::playing);

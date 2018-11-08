@@ -22,6 +22,9 @@ void Gameplay::refresh()
 		scripts[entity].setup(entity);
 	}*/
 
+	pre_playing_done = false;
+	pre_starter_time = 3.5f;
+
 	for (auto i = 0; i < 4; ++i)
 	{
 		player_script.setup(i);
@@ -39,6 +42,7 @@ LuaExport Gameplay::update(Input inputs,
 	int& current_state)
 {
 	float time = -1.0f;
+	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(inputs.delta).count();
 	if (current_state & state::building)
 	{
 		players_done = 0;
@@ -73,7 +77,14 @@ LuaExport Gameplay::update(Input inputs,
 				d_id, inputs.anim_states[i]);
 		}		
 	}
+	else if (current_state & state::pre_playing)
+	{
+		pre_starter_time -= dt;
+		time = pre_starter_time;
 
+		if (pre_starter_time <= 0.5)
+			pre_playing_done = true;
+	}
 	else if (current_state & state::playing)
 	{
 		for (int i = 0; i < 4; i++)
@@ -106,6 +117,11 @@ LuaExport Gameplay::update(Input inputs,
 bool Gameplay::build_stage() const
 {
 	return players_done != 4;
+}
+
+bool Gameplay::pre_playing_stage() const
+{
+	return !pre_playing_done;
 }
 
 void Gameplay::give_up(Input input)

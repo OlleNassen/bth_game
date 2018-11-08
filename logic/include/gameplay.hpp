@@ -58,6 +58,7 @@ public:
 	LuaExport update(Input input,
 		int& current_state);
 	bool build_stage() const;
+	bool pre_playing_stage() const;
 private:
 	script_array<int> entities;
 	PlayerScript player_script{"../resources/scripts/player.lua"};
@@ -76,6 +77,8 @@ private:
 	std::vector<int> current_gameboard;
 	int	get_random_object_id(Input input);
 	int players_done = 0;
+	bool pre_playing_done = false;
+	float pre_starter_time = 3.5f;
 };
 
 }

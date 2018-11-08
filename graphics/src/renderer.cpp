@@ -80,6 +80,9 @@ void Renderer::render(
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	if (print_time < 0.0)
+		print_time = 0.0f;
+
 	if (!is_menu && connected)
 	{
 		robot_shader.use();
@@ -178,15 +181,52 @@ void Renderer::render(
 			build_text.render_text("Build Stage", 1280.f - 210, 720.f - 35.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 		}
+		else if (game_state & state::pre_playing)
+		{
+			glDisable(GL_DEPTH_TEST);
+			std::stringstream out_text;
 
-		glDisable(GL_DEPTH_TEST);
-		std::stringstream out_text;
-		out_text << std::fixed << std::setprecision(1) << print_time;
-		text_shader.use();
-		text_shader.uniform("projection", projection);
-		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-		timer_text.render_text(out_text.str(), 10.f, 720.f - 45.f, 1.f);
-		glEnable(GL_DEPTH_TEST);
+			if (print_time <= 1.0f)
+			{
+				print_time = 1.0f;
+			}
+
+			out_text << std::fixed << std::setprecision(0) << print_time;
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+
+			if (print_time > 0.0f)
+			{
+				build_text.render_text(out_text.str(), 1280.f * 0.477f, 720.f * 0.45f, 2.f);
+			}
+
+			glEnable(GL_DEPTH_TEST);
+		}
+		else if (game_state & state::playing)
+		{
+			if (print_time <= 90.f && print_time >= 89.f)
+			{
+				glDisable(GL_DEPTH_TEST);
+				text_shader.use();
+				text_shader.uniform("projection", projection);
+				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+				build_text.render_text("GO", 1280.f * 0.455f, 720.f * 0.45f, 2.f);
+				glEnable(GL_DEPTH_TEST);
+			}
+		}
+
+		if (!(game_state & state::pre_playing))
+		{
+			glDisable(GL_DEPTH_TEST);
+			std::stringstream out_text;
+			out_text << std::fixed << std::setprecision(1) << print_time;
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			timer_text.render_text(out_text.str(), 10.f, 720.f - 45.f, 1.f);
+			glEnable(GL_DEPTH_TEST);
+		}
 	}
 	else if (!is_menu)
 	{
