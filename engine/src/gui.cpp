@@ -186,7 +186,8 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 		}
 		else if (current_buttons == &buttons[2] && index == 10)
 		{
-
+			//fullscreen
+			std::cout << "fullscreen" << "\n";
 		}
 		else if (current_buttons == &buttons[2] && index == 6)
 		{

@@ -49,6 +49,14 @@ const GraphicsSettings & Settings::get_graphics_settings() const
 	return graphics;
 }
 
+void Settings::set_fullscreen()
+{
+	lua_getglobal(importer, "settings");
+	lua_pushboolean(importer, true);
+	lua_setfield(importer, -1, "fullscreen");
+	lua_pop(importer, 1);
+}
+
 void Settings::create()
 {
 	std::ofstream out("../resources/scripts/setup/settings.lua");
