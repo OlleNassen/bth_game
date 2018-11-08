@@ -375,7 +375,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
 	float print_time,
-	float goal_height)
+	float goal_height,
+	int spectator_id)
 {
 	first_model = 9;
 	last_model = 9;
@@ -391,11 +392,16 @@ void Renderer::update(std::chrono::milliseconds delta,
 			bottom = scene->v[id].y - culling_distance;
 			top = scene->v[id].y + culling_distance;
 		}
-		else
+		else if (!died[id] && !finish[id])
 		{
 			bottom = scene->moving_models[id].get_y_position() - culling_distance;
 			top = scene->moving_models[id].get_y_position() + culling_distance;
-		}		
+		}
+		else
+		{
+			bottom = scene->moving_models[spectator_id].get_y_position() - culling_distance;
+			top = scene->moving_models[spectator_id].get_y_position() + culling_distance;
+		}
 		
 		if (bottom < scene->models[i].get_y_position() && !first_model)
 		{
@@ -501,7 +507,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 		ui.enable_chat();
 	}
 
-	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
+	if (!died[id] && !finish[id])
+		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
+	else
+		game_camera.update(delta, &scene->v[spectator_id], &scene->v[spectator_id + 1]);
+	
 	ui.update(scene->moving_models, 
 		player_count, 
 		game_camera.position, 

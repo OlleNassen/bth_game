@@ -396,6 +396,41 @@ void Game::update(std::chrono::milliseconds delta)
 				<< lua_data.scores[i] << " | ";
 		}			
 		
+		static int watching = net.id();
+
+		if (lua_data.died[net.id()] || lua_data.finished[net.id()])
+		{
+			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
+			{
+				watching = (watching + 1) % 4;
+
+				if (waiting == net.id())
+				{
+					watching = (watching + 1) % 4;
+				}
+
+				if (lua_data.died[watching] || lua_data.finished[watching])
+				{
+					watching = (watching + 1) % 4;
+				}
+			}
+
+			if ((*local_input)[logic::button::left] == logic::button_state::pressed)
+			{
+				watching = (watching - 1) % 4;
+
+				if (waiting == net.id())
+				{
+					watching = (watching - 1) % 4;
+				}
+
+				if (lua_data.died[watching] || lua_data.finished[watching])
+				{
+					watching = (watching - 1) % 4;
+				}
+			}
+		}
+
 		string temp = stream.str();
 		renderer.update(delta,
 			obj,
@@ -403,7 +438,8 @@ void Game::update(std::chrono::milliseconds delta)
 			directions,
 			chat[1], player_count,
 			net.id(), game_state, temp, lua_data.died, 
-			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height);
+			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height,
+			watching);
 	}
 }
 
