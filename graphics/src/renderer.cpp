@@ -138,6 +138,7 @@ void Renderer::render(
 		}
 		else */if (game_state & state::building)
 		{
+
 			int max = build_info.size();
 			for (int i = 0; i < max; i++)
 			{
@@ -248,6 +249,15 @@ void Renderer::render(
 
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
+
+
+
+			// RENDER BUILD-STAGE
+			//if (!build_stage_screen.transparency < 0.05)
+			
+			build_stage_screen.render(build_stage_screen_shader);
+
+
 
 			glDisable(GL_DEPTH_TEST);
 
@@ -377,6 +387,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (game_state & state::building)
 	{
 		post_processing_effects.glow_value = 0.0f;
+		build_stage_screen.transparency -= 0.05f;
 	}
 	else if (game_state & state::playing && print_time <= 15.0f)
 	{

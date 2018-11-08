@@ -57,5 +57,9 @@
     <None Include="shaders\finish_screen.vs" />
     <None Include="shaders\fx_fire.fs" />
     <None Include="shaders\fx_fire.vs" />
+    <None Include="shaders\overlay.fs" />
+    <None Include="shaders\overlay.vs" />
+    <None Include="build_stage.vs" />
+    <None Include="build_stage.fs" />
   </ItemGroup>
 </Project>
