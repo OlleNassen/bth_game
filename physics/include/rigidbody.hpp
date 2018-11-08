@@ -22,7 +22,7 @@ public:
 	float mass = 100.0f;
 	float inverse_mass = 1.0f / mass;
 	float restitution = 0.4f;
-	float friction = 0.95f;
+	float friction = 0.98f;
 
 	int trigger_type = -1;
 

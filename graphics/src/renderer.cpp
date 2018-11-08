@@ -136,7 +136,8 @@ void Renderer::render(
 			build_text.render_text("Press 'Space' to start", 1280.f - 410, 10.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 		}
-		else */if (game_state & state::building)
+		else */
+		if (game_state & state::building)
 		{
 			int max = build_info.size();
 			for (int i = 0; i < max; i++)
@@ -167,7 +168,7 @@ void Renderer::render(
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Press 'Space' to place", 1280.f - 410, 10.f, 0.75f);
+			build_text.render_text("Press 'Space' to place object", 1280.f - 540, 10.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 
 			glDisable(GL_DEPTH_TEST);
@@ -253,11 +254,11 @@ void Renderer::render(
 
 			if (finish[player_id] && died[player_id])
 			{
-				death_screen.render(death_screen_shader);
+				death_screen.render(overlay_shader);
 			}
 			if (finish[player_id] && !died[player_id])
 			{
-				finish_screen.render(finish_screen_shader, finish);
+				finish_screen.render(overlay_shader, finish);
 			}
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -266,7 +267,7 @@ void Renderer::render(
 	{
 		if (!is_menu)
 		{
-			loading_screen.render(loading_screen_shader);
+			loading_screen.render(overlay_shader);
 		}
 	}
 
@@ -276,7 +277,7 @@ void Renderer::render(
 
 		if (is_menu)
 		{
-			main_menu_screen.render(main_menu_shader);
+			main_menu_screen.render(overlay_shader);
 		}
 
 
