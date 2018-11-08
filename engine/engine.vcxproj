@@ -145,7 +145,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)external/lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;glu32.lib;glfw3dll.lib;opengl32.lib;winmm.lib;ws2_32.lib;enet.lib;freetype.lib;lua51.lib;LeapImporter.lib;network.lib;graphics.lib;logic.lib;physics.lib;sound.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glu32.lib;glfw3dll.lib;opengl32.lib;winmm.lib;ws2_32.lib;enet.lib;freetype.lib;lua51.lib;LeapImporter.lib;network.lib;graphics.lib;logic.lib;physics.lib;sound.lib;OpenAL32.lib;libFLAC_static.lib;libFLAC++_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>

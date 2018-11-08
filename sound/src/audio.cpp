@@ -1,10 +1,11 @@
 #include "audio.hpp"
 
-#define STB_VORBIS_HEADER_ONLY
-#include <stb_vorbis.h>
-
 Audio::Audio()
 {
+	std::ifstream in{"../resources/sounds/test.ogg"};
+
+	
+	
 	device = alcOpenDevice(nullptr);
 
 	if (device)
@@ -24,7 +25,6 @@ Audio::Audio()
 	stb_vorbis_info stream_info = stb_vorbis_get_info(stream);
 	stb_vorbis_stream_length_in_samples*/
 
-	stb_vorbis_decode_filename("../resources/sounds/test.ogg", &channels, &sample_rate, &output);
 	alBufferData(buffer, AL_FORMAT_MONO16, output, 4096, sample_rate);
 
 	alSourcePlay(buffer);
