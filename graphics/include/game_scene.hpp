@@ -51,6 +51,7 @@ public:
 
 	void inititate_object(CustomLevel& objects, MeshLib* object_lib);
 	int add_object(collision_data& physics_data, int id);
+	void clear_object();
 	void rotate_object(int model_id);
 };
 

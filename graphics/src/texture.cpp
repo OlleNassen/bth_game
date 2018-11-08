@@ -28,7 +28,7 @@ void Texture::load_texture(const std::string & path)
 	else
 	{
 		data = stbi_load("../resources/textures/black_pixel.png", &width, &height, &num_components, 4);
-
+	
 	}
 
 	glGenTextures(1, &texture_id);

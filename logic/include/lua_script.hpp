@@ -28,6 +28,8 @@ public:
 	std::array<bool, 4> died;
 	std::array<bool, 4> finished;
 	bool game_over;
+	float time;
+	float goal_height;
 };
 
 class objects
@@ -58,6 +60,7 @@ public:
 	bool build_stage_done(int index);
 	bool build_stage_force_done(int index);
 	void set_build_stage_done(int index, bool state);
+	float get_time(int index);
 
 private:
 	LuaStack stack;
@@ -77,6 +80,7 @@ public:
 		objects* players);
 
 	void update_export();
+	float get_time();
 	LuaExport data;
 private:
 	LuaStack stack;

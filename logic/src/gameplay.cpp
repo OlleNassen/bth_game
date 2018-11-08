@@ -38,13 +38,14 @@ void Gameplay::refresh()
 LuaExport Gameplay::update(Input inputs,
 	int& current_state)
 {
-
+	float time = -1.0f;
 	if (current_state & state::building)
 	{
 		players_done = 0;
 		for (int i = 0; i < 4; i++)
 		{
 			int d_id = inputs.players_placed_objects_id[i].dynamics_id;
+			time = placement_script.get_time(d_id);
 
 			if (placement_script.build_stage_force_done(d_id))
 			{
@@ -71,7 +72,6 @@ LuaExport Gameplay::update(Input inputs,
 				inputs.player_inputs[i],
 				d_id, inputs.anim_states[i]);
 		}		
-		
 	}
 
 	else if (current_state & state::playing)
@@ -83,13 +83,10 @@ LuaExport Gameplay::update(Input inputs,
 				inputs.dynamics[i],
 				inputs.player_inputs[i],
 				i, inputs.anim_states[i]);
-			if (i == 0)
-			{
-				//std::cout << "X:" << inputs.dynamics[i].velocity.x << " Y:" << inputs.dynamics[i].velocity.y << std::endl; // test triggers
-				//std::cout << "X:" << inputs.dynamics[i].forces.x << " Y:" << inputs.dynamics[i].forces.y << std::endl;
-			}
 		}
 		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0]);
+
+		time = game_script.get_time();
 
 		//std::cout << "			X2:" << inputs.dynamics[0].velocity.x << " Y2:" << inputs.dynamics[0].velocity.y << std::endl; // test triggers
 		//std::cout << "			X2:" << inputs.dynamics[0].forces.x << " Y2:" << inputs.dynamics[0].forces.y << std::endl;
@@ -100,6 +97,8 @@ LuaExport Gameplay::update(Input inputs,
 	give_up(inputs);
 	
 	game_script.update_export();
+
+	game_script.data.time = time;
 
 	return game_script.data;
 }

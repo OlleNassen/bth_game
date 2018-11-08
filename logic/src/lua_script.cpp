@@ -165,6 +165,19 @@ void PlayerScript::set_build_stage_done(int index, bool state)
 	stack.clear();
 }
 
+float PlayerScript::get_time(int index)
+{
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	stack.getfield(-1, "time");
+
+	float temp = stack.tonumber(-1);
+
+	stack.clear();
+
+	return temp;
+}
+
 GameScript::GameScript()
 	: stack{ "../resources/scripts/gameloop.lua" }
 {
@@ -383,13 +396,35 @@ void GameScript::update_export()
 		stack.getfield(top, "finished");
 		stack.rawget(-1, i);
 		data.finished[i - 1] = stack.toboolean(-1);
+
+		//std::cout<< data.died[i - 1] << '\n';
+		//std::cout << data.finished[i - 1] << '\n';
+
 	}
 
 	stack.getfield(top, "winner");
 	data.game_over = stack.toboolean(-1);
+
+	stack.getfield(top, "goal");
+	data.goal_height = stack.tonumber(-1);
+
 	stack.clear();
 
 
 }
 
+float GameScript::get_time()
+{
+	std::string name{ "game" };
+	stack.getglobal(name.c_str());
+	stack.getfield(-1, "time");
+
+	float temp = stack.tonumber(-1);
+
+	stack.clear();
+
+	return temp;
 }
+
+}
+

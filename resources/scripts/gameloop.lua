@@ -17,14 +17,18 @@ function setup(game)
 	game.max_velocity = 16
 	game.max_velocity_boost = game.max_velocity * 1.3
 
+	game.time = 0.0
 end
+
+max_time = 90.0
 
 function update(delta_seconds, game, entities)
 
 	game.clock = game.clock + delta_seconds
+	game.time = max_time - game.clock
 
 	--should be as long as a play time
-	if game.clock > 180.0 -- Deal out points and reset if timer is too high
+	if game.clock > max_time -- Deal out points and reset if timer is too high
 	then
 		while game.points > 0
 		do
@@ -109,6 +113,7 @@ function update(delta_seconds, game, entities)
 			if entities[i].triggered_type == 0
 			then
 				game.finished[i] = true
+				game.died[i] = true
 				entities[i].position.y = -2000
 				entities[i].position.x = -2000
 

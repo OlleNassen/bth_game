@@ -32,8 +32,10 @@ public:
 	void set_position(glm::vec2 position);
 	void rotate(float degree);
 	glm::vec3 get_position()const;
+	glm::vec3 get_color()const;
 	void rotate(const glm::vec3 axis, float angle);	
 	float get_y_position() const;
+	glm::vec3 emissive_color;
 
 	void render(const Shader & shader, const Camera& camera, const std::array<PointLight, 14>& lights)const;
 	void update_animation(float time, anim& play_anim);
@@ -42,7 +44,6 @@ private:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
 	Animation_handler animation_handler;
 	glm::mat4 model;
-	glm::vec3 emissive_color;
 	glm::vec3 light_pos{ 0, 3, 1 };
 };
 

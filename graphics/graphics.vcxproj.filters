@@ -81,6 +81,9 @@
     <ClCompile Include="src\finish_screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\player_arrows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\shader.hpp">
@@ -159,6 +162,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\finish_screen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\player_arrows.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
