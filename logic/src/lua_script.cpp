@@ -165,6 +165,19 @@ void PlayerScript::set_build_stage_done(int index, bool state)
 	stack.clear();
 }
 
+float PlayerScript::get_time(int index)
+{
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	stack.getfield(-1, "time");
+
+	float temp = stack.tonumber(-1);
+
+	stack.clear();
+
+	return temp;
+}
+
 GameScript::GameScript()
 	: stack{ "../resources/scripts/gameloop.lua" }
 {
@@ -201,10 +214,11 @@ void GameScript::setup()
 
 void GameScript::update(
 	std::chrono::milliseconds delta,
+	const input& i,
 	const trigger_array& triggers,
+	const trigger_type_array& types,
 	objects* players)
 {
-
 	{
 		stack.getglobal("game");
 		stack.clear();
@@ -241,6 +255,65 @@ void GameScript::update(
 		stack.clear();
 	}
 
+	//test for triggers
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		stack.push("button");
+		stack.push(i);
+		stack.rawset(top);
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("triggered_type");
+			stack.push(types[i - 1]);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("velocity");
+			stack.push(players[i - 1].velocity);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("forces");
+			stack.push(players[i - 1].forces);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
+
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);
 	stack.getglobal("game");
@@ -262,6 +335,43 @@ void GameScript::update(
 
 		stack.clear();
 	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; ++i)
+		{
+			stack.rawget(top, i);
+			stack.getfield(-1, "velocity");
+			stack.getfield(-1, "x");
+			stack.getfield(-2, "y");
+			players[i - 1].velocity.x = stack.tonumber(-2);
+			players[i - 1].velocity.y = stack.tonumber(-1);
+
+
+		}
+
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; ++i)
+		{
+			stack.rawget(top, i);
+			stack.getfield(-1, "forces");
+			stack.getfield(-1, "x");
+			stack.getfield(-2, "y");
+			players[i - 1].forces.x = stack.tonumber(-2);
+			players[i - 1].forces.y = stack.tonumber(-1);
+
+
+		}
+
+		stack.clear();
+	}
+
 }
 
 void GameScript::update_export()
@@ -286,13 +396,35 @@ void GameScript::update_export()
 		stack.getfield(top, "finished");
 		stack.rawget(-1, i);
 		data.finished[i - 1] = stack.toboolean(-1);
+
+		//std::cout<< data.died[i - 1] << '\n';
+		//std::cout << data.finished[i - 1] << '\n';
+
 	}
 
 	stack.getfield(top, "winner");
 	data.game_over = stack.toboolean(-1);
+
+	stack.getfield(top, "goal");
+	data.goal_height = stack.tonumber(-1);
+
 	stack.clear();
 
 
 }
 
+float GameScript::get_time()
+{
+	std::string name{ "game" };
+	stack.getglobal(name.c_str());
+	stack.getfield(-1, "time");
+
+	float temp = stack.tonumber(-1);
+
+	stack.clear();
+
+	return temp;
 }
+
+}
+

@@ -4,7 +4,7 @@ namespace physics
 {
 
 int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
-	float width, float height, glm::vec2 start_force)
+	float width, float height, glm::vec2 start_force, int trigger_type)
 {
 	colliders1.reserve(100);
 	colliders2.reserve(100);
@@ -21,13 +21,16 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	body.forces = glm::vec3{0.0f};
 	body.mass = 100.0f;
 	body.inverse_mass = 1.0f / body.mass;
+
+	body.trigger_type = trigger_type; // test triggers
+
 	bodies.push_back(body);
 	
 	dynamic_positions.push_back(start_position);
 	dynamic_rigidbodies.push_back(start_force);
 	dynamic_box_colliders.push_back(Box(width, height, offset, false));
 
-	return dynamic_positions.size() - 1;
+	return dynamic_rigidbodies.size() - 1;
 }
 
 int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger)
@@ -55,6 +58,7 @@ void World::update(
 	std::chrono::milliseconds delta,
 	objects_array& dynamics,
 	trigger_array& triggers,
+	trigger_type_array& triggers_types,
 	std::array<anim, 4>& anim_states)
 {
 	std::chrono::duration<float> delta_seconds = delta;	
@@ -93,6 +97,8 @@ void World::update(
 	for (auto& t : triggers)
 		t = 0;
 
+	for (auto& t : triggers_types) //test for triggers
+		t = 0;
 
 	for (auto i = 0u; i < bodies.size(); ++i)
 	{
@@ -103,6 +109,7 @@ void World::update(
 			if (&left != &right && obb_obb(left.box, right.box))
 			{
 				triggers[i] = j;
+				triggers_types[i] = bodies[j].trigger_type; //test for triggers;
 			}
 		}
 	}
@@ -437,6 +444,14 @@ void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int s
 				(-dynamic_box_colliders[dynamic_index].get_offset().y) + (dynamic_box_colliders[dynamic_index].get_height() / 2); //Moving the player to the floor of the static object
 			dynamic_rigidbodies[dynamic_index].cancel_force_y();
 		}
+	}
+}
+
+void World::clear_object()
+{
+	while (dynamic_rigidbodies.size() > 4)
+	{
+		dynamic_rigidbodies.pop_back();
 	}
 }
 

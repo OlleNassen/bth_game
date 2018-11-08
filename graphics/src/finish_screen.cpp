@@ -23,13 +23,13 @@ namespace graphics
 		glEnableVertexAttribArray(0);
 	}
 
-	void graphics::FinishScreen::render(const Shader& finish_screen_shader, int finished) const
+	void graphics::FinishScreen::render(const Shader& finish_screen_shader, std::array<bool, 4> finish) const
 	{
 		using namespace std::chrono_literals;
 		finish_screen_shader.use();
 		finish_screen_shader.uniform("finish_texture", 0);
 
-		if (finished == 0)
+		if (finish[0])
 		{
 			if (timer <= 1500ms)
 			{
@@ -44,7 +44,7 @@ namespace graphics
 				this->finish_1_2.bind(0);
 			}
 		}
-		else if (finished == 1)
+		else if (finish[1])
 		{
 			if (timer <= 1500ms)
 			{
@@ -59,7 +59,7 @@ namespace graphics
 				this->finish_2_2.bind(0);
 			}
 		}
-		else if (finished == 2)
+		else if (finish[2])
 		{
 			if (timer <= 1500ms)
 			{
@@ -74,7 +74,7 @@ namespace graphics
 				this->finish_3_2.bind(0);
 			}
 		}
-		else if (finished == 3)
+		else if (finish[3])
 		{
 			if (timer <= 1500ms)
 			{

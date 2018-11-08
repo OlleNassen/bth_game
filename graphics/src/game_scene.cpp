@@ -111,10 +111,17 @@ void GameScene::inititate_object(CustomLevel& objects, MeshLib* object_lib)
 int GameScene::add_object(collision_data& physics_data, int id)
 {
 	physics_data = objects[id].data;
-
-	moving_models.emplace_back(objects[id].model);
+	moving_models.push_back(objects[id].model);
 
 	return moving_models.size() - 1;
+}
+
+void GameScene::clear_object()
+{
+	while (moving_models.size() > 4)
+	{
+		moving_models.pop_back();
+	}
 }
 
 void GameScene::rotate_object(int model_id)

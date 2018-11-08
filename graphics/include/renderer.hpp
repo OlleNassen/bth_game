@@ -64,7 +64,8 @@ public:
 		bool game_over, 
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
-		std::array<float, 4> scores) const;
+		std::array<float, 4> scores,
+		float print_time) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -77,7 +78,9 @@ public:
 		std::string scoreboard, 
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
-		std::array<float, 4> scores);
+		std::array<float, 4> scores,
+		float print_time,
+		float goal_height);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -208,6 +211,11 @@ private:
 	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
 	Leaderboard leaderboard;
 	
+	//Timer text
+	Text timer_text;
+
+	//Build instructions
+	Text build_text;
 };
 
 
