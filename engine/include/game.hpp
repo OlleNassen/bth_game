@@ -61,6 +61,10 @@ private:
 	physics::trigger_array triggers;
 	physics::objects_array dynamics;
 	physics::World physics;	
+
+	Audio a;
+
+
 	std::chrono::milliseconds timestep{16};
 
 	gui::Chat chat;

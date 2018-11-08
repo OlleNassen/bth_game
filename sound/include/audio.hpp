@@ -8,12 +8,12 @@ class Audio
 {
 public:
 	Audio();
-	~Audio();
 
 private:
 	ALCdevice* device;
 	ALCcontext* context;
 
+	ALuint buffer;
 
 };
 
