@@ -86,6 +86,29 @@ private:
 	LuaStack stack;
 };
 
+class PlacingScript
+{
+public:
+	PlacingScript(const std::string& path);
+
+	void setup(int entity);
+	void update(
+		std::chrono::milliseconds delta,
+		objects& object,
+		const input& i,
+		int index,
+		anim& anim_state);
+	bool rw[4], lw[4];
+
+	bool build_stage_done(int index);
+	bool build_stage_force_done(int index);
+	void set_build_stage_done(int index, bool state);
+	float get_time(int index);
+
+private:
+	LuaStack stack;
+};
+
 }
 
 #endif
