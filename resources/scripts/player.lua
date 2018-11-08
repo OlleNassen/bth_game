@@ -193,9 +193,6 @@ function update(delta_seconds, entity)
 			entity.ungrounded_time = entity.ungrounded_time + delta_seconds
 			entity.can_jump = true
 	end]]--
-	
-
-
 
 
 
@@ -286,7 +283,7 @@ function update(delta_seconds, entity)
 		end
 	end
 	
-	--if entity.anim.current == entity.anim.jump_from_wall
+	--[[if entity.anim.current == entity.anim.jump_from_wall
 	--then
 	--	if 
 	--	then
@@ -299,7 +296,7 @@ function update(delta_seconds, entity)
 	--entity.size.x = 2045
 	--entity.impulse.y =  50
 
-	--entity.velocity.y = delta_seconds * 100 * entity.direction.z
+	]]--entity.velocity.y = delta_seconds * 100 * entity.direction.z
 
 
 
