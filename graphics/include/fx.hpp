@@ -7,10 +7,8 @@
 #include "camera.hpp"
 #include "shader.hpp"
 #include <chrono>
-#define MAX_PARTICLES 10000
-#define MAX_DUST_PARTICLES 200
-#define MAX_STEAM_PARTICLES 100
-#define DF 3.0f
+
+#define MAX_PARTICLES 1000
 
 namespace graphics
 {
