@@ -6,7 +6,7 @@ namespace graphics
 Minimap::Minimap()
 {
 	map_elements.fill({ {0.9f, 0.0f}, {0.0, 0.0, 1.0}, { 0.03f, 0.03f } });
-	map_elements.front() = { { 0.9f, -0.4f }, {1.0, 1.0, 1.0}, { 0.01f, 1.0f } };
+	map_elements.front() = { { 0.9f, -0.4f }, {0.7f, 0.7f, 0.7f}, { 0.01f, 1.0f } };
 
 	glBindVertexArray(vao_id);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
@@ -17,15 +17,13 @@ Minimap::Minimap()
 	
 }
 
-void Minimap::update(const std::vector<Model>& models, int players)
+void Minimap::update(const std::vector<Model>& models, int players, float goal_height)
 {
 	player_count = players;
 	for (auto i = 1u; i <= player_count; i++)
 	{
-		this->map_elements[i].position.y = models[i - 1].get_y_position() / 171 - 0.9;
+		this->map_elements[i].position.y = models[i - 1].get_y_position()/goal_height -0.9;
 		this->map_elements[i].color = models[i - 1].emissive_color;
-		
-
 	}
 }
 

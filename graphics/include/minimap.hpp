@@ -22,7 +22,7 @@ public:
 		glm::vec2 scale;
 	};
 
-	void update(const std::vector<Model>& models, int players);
+	void update(const std::vector<Model>& models, int players, float goal_height);
 	void render(const Shader& shader) const;
 	std::array<GuiElement, 10> map_elements;
 	

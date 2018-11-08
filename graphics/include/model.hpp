@@ -32,6 +32,7 @@ public:
 	void set_position(glm::vec2 position);
 	void rotate(float degree);
 	glm::vec3 get_position()const;
+	glm::vec3 get_color()const;
 	void rotate(const glm::vec3 axis, float angle);	
 	float get_y_position() const;
 	glm::vec3 emissive_color;

@@ -15,7 +15,7 @@ function setup(game)
 	game.max_speed = 8700
 	game.max_speed_boost = game.max_speed * 1.6
 	game.max_velocity = 16
-	game.max_velocity_boost = game.max_velocity * 1.6
+	game.max_velocity_boost = game.max_velocity * 1.3
 
 	game.time = 0.0
 end
@@ -105,15 +105,6 @@ function update(delta_seconds, game, entities)
 		--Check if players dead
 	for i = 1, 4, 1
 	do
-		--if entities[i].triggered >= 4 and not game.finished[i]
-		--then
-		--	game.points = game.points - 1
-		--
-		--	game.finished[i] = true
-		--	game.died[i] = true
-		--	entities[i].position.x = -2000
-		--	entities[i].position.y = -2000
-		--end
 
 		if entities[i].triggered >= 4 and not game.finished[i]
 		then
@@ -135,12 +126,12 @@ function update(delta_seconds, game, entities)
 			if entities[i].triggered_type == 3
 			then
 				
-				if entities[i].velocity.x >= 7.5
+				if entities[i].velocity.x >= game.max_velocity
 				then
 					--entities[i].velocity.x = 1
 					entities[i].forces.x = entities[i].forces.x - (entities[i].forces.x / 1.5)
 				
-				elseif entities[i].velocity.x <= -7.5
+				elseif entities[i].velocity.x <= -game.max_velocity
 				then
 					--entities[i].velocity.x = -1
 					entities[i].forces.x = entities[i].forces.x - (entities[i].forces.x / 1.5)
@@ -166,13 +157,23 @@ function update(delta_seconds, game, entities)
 
 		if	game.speed_boost_triggerd[i] == true and game.speed_boost_timer[i] <= 5.0
 		then
-			if entities[i].velocity.x < game.max_velocity_boost and entities[i].velocity.x > 0 and entities.button.right
+			if entities[i].velocity.x < game.max_velocity_boost and entities[i].velocity.x > -game.max_velocity_boost and entities.button.right
 			then
-				entities[i].forces.x = game.max_speed_boost --right
+				if entities[i].velocity.x > 0
+				then
+					entities[i].forces.x = game.max_speed_boost * 1--right
+				else
+					entities[i].forces.x = game.max_speed_boost * 0.6
+				end
 
-			elseif entities[i].velocity.x > -game.max_velocity_boost and entities[i].velocity.x < 0 and entities.button.left
+			elseif entities[i].velocity.x > -game.max_velocity_boost and entities[i].velocity.x < game.max_velocity_boost and entities.button.left
 			then 
-				entities[i].forces.x = -game.max_speed_boost --left
+				if entities[i].velocity.x < 0
+				then
+					entities[i].forces.x = -game.max_speed_boost * 1--left
+				else
+					entities[i].forces.x = -game.max_speed_boost * 0.6
+				end
 
 			end
 			--elseif entities[i].velocity.x >= (game.max_velocity_boost)

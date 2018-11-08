@@ -79,7 +79,8 @@ public:
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
-		float print_time);
+		float print_time,
+		float goal_height);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
