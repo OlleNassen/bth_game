@@ -6,7 +6,7 @@ namespace graphics
 		:build_1("../resources/textures/build_stage_screen/build_stage_2.png")
 
 	{
-		this->transparency = 1.0f;
+		this->transparency = 0.8f;
 		glGenVertexArrays(1, &vao_id);
 		glBindVertexArray(vao_id);
 		glGenBuffers(1, &vbo_id);

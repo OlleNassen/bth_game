@@ -395,9 +395,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 		if (!is_menu)
 		{
 			build_stage_screen.timer += delta;
-			if (build_stage_screen.timer > 4000ms)
+			if (build_stage_screen.timer > 2500ms)
 			{
-				build_stage_screen.transparency -= 0.015f;
+				build_stage_screen.transparency -= 0.03f;
 			}
 		}
 	}

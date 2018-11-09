@@ -10,16 +10,12 @@ void main()
 {
 
 	vec4 loading_screen_texture = texture(overlay_texture, tex_coords);
-	//vec4 final_texture = vec4(loading_screen_texture.rgb, transparency);
+	vec4 final_texture = vec4(loading_screen_texture.rgb, transparency);
 	
 	frag_color = vec4(loading_screen_texture);
-	
-	if (frag_color.w < 0.01f)
+	if (frag_color.w < 0.3f)
 	{
 	discard;
-		else
-		{
-			frag_color = frag_color.w * transparency;
-		}
 	}
+	frag_color = vec4(frag_color.rgb, transparency);
 }
