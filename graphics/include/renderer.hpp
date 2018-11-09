@@ -22,6 +22,7 @@
 #include "death_screen.hpp"
 #include "main_menu_screen.hpp"
 #include "finish_screen.hpp"
+#include "build_stage_screen.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -69,6 +70,8 @@ public:
 		float print_time,
 		int player_id) const;
 
+	void render();
+
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
 		const glm::vec2& cursor,
@@ -100,6 +103,18 @@ public:
 		glDrawArrays(GL_POINTS, 0, lines.size());
 		glBindVertexArray(0);
 	}
+
+	void z_prepass(
+		const std::string* begin,
+		const std::string* end,
+		const std::array<std::string, 12>& buttons,
+		const std::vector<glm::vec3>& debug_positions,
+		const std::vector<build_information>& build_infos,
+		bool game_over,
+		std::array<bool, 4> died,
+		std::array<bool, 4> finish,
+		std::array<float, 4> scores,
+		float print_time) const;
 
 private:
 	Shader pbr{ 
@@ -150,21 +165,15 @@ private:
 	Shader minimap_shader{ 
 		"../resources/shaders/minimap.vs",
 		"../resources/shaders/minimap.fs" };
-	Shader loading_screen_shader{
-		"../resources/shaders/loading_screen.vs",
-		"../resources/shaders/loading_screen.fs" };
-	Shader death_screen_shader{
-		"../resources/shaders/death_screen.vs",
-		"../resources/shaders/death_screen.fs" };
-	Shader finish_screen_shader{
-		"../resources/shaders/finish_screen.vs",
-		"../resources/shaders/finish_screen.fs" };
-	Shader main_menu_shader{
-		"../resources/shaders/main_menu_screen.vs",
-		"../resources/shaders/main_menu_screen.fs" };
+	Shader overlay_shader{
+		"../resources/shaders/overlay.vs",
+		"../resources/shaders/overlay.fs" };
 	Shader robot_shader{
 		"../resources/shaders/robots.vs",
 		"../resources/shaders/robots.fs" };
+	Shader build_stage_screen_shader{
+		"../resources/shaders/build_stage.vs",
+		"../resources/shaders/build_stage.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -205,6 +214,7 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
+	BuildStageScreen build_stage_screen;
 	FinishScreen finish_screen;
 	int player_id;
 

@@ -32,6 +32,8 @@ void PlayerScript::update(
 	objects& object, 
 	const input& i, 
 	int index,
+	const int& trigger,
+	const int& type,
 	anim& anim_state)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
@@ -71,6 +73,25 @@ void PlayerScript::update(
 		stack.rawset(top);
 		stack.push("impulse");
 		stack.push(object.impulse);
+		stack.rawset(top);
+		stack.clear();
+	}
+
+	//test for trigger
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		stack.push("triggered");
+		stack.push(trigger);
+		stack.rawset(top);
+		stack.clear();
+	}
+
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		stack.push("triggered_type");
+		stack.push(type);
 		stack.rawset(top);
 		stack.clear();
 	}
@@ -255,16 +276,6 @@ void GameScript::update(
 		stack.clear();
 	}
 
-	//test for triggers
-	{
-		stack.getglobal("entities");
-		int top = stack.top();
-		stack.push("button");
-		stack.push(i);
-		stack.rawset(top);
-		stack.clear();
-	}
-
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
@@ -290,8 +301,8 @@ void GameScript::update(
 			stack.rawget(top, i);
 			int top_pos = stack.top();
 
-			stack.push("velocity");
-			stack.push(players[i - 1].velocity);
+			stack.push("impulse");
+			stack.push(players[i - 1].impulse);
 			stack.rawset(top_pos);
 		}
 		stack.clear();
@@ -306,8 +317,8 @@ void GameScript::update(
 			stack.rawget(top, i);
 			int top_pos = stack.top();
 
-			stack.push("forces");
-			stack.push(players[i - 1].forces);
+			stack.push("velocity");
+			stack.push(players[i - 1].velocity);
 			stack.rawset(top_pos);
 		}
 		stack.clear();
@@ -342,6 +353,22 @@ void GameScript::update(
 		for (int i = 1; i <= 4; ++i)
 		{
 			stack.rawget(top, i);
+			stack.getfield(-1, "impulse");
+			stack.getfield(-1, "x");
+			stack.getfield(-2, "y");
+			players[i - 1].impulse.x = stack.tonumber(-2);
+			players[i - 1].impulse.y = stack.tonumber(-1);
+		}
+
+		stack.clear();
+	}
+
+	/*{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; ++i)
+		{
+			stack.rawget(top, i);
 			stack.getfield(-1, "velocity");
 			stack.getfield(-1, "x");
 			stack.getfield(-2, "y");
@@ -370,7 +397,7 @@ void GameScript::update(
 		}
 
 		stack.clear();
-	}
+	}*/
 
 }
 

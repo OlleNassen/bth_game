@@ -3,11 +3,11 @@ namespace graphics
 {
 
 FX::FX()
-	:dust("../resources/textures/fx/dust_texture.png")
-	,spark("../resources/textures/fx/dust_texture.png")
-	,steam("../resources/textures/fx/steam_texture.png")
-	,blitz("../resources/textures/fx/blitz_texture.png")
-	,fire("../resources/textures/fx/fire_texture.png")
+	:dust("../resources/textures/fx/dust_texture_1.png")
+	,spark("../resources/textures/fx/dust_texture_1.png")
+	,steam("../resources/textures/fx/steam_texture_1.png")
+	,blitz("../resources/textures/fx/blitz_texture_1.png")
+	,fire("../resources/textures/fx/fire_texture_1.png")
 {
 	auto& fx_dust = *fx_dust_ptr;
 	auto& fx_spark = *fx_spark_ptr;
@@ -285,12 +285,12 @@ void FX::calculate_dust_data(std::chrono::milliseconds delta, const Camera& came
 
 			if (fx_dust.particle_container[i].life >= 0.5f)
 			{
-				fx_dust.particle_container[i].size = abs(fx_dust.particle_container[i].life - 1) / DF;
+				fx_dust.particle_container[i].size = abs(fx_dust.particle_container[i].life - 1) / 3.0f;
 				fx_dust.position_data[4 * fx_dust.total_particle_count + 3] = fx_dust.particle_container[i].size;
 			}
 			else if (fx_dust.particle_container[i].life <= 0.5f)
 			{
-				fx_dust.particle_container[i].size = fx_dust.particle_container[i].life / DF;
+				fx_dust.particle_container[i].size = fx_dust.particle_container[i].life / 3.0f;
 				fx_dust.position_data[4 * fx_dust.total_particle_count + 3] = fx_dust.particle_container[i].size;
 			}
 

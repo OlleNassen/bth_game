@@ -26,32 +26,32 @@ namespace graphics
 		death_screen_shader.use();
 		if (timer <= 50ms)
 		{
-			death_screen_shader.uniform("loading_texture", 0);
+			death_screen_shader.uniform("overlay_texture", 0);
 			this->death_1.bind(0);
 		}
 		else if (timer >= 50ms && timer <= 100ms)
 		{
-			death_screen_shader.uniform("loading_texture", 0);
+			death_screen_shader.uniform("overlay_texture", 0);
 			this->death_2.bind(0);
 		}
 		else if (timer >= 100ms && timer <= 150ms)
 		{
-			death_screen_shader.uniform("loading_texture", 0);
+			death_screen_shader.uniform("overlay_texture", 0);
 			this->death_3.bind(0);
 		}
 		else if (timer >= 150ms && timer <= 200ms)
 		{
-			death_screen_shader.uniform("loading_texture", 0);
+			death_screen_shader.uniform("overlay_texture", 0);
 			this->death_4.bind(0);
 		}
 		else if (timer >= 200ms && timer <= 250ms)
 		{
-			death_screen_shader.uniform("loading_texture", 0);
+			death_screen_shader.uniform("overlay_texture", 0);
 			this->death_5.bind(0);
 		}
 		else if (timer >= 250ms)
 		{
-			death_screen_shader.uniform("loading_texture", 0);
+			death_screen_shader.uniform("overlay_texture", 0);
 			this->death_6.bind(0);
 		}
 

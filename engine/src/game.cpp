@@ -222,11 +222,11 @@ void Game::update(std::chrono::milliseconds delta)
 		if (!give_players_objects)
 		{
 			players_placed_objects_id.fill({ 0, 0, 0 });
-			std::array<int, 4> random_index = random_indexes();
+			std::array<int, 4> random_index = { 0,0,0,0 };//random_indexes();
 			for (int i = 0; i < 4; i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
-				placed_objects_list_id = placed_objects_array[i]; //random_picked_object();
+				placed_objects_list_id = placed_objects_array[0]; //random_picked_object();
 
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);

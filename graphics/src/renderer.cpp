@@ -56,6 +56,7 @@ Renderer::Renderer(GameScene* scene)
 	{
 		lights[i].intensity = 200;
 	}
+
 }
 
 void Renderer::render(
@@ -142,6 +143,7 @@ void Renderer::render(
 		}
 		else if (game_state & state::building)
 		{
+
 			int max = build_info.size();
 			for (int i = 0; i < max; i++)
 			{
@@ -319,15 +321,27 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
+
+
+			// RENDER BUILD-STAGE
+			//if (!build_stage_screen.transparency < 0.05)
+	
+
+
+
 			glDisable(GL_DEPTH_TEST);
 
 			if (finish[player_id] && died[player_id])
 			{
-				death_screen.render(death_screen_shader);
+				death_screen.render(overlay_shader);
 			}
 			if (finish[player_id] && !died[player_id])
 			{
-				finish_screen.render(finish_screen_shader, finish);
+				finish_screen.render(overlay_shader, finish);
+			}
+			if (!build_stage_screen.transparency < 0.0005f)
+			{
+				build_stage_screen.render(build_stage_screen_shader);
 			}
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -336,17 +350,16 @@ void Renderer::render(
 	{
 		if (!is_menu)
 		{
-			loading_screen.render(loading_screen_shader);
+			loading_screen.render(overlay_shader);
 		}
 	}
-
 
 	{
 		glDisable(GL_DEPTH_TEST);
 
 		if (is_menu)
 		{
-			main_menu_screen.render(main_menu_shader);
+			main_menu_screen.render(overlay_shader);
 		}
 
 
@@ -407,6 +420,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	float goal_height,
 	int spectator_id)
 {
+	bool is_menu = (game_state & state::menu);
 	first_model = 9;
 	last_model = 9;
 	for (auto i = 9u; i < scene->models.size(); ++i)
@@ -453,6 +467,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (game_state & state::building)
 	{
 		post_processing_effects.glow_value = 0.0f;
+		if (!is_menu)
+		{
+			build_stage_screen.timer += delta;
+			if (build_stage_screen.timer > 2500ms)
+			{
+				build_stage_screen.transparency -= 0.03f;
+			}
+		}
 	}
 	else if (game_state & state::playing && print_time <= 15.0f)
 	{
@@ -555,6 +577,28 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	leaderboard.update(std::move(scoreboard));
 
+}
+
+void Renderer::z_prepass(const std::string * begin, const std::string * end,
+	const std::array<std::string, 12>& buttons, const std::vector<glm::vec3>& debug_positions,
+	const std::vector<build_information>& build_infos, bool game_over, std::array<bool, 4> died,
+	std::array<bool, 4> finish, std::array<float, 4> scores, float print_time) const
+{
+	//CLEAR FOR Z-PREPASS
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// z-prepass
+	glEnable(GL_DEPTH_TEST);  // We want depth test !
+	glDepthFunc(GL_LESS);     // We want to get the nearest pixels
+	glColorMask(0, 0, 0, 0);  // Disable color, it's useless, we only want depth.
+	glDepthMask(GL_TRUE);     // Ask z writing
+
+	render(begin, end, buttons, debug_positions, build_infos, game_over, died, finish, scores, print_time);
+
+	glEnable(GL_DEPTH_TEST);  // We still want depth test
+	glDepthFunc(GL_LEQUAL);   // EQUAL should work, too. (Only draw pixels if they are the closest ones)
+	glColorMask(1, 1, 1, 1);     // We want color this time
+	glDepthMask(GL_TRUE);    // Writing the z component is useless now, we already have it
 }
 
 }

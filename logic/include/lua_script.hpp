@@ -54,6 +54,8 @@ public:
 		objects& object, 
 		const input& i, 
 		int index,
+		const int& trigger,
+		const int& type,
 		anim& anim_state);
 		bool rw[4], lw[4];
 

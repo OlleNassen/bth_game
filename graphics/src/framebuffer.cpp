@@ -192,7 +192,6 @@ Framebuffer::Framebuffer(const Shader & shader, const Skybox & skybox, float tem
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glEnable(GL_BLEND);
-
 }
 
 Framebuffer::~Framebuffer()
