@@ -67,6 +67,8 @@ public:
 		std::array<float, 4> scores,
 		float print_time) const;
 
+	void render();
+
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
 		const glm::vec2& cursor,
@@ -97,6 +99,18 @@ public:
 		glDrawArrays(GL_POINTS, 0, lines.size());
 		glBindVertexArray(0);
 	}
+
+	void z_prepass(
+		const std::string* begin,
+		const std::string* end,
+		const std::array<std::string, 12>& buttons,
+		const std::vector<glm::vec3>& debug_positions,
+		const std::vector<build_information>& build_infos,
+		bool game_over,
+		std::array<bool, 4> died,
+		std::array<bool, 4> finish,
+		std::array<float, 4> scores,
+		float print_time) const;
 
 private:
 	Shader pbr{ 
