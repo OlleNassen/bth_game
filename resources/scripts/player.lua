@@ -139,7 +139,7 @@ function update_anim_state(delta_seconds, entity)
 		entity.velocity.x = entity.velocity.x + speed
 	end
 
-	entity.jump_impulse_x = entity.jump_impulse_x * 0.5
+	--entity.jump_impulse_x = entity.jump_impulse_x * 0.5
 	--if entity.jump_impulse_x < 0.1 and entity.jump_impulse_x < -0.1
 	--then
 		--entity.velocity.x = entity.jump_impulse_x * delta_seconds
@@ -234,5 +234,10 @@ function update_anim_state(delta_seconds, entity)
 			entity.jump_impulse_x = wall_jump_speed.x
 			entity.can_walljump = true --false
 		end
+	end
+
+	if entity.anim.current == entity.anim.jump_from_wall
+	then	
+		entity.jump_impulse_x = wall_jump_speed.x * delta_seconds
 	end
 end
