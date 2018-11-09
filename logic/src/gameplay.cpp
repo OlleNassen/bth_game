@@ -75,6 +75,8 @@ LuaExport Gameplay::update(Input inputs,
 				inputs.dynamics[d_id],
 				inputs.player_inputs[i],
 				d_id, inputs.anim_states[i]);
+			
+			inputs.dynamics[i].position = { i * 3.f, 1.75f };
 		}		
 	}
 	else if (current_state & state::pre_playing)
@@ -84,6 +86,11 @@ LuaExport Gameplay::update(Input inputs,
 
 		if (pre_starter_time <= 0.5)
 			pre_playing_done = true;
+
+		for (int i = 0; i < 4; i++)
+		{
+			inputs.dynamics[i].position = { i * 3.f, 1.75f };
+		}
 	}
 	else if (current_state & state::playing)
 	{
@@ -102,7 +109,7 @@ LuaExport Gameplay::update(Input inputs,
 		//std::cout << "			X2:" << inputs.dynamics[0].velocity.x << " Y2:" << inputs.dynamics[0].velocity.y << std::endl; // test triggers
 		//std::cout << "			X2:" << inputs.dynamics[0].forces.x << " Y2:" << inputs.dynamics[0].forces.y << std::endl;
 	}
-		
+	
 	game_script.update_export();
 
 	game_script.data.time = time;

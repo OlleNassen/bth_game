@@ -140,6 +140,7 @@ void Game::update(std::chrono::milliseconds delta)
 		gameplay.refresh();
 		for (int i = 4; i < dynamics.size(); ++i)
 			dynamics[i].position = glm::vec2(-2000000.f, -2000000.f);
+		ready_check = dynamics[50].position;
 		give_players_objects = false;
 		watching = net.id();
 	}	
@@ -153,14 +154,13 @@ void Game::update(std::chrono::milliseconds delta)
 	if (net.connected())
 		game_state = (game_state | state::connected);
 
-	/*static glm::vec2 temp = dynamics[0].position;
-	if (temp == dynamics[0].position)
+	/*if (ready_check == dynamics[50].position)
 	{
-		game_state = (game_state | state::waiting);
+		game_state = (game_state | state::lobby);
 
-		if ((*local_input)[logic::button::jump] == logic::button_state::pressed)
+		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed)
 		{
-			dynamics[0].position.x += 1;
+			dynamics[50].position.x += 1;
 		}
 	}
 	else */if (gameplay.build_stage())
