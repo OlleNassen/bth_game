@@ -10,12 +10,12 @@ function setup(game)
 	game.clock = 0.0
 	game.winner = false
 
-	game.speed_boost_timer = {0.0, 0.0, 0.0, 0.0}
-	game.speed_boost_triggerd = { false, false, false, false }
-	game.max_speed = 8700
-	game.max_speed_boost = game.max_speed * 1.6
-	game.max_velocity = 16
-	game.max_velocity_boost = game.max_velocity * 1.3
+	--game.speed_boost_timer = {0.0, 0.0, 0.0, 0.0}
+	--game.speed_boost_triggerd = { false, false, false, false }
+	--game.max_speed = 8700
+	--game.max_speed_boost = game.max_speed * 2
+	--game.max_velocity = 16
+	--game.max_velocity_boost = game.max_velocity * 1.3
 
 	game.time = 0.0
 end
@@ -109,7 +109,7 @@ function update(delta_seconds, game, entities)
 		if entities[i].triggered >= 4 and not game.finished[i]
 		then
 
-			--spike_trap
+			--spike_trap -- kvar
 			if entities[i].triggered_type == 0
 			then
 				game.finished[i] = true
@@ -119,78 +119,8 @@ function update(delta_seconds, game, entities)
 
 				game.points = game.points - 1
 
-				--print("death")
-			end
-
-			--sticky_platform
-			if entities[i].triggered_type == 3
-			then
-				
-				if entities[i].velocity.x >= game.max_velocity
-				then
-					--entities[i].velocity.x = 1
-					entities[i].forces.x = entities[i].forces.x - (entities[i].forces.x / 1.5)
-				
-				elseif entities[i].velocity.x <= -game.max_velocity
-				then
-					--entities[i].velocity.x = -1
-					entities[i].forces.x = entities[i].forces.x - (entities[i].forces.x / 1.5)
-				end
-				--print("slow_platform")
-			end
-
-			--standard_platform
-			if entities[i].triggered_type == 6
-			then
-
-				--print("standard_platform")
-			end
-
-			--speed_boost
-			if entities[i].triggered_type == 7 and game.speed_boost_triggerd[i] == false
-			then
-				game.speed_boost_triggerd[i] = true
-				game.speed_boost_timer[i] = 0.0
-				--print("Sprint_boost")
 			end
 		end
-
-		if	game.speed_boost_triggerd[i] == true and game.speed_boost_timer[i] <= 5.0
-		then
-			if entities[i].velocity.x < game.max_velocity_boost and entities[i].velocity.x > -game.max_velocity_boost and entities.button.right
-			then
-				if entities[i].velocity.x > 0
-				then
-					entities[i].forces.x = game.max_speed_boost * 1--right
-				else
-					entities[i].forces.x = game.max_speed_boost * 0.6
-				end
-
-			elseif entities[i].velocity.x > -game.max_velocity_boost and entities[i].velocity.x < game.max_velocity_boost and entities.button.left
-			then 
-				if entities[i].velocity.x < 0
-				then
-					entities[i].forces.x = -game.max_speed_boost * 1--left
-				else
-					entities[i].forces.x = -game.max_speed_boost * 0.6
-				end
-
-			end
-			--elseif entities[i].velocity.x >= (game.max_velocity_boost)
-			--then 
-			--	entities[i].velocity.x  = (game.max_velocity_boost)
-			--end
-		end
-
-		if	game.speed_boost_timer[i] <= 5.0
-		then
-			game.speed_boost_timer[i] = game.speed_boost_timer[i] + delta_seconds
-
-		elseif	game.speed_boost_timer[i] >= 5.0
-		then
-			game.speed_boost_triggerd[i] = false
-		end
-
 	end
 
 	for i = 1, 4, 1
@@ -198,6 +128,15 @@ function update(delta_seconds, game, entities)
 		if game.scores[i] > game.max_points
 		then
 			game.winner = true
+		end
+	end
+
+	for i = 1, 4, 1
+	do
+		if game.died[i] == true or game.finished[i]
+		then
+			entities[i].impulse.y = -entities[i].velocity.y
+			--print(entities[i].position.y)
 		end
 	end
 end

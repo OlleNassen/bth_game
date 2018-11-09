@@ -23,6 +23,7 @@ enum class SessionState : uint8
 	none,
 	waiting,
 	lobby,
+	loading,
 	building,
 	playing
 };

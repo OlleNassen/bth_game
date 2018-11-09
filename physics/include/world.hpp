@@ -79,6 +79,7 @@ public:
 	std::vector<glm::vec3> get_debug_for(int id)const;
 
 	void clear_object();
+	void clear_static_object();
 
 	void rotate_static_box(int id);
 

@@ -339,10 +339,10 @@ void Renderer::render(
 			{
 				finish_screen.render(overlay_shader, finish);
 			}
-			if (!build_stage_screen.transparency < 0.0005f)
+			/*if (!build_stage_screen.transparency < 0.0005f)
 			{
 				build_stage_screen.render(build_stage_screen_shader);
-			}
+			}*/
 			glEnable(GL_DEPTH_TEST);
 		}
 	}
@@ -469,11 +469,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 		post_processing_effects.glow_value = 0.0f;
 		if (!is_menu)
 		{
-			build_stage_screen.timer += delta;
+			/*build_stage_screen.timer += delta;
 			if (build_stage_screen.timer > 2500ms)
 			{
 				build_stage_screen.transparency -= 0.03f;
-			}
+			}*/
 		}
 	}
 	else if (game_state & state::playing && print_time <= 15.0f)

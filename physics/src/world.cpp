@@ -454,5 +454,13 @@ void World::clear_object()
 	}
 }
 
+void World::clear_static_object()
+{
+	while (statics.size() > 0)
+	{
+		statics.pop_back();
+	}
+}
+
 }
 

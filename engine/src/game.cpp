@@ -144,6 +144,7 @@ void Game::update(std::chrono::milliseconds delta)
 		ready_check = dynamics[50].position;
 		give_players_objects = false;
 		watching = net.id();
+		level = graphics::GameScene("../resources/level/lobby.ssp", &mesh_lib, &object_lib);
 	}	
 
 	if (menu.on())
@@ -161,9 +162,21 @@ void Game::update(std::chrono::milliseconds delta)
 
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed)
 		{
-			net_state.state = network::SessionState::building;
-			//game_state = (game_state | state::building);
+			net_state.state = network::SessionState::loading;
 		}
+	}
+	else if (net_state.state == network::SessionState::loading)
+	{
+		level = graphics::GameScene("../resources/level/level.ssp", &mesh_lib, &object_lib);
+
+		physics.clear_static_object();
+		for (auto& coll : level.coll_data)
+		{
+			physics.add_static_body(coll.position,
+				glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
+		}
+
+		net_state.state = network::SessionState::building;
 	}
 	else if (gameplay.build_stage())
 	{
@@ -222,7 +235,7 @@ void Game::update(std::chrono::milliseconds delta)
 		if (!give_players_objects)
 		{
 			players_placed_objects_id.fill({ 0, 0, 0 });
-			std::array<int, 4> random_index = { 0,0,0,0 };//random_indexes();
+			std::array<int, 4> random_index = random_indexes();
 			for (int i = 0; i < 4; i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
