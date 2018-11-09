@@ -195,6 +195,7 @@ private:
 	PostProcessingEffects post_processing_effects;
 
 	std::array<PointLight, 14> lights;
+	DirectionalLight dir_light;
 
 	int first_model = 0;
 	int last_model = 0;
@@ -208,7 +209,7 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
-	BuildStageScreen build_stage_screen;
+	//BuildStageScreen build_stage_screen;
 	FinishScreen finish_screen;
 	int player_id;
 
@@ -230,13 +231,15 @@ private:
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T* first, const T* last)
+void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const DirectionalLight& dir_light, const T* first, const T* last)
 {
 	shader.use();
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
 	shader.uniform("cam_pos", camera.position);
+	shader.uniform("dir_light_dir", dir_light.direction);
+	shader.uniform("dir_light_color", dir_light.color);
 
 	int light_count = 0;
 

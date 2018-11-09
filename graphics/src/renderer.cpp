@@ -57,6 +57,9 @@ Renderer::Renderer(GameScene* scene)
 		lights[i].intensity = 200;
 	}
 
+	dir_light.direction = glm::vec3(0, 0, -1);
+	dir_light.color = glm::vec3(255 / 255.f, 192.f / 255.f, 203.f / 255.f);
+
 }
 
 void Renderer::render(
@@ -102,14 +105,14 @@ void Renderer::render(
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
-		render_type(pbr, game_camera, lights, 
+		render_type(pbr, game_camera, lights, dir_light, 
 			&scene->models[first_model], &scene->models[last_model]);
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, game_camera, lights,
+			render_type(pbr, game_camera, lights, dir_light,
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbr, game_camera, lights,
+		render_type(pbr, game_camera, lights, dir_light,
 			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
@@ -206,13 +209,13 @@ void Renderer::render(
 				game_camera, lights, scene->moving_models, 4);
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, db_camera, lights,
+			render_type(pbr, db_camera, lights, dir_light,
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbr, db_camera, lights, 
+		render_type(pbr, db_camera, lights, dir_light,
 			&scene->models[first_model], &scene->models[last_model]);
 
-		render_type(pbr, db_camera, lights,
+		render_type(pbr, db_camera, lights, dir_light,
 			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
@@ -270,10 +273,10 @@ void Renderer::render(
 			{
 				finish_screen.render(overlay_shader, finish);
 			}
-			if (!build_stage_screen.transparency < 0.0005f)
+			/*if (!build_stage_screen.transparency < 0.0005f)
 			{
 				build_stage_screen.render(build_stage_screen_shader);
-			}
+			}*/
 			glEnable(GL_DEPTH_TEST);
 		}
 	}
@@ -395,11 +398,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 		post_processing_effects.glow_value = 0.0f;
 		if (!is_menu)
 		{
-			build_stage_screen.timer += delta;
+			/*build_stage_screen.timer += delta;
 			if (build_stage_screen.timer > 2500ms)
 			{
 				build_stage_screen.transparency -= 0.03f;
-			}
+			}*/
 		}
 	}
 	else if (game_state & state::playing && print_time <= 15.0f)
