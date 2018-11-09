@@ -49,12 +49,26 @@ const GraphicsSettings & Settings::get_graphics_settings() const
 	return graphics;
 }
 
-void Settings::set_fullscreen()
+void Settings::set_screen_mode(bool fullscreen_state)
 {
 	lua_getglobal(importer, "settings");
-	lua_pushboolean(importer, true);
+	lua_getfield(importer, -1, "window");
+	lua_pushboolean(importer, fullscreen_state);
 	lua_setfield(importer, -1, "fullscreen");
-	lua_pop(importer, 1);
+	lua_pop(importer, lua_gettop(importer));
+}
+
+bool Settings::get_screen_mode() const
+{
+	bool fullscreen_is_set = false;
+	lua_getglobal(importer, "settings");
+	lua_getfield(importer, -1, "window");
+	lua_getfield(importer, -1, "fullscreen");
+	fullscreen_is_set = lua_toboolean(importer, -1);
+	lua_pop(importer, lua_gettop(importer));
+	std::cout << fullscreen_is_set << "\n";
+
+	return fullscreen_is_set;
 }
 
 void Settings::create()

@@ -26,8 +26,8 @@ public:
 	~Settings();
 	const WindowSettings& get_window_settings()const;
 	const GraphicsSettings& get_graphics_settings()const;
-
-	void set_fullscreen();
+	bool get_screen_mode() const;
+	void set_screen_mode(bool);
 
 private:
 	void create();
