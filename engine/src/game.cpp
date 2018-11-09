@@ -14,7 +14,7 @@ Game::Game()
 	, "Scrap Escape")
 	, mesh_lib{0}
 	, object_lib{1}
-	, level{"../resources/level/level2.ssp", &mesh_lib, &object_lib}
+	, level{"../resources/level/lobby.ssp", &mesh_lib, &object_lib}
 	, renderer{&level}
 {
 	anim_states[0] = anim::idle;
