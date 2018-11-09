@@ -254,8 +254,7 @@ void Renderer::render(
 
 			// RENDER BUILD-STAGE
 			//if (!build_stage_screen.transparency < 0.05)
-			
-			build_stage_screen.render(build_stage_screen_shader);
+	
 
 
 
@@ -268,6 +267,10 @@ void Renderer::render(
 			if (finish[player_id] && !died[player_id])
 			{
 				finish_screen.render(overlay_shader, finish);
+			}
+			if (!build_stage_screen.transparency < 0.0005f)
+			{
+				build_stage_screen.render(build_stage_screen_shader);
 			}
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -345,7 +348,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<float, 4> scores,
 	float print_time,
 	float goal_height)
+
 {
+	bool is_menu = (game_state & state::menu);
 	first_model = 9;
 	last_model = 9;
 	for (auto i = 9u; i < scene->models.size(); ++i)
@@ -387,7 +392,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (game_state & state::building)
 	{
 		post_processing_effects.glow_value = 0.0f;
-		build_stage_screen.transparency -= 0.05f;
+		if (!is_menu)
+		{
+			build_stage_screen.timer += delta;
+			if (build_stage_screen.timer > 4000ms)
+			{
+				build_stage_screen.transparency -= 0.015f;
+			}
+		}
 	}
 	else if (game_state & state::playing && print_time <= 15.0f)
 	{

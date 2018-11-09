@@ -118,8 +118,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="build_stage.fs" />
-    <None Include="build_stage.vs" />
     <None Include="scripts\gameloop.lua" />
     <None Include="scripts\placing_objects.lua" />
     <None Include="scripts\player.lua" />
@@ -127,6 +125,8 @@
     <None Include="shaders\box.vs" />
     <None Include="shaders\brdf.fs" />
     <None Include="shaders\brdf.vs" />
+    <None Include="shaders\build_stage.fs" />
+    <None Include="shaders\build_stage.vs" />
     <None Include="shaders\death_screen.fs" />
     <None Include="shaders\death_screen.vs" />
     <None Include="shaders\finish_screen.fs" />

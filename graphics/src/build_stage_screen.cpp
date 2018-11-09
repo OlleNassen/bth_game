@@ -3,10 +3,10 @@
 namespace graphics
 {
 	BuildStageScreen::BuildStageScreen()
-		:build_1("../resources/textures/build_stage_screen/build_stage.png")
+		:build_1("../resources/textures/build_stage_screen/build_stage_2.png")
 
 	{
-		this->transparency = 100.0f;
+		this->transparency = 1.0f;
 		glGenVertexArrays(1, &vao_id);
 		glBindVertexArray(vao_id);
 		glGenBuffers(1, &vbo_id);
@@ -21,6 +21,7 @@ namespace graphics
 		using namespace std::chrono_literals;
 		build_stage_screen_shader.use();
 		build_stage_screen_shader.uniform("overlay_texture", 0);
+		this->build_1.bind(0);
 		build_stage_screen_shader.uniform("transparency", this->transparency);
 		
 

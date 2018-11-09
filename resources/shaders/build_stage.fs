@@ -9,8 +9,17 @@ uniform float transparency;
 void main()
 {
 
-	vec3 loading_screen_texture = texture(overlay_texture, tex_coords).rgb;
-	vec4 final_texture = vec4(loading_screen_texture, transparency);
-
-	frag_color = vec4(final_texture);
+	vec4 loading_screen_texture = texture(overlay_texture, tex_coords);
+	//vec4 final_texture = vec4(loading_screen_texture.rgb, transparency);
+	
+	frag_color = vec4(loading_screen_texture);
+	
+	if (frag_color.w < 0.01f)
+	{
+	discard;
+		else
+		{
+			frag_color = frag_color.w * transparency;
+		}
+	}
 }
