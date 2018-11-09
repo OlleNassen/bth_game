@@ -240,6 +240,7 @@ void render_type(const Shader& shader, const Camera& camera, const std::array<Po
 	shader.uniform("cam_pos", camera.position);
 	shader.uniform("dir_light_dir", dir_light.direction);
 	shader.uniform("dir_light_color", dir_light.color);
+	shader.uniform("dir_light_intensity", dir_light.intensity);
 
 	int light_count = 0;
 

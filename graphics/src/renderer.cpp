@@ -58,7 +58,9 @@ Renderer::Renderer(GameScene* scene)
 	}
 
 	dir_light.direction = glm::vec3(0, 0, -1);
-	dir_light.color = glm::vec3(255 / 255.f, 192.f / 255.f, 203.f / 255.f);
+	dir_light.color = glm::vec3(0, 1, 0);
+	dir_light.intensity = 50.f;
+
 
 }
 

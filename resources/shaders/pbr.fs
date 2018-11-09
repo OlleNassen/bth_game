@@ -22,6 +22,7 @@ uniform float light_intensity[14];
 uniform vec3 cam_pos;
 uniform vec3 dir_light_dir;
 uniform vec3 dir_light_color;
+uniform float dir_light_intensity;
 
 uniform int light_count;
 
@@ -159,7 +160,7 @@ void main()
 		F0 = mix(F0, albedo, metallic);
 		      
 		// calculate light radiance    
-		vec3 radiance = dir_light_color;        
+		vec3 radiance = dir_light_color * dir_light_intensity;        
 		
 		// cook-torrance brdf
 		float NDF = DistributionGGX(N, H, roughness);   
