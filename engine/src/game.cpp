@@ -110,7 +110,8 @@ void Game::render()
 		int d_id = players_placed_objects_id[i].dynamics_id;
 		build_information info;
 		
-		info.build_positions = physics.get_debug_for(d_id);
+		info.world_position = dynamics[d_id].position;
+		info.debug_positions = physics.get_debug_for(d_id);
 		info.place_state = players_placed_objects_id[i].place_state;
 
 		build_info.push_back(info);
@@ -119,7 +120,8 @@ void Game::render()
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
-		lua_data.finished, lua_data.scores, lua_data.time);
+		lua_data.finished, lua_data.scores, lua_data.time,
+		net.id());
 }
 
 void Game::update(std::chrono::milliseconds delta)

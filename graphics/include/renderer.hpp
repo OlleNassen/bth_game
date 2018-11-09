@@ -28,7 +28,8 @@
 
 struct build_information
 {
-	std::vector<glm::vec3> build_positions;
+	glm::vec2 world_position;
+	std::vector<glm::vec3> debug_positions;
 	int place_state = 1;
 };
 
@@ -65,7 +66,8 @@ public:
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
-		float print_time) const;
+		float print_time,
+		int player_id) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -106,6 +108,9 @@ private:
 	Shader text_shader{ 
 		"../resources/shaders/text.vs", 
 		"../resources/shaders/text.fs" };
+	Shader world_text_shader{ 
+		"../resources/shaders/world_text.vs",
+		"../resources/shaders/world_text.fs" };
 	Shader gui{ 
 		"../resources/shaders/gui.vs",
 		"../resources/shaders/gui.fs" };

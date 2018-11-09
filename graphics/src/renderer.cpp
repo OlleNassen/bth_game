@@ -68,7 +68,8 @@ void Renderer::render(
 	std::array<bool, 4> died,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
-	float print_time)const
+	float print_time,
+	int player_id)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -163,7 +164,7 @@ void Renderer::render(
 					lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
 				}
 
-				line_debug(build_info[i].build_positions);
+				line_debug(build_info[i].debug_positions);
 				glEnable(GL_DEPTH_TEST);
 			}
 
@@ -221,10 +222,29 @@ void Renderer::render(
 			glDisable(GL_DEPTH_TEST);
 			std::stringstream out_text;
 			out_text << std::fixed << std::setprecision(1) << print_time;
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			timer_text.render_text(out_text.str(), 10.f, 720.f - 45.f, 1.f);
+			
+			if (game_state & state::building)
+			{ 
+				world_text_shader.use();
+				world_text_shader.uniform("view", game_camera.view());
+				world_text_shader.uniform("projection", game_camera.projection);
+
+				if (print_time > 5.f)
+					world_text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+				else
+					world_text_shader.uniform("text_color", glm::vec3(0.8f, 0.2f, 0.2f));
+
+
+				timer_text.render_text(out_text.str(), build_info[player_id].world_position.x - 0.95f, build_info[player_id].world_position.y + 1.f, 0.02f);
+			}
+			else if (game_state & state::playing)
+			{
+				text_shader.use();
+				text_shader.uniform("projection", projection);
+				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f)); 
+				timer_text.render_text(out_text.str(), 10.f, 720.f - 45.f, 1.f);
+			}
+
 			glEnable(GL_DEPTH_TEST);
 		}
 	}
