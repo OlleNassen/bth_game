@@ -144,18 +144,9 @@ private:
 	Shader minimap_shader{ 
 		"../resources/shaders/minimap.vs",
 		"../resources/shaders/minimap.fs" };
-	Shader loading_screen_shader{
-		"../resources/shaders/loading_screen.vs",
-		"../resources/shaders/loading_screen.fs" };
-	Shader death_screen_shader{
-		"../resources/shaders/death_screen.vs",
-		"../resources/shaders/death_screen.fs" };
-	Shader finish_screen_shader{
-		"../resources/shaders/finish_screen.vs",
-		"../resources/shaders/finish_screen.fs" };
-	Shader main_menu_shader{
-		"../resources/shaders/main_menu_screen.vs",
-		"../resources/shaders/main_menu_screen.fs" };
+	Shader overlay_shader{
+		"../resources/shaders/overlay.vs",
+		"../resources/shaders/overlay.fs" };
 	Shader robot_shader{
 		"../resources/shaders/robots.vs",
 		"../resources/shaders/robots.fs" };
