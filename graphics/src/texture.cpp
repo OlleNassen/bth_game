@@ -44,6 +44,7 @@ void Texture::load_texture(const std::string & path)
 		height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	stbi_image_free(data);
+	glFlush();
 }
 
 SkyboxTexture::SkyboxTexture(const std::vector<std::string>& paths)
@@ -72,6 +73,7 @@ void SkyboxTexture::load_texture(const std::vector<std::string>& paths)
 			std::cout << "Cubemap texture failed to load at path: " << face << std::endl;
 		}
 		stbi_image_free(data);
+		glFlush();
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
