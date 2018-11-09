@@ -43,7 +43,19 @@ LuaExport Gameplay::update(Input inputs,
 {
 	float time = -1.0f;
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(inputs.delta).count();
-	if (current_state & state::building)
+	if (current_state & state::lobby)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			player_script.update(
+				inputs.delta,
+				inputs.dynamics[i],
+				inputs.player_inputs[i],
+				i, inputs.anim_states[i]);
+		}
+		//game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0]);
+	}
+	else if (current_state & state::building)
 	{
 		players_done = 0;
 		for (int i = 0; i < 4; i++)

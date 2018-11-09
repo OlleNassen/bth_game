@@ -72,6 +72,7 @@ Game::Game()
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
 
 	//place_random_objects(0, 20, 9); //For random placing object
+	ready_check = dynamics[50].position;
 }
 
 void Game::run()
@@ -134,7 +135,7 @@ void Game::update(std::chrono::milliseconds delta)
 	if (net_state.state == network::SessionState::waiting)
 	{
 		net_state.state = network::SessionState::none;
-		game_state = (game_state | state::building);
+		game_state = (game_state | state::lobby);
 		physics.clear_object();
 		level.clear_object();
 		gameplay.refresh();
@@ -154,16 +155,17 @@ void Game::update(std::chrono::milliseconds delta)
 	if (net.connected())
 		game_state = (game_state | state::connected);
 
-	/*if (ready_check == dynamics[50].position)
+	if (net_state.state == network::SessionState::none)
 	{
 		game_state = (game_state | state::lobby);
 
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed)
 		{
-			dynamics[50].position.x += 1;
+			net_state.state = network::SessionState::building;
+			//game_state = (game_state | state::building);
 		}
 	}
-	else */if (gameplay.build_stage())
+	else if (gameplay.build_stage())
 	{
 		game_state = (game_state | state::building);
 	}

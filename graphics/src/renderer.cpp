@@ -130,28 +130,17 @@ void Renderer::render(
 			line_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
-
-		/*if (game_state & state::waiting)
+		
+		if (game_state & state::lobby)
 		{
 			glDisable(GL_DEPTH_TEST);
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Press 'Space' to start", 1280.f - 410, 10.f, 0.75f);
+			build_text.render_text("Lobby Stage, Host press 'R' to start", 1280.f - 940.f, 720.f - 35.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 		}
-		else */
-
-		/*if (game_state & state::lobby)
-		{
-			glDisable(GL_DEPTH_TEST);
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Lobby Stage, Press 'R' to start", 1280.f - 900.f, 720.f - 35.f, 0.75f);
-			glEnable(GL_DEPTH_TEST);
-		}
-		else */if (game_state & state::building)
+		else if (game_state & state::building)
 		{
 			int max = build_info.size();
 			for (int i = 0; i < max; i++)

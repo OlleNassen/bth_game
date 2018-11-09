@@ -22,6 +22,7 @@ enum class SessionState : uint8
 {
 	none,
 	waiting,
+	lobby,
 	building,
 	playing
 };
