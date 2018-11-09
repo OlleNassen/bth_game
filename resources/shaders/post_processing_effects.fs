@@ -6,6 +6,7 @@ out vec4 frag_color;
 uniform sampler2D scene_texture;
 uniform sampler2D depth_texture;
 uniform sampler2D screen_warning;
+uniform sampler2D build_screen;
 
 uniform float pulse;
 

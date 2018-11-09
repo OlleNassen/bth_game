@@ -22,6 +22,7 @@
 #include "death_screen.hpp"
 #include "main_menu_screen.hpp"
 #include "finish_screen.hpp"
+#include "build_stage_screen.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -164,6 +165,9 @@ private:
 	Shader robot_shader{
 		"../resources/shaders/robots.vs",
 		"../resources/shaders/robots.fs" };
+	Shader build_stage_screen_shader{
+		"../resources/shaders/build_stage.vs",
+		"../resources/shaders/build_stage.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -204,6 +208,7 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
+	BuildStageScreen build_stage_screen;
 	FinishScreen finish_screen;
 	int player_id;
 
