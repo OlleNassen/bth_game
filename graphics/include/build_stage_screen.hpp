@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BUILD_STAGE_SCREEN_HPP
+#define BUILD_STAGE_SCREEN_HPP
 #include "texture.hpp"
 #include "shader.hpp"
 #include "stb_image.h"
@@ -27,3 +28,5 @@ namespace graphics
 		unsigned int vbo_id;
 	};
 }
+
+#endif
