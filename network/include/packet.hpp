@@ -26,19 +26,6 @@ enum class SessionState : uint8
 	playing
 };
 
-class Vec2
-{
-public:
-	Vec2() = default;
-	Vec2(glm::vec2 other);
-	operator glm::vec2() const;
-	
-	static constexpr float conversion = 1000.0f;
-
-	float x;
-	float y;
-};
-
 class GameInput
 {
 public:
@@ -49,8 +36,8 @@ public:
 class GameObject
 {
 public:
-	Vec2 position;
-	Vec2 velocity;
+	glm::vec2 position;
+	glm::vec2 velocity;
 };
 
 class GameState
