@@ -231,14 +231,6 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
-
-
-			// RENDER BUILD-STAGE
-			//if (!build_stage_screen.transparency < 0.05)
-	
-
-
-
 			glDisable(GL_DEPTH_TEST);
 
 			if (finish[player_id] && died[player_id])
