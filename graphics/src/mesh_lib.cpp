@@ -56,7 +56,7 @@ void MeshLib::create_mesh_list()
 		"wall.ssp",							//28
 		"ventilationdrum_bent.ssp",			//29
 		"ventilationdrum_straight.ssp",		//30
-		"crane_top_part.ssp",				//31
+		"crane.ssp",				        //31
 		"crane_lower_part.ssp",				//32
 		"crane_belt.ssp",					//33
 		"crane_big_cog.ssp",				//34
