@@ -143,9 +143,6 @@ void Renderer::render(
 		render_type(pbr, game_camera, lights, dir_light,
 			&scene->models[0], &scene->models[9]);
 
-		skybox_shader.use();
-		skybox.render(skybox_shader, game_camera);
-
 		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
 
 		
@@ -239,9 +236,6 @@ void Renderer::render(
 
 		render_type(pbr, db_camera, lights, dir_light,
 			&scene->models[0], &scene->models[9]);
-
-		skybox_shader.use();
-		skybox.render(skybox_shader, db_camera);
 
 		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
 

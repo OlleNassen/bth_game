@@ -150,17 +150,7 @@ void Game::update(std::chrono::milliseconds delta)
 	if (net.connected())
 		game_state = (game_state | state::connected);
 
-	/*static glm::vec2 temp = dynamics[0].position;
-	if (temp == dynamics[0].position)
-	{
-		game_state = (game_state | state::waiting);
-
-		if ((*local_input)[logic::button::jump] == logic::button_state::pressed)
-		{
-			dynamics[0].position.x += 1;
-		}
-	}
-	else */if (gameplay.build_stage())
+	if (gameplay.build_stage())
 	{
 		game_state = (game_state | state::building);
 	}
@@ -346,9 +336,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 	anim idle = anim::falling;
 
-	for (int i = 4; i < level.models.size(); i++)
-		if (level.models[i].is_animated)
-			level.models[i].update_animation((float)delta.count(), idle);
+	for (auto& model : level.animated_models)
+			model.update_animation((float)delta.count(), idle);
 
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
