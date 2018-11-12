@@ -74,6 +74,16 @@ void PlayerScript::update(
 		stack.push("impulse");
 		stack.push(object.impulse);
 		stack.rawset(top);
+
+		// test for placing objects script.
+		stack.push("friction");
+		stack.push(object.friction);
+		stack.rawset(top);
+
+		stack.push("is_stund");
+		stack.push(object.is_stund);
+		stack.rawset(top);
+
 		stack.clear();
 	}
 
@@ -144,6 +154,13 @@ void PlayerScript::update(
 		object.impulse.x = stack.tonumber(-2);
 		object.impulse.y = stack.tonumber(-1);
 		
+		// test for placing objects script.
+		stack.getfield(top, "friction");
+		object.friction = stack.tonumber(-1);
+
+		stack.getfield(top, "is_stund");
+		object.is_stund = stack.toboolean(-1);
+
 		stack.clear();
 	}	
 }

@@ -86,10 +86,10 @@ LuaExport Gameplay::update(Input inputs,
 				inputs.triggers[i], 
 				inputs.triggers_types[i],
 				inputs.anim_states[i]);
-			if (i == 1)
-			{
-				//std::cout << "X2:" << inputs.dynamics[0].forces.x << " Y2:" << inputs.dynamics[0].forces.y << std::endl; // test triggers
-			}
+			//if (i == 1)
+			//{
+			//	std::cout << inputs.dynamics[0].is_stund << std::endl; // test triggers
+			//}
 
 		}
 		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0]);

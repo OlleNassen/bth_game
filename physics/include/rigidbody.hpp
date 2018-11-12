@@ -25,6 +25,7 @@ public:
 	float friction = 0.98f;
 
 	int trigger_type = -1;
+	bool is_stund = false;
 
 	OBB box;
 };

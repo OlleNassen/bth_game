@@ -11,10 +11,27 @@ function setup(entity)
 	entity.jump_timer = 0
 
 	--trigger
+
+	--oil platform
+	entity.normal_friction = 0.98
+
+	--shock_trap
+	entity.shock_trap_timer = 0.0
+	entity.shock_trap_immun_timer = 0.0
+	entity.shock_trap_triggerd = false
+	entity.shock_trap_immun = false
+	entity.temp = 0
+
+	--speed boost
 	entity.speed_boost_timer = 0.0
 	entity.speed_boost_triggerd = false
 	entity.max_speed_boost = entity.maxSpeed * 2
 	entity.max_velocity_boost = entity.max_velocity * 1.3
+
+	--steam boost
+	entity.steam_boost_timer = 0.0
+	entity.steam_boost_triggerd = false
+	entity.first_jump = true
 
 
 	entity.ungrounded_time = 0
@@ -23,7 +40,10 @@ end
 
 function update(delta_seconds, entity)
 
-	
+	if entity.anim.current == entity.anim.idle and entity.first_jump == false
+	then
+		entity.first_jump = true
+	end
 
 	if entity.anim.current == entity.anim.running
 	then
@@ -113,8 +133,12 @@ function update(delta_seconds, entity)
 
 			entity.impulse.y = 40
 			entity.can_jump = false
-		end	
 
+			if entity.steam_boost_triggerd and entity.first_jump == false --trigger
+			then
+				entity.first_jump = true
+			end
+		end	
 	end
 
 	if entity.anim.current == entity.anim.in_jump
@@ -304,10 +328,17 @@ function update(delta_seconds, entity)
 
 
 
-
+	entity.friction = entity.normal_friction
 	--trigger
 	if entity.triggered >= 4
 	then
+		--platform_oil
+		if entity.triggered_type == 2
+		then
+			entity.friction = 0.05
+			--print("platform_oil")
+		end
+
 		--sticky_platform
 		if entity.triggered_type == 3
 		then
@@ -324,11 +355,22 @@ function update(delta_seconds, entity)
 			end
 		end
 
-		----standard_platform
-		--if entity.triggered_type == 6
-		--then
-		--
-		--end
+		--shock_trap
+		if entity.triggered_type == 4 and entity.shock_trap_triggerd == false and entity.shock_trap_immun == false
+		then
+			entity.shock_trap_triggerd = true
+			entity.is_stund = true
+			entity.shock_trap_timer = 0.0
+
+			--print("shock_trap")
+		end
+
+		--treadmill
+		if entity.triggered_type == 5
+		then
+			entity.forces.x = entity.forces.x + -entity.maxSpeed / 2 --Need fixing
+			--print("treadmill")
+		end
 
 		--speed_boost
 		if entity.triggered_type == 7 and entity.speed_boost_triggerd == false
@@ -336,10 +378,54 @@ function update(delta_seconds, entity)
 			entity.speed_boost_triggerd = true
 			entity.speed_boost_timer = 0.0
 
-			print("Sprint_boost")
+			--print("Sprint_boost")
+		end
+
+		--steam_boost
+		if entity.triggered_type == 8 and entity.steam_boost_triggerd == false
+		then
+			entity.steam_boost_triggerd = true
+			entity.steam_boost_timer = 0.0
+
+			--print("steam_boost")
+		end
+
+		--trampolin
+		if entity.triggered_type == 9
+		then
+
+			--print("trampolin")
 		end
 	end
 
+	--shock_trap
+
+	if	entity.shock_trap_timer <= 5.0 and entity.shock_trap_triggerd == true
+	then
+		entity.shock_trap_timer = entity.shock_trap_timer + delta_seconds
+		entity.forces.x = 0
+		entity.forces.y = 0
+
+	elseif	entity.shock_trap_timer >= 5.0 and entity.shock_trap_triggerd == true
+	then
+		entity.shock_trap_triggerd = false
+		entity.is_stund = false
+
+		entity.shock_trap_immun_timer = 0
+		entity.shock_trap_immun = true
+	end
+
+	if	entity.shock_trap_immun_timer <= 5.0 and entity.shock_trap_immun == true
+	then
+		entity.shock_trap_immun_timer = entity.shock_trap_immun_timer + delta_seconds
+
+	elseif	entity.shock_trap_immun_timer >= 5.0 and entity.shock_trap_immun == true
+	then
+		entity.shock_trap_immun = false
+	end
+
+
+	--speed_boost
 	if	entity.speed_boost_triggerd == true and entity.speed_boost_timer <= 5.0
 	then
 		if entity.velocity.x < entity.max_velocity_boost and entity.velocity.x > -entity.max_velocity_boost and entity.button.right
@@ -371,6 +457,26 @@ function update(delta_seconds, entity)
 	then
 		entity.speed_boost_triggerd = false
 	end
+
+
+	--steam_boost
+	if	entity.steam_boost_triggerd == true and entity.steam_boost_timer <= 5.0
+	then
+		if entity.button.jump and entity.first_jump == false
+		then
+			entity.impulse.y = 40
+		end
+	end
+
+	if	entity.steam_boost_timer <= 5.0
+	then
+		entity.steam_boost_timer = entity.steam_boost_timer + delta_seconds
+
+	elseif	entity.steam_boost_timer >= 5.0
+	then
+		entity.speed_boost_triggerd = false
+	end
+
 
 
 

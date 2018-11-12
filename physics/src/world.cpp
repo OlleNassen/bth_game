@@ -141,6 +141,8 @@ void World::update(
 		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
 		body.forces.x = dynamics[index].forces.x;
 		body.forces.y = dynamics[index].forces.y;
+		body.friction = dynamics[index].friction; // test for placing objects script.
+		body.is_stund = dynamics[index].is_stund; // test for placing objects script.
 		++index;
 	}
 

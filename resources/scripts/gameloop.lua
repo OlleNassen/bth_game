@@ -109,7 +109,7 @@ function update(delta_seconds, game, entities)
 		if entities[i].triggered >= 4 and not game.finished[i]
 		then
 
-			--spike_trap -- kvar
+			--spike_trap
 			if entities[i].triggered_type == 0
 			then
 				game.finished[i] = true
@@ -121,7 +121,23 @@ function update(delta_seconds, game, entities)
 
 			end
 		end
+
+		if entities[i].triggered >= 4 and not game.finished[i]
+		then
+
+			--saw
+			if entities[i].triggered_type == 1
+			then
+				game.finished[i] = true
+				game.died[i] = true
+				entities[i].position.y = -2000
+				entities[i].position.x = -2000
+
+				game.points = game.points - 1
+			end
+		end
 	end
+
 
 	for i = 1, 4, 1
 	do

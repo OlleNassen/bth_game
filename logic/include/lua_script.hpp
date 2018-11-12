@@ -40,6 +40,8 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+	float friction = 0.98f;
+	bool is_stund = false;
 
 };
 
