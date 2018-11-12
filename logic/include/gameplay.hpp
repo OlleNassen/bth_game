@@ -61,7 +61,7 @@ public:
 private:
 	script_array<int> entities;
 	PlayerScript player_script{"../resources/scripts/player.lua"};
-	PlayerScript placement_script{"../resources/scripts/placing_objects.lua"};
+	PlacingScript placement_script{"../resources/scripts/placing_objects.lua"};
 	GameScript game_script;
 	std::array<glm::vec3, 4> directions;
 

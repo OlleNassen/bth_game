@@ -27,7 +27,7 @@ namespace graphics
 	{
 		using namespace std::chrono_literals;
 		finish_screen_shader.use();
-		finish_screen_shader.uniform("finish_texture", 0);
+		finish_screen_shader.uniform("overlay_texture", 0);
 
 		if (finish[0])
 		{

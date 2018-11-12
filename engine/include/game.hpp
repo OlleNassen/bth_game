@@ -87,7 +87,8 @@ private:
 	int placed_objects_list_id = 7;
 	int placed_objects_array[4] = { 0,3,7,7 };
 
-	int random_picked_object() { return 7;/*placed_objects_array[rand() % 4];*/ };
+	int random_picked_object() { return placed_objects_array[rand() % 4];};
+	std::array<int, 4> random_indexes();
 };
 
 
