@@ -93,7 +93,8 @@ public:
 		std::array<float, 4> scores,
 		float print_time,
 		float goal_height,
-		int spectator_id);
+		int spectator_id,
+		std::array<int, 4> moving_objects_id);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{

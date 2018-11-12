@@ -399,11 +399,30 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<float, 4> scores,
 	float print_time,
 	float goal_height,
-	int spectator_id)
+	int spectator_id,
+	std::array<int, 4> moving_objects_id)
 {
-	bool is_menu = (game_state & state::menu);
-	s_to_render = ModelsToRender{scene->moving_models[id],&scene->models[9], &scene->models.back()};
-	a_to_render = ModelsToRender{scene->moving_models[id],&scene->animated_models.front(), &scene->animated_models.back()};
+	bool is_menu = (new_game_state & state::menu);
+	
+	if (game_state & state::building)
+	{
+		s_to_render = ModelsToRender{ scene->moving_models[moving_objects_id[id]], &scene->models[9], &scene->models.back() };
+		if (scene->animated_models.size() > 0)
+			a_to_render = ModelsToRender{ scene->moving_models[moving_objects_id[id]], &scene->animated_models.front(), &scene->animated_models.back() };
+	}
+	else if (!died[id] && !finish[id])
+	{
+		s_to_render = ModelsToRender{ scene->moving_models[id], &scene->models[9], &scene->models.back() };
+		if (scene->animated_models.size() > 0)
+			a_to_render = ModelsToRender{ scene->moving_models[id], &scene->animated_models.front(), &scene->animated_models.back() };
+	}
+	else
+	{
+		s_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->models[9], &scene->models.back() };
+		if (scene->animated_models.size() > 0)
+			a_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->animated_models.front(), &scene->animated_models.back() };
+	}
+
 	/*first_model = 9;
 	last_model = 9;
 	for (auto i = 9u; i < scene->models.size(); ++i)

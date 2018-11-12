@@ -283,10 +283,7 @@ void Game::update(std::chrono::milliseconds delta)
 				dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
 
 				give_players_objects = true;
-
-				std::cout << "Model Id: " << model_id << "\nDynamic Id: " << dynamic_id << "\n";
 			}
-			std::cout << "\n";
 		}
 
 		for (auto& ppoi : players_placed_objects_id)
@@ -490,6 +487,11 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 		}
 
+		std::array<int, 4> moving_objects_id = { players_placed_objects_id[0].model_id,
+			players_placed_objects_id[1].model_id,
+			players_placed_objects_id[2].model_id,
+			players_placed_objects_id[3].model_id };
+			
 		string temp = stream.str();
 		renderer.update(delta,
 			obj,
@@ -498,7 +500,8 @@ void Game::update(std::chrono::milliseconds delta)
 			chat[1], player_count,
 			net.id(), game_state, temp, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height,
-			watching);
+			watching,
+			moving_objects_id);
 	}
 }
 
