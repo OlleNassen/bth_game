@@ -108,6 +108,8 @@ void Renderer::render(
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	z_prepass(begin, end, buttons, debug_positions, build_info, game_over, died, finish, scores, print_time);
+
 	if (!is_menu && connected)
 	{
 		render_character(robot_shader, game_camera, scene->moving_models, player_count); 
@@ -514,6 +516,36 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 		const auto& renderable = data[i];
 		renderable.render(shader);
 	}
+}
+
+void Renderer::z_prepass(const std::string * begin, const std::string * end,
+	const std::array<std::string, 12>& buttons, const std::vector<glm::vec3>& debug_positions,
+	const std::vector<build_information>& build_infos, bool game_over, std::array<bool, 4> died,
+	std::array<bool, 4> finish, std::array<float, 4> scores, float print_time) const
+{
+	//CLEAR FOR Z-PREPASS
+	glEnable(GL_DEPTH_TEST);  // We want depth test !
+	glDepthMask(GL_TRUE);     // Ask z writing
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// z-prepass
+	glEnable(GL_DEPTH_TEST);  // We want depth test !
+	glDepthFunc(GL_LESS);     // We want to get the nearest pixels
+	glColorMask(0, 0, 0, 0);  // Disable color, it's useless, we only want depth.
+	glDepthMask(GL_TRUE);     // Ask z writing
+
+	render_character(robot_shader, game_camera, scene->moving_models, player_count);
+
+	if (scene->moving_models.size() > 4)
+		render_type(pbr, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
+
+	render_type(pbra, game_camera, a_to_render.first, a_to_render.last);
+	render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
+
+	glEnable(GL_DEPTH_TEST);  // We still want depth test
+	glDepthFunc(GL_LEQUAL);   // EQUAL should work, too. (Only draw pixels if they are the closest ones)
+	glColorMask(1, 1, 1, 1);     // We want color this time
+	glDepthMask(GL_FALSE);    // Writing the z component is useless now, we already have it
 }
 
 }
