@@ -4,8 +4,8 @@ function setup(entity)
 	entity.can_jump = true
 	entity.can_walljump = true
 	entity.can_move = true -- instead of playable
-	entity.max_speed = 900
-	entity.max_air_speed = 800
+	entity.max_speed = 1100
+	entity.max_air_speed = 600
  	entity.acceleration = 580000
 	entity.jump_timer = 0
 	entity.jump_impulse_x = 0
@@ -21,16 +21,17 @@ function setup(entity)
 	entity.jump_forgiveness_time = 0.5
 end
 
-local jump_speed = 2000
+local jump_speed = 2200
 local gravity = 120
 local max_gravity = 500
 local wall_jump_speed = 
 {
-	x = 1000,
-	y = 20
+	x = 600,
+	y = 15
 }
 
 function update(delta_seconds, entity)
+	
 	update_anim_state(delta_seconds, entity)
 
 	--trigger
@@ -104,23 +105,32 @@ function update(delta_seconds, entity)
 	or entity.anim.current == entity.anim.in_jump 
 	or entity.anim.current == entity.anim.hanging_left 
 	or entity.anim.current == entity.anim.hanging_right
+	or entity.anim.current == entity.anim.idle
+	or entity.anim.current == entity.anim.running
 	then
 		entity.velocity.y = entity.velocity.y - gravity * delta_seconds
 		if entity.velocity.y < -max_gravity * delta_seconds
 		then
 			entity.velocity.y = -max_gravity * delta_seconds
 		end
-	elseif entity.anim.current ~= entity.anim.in_jump 	
-	then
-		entity.velocity.y = entity.velocity.y - entity.velocity.y * delta_seconds
-	else
-		entity.velocity.y = 0
+	--elseif entity.anim.current ~= entity.anim.in_jump 	
+	--then
+		--entity.velocity.y = entity.velocity.y - entity.velocity.y * delta_seconds
+	--else
+		--entity.velocity.y = 0
 	end
 end
 
 function update_anim_state(delta_seconds, entity)
 
 	entity.velocity.x = 0
+	
+	entity.jump_impulse_x = entity.jump_impulse_x * 0.5
+	if entity.jump_impulse_x < 0.1 and entity.jump_impulse_x < -0.1
+	then
+		entity.velocity.x = entity.jump_impulse_x * delta_seconds
+	end
+
 	local speed = entity.max_speed * delta_seconds
 	
 	if entity.anim.current == entity.anim.in_jump
@@ -138,12 +148,6 @@ function update_anim_state(delta_seconds, entity)
 	then
 		entity.velocity.x = entity.velocity.x + speed
 	end
-
-	--entity.jump_impulse_x = entity.jump_impulse_x * 0.5
-	--if entity.jump_impulse_x < 0.1 and entity.jump_impulse_x < -0.1
-	--then
-		--entity.velocity.x = entity.jump_impulse_x * delta_seconds
-	--end
 
 	
 	if entity.anim.current == entity.anim.running
@@ -187,8 +191,6 @@ function update_anim_state(delta_seconds, entity)
 		end	
 
 	end
-
-	
 	
 	if entity.anim.current == entity.anim.in_jump
 	then
@@ -203,11 +205,14 @@ function update_anim_state(delta_seconds, entity)
 		entity.ungrounded_time = 0
 		entity.can_jump = true
 		entity.can_walljump = true
+	end	
+	
+	if entity.anim.current == entity.anim.falling
+	then
+
 	end
 
-	
-		
-	
+
 	if entity.anim.current == entity.anim.hanging_right
 	then
 		entity.ungrounded_time = 0
@@ -236,8 +241,8 @@ function update_anim_state(delta_seconds, entity)
 		end
 	end
 
-	if entity.anim.current == entity.anim.jump_from_wall
-	then	
-		entity.jump_impulse_x = wall_jump_speed.x * delta_seconds
-	end
+	--if entity.anim.current == entity.anim.jump_from_wall
+	--then	
+		--entity.jump_impulse_x = wall_jump_speed.x * delta_seconds
+	--end
 end
