@@ -61,6 +61,12 @@ Renderer::Renderer(GameScene* scene)
 	dir_light.color = glm::vec3(0, 1, 0);
 	dir_light.intensity = 50.f;
 
+	spotlights[0].position = glm::vec3(0, 0, 0);
+	spotlights[0].color = glm::vec3(1, 0, 0);
+	spotlights[0].direction = glm::vec3(0, 0, -10);
+	spotlights[0].intensity = 300.f;
+	spotlights[0].cos_total_width = 100.f;
+	spotlights[0].cos_falloff_start = 40.f;
 
 }
 
@@ -107,14 +113,14 @@ void Renderer::render(
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
-		render_type(pbr, game_camera, lights, dir_light, 
+		render_type(pbr, game_camera, lights, dir_light, spotlights,
 			&scene->models[first_model], &scene->models[last_model]);
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, game_camera, lights, dir_light,
+			render_type(pbr, game_camera, lights, dir_light, spotlights,
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbr, game_camera, lights, dir_light,
+		render_type(pbr, game_camera, lights, dir_light, spotlights,
 			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
@@ -211,13 +217,13 @@ void Renderer::render(
 				game_camera, lights, scene->moving_models, 4);
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, db_camera, lights, dir_light,
+			render_type(pbr, db_camera, lights, dir_light, spotlights,
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbr, db_camera, lights, dir_light,
+		render_type(pbr, db_camera, lights, dir_light, spotlights,
 			&scene->models[first_model], &scene->models[last_model]);
 
-		render_type(pbr, db_camera, lights, dir_light,
+		render_type(pbr, db_camera, lights, dir_light, spotlights,
 			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
@@ -504,6 +510,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	leaderboard.update(std::move(scoreboard));
 
+	spotlights[0].position = scene->models[0].get_position();
 }
 
 void Renderer::z_prepass(const std::string * begin, const std::string * end,

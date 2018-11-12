@@ -196,6 +196,7 @@ private:
 
 	std::array<PointLight, 14> lights;
 	DirectionalLight dir_light;
+	std::array<SpotLight, 1> spotlights;
 
 	int first_model = 0;
 	int last_model = 0;
@@ -231,7 +232,10 @@ private:
 
 
 template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const DirectionalLight& dir_light, const T* first, const T* last)
+void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights,
+	const DirectionalLight& dir_light,
+	const std::array<SpotLight, 1>&  spotlights,
+	const T* first, const T* last)
 {
 	shader.use();
 	shader.uniform("view", camera.view());
@@ -241,6 +245,14 @@ void render_type(const Shader& shader, const Camera& camera, const std::array<Po
 	shader.uniform("dir_light_dir", dir_light.direction);
 	shader.uniform("dir_light_color", dir_light.color);
 	shader.uniform("dir_light_intensity", dir_light.intensity);
+
+	shader.uniform("spotlight_pos", spotlights[0].position);
+	shader.uniform("spotlight_color", spotlights[0].color);
+	shader.uniform("spotlight_direction", spotlights[0].direction);
+	shader.uniform("spotlight_intensity", spotlights[0].intensity);
+	shader.uniform("cos_total_width", spotlights[0].cos_total_width);
+	shader.uniform("cos_falloff_start", spotlights[0].cos_falloff_start);
+
 
 	int light_count = 0;
 

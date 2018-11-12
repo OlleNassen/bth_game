@@ -15,16 +15,27 @@ uniform sampler2D albedo_map;
 uniform sampler2D normal_map;
 uniform sampler2D roughness_metallic_ao_map;
 uniform vec3 player_color;
+uniform vec3 cam_pos;
 
+//point lights
+uniform int light_count;
 uniform vec3 light_pos[14];
 uniform vec3 light_color[14];
 uniform float light_intensity[14];
-uniform vec3 cam_pos;
+
+//dir light
 uniform vec3 dir_light_dir;
 uniform vec3 dir_light_color;
 uniform float dir_light_intensity;
 
-uniform int light_count;
+//spot light
+uniform vec3 spotlight_pos;
+uniform vec3 spotlight_direction;
+uniform vec3 spotlight_color;
+uniform float spotlight_intensity;
+uniform float cos_total_width;
+uniform float cos_falloff_start;
+
 
 //IBL
 uniform sampler2D   brdf_lut;
@@ -93,7 +104,23 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 {
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
-}   
+}
+
+float spotlight_falloff(vec3 w)
+{
+	vec3 n_w = normalize(w);
+	float cos_theta = n_w.z;
+	if(cos_theta < cos_total_width)
+	{
+		return 0;
+	}
+	if(cos_theta > cos_falloff_start)
+	{
+		return 1;
+	}
+	float delta = (cos_theta - cos_total_width) / (cos_falloff_start - cos_total_width);
+	return (delta * delta) * (delta * delta);
+}
 
 void main()
 {
@@ -123,6 +150,42 @@ void main()
 			float distance = length(light_pos[i] - fs_in.world_pos);
 			float attenuation = light_intensity[i] / (distance * distance);
 			vec3 radiance = light_color[i] * attenuation;
+
+			// Cook-Torrance BRDF
+			float NDF = DistributionGGX(N, H, roughness);   
+			float G   = GeometrySmith(N, V, L, roughness);      
+			vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+           
+			vec3 nominator    = NDF * G * F; 
+			float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
+			vec3 specular = nominator / denominator;
+        
+			// kS is equal to Fresnel
+			vec3 kS = F;
+			// for energy conservation, the diffuse and specular light can't
+			// be above 1.0 (unless the surface emits light); to preserve this
+			// relationship the diffuse component (kD) should equal 1.0 - kS.
+			vec3 kD = vec3(1.0) - kS;
+			// multiply kD by the inverse metalness such that only non-metals 
+			// have diffuse lighting, or a linear blend if partly metal (pure metals
+			// have no diffuse light).
+			kD *= 1.0 - metallic;	  
+
+			// scale light by NdotL
+			float NdotL = max(dot(N, L), 0.0);        
+
+			// add to outgoing radiance Lo
+			Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+    }
+ 
+	//for(int i = 0; i < 1; i++)
+    { // SPOTLIGHT
+			// calculate per-light radiance
+			vec3 L = normalize(spotlight_pos - fs_in.world_pos);
+			vec3 H = normalize(V + L);
+			float distance = length(spotlight_pos - fs_in.world_pos);
+			float attenuation = (spotlight_intensity * spotlight_falloff(spotlight_direction - spotlight_pos)) / (distance * distance);
+			vec3 radiance = spotlight_color * attenuation;
 
 			// Cook-Torrance BRDF
 			float NDF = DistributionGGX(N, H, roughness);   
