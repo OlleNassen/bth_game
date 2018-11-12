@@ -401,7 +401,7 @@ void Game::update(std::chrono::milliseconds delta)
 			net.id(), game_state, temp, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height);
 	}
-	settings.set_screen_mode(menu.get_fullscreen_state());
+	//settings.set_screen_mode(menu.get_fullscreen_state());
 	bool test = settings.get_screen_mode();
 }
 
