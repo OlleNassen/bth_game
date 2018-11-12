@@ -405,9 +405,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 	anim idle = anim::falling;
 
-	for (int i = 4; i < level.models.size(); i++)
-		if (level.models[i].is_animated)
-			level.models[i].update_animation((float)delta.count(), idle);
+	for (auto& model : level.animated_models)
+			model.update_animation((float)delta.count(), idle);
 
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);

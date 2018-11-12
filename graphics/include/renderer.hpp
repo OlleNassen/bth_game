@@ -50,6 +50,15 @@ using objects_array = std::array<objects, 100>;
 // Olle
 // Edvard
 
+class ModelsToRender
+{
+public:
+	ModelsToRender() = default;
+	ModelsToRender(const Model& player, const Model* begin, const Model* end);
+	const Model* first = 0;
+	const Model* last = 0;
+};
+
 
 
 class Renderer
@@ -69,8 +78,6 @@ public:
 		std::array<float, 4> scores,
 		float print_time,
 		int player_id) const;
-
-	void render();
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -104,22 +111,19 @@ public:
 		glBindVertexArray(0);
 	}
 
-	void z_prepass(
-		const std::string* begin,
-		const std::string* end,
-		const std::array<std::string, 12>& buttons,
-		const std::vector<glm::vec3>& debug_positions,
-		const std::vector<build_information>& build_infos,
-		bool game_over,
-		std::array<bool, 4> died,
-		std::array<bool, 4> finish,
-		std::array<float, 4> scores,
-		float print_time) const;
-
 private:
+	void render_type(const Shader& shader, const Camera& camera, 
+		const Model* first, const Model* last) const;
+	
+	void render_character(const Shader& shader, const Camera& camera, 
+		const std::vector<Model>& data, int num_players) const;
+
 	Shader pbr{ 
 		"../resources/shaders/pbr.vs", 
 		"../resources/shaders/pbr.fs" };
+	Shader pbra{
+		"../resources/shaders/pbra.vs",
+		"../resources/shaders/pbra.fs" };
 	Shader text_shader{ 
 		"../resources/shaders/text.vs", 
 		"../resources/shaders/text.fs" };
@@ -201,9 +205,10 @@ private:
 	PostProcessingEffects post_processing_effects;
 
 	std::array<PointLight, 14> lights;
+	DirectionalLight dir_light;
 
-	int first_model = 0;
-	int last_model = 0;
+	ModelsToRender s_to_render;
+	ModelsToRender a_to_render;
 
 	int player_count{0};
 	glm::vec2 v[4];
@@ -224,7 +229,7 @@ private:
 
 
 	//Test of leaderboard
-	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
+	glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
 	Leaderboard leaderboard;
 	
 	//Timer text
@@ -233,70 +238,6 @@ private:
 	//Build instructions
 	Text build_text;
 };
-
-
-template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T* first, const T* last)
-{
-	shader.use();
-	shader.uniform("view", camera.view());
-	shader.uniform("projection", camera.projection);
-
-	shader.uniform("cam_pos", camera.position);
-
-	int light_count = 0;
-
-	for (int i = 0; i < 9; i++)
-	{
-		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
-		{
-			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
-			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
-			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
-			light_count++;
-		}
-	}
-
-	shader.uniform("light_count", light_count);
-
-	for (auto it = first; it != last; ++it)
-	{
-		const auto& renderable = *it;
-		renderable.render(shader, camera, lights);
-	}
-}
-
-template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T& data, int num_players)
-{
-	shader.use();
-	shader.uniform("view", camera.view());
-	shader.uniform("projection", camera.projection);
-
-	shader.uniform("cam_pos", camera.position);
-
-	int light_count = 0;
-
-	for (int i = 0; i < 9; i++)
-	{
-		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
-		{
-			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
-			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
-			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
-			light_count++;
-		}
-	}
-
-	shader.uniform("light_count", light_count);
-
-
-	for (auto i = 0; i < num_players; ++i)
-	{
-		const auto& renderable = data[i];
-		renderable.render(shader, camera, lights);
-	}
-}
 
 }
 
