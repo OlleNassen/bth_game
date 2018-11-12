@@ -437,28 +437,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 }
 
-void Renderer::z_prepass(const std::string * begin, const std::string * end,
-	const std::array<std::string, 12>& buttons, const std::vector<glm::vec3>& debug_positions,
-	const std::vector<build_information>& build_infos, bool game_over, std::array<bool, 4> died,
-	std::array<bool, 4> finish, std::array<float, 4> scores, float print_time) const
-{
-	//CLEAR FOR Z-PREPASS
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// z-prepass
-	glEnable(GL_DEPTH_TEST);  // We want depth test !
-	glDepthFunc(GL_LESS);     // We want to get the nearest pixels
-	glColorMask(0, 0, 0, 0);  // Disable color, it's useless, we only want depth.
-	glDepthMask(GL_TRUE);     // Ask z writing
-
-	render(begin, end, buttons, debug_positions, build_infos, game_over, died, finish, scores, print_time);
-
-	glEnable(GL_DEPTH_TEST);  // We still want depth test
-	glDepthFunc(GL_LEQUAL);   // EQUAL should work, too. (Only draw pixels if they are the closest ones)
-	glColorMask(1, 1, 1, 1);     // We want color this time
-	glDepthMask(GL_TRUE);    // Writing the z component is useless now, we already have it
-}
-
 void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const
 {
 	shader.use();

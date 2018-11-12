@@ -108,18 +108,6 @@ public:
 		glBindVertexArray(0);
 	}
 
-	void z_prepass(
-		const std::string* begin,
-		const std::string* end,
-		const std::array<std::string, 12>& buttons,
-		const std::vector<glm::vec3>& debug_positions,
-		const std::vector<build_information>& build_infos,
-		bool game_over,
-		std::array<bool, 4> died,
-		std::array<bool, 4> finish,
-		std::array<float, 4> scores,
-		float print_time) const;
-
 private:
 	void render_type(const Shader& shader, const Camera& camera, 
 		const Model* first, const Model* last) const;
