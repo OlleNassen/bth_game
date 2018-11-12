@@ -48,7 +48,6 @@ Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string
 	//glEnable(GL_CULL_FACE);
 
 	//glFrontFace(GL_CW);
-
 }
 
 Window::~Window()

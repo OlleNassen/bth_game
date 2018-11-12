@@ -49,6 +49,15 @@ using objects_array = std::array<objects, 100>;
 // Olle
 // Edvard
 
+class ModelsToRender
+{
+public:
+	ModelsToRender() = default;
+	ModelsToRender(const Model& player, const Model* begin, const Model* end);
+	const Model* first = 0;
+	const Model* last = 0;
+};
+
 
 
 class Renderer
@@ -67,8 +76,6 @@ public:
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
 		float print_time) const;
-
-	void render();
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -117,6 +124,9 @@ private:
 	Shader pbr{ 
 		"../resources/shaders/pbr.vs", 
 		"../resources/shaders/pbr.fs" };
+	Shader pbra{
+		"../resources/shaders/pbra.vs",
+		"../resources/shaders/pbra.fs" };
 	Shader text_shader{ 
 		"../resources/shaders/text.vs", 
 		"../resources/shaders/text.fs" };
@@ -197,8 +207,8 @@ private:
 	std::array<PointLight, 14> lights;
 	DirectionalLight dir_light;
 
-	int first_model = 0;
-	int last_model = 0;
+	ModelsToRender s_to_render;
+	ModelsToRender a_to_render;
 
 	int player_count{0};
 	glm::vec2 v[4];
@@ -219,7 +229,7 @@ private:
 
 
 	//Test of leaderboard
-	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
+	glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
 	Leaderboard leaderboard;
 	
 	//Timer text
