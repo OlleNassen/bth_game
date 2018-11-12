@@ -110,16 +110,17 @@ function update(delta_seconds, entity)
 	or entity.anim.current == entity.anim.running
 	then
 		entity.velocity.y = entity.velocity.y - gravity * delta_seconds
+		print("Adam")
 		if entity.velocity.y < -max_gravity * delta_seconds
 		then
 			entity.velocity.y = -max_gravity * delta_seconds
 		end
-	elseif entity.anim.current ~= entity.anim.in_jump 	
-	then
-		entity.velocity.y = entity.velocity.y - entity.velocity.y * delta_seconds
-	else
-		entity.velocity.y = 0
 	end
+	--[[elseif entity.anim.current ~= entity.anim.in_jump 	
+	then
+		entity.velocity.y = entity.velocity.y - (entity.velocity.y * delta_seconds)
+		print("Lisa")
+	end]]--
 end
 
 function update_anim_state(delta_seconds, entity)
