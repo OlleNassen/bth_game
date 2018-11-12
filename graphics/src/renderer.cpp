@@ -164,14 +164,14 @@ void Renderer::render(
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Press 'Space' to place object", 1280.f - 540, 10.f, 0.75f);
+			build_text.render_text("Press 'Space' to place object", 1920.f - 540, 10.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 
 			glDisable(GL_DEPTH_TEST);
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Build Stage", 1280.f - 210, 720.f - 35.f, 0.75f);
+			build_text.render_text("Build Stage", 1920.f - 210, 1080.f - 35.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 		}
 
@@ -181,7 +181,7 @@ void Renderer::render(
 		text_shader.use();
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-		timer_text.render_text(out_text.str(), 10.f, 720.f - 45.f, 1.f);
+		timer_text.render_text(out_text.str(), 10.f, 1080.f - 45.f, 1.f);
 		glEnable(GL_DEPTH_TEST);
 	}
 	else if (!is_menu)
@@ -279,7 +279,7 @@ void Renderer::render(
 				text.render_text(s.c_str(), 10.0f, (offset += 25.0f), 0.5f);
 		});
 
-		constexpr float size_y = static_cast<int>(720 / 12);
+		constexpr float size_y = static_cast<int>(1080 / 12);
 
 		for (auto i = 0u; i < buttons.size(); ++i)
 			text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
