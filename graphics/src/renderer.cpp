@@ -57,6 +57,11 @@ Renderer::Renderer(GameScene* scene)
 		lights[i].intensity = 200;
 	}
 
+	dir_light.direction = glm::vec3(0, -0.7, -1);
+	dir_light.color = glm::vec3(0.8, 0.8, 1);
+	dir_light.intensity = 0.2f;
+
+
 }
 
 void Renderer::render(
@@ -102,14 +107,14 @@ void Renderer::render(
 		brdf_buffer.bind_texture(6);
 		irradiance_buffer.bind_texture(7);
 		prefilter_buffer.bind_texture(8);
-		render_type(pbr, game_camera, lights, 
+		render_type(pbr, game_camera, lights, dir_light, 
 			&scene->models[first_model], &scene->models[last_model]);
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, game_camera, lights,
+			render_type(pbr, game_camera, lights, dir_light,
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbr, game_camera, lights,
+		render_type(pbr, game_camera, lights, dir_light,
 			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
@@ -206,13 +211,13 @@ void Renderer::render(
 				game_camera, lights, scene->moving_models, 4);
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, db_camera, lights,
+			render_type(pbr, db_camera, lights, dir_light,
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbr, db_camera, lights, 
+		render_type(pbr, db_camera, lights, dir_light,
 			&scene->models[first_model], &scene->models[last_model]);
 
-		render_type(pbr, db_camera, lights,
+		render_type(pbr, db_camera, lights, dir_light,
 			&scene->models[0], &scene->models[9]);
 
 		skybox_shader.use();
