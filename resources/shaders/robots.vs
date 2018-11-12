@@ -16,7 +16,6 @@ uniform vec3 light_color[14];
 uniform float light_intensity[14];
 
 const int JOINT_SIZE = 20;
-uniform int animated;
 uniform mat4 bone_mats[JOINT_SIZE];
 
 out VS_OUT{
@@ -27,15 +26,9 @@ out VS_OUT{
 
 void main()
 {
-	vs_out.world_normal = (model * vec4(normal, 0)).xyz;
 	mat4 bone_matrix = mat4(1.0);
-	vs_out.world_pos = vec3(model * vec4(position, 1.0));
+	vs_out.tex_coord = uv;
 
-    vs_out.tex_coord = uv;
-	gl_Position = projection * view * model * bone_matrix * vec4(position, 1.0);
-
-	if(animated == 1)
-	{
 	bone_matrix = bone_mats[int(weights_id.x)] * weights.x;
 	bone_matrix += bone_mats[int(weights_id.z)] * weights.z;
 	bone_matrix += bone_mats[int(weights_id.w)] * weights.w;
@@ -50,6 +43,4 @@ void main()
 	vs_out.world_normal = (model * bone_matrix * vec4(normal, 0)).xyz;
 
 	gl_Position = projection * view_pos;
-	}
-
 }

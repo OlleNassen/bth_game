@@ -110,41 +110,16 @@ void Renderer::render(
 
 	if (!is_menu && connected)
 	{
-		robot_shader.use();
-		robot_shader.uniform("brdf_lut", 6);
-		robot_shader.uniform("irradiance_map", 7);
-		robot_shader.uniform("prefilter_map", 8);
+		render_character(robot_shader, game_camera, scene->moving_models, player_count); 
 
-		brdf_buffer.bind_texture(6);
-		irradiance_buffer.bind_texture(7);
-		prefilter_buffer.bind_texture(8);
-		render_character(robot_shader,
-			game_camera, lights, scene->moving_models, player_count);   
-
-		pbr.use();
-		pbr.uniform("brdf_lut", 6);
-		pbr.uniform("irradiance_map", 7);
-		pbr.uniform("prefilter_map", 8);
-
-		brdf_buffer.bind_texture(6);
-		irradiance_buffer.bind_texture(7);
-		prefilter_buffer.bind_texture(8);
-		
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, game_camera, lights, dir_light,
-				&scene->moving_models[4], &scene->moving_models.back() + 1);
+			render_type(pbr, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbr, game_camera, lights, dir_light, 
-			s_to_render.first, s_to_render.last);
-
-		render_type(pbra, game_camera, lights, dir_light,
-			a_to_render.first, a_to_render.last);
-
-		render_type(pbr, game_camera, lights, dir_light,
-			&scene->models[0], &scene->models[9]);
+		render_type(pbra, game_camera,a_to_render.first, a_to_render.last);
+		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
+		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
 
 		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
-
 		
 		if (debug_active)
 		{
@@ -211,31 +186,16 @@ void Renderer::render(
 	}
 	else if (!is_menu)
 	{
-		pbr.use();
-		pbr.uniform("brdf_lut", 6);
-		pbr.uniform("irradiance_map", 7);
-		pbr.uniform("prefilter_map", 8);
-
-		brdf_buffer.bind_texture(6);
-		irradiance_buffer.bind_texture(7);
-		prefilter_buffer.bind_texture(8);
-
 		if(debug)
-			render_character(robot_shader,
-				game_camera, lights, scene->moving_models, 4);
+			render_character(robot_shader, game_camera, scene->moving_models, 4);
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, db_camera, lights, dir_light,
+			render_type(pbr, db_camera,
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbra, db_camera, lights, dir_light,
-			a_to_render.first, a_to_render.last);
-
-		render_type(pbr, db_camera, lights, dir_light,
-			s_to_render.first, s_to_render.last);
-
-		render_type(pbr, db_camera, lights, dir_light,
-			&scene->models[0], &scene->models[9]);
+		render_type(pbra, db_camera, a_to_render.first, a_to_render.last);
+		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
+		render_type(pbr, db_camera, &scene->models[0], &scene->models[9]);
 
 		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
 
@@ -505,6 +465,85 @@ void Renderer::z_prepass(const std::string * begin, const std::string * end,
 	glDepthFunc(GL_LEQUAL);   // EQUAL should work, too. (Only draw pixels if they are the closest ones)
 	glColorMask(1, 1, 1, 1);     // We want color this time
 	glDepthMask(GL_TRUE);    // Writing the z component is useless now, we already have it
+}
+
+void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const
+{
+	shader.use();
+
+	shader.uniform("brdf_lut", 6);
+	shader.uniform("irradiance_map", 7);
+	shader.uniform("prefilter_map", 8);
+	brdf_buffer.bind_texture(6);
+	irradiance_buffer.bind_texture(7);
+	prefilter_buffer.bind_texture(8);
+
+	shader.uniform("view", camera.view());
+	shader.uniform("projection", camera.projection);
+
+	shader.uniform("cam_pos", camera.position);
+	shader.uniform("dir_light_dir", dir_light.direction);
+	shader.uniform("dir_light_color", dir_light.color);
+	shader.uniform("dir_light_intensity", dir_light.intensity);
+
+	int light_count = 0;
+
+	for (int i = 0; i < 9; i++)
+	{
+		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
+		{
+			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
+			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
+			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
+			light_count++;
+		}
+	}
+
+	shader.uniform("light_count", light_count);
+
+	for (auto it = first; it != last; ++it)
+	{
+		const auto& renderable = *it;
+		renderable.render(shader);
+	}
+}
+
+void Renderer::render_character(const Shader& shader, const Camera& camera, const std::vector<Model>& data, int num_players) const
+{
+	shader.use();
+
+	shader.uniform("brdf_lut", 6);
+	shader.uniform("irradiance_map", 7);
+	shader.uniform("prefilter_map", 8);
+	brdf_buffer.bind_texture(6);
+	irradiance_buffer.bind_texture(7);
+	prefilter_buffer.bind_texture(8);
+
+	shader.uniform("view", camera.view());
+	shader.uniform("projection", camera.projection);
+	shader.uniform("cam_pos", camera.position);
+
+	int light_count = 0;
+
+	for (int i = 0; i < 9; i++)
+	{
+		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
+		{
+			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
+			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
+			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
+			light_count++;
+		}
+	}
+
+	shader.uniform("light_count", light_count);
+
+
+	for (auto i = 0; i < num_players; ++i)
+	{
+		const auto& renderable = data[i];
+		renderable.render(shader);
+	}
 }
 
 }

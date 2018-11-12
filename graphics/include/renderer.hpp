@@ -121,6 +121,12 @@ public:
 		float print_time) const;
 
 private:
+	void render_type(const Shader& shader, const Camera& camera, 
+		const Model* first, const Model* last) const;
+	
+	void render_character(const Shader& shader, const Camera& camera, 
+		const std::vector<Model>& data, int num_players) const;
+
 	Shader pbr{ 
 		"../resources/shaders/pbr.vs", 
 		"../resources/shaders/pbr.fs" };
@@ -238,73 +244,6 @@ private:
 	//Build instructions
 	Text build_text;
 };
-
-
-template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const DirectionalLight& dir_light, const T* first, const T* last)
-{
-	shader.use();
-	shader.uniform("view", camera.view());
-	shader.uniform("projection", camera.projection);
-
-	shader.uniform("cam_pos", camera.position);
-	shader.uniform("dir_light_dir", dir_light.direction);
-	shader.uniform("dir_light_color", dir_light.color);
-	shader.uniform("dir_light_intensity", dir_light.intensity);
-
-	int light_count = 0;
-
-	for (int i = 0; i < 9; i++)
-	{
-		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
-		{
-			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
-			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
-			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
-			light_count++;
-		}
-	}
-
-	shader.uniform("light_count", light_count);
-
-	for (auto it = first; it != last; ++it)
-	{
-		const auto& renderable = *it;
-		renderable.render(shader, camera, lights);
-	}
-}
-
-template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 14>&  lights, const T& data, int num_players)
-{
-	shader.use();
-	shader.uniform("view", camera.view());
-	shader.uniform("projection", camera.projection);
-
-	shader.uniform("cam_pos", camera.position);
-
-	int light_count = 0;
-
-	for (int i = 0; i < 9; i++)
-	{
-		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
-		{
-			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
-			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
-			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
-			light_count++;
-		}
-	}
-
-	shader.uniform("light_count", light_count);
-
-
-	for (auto i = 0; i < num_players; ++i)
-	{
-		const auto& renderable = data[i];
-		renderable.render(shader, camera, lights);
-	}
-}
 
 }
 
