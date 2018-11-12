@@ -56,7 +56,7 @@ void Settings::create()
 	std::string tab = "    ";
 
 	out << "settings = \n" << "{\n" << "    window = \n" << "    {\n" << "        fullscreen = false,\n"
-		<< "        width = 1280,\n" << "        height = 720,\n" << "    },\n\n" << "    sound =\n" << "    {\n"
+		<< "        width = 1920,\n" << "        height = 1080,\n" << "    },\n\n" << "    sound =\n" << "    {\n"
 		<< "        quality = 9.0 -- 10 is max\n" << "    },\n\n" << "    graphics =\n"
 		<< "    {\n" << "        debug_fov = 90.0,\n" << "        depth_of_field = true\n" << "    }\n"
 		<< "}\n";

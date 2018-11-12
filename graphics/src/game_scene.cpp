@@ -56,6 +56,11 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 		model = glm::rotate(model, glm::radians(level.levelObjects[i].rotation[0]), glm::vec3{ 1,0,0 });
 
 		models.emplace_back(model, glm::vec3(0, 0, 0), mesh_lib->get_mesh(level.levelObjects[i].id));
+		if (models.back().is_animated)
+		{
+			animated_models.emplace_back(model, glm::vec3(0, 0, 0), mesh_lib->get_mesh(level.levelObjects[i].id));
+			models.pop_back();
+		}
 
 		if(level.levelObjects[i].position[2] > -0.01f && level.levelObjects[i].position[2] < 0.01f)
 		{ 
@@ -68,10 +73,16 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 		}
 	}
 
-	std::vector<Model>::iterator beg = models.begin();
+	auto beg = models.begin();
 	beg += 9;
 
 	std::sort(beg, models.end(), [](const auto& left, const auto& right)
+	{
+		return left.get_y_position() < right.get_y_position();
+	});
+
+	beg = animated_models.begin();
+	std::sort(beg, animated_models.end(), [](const auto& left, const auto& right)
 	{
 		return left.get_y_position() < right.get_y_position();
 	});
