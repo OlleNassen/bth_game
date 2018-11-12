@@ -101,6 +101,7 @@ function update(delta_seconds, entity)
 		entity.speed_boost_triggerd = false
 	end
 	
+
 	if entity.anim.current == entity.anim.falling 
 	or entity.anim.current == entity.anim.in_jump 
 	or entity.anim.current == entity.anim.hanging_left 
@@ -113,11 +114,11 @@ function update(delta_seconds, entity)
 		then
 			entity.velocity.y = -max_gravity * delta_seconds
 		end
-	--elseif entity.anim.current ~= entity.anim.in_jump 	
-	--then
-		--entity.velocity.y = entity.velocity.y - entity.velocity.y * delta_seconds
-	--else
-		--entity.velocity.y = 0
+	elseif entity.anim.current ~= entity.anim.in_jump 	
+	then
+		entity.velocity.y = entity.velocity.y - entity.velocity.y * delta_seconds
+	else
+		entity.velocity.y = 0
 	end
 end
 
@@ -125,11 +126,11 @@ function update_anim_state(delta_seconds, entity)
 
 	entity.velocity.x = 0
 	
-	entity.jump_impulse_x = entity.jump_impulse_x * 0.5
+	--[[entity.jump_impulse_x = entity.jump_impulse_x * 0.5
 	if entity.jump_impulse_x < 0.1 and entity.jump_impulse_x < -0.1
 	then
 		entity.velocity.x = entity.jump_impulse_x * delta_seconds
-	end
+	end]]--
 
 	local speed = entity.max_speed * delta_seconds
 	
@@ -218,7 +219,7 @@ function update_anim_state(delta_seconds, entity)
 		entity.ungrounded_time = 0
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		
-		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
+		if entity.button.jump and not entity.button.right and entity.can_walljump and entity.jump_timer > 0.2
 		then			
 			entity.anim.current = entity.anim.jump_from_wall
 			entity.velocity.y = wall_jump_speed.y
@@ -232,7 +233,7 @@ function update_anim_state(delta_seconds, entity)
 		entity.ungrounded_time = 0
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		
-		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
+		if entity.button.jump and not entity.button.left and entity.can_walljump and entity.jump_timer > 0.2
 		then
 			entity.anim.current = entity.anim.jump_from_wall
 			entity.velocity.y = wall_jump_speed.y
