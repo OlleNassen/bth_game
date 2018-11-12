@@ -2,7 +2,7 @@ settings =
 {
     window = 
     {
-        fullscreen = true,
+        fullscreen = false,
         width = 1280,
         height = 720,
     },

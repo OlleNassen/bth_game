@@ -48,7 +48,8 @@ Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string
 	//glEnable(GL_CULL_FACE);
 
 	//glFrontFace(GL_CW);
-
+	is_fullscreen = fullscreen;
+	this->window_size = window_size;
 }
 
 Window::~Window()
@@ -210,5 +211,40 @@ void Window::update_input(logic::input& input)
 	}
 	
 	
+}
+
+bool Window::get_is_fullscreen() const
+{
+	return is_fullscreen;
+}
+
+void Window::set_screen_mode(bool fullscreen)
+{
+	static glm::ivec2 window_pos = { 0, 0 };
+	if (fullscreen)
+	{
+
+		// backup windwo position and window size
+		
+		glfwGetWindowPos(glfw_window, &window_pos.x, &window_pos.y);
+		//glfwGetWindowSize(glfw_window, &window_size.x, &window_size.y);
+
+		// get reolution of monitor
+		//const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+		// swithc to full screen
+		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+
+		glfwSetWindowMonitor(glfw_window, glfwGetPrimaryMonitor(), 0, 0, window_size.x, window_size.y, 0);
+	}
+	else
+	{
+		// restore last window size and position
+		glfwSetWindowMonitor(glfw_window, nullptr, window_pos.x, window_pos.y, window_size.x, window_size.y, 0);
+	}
+
+	//_updateViewport = true;
+	is_fullscreen = fullscreen;
 }
 

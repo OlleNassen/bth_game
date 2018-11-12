@@ -401,8 +401,16 @@ void Game::update(std::chrono::milliseconds delta)
 			net.id(), game_state, temp, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height);
 	}
-	//settings.set_screen_mode(menu.get_fullscreen_state());
-	bool test = settings.get_screen_mode();
+	if (game_state & state::menu)
+	{
+		bool fullscreen = menu.get_fullscreen_state();
+		std::cout << window.get_is_fullscreen() << "\n";
+		if (window.get_is_fullscreen() != fullscreen)
+		{
+			window.set_screen_mode(fullscreen);
+			settings.create(fullscreen);
+		}
+	}
 }
 
 void Game::pack_data()

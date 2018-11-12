@@ -28,9 +28,8 @@ public:
 	const GraphicsSettings& get_graphics_settings()const;
 	bool get_screen_mode() const;
 	void set_screen_mode(bool);
-
+	void create(bool);
 private:
-	void create();
 
 	lua_State* importer;
 	GraphicsSettings graphics;
