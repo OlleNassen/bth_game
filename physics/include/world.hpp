@@ -86,7 +86,7 @@ public:
 	bool rw[4];
 	bool lw[4];
 
-
+	void remove_body(int at);
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 

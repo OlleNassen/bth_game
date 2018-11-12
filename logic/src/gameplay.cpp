@@ -24,6 +24,7 @@ void Gameplay::refresh()
 
 	pre_playing_done = false;
 	pre_starter_time = 3.5f;
+	players_done = 0;
 
 	for (auto i = 0; i < 4; ++i)
 	{
@@ -129,7 +130,18 @@ LuaExport Gameplay::update(Input inputs,
 
 		time = game_script.get_time();
 
+		if (time < 0.0f)
+		{
+			//new round
+			is_new_round = true;
+			new_round();
+		}
+
 		//std::cout << "			X2:" << inputs.dynamics[0].velocity.x << " Y2:" << inputs.dynamics[0].velocity.y << std::endl; // test triggers
+	}
+	else if (current_state & state::game_over)
+	{
+
 	}
 	
 	game_script.update_export();
@@ -217,6 +229,26 @@ void Gameplay::give_up(Input input)
 int	Gameplay::get_random_object_id(Input input)
 {
 	return 0;// rand() % input.scene->objects.size();
+}
+
+
+void Gameplay::new_round()
+{
+	pre_playing_done = false;
+	pre_starter_time = 3.5f;
+
+	/*for (auto i = 0; i < 4; ++i)
+	{
+		player_script.setup(i);
+	}*/
+
+	for (int i = 0; i < 100; ++i)
+	{
+		placement_script.setup(i);
+	}
+
+	//game_script.setup();
+	game_script.reset_time();
 }
 
 }

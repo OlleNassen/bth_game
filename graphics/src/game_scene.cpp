@@ -15,6 +15,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 	//Create players
 	CustomLevel level(file_name);
 	CustomLevel objects("../resources/level/objects.ssp");
+	models.clear();
 	models.reserve(sizeof(Model) * (level.counterReader.levelObjectCount));
 
 	using glm::vec3;
@@ -86,6 +87,7 @@ GameScene::~GameScene()
 
 void GameScene::inititate_object(CustomLevel& objects, MeshLib* object_lib)
 {
+	this->objects.clear();
 	for (unsigned int i = 0; i < objects.counterReader.levelObjectCount; i++)
 	{
 		glm::mat4 model{ 1.0f };

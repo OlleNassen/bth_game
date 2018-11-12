@@ -25,7 +25,8 @@ enum class SessionState : uint8
 	lobby,
 	loading,
 	building,
-	playing
+	playing,
+	game_over
 };
 
 class Vec2

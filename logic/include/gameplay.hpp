@@ -59,6 +59,8 @@ public:
 		int& current_state);
 	bool build_stage() const;
 	bool pre_playing_stage() const;
+	bool is_new_round = false;
+	void new_round();
 private:
 	script_array<int> entities;
 	PlayerScript player_script{"../resources/scripts/player.lua"};

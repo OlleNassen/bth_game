@@ -464,7 +464,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		}
 	}
 	
-	if (game_state & state::building)
+	if (!(game_state & state::playing))
 	{
 		post_processing_effects.glow_value = 0.0f;
 		if (!is_menu)

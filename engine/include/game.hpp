@@ -92,9 +92,6 @@ private:
 
 	//spectator
 	int watching = 0;
-
-	//lobby
-	glm::vec2 ready_check = { 0.f, 0.f };
 };
 
 

@@ -72,7 +72,6 @@ Game::Game()
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
 
 	//place_random_objects(0, 20, 9); //For random placing object
-	ready_check = dynamics[50].position;
 }
 
 void Game::run()
@@ -139,13 +138,32 @@ void Game::update(std::chrono::milliseconds delta)
 		physics.clear_object();
 		level.clear_object();
 		gameplay.refresh();
+		for (int i = 0; i < 4; ++i)
+			dynamics[i].position = glm::vec2(3.f * i, 1.75f);
 		for (int i = 4; i < dynamics.size(); ++i)
-			dynamics[i].position = glm::vec2(-2000000.f, -2000000.f);
-		ready_check = dynamics[50].position;
+			dynamics[i].position = glm::vec2(-20000.f, -20000.f);
 		give_players_objects = false;
 		watching = net.id();
+
 		level = graphics::GameScene("../resources/level/lobby.ssp", &mesh_lib, &object_lib);
+		physics.clear_static_object();
+		for (auto& coll : level.coll_data)
+		{
+			physics.add_static_body(coll.position,
+				glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
+		}
+		gameplay.is_new_round = false;
 	}	
+
+	if (gameplay.is_new_round)
+	{
+		net_state.state = network::SessionState::building;
+		game_state = (game_state | state::building);
+
+		give_players_objects = false;
+		watching = net.id();
+		gameplay.is_new_round = false;
+	}
 
 	if (menu.on())
 		game_state = (game_state | state::menu);
@@ -156,7 +174,13 @@ void Game::update(std::chrono::milliseconds delta)
 	if (net.connected())
 		game_state = (game_state | state::connected);
 
-	if (net_state.state == network::SessionState::none)
+
+	if (lua_data.game_over || net_state.state == network::SessionState::game_over)
+	{
+		game_state = (game_state | state::game_over);
+		net_state.state = network::SessionState::game_over;
+	}
+	else if (net_state.state == network::SessionState::none)
 	{
 		game_state = (game_state | state::lobby);
 
@@ -169,6 +193,9 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		level = graphics::GameScene("../resources/level/level.ssp", &mesh_lib, &object_lib);
 
+		gameplay.refresh();
+		gameplay.is_new_round = false;
+		give_players_objects = false;
 		physics.clear_static_object();
 		for (auto& coll : level.coll_data)
 		{
@@ -186,10 +213,11 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		game_state = (game_state | state::pre_playing);
 	}
-	else
+	else if(!lua_data.game_over)
 	{
 		game_state = (game_state | state::playing);
 	}
+
 		
 	
 
@@ -255,7 +283,10 @@ void Game::update(std::chrono::milliseconds delta)
 				dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
 
 				give_players_objects = true;
+
+				std::cout << "Model Id: " << model_id << "\nDynamic Id: " << dynamic_id << "\n";
 			}
+			std::cout << "\n";
 		}
 
 		for (auto& ppoi : players_placed_objects_id)
@@ -280,6 +311,12 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
 				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
+				
+				std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
+				std::swap(ppoi, players_placed_objects_id[players_placed_objects_id.size() - 1]);
+
+				level.moving_models.pop_back();
+				physics.remove_body(ppoi.dynamics_id);
 			}
 		}
 	}
