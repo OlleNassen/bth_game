@@ -64,7 +64,7 @@ void MeshLib::create_mesh_list()
 		"crane_hook.ssp",					//36
 		"cog_1.ssp",						//37
 		"cog_2.ssp",						//38
-		"cog_3.ssp",						//39
+		"cog_3.ssp",						//39 
 		"machine_1.ssp",					//40
 		"machine_2.ssp",					//41
 		"wall_slim.ssp",					//42
