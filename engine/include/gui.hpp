@@ -63,7 +63,6 @@ public:
 	bool on() const;
 
 	bool exit() const;
-	bool get_fullscreen_state() const;
 	bool get_fullscreen_pressed() const;
 private:
 	bool is_debug = false;
@@ -71,7 +70,6 @@ private:
 	bool want_exit = false;
 	button_array buttons[4];
 	button_array* current_buttons{&buttons[0]};
-	bool fullscreen = false;
 	bool fullscreen_pressed = false;
 	std::array<std::string, 12> strings;
 };

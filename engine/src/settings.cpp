@@ -52,15 +52,6 @@ const GraphicsSettings & Settings::get_graphics_settings() const
 	return graphics;
 }
 
-void Settings::set_screen_mode(bool fullscreen_state)
-{
-	lua_getglobal(importer, "settings");
-	lua_getfield(importer, -1, "window");
-	lua_pushboolean(importer, fullscreen_state);
-	lua_setfield(importer, -1, "fullscreen");
-	lua_pop(importer, lua_gettop(importer));
-}
-
 bool Settings::get_screen_mode() const
 {
 	return window.fullscreen;

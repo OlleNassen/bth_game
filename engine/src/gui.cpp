@@ -189,7 +189,6 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 		{
 			//fullscreen
 			fullscreen_pressed = true;
-			//fullscreen = !fullscreen;
 		}
 		else if (current_buttons == &buttons[2] && index == 6)
 		{
@@ -217,11 +216,6 @@ bool Menu::on() const
 bool Menu::exit() const
 {
 	return want_exit;
-}
-
-bool Menu::get_fullscreen_state() const
-{
-	return fullscreen;
 }
 
 bool Menu::get_fullscreen_pressed() const
