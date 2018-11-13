@@ -17,7 +17,7 @@ function setup(game)
 	--game.max_velocity = 16
 	--game.max_velocity_boost = game.max_velocity * 1.3
 
-	game.time = 0.0
+	game.time = 90.0
 	game.max_time = 5.0
 end
 
