@@ -37,8 +37,6 @@ void Messenger::update(GameState& state, const char* ip_address)
 		player_host.send(snapshots);
 		player_host.receive(inputs);
 	}
-
-	player_id = state.player_id;
 }
 
 }
