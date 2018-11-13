@@ -137,11 +137,11 @@ function update_anim_state(delta_seconds, entity)
 
 	local speed = entity.max_speed * delta_seconds
 	
-	if entity.anim.current == entity.anim.in_jump
-	or entity.anim.current == entity.anim.falling 
-	then
-		speed = entity.max_air_speed * delta_seconds
-	end
+	--if entity.anim.current == entity.anim.in_jump
+	--or entity.anim.current == entity.anim.falling 
+	--then
+	--	speed = entity.max_air_speed * delta_seconds
+	--end
 
 	
 
