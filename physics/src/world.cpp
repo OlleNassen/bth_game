@@ -145,7 +145,7 @@ void World::update(
 	
 		body.velocity.x = dynamics[index].velocity.x;
 		body.velocity.y = dynamics[index].velocity.y;
-		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
+		//body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
 		++index;
 	}
 
