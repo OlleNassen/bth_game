@@ -30,6 +30,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 	{		
 		player_host.send(inputs[client]);
 		player_host.receive(snapshots[client]);
+		inputs[client].ack = snapshots[client].seq;
 	}
 	else
 	{	

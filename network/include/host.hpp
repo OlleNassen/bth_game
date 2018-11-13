@@ -31,7 +31,7 @@ public:
 	bool connected() const;
 	bool client() const;
 
-	void send(const UserInput& input);
+	void send(UserInput& input);
 	void receive(Snapshot& snapshot);
 	
 	void send(snapshot_map& snapshots);

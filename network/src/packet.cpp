@@ -119,11 +119,24 @@ bit_reader& operator>>(bit_reader& reader, Snapshot& value)
 
 bit_writer& operator<<(bit_writer& writer, const UserInput& value)
 {
+	
+	
+	
+	
+	
+	writer << value.ack;
+	writer << value.seq;
 	return writer;
 }
 
 bit_reader& operator>>(bit_reader& reader, UserInput& value)
 {
+	reader >> value.seq;
+	reader >> value.ack;
+
+
+
+
 	return reader;
 }
 

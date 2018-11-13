@@ -73,12 +73,13 @@ bool Host::client() const
 	return peers.size() == 1u;
 }
 
-void Host::send(const UserInput& input)
+void Host::send(UserInput& input)
 {	
 	if (enet_host)
 	{
 		uint32 data[320] = {};
-		bit_writer writer{data , 100 / 32};
+		bit_writer writer{data, 100 / 32};
+		input.seq = ++input.seq % 4096;
 		writer << input;
 
 		ENetPacket* enet_packet = enet_packet_create(
@@ -128,6 +129,7 @@ void Host::send(snapshot_map& snapshots)
 		{
 			uint32 data[320] = {};
 			bit_writer writer{data , 100 / 32};
+			snapshots[peer->connectID].seq = ++snapshots[peer->connectID].seq % 4096;
 			writer << snapshots[peer->connectID];
 
 			ENetPacket* enet_packet = enet_packet_create(
