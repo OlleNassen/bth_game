@@ -63,14 +63,7 @@ void Settings::set_screen_mode(bool fullscreen_state)
 
 bool Settings::get_screen_mode() const
 {
-	bool fullscreen_is_set;
-	lua_getglobal(importer, "settings");
-	lua_getfield(importer, -1, "window");
-	lua_getfield(importer, -1, "fullscreen");
-	fullscreen_is_set = lua_toboolean(importer, -1);
-	lua_pop(importer, lua_gettop(importer));
-	
-	return fullscreen_is_set;
+	return window.fullscreen;
 }
 
 void Settings::create(bool fullscreen)

@@ -141,6 +141,7 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 			button.state = button_state::none;
 
 	button.state = button_state::hover;
+	fullscreen_pressed = false;
 	
 	if (i[logic::button::select] == logic::button_state::released)
 	{
@@ -187,7 +188,8 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 		else if (current_buttons == &buttons[2] && index == 10)
 		{
 			//fullscreen
-			fullscreen = !fullscreen;
+			fullscreen_pressed = true;
+			//fullscreen = !fullscreen;
 		}
 		else if (current_buttons == &buttons[2] && index == 6)
 		{
@@ -220,6 +222,11 @@ bool Menu::exit() const
 bool Menu::get_fullscreen_state() const
 {
 	return fullscreen;
+}
+
+bool Menu::get_fullscreen_pressed() const
+{
+	return fullscreen_pressed;
 }
 
 }
