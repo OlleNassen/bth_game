@@ -211,8 +211,8 @@ void Renderer::render(
 
 
 			build_text.render_text("Score: ", 10.f, screen_height - 35.f, 0.75f);
-			std::array<std::string, 4> players = { "Red", "Green", "Yellow", "Blue" };
-			for (int i = 0; i < 4; i++)
+			std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };
+			for (int i = 0; i < player_count; i++)
 			{
 				out_text.str("");
 				out_text << players[i] << " : " << scores[i];
