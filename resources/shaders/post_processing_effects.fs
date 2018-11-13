@@ -6,13 +6,14 @@ out vec4 frag_color;
 uniform sampler2D scene_texture;
 uniform sampler2D depth_texture;
 uniform sampler2D screen_warning;
+uniform sampler2D build_screen;
 
 uniform float pulse;
 
 #define PI  3.14159265
 
-float width = 1280; //texture width
-float height = 720; //texture height
+float width = 1920; //texture width
+float height = 1080; //texture height
 
 vec2 texel = vec2(1.0/width,1.0/height);
 

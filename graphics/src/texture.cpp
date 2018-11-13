@@ -6,7 +6,8 @@
 
 namespace graphics
 {
-	Texture::Texture(const std::string& path)
+
+Texture::Texture(const std::string& path)
 {
 	load_texture(path);
 }
@@ -19,31 +20,33 @@ void Texture::bind(unsigned int index, GLenum type)const
 
 void Texture::load_texture(const std::string & path)
 {
+	glGenTextures(1, &texture_id);
+	glBindTexture(GL_TEXTURE_2D, texture_id);
+	
 	stbi_set_flip_vertically_on_load(true);
-
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &num_components, 4);
 	if (data)
-	{
+	{		
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,
+			height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		stbi_image_free(data);
 	}
 	else
 	{
-		data = stbi_load("../resources/textures/black_pixel.png", &width, &height, &num_components, 4);
-	
+		unsigned char black_pixel[]{ 0,0,0,1 };
+		data = black_pixel;
+		width = 1;
+		height = 1;
+		num_components = 4;
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,
+			height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	}
-
-	glGenTextures(1, &texture_id);
-	glBindTexture(GL_TEXTURE_2D, texture_id);
-
+	glFinish();
+	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,
-		height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-	stbi_image_free(data);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	
 }
 
 SkyboxTexture::SkyboxTexture(const std::vector<std::string>& paths)
@@ -72,6 +75,7 @@ void SkyboxTexture::load_texture(const std::vector<std::string>& paths)
 			std::cout << "Cubemap texture failed to load at path: " << face << std::endl;
 		}
 		stbi_image_free(data);
+		glFinish();
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

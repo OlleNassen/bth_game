@@ -11,11 +11,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-uniform vec3 light_pos[14];
-uniform vec3 light_color[14];
-uniform float light_intensity[14];
-
 const int JOINT_SIZE = 20;
+uniform int animated;
 uniform mat4 bone_mats[JOINT_SIZE];
 
 out VS_OUT{
@@ -27,7 +24,7 @@ out VS_OUT{
 void main()
 {
 	mat4 bone_matrix = mat4(1.0);
-	vs_out.tex_coord = uv;
+    vs_out.tex_coord = uv;
 
 	bone_matrix = bone_mats[int(weights_id.x)] * weights.x;
 	bone_matrix += bone_mats[int(weights_id.z)] * weights.z;

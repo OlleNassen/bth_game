@@ -140,6 +140,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -174,6 +175,7 @@
     <ClCompile Include="src\animation_logic.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\build_stage_screen.cpp" />
     <ClCompile Include="src\death_screen.cpp" />
     <ClCompile Include="src\finish_screen.cpp" />
     <ClCompile Include="src\fx.cpp" />
@@ -200,6 +202,7 @@
     <ClInclude Include="include\animation_logic.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="include\build_stage_screen.hpp" />
     <ClInclude Include="include\death_screen.hpp" />
     <ClInclude Include="include\finish_screen.hpp" />
     <ClInclude Include="include\fx.hpp" />
