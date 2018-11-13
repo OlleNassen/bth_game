@@ -4,8 +4,8 @@ function setup(entity)
 	entity.can_jump = true
 	entity.can_walljump = true
 	entity.can_move = true -- instead of playable
-	entity.max_speed = 1100
-	entity.max_air_speed = 800
+	entity.max_speed = 18
+	entity.max_air_speed = 18
  	entity.acceleration = 580000
 	entity.jump_timer = 0
 	entity.jump_impulse_x = 0
@@ -23,7 +23,7 @@ end
 
 local jump_speed = 2200
 local gravity = 120
-local max_gravity = 500
+local max_gravity = 3000
 local wall_jump_speed = 
 {
 	x = 150,
@@ -32,7 +32,10 @@ local wall_jump_speed =
 
 function update(delta_seconds, entity)
 	
-	update_anim_state(delta_seconds, entity)
+	--update_anim_state(delta_seconds, entity)
+
+	update_controls(delta_seconds, entity)
+
 
 	--trigger
 	if entity.triggered >= 4
@@ -102,26 +105,227 @@ function update(delta_seconds, entity)
 	end
 	
 
+
 	if entity.anim.current == entity.anim.falling 
-	or entity.anim.current == entity.anim.in_jump 
-	or entity.anim.current == entity.anim.hanging_left 
-	or entity.anim.current == entity.anim.hanging_right
-	or entity.anim.current == entity.anim.idle
-	or entity.anim.current == entity.anim.running
-	then
-		entity.velocity.y = entity.velocity.y - gravity * delta_seconds
-		--print("Adam")
+		or entity.anim.current == entity.anim.in_jump 
+		or entity.anim.current == entity.anim.hanging_left 
+		or entity.anim.current == entity.anim.hanging_right
+		or entity.anim.current == entity.anim.idle
+		or entity.anim.current == entity.anim.running
+		then
+			entity.velocity.y = entity.velocity.y - gravity * delta_seconds
 		if entity.velocity.y < -max_gravity * delta_seconds
 		then
 			entity.velocity.y = -max_gravity * delta_seconds
 		end
 	end
-	--[[elseif entity.anim.current ~= entity.anim.in_jump 	
+
+	if entity.anim.current ~= entity.anim.in_jump 
 	then
+		print("Olle")
 		entity.velocity.y = entity.velocity.y - (entity.velocity.y * delta_seconds)
-		print("Lisa")
+	end
+end
+
+
+function update_controls(delta_seconds, entity)
+	
+	if entity.anim.current == entity.anim.running
+	then
+	
+		entity.anim.current = entity.anim.idle
+		if entity.button.right 
+		then
+			entity.velocity.x = entity.max_speed
+			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)
+			--entity.forces.x = 4000
+		end
+		if entity.button.left
+		then
+			entity.velocity.x = -entity.max_speed
+			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds)
+			--entity.forces.x = -4000
+		end
+		if entity.button.jump
+		then
+			entity.anim.current = entity.anim.start_jump
+		end
+		if entity.velocity.y < -0.4
+		then 
+			entity.anim.current = entity.anim.falling
+		end
+	end
+
+	if entity.anim.current == entity.anim.idle
+	then
+		if entity.button.right 
+		then
+			entity.velocity.x = entity.max_speed
+			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)
+			--entity.forces.x = 4000
+			entity.anim.current = entity.anim.running
+		end
+		if entity.button.left 
+		then
+			entity.velocity.x = -entity.max_speed
+			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds)
+			--entity.forces.x = -4000
+			entity.anim.current = entity.anim.running
+		end
+		if entity.button.jump
+		then
+			entity.anim.current = entity.anim.start_jump
+		end
+		if entity.velocity.y < -0.4
+		then 
+			entity.anim.current = entity.anim.falling
+		end
+	end
+
+	if entity.anim.current == entity.anim.in_jump
+	then
+		if entity.can_jump
+		then
+			entity.impulse.y = 50
+			entity.can_jump = false
+		end
+		if entity.button.right 
+		then
+			entity.velocity.x = entity.max_air_speed
+			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		end
+		if entity.button.left
+		then
+			entity.velocity.x = -entity.max_air_speed
+			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		end
+		if entity.velocity.y < -0.4
+		then 
+			entity.anim.current = entity.anim.falling
+		end
+	end
+
+	if entity.anim.current == entity.anim.landing
+	then
+
+		entity.ungrounded_time = 0	
+		entity.can_jump = true
+		entity.can_walljump = true
+
+		
+		if entity.button.right
+		then
+			entity.velocity.x = entity.max_air_speed
+			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		end
+		if entity.button.left
+		then
+			entity.velocity.x = -entity.max_air_speed
+			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		end
+	end
+
+	if entity.anim.current == entity.anim.falling
+	then
+		if entity.button.right 
+		then
+			if entity.velocity.x <= entity.max_air_speed
+			then
+				entity.velocity.x =  entity.velocity.x + 1--entity.max_air_speed
+			end
+			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		end
+		if entity.button.left
+		then
+			if entity.velocity.x >= -entity.max_air_speed
+			then
+				entity.velocity.x = entity.velocity.x - 1-- -entity.max_air_speed
+			end
+			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		end
+	end
+
+	if entity.anim.current == entity.anim.hanging_right
+	then
+		entity.ungrounded_time = 0
+		entity.jump_timer = entity.jump_timer + delta_seconds
+		
+
+		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
+		then
+			entity.forces.x = 0
+			entity.forces.y = 0
+			entity.velocity.x = 0
+			entity.velocity.y = 0
+			entity.impulse.y = 0
+			entity.impulse.x = 0
+
+
+			entity.anim.current = entity.anim.jump_from_wall
+			entity.impulse.y = 40
+			entity.impulse.x = -25
+			entity.can_walljump = true
+		end
+	
+		--entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
+	end
+
+	if entity.anim.current == entity.anim.hanging_left
+	then
+
+		entity.ungrounded_time = 0
+		entity.jump_timer = entity.jump_timer + delta_seconds
+		
+		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
+		then
+				entity.forces.x = 0
+				entity.forces.y = 0
+				entity.velocity.x = 0
+				entity.velocity.y = 0
+				entity.impulse.y = 0
+				entity.impulse.x = 0
+				
+
+			entity.anim.current = entity.anim.jump_from_wall
+			entity.impulse.y = 40
+			entity.impulse.x = 25
+			entity.can_walljump = true
+		end
+		
+		--entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
+	end
+
+	--[[if entity.anim.current == entity.anim.connect_wall
+		then
+		if entity.button.jump and entity.button.left and entity.can_walljump
+		then
+			entity.anim.current = entity.anim.jump_from_wall
+			entity.impulse.y = 18
+			entity.impulse.x = -8
+			entity.can_walljump = false
+		end
+		if entity.button.jump and entity.button.right and entity.can_walljump
+		then
+			entity.anim.current = entity.anim.jump_from_wall
+			entity.impulse.y = 18
+			entity.impulse.x = 8
+			entity.can_walljump = false
+		end
+	end]]--
+
+	--Cap the velocity/entity.forces.x
+	--[[if entity.forces.x > entity.maxSpeed
+		then
+		entity.forces.x = entity.maxSpeed
+	elseif entity.forces.x < -entity.maxSpeed
+	then 
+		entity.forces.x = -entity.maxSpeed
 	end]]--
 end
+
+
+
+
 
 function update_anim_state(delta_seconds, entity)
 
