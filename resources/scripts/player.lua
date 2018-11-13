@@ -122,7 +122,6 @@ function update(delta_seconds, entity)
 
 	if entity.anim.current ~= entity.anim.in_jump 
 	then
-		print("Olle")
 		entity.velocity.y = entity.velocity.y - (entity.velocity.y * delta_seconds)
 	end
 end
