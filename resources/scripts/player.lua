@@ -30,13 +30,16 @@ function setup(entity)
 
 	--steam boost
 	entity.steam_boost_timer = 0.0
-	entity.steam_boost_timer_max = 10
+	entity.steam_boost_timer_max = 20
 	entity.steam_boost_delay_timer = 0.0
 	entity.steam_boost_triggerd = false
 	entity.have_doubble_jumpt = false
-
 	entity.can_dubbel_jump = false
 
+
+	--trampolin
+	entity.trampolin_jump = false
+	entity.trampolin_iterator = 0
 
 	entity.ungrounded_time = 0
 	entity.jump_forgiveness_time = 0.5
@@ -350,7 +353,6 @@ function update(delta_seconds, entity)
 
 
 
-
 	entity.friction = entity.normal_friction
 	--trigger
 	if entity.triggered >= 4
@@ -411,14 +413,17 @@ function update(delta_seconds, entity)
 			entity.steam_boost_timer = 0.0
 			entity.steam_boost_delay_timer = 0.0
 
-			print("steam_boost")
+			--print("steam_boost")
 		end
 
 		--trampolin
-		if entity.triggered_type == 9
+		if entity.triggered_type == 9 --and entity.velocity.y <= -10
 		then
-
+			entity.trampolin_jump = true
+			entity.anim.current = entity.anim.falling
+			entity.can_jump = false
 			--print("trampolin")
+			print(entity.velocity.y)
 		end
 	end
 
@@ -489,10 +494,12 @@ function update(delta_seconds, entity)
 		--print("steam_boost2")
 		if entity.button.jump and entity.steam_boost_delay_timer > 0.2
 		then
-			entity.impulse.y = 40
+			entity.impulse.y = (entity.velocity.y * -1)
+			entity.impulse.y = entity.impulse.y + 30
+
 			entity.can_dubbel_jump = false
 			entity.have_doubble_jumpt = true
-			print("steam_boost3")
+			--print("steam_boost3")
 
 		end
 	end
@@ -507,8 +514,23 @@ function update(delta_seconds, entity)
 		entity.steam_boost_triggerd = false
 	end
 
-
-
+	--trampolin
+	if entity.trampolin_jump
+	then
+		if entity.trampolin_iterator < 3
+		then
+			if entity.velocity.y <= -1
+			then
+				entity.impulse.y = (entity.velocity.y * -1)
+			end
+			
+			entity.impulse.y = entity.impulse.y + 17.5;
+			entity.trampolin_iterator = entity.trampolin_iterator + 1
+		else
+			entity.trampolin_jump = false
+			entity.trampolin_iterator = 0
+		end
+	end
 
 
 	entity.forces.y = entity.forces.y - 6400 --gravity
