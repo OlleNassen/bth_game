@@ -405,13 +405,9 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		if (menu.get_fullscreen_pressed())
 		{
-			bool fullscreen = menu.get_fullscreen_state();
-			std::cout << window.get_is_fullscreen() << "\n";
-			if (window.get_is_fullscreen() != fullscreen)
-			{
-				window.set_screen_mode(fullscreen);
-				settings.create(fullscreen);
-			}
+			bool fullscreen = settings.get_screen_mode();			
+			window.set_screen_mode(fullscreen);
+			settings.create(!fullscreen);			
 		}
 	}
 }

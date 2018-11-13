@@ -221,7 +221,7 @@ bool Window::get_is_fullscreen() const
 void Window::set_screen_mode(bool fullscreen)
 {
 	static glm::ivec2 window_pos = { 0, 0 };
-	if (fullscreen)
+	if (!fullscreen)
 	{
 
 		// backup windwo position and window size
@@ -245,6 +245,6 @@ void Window::set_screen_mode(bool fullscreen)
 	}
 
 	//_updateViewport = true;
-	is_fullscreen = fullscreen;
+	is_fullscreen = !fullscreen;
 }
 
