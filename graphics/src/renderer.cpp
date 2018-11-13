@@ -41,7 +41,7 @@ Renderer::Renderer(GameScene* scene)
 	lights[4].color = glm::vec3{ 1,0.2,0 };
 	lights[5].position = glm::vec3{ -7.74,44,-22.984 };
 	lights[5].color = glm::vec3{ 1,0.2,0 };
-	lights[6].position = glm::vec3{ 15.821,80,-20 };
+	lights[6].position = glm::vec3{ -7.73,25.343,-22.735 };
 	lights[6].color = glm::vec3{ 1,0.48,0 };
 	lights[7].position = glm::vec3{ -11.853,120,-20 };
 	lights[7].color = glm::vec3{ 0,0.82,1 };
