@@ -17,8 +17,8 @@ function setup(game)
 	--game.max_velocity = 16
 	--game.max_velocity_boost = game.max_velocity * 1.3
 
-	game.time = 90.0
-	game.max_time = 5.0
+	game.time = 0.0
+	game.max_time = 90.0
 end
 
 round = 0
@@ -80,6 +80,7 @@ function update(delta_seconds, game, entities)
 		entities[4].position.y = 1.75
 		
 		game.points = 4 -- Don't change unless you know what you're doing :)
+		round = round + 1
 		--game.clock = 0
 
 		for i = 1, 4, 1
@@ -99,6 +100,7 @@ function update(delta_seconds, game, entities)
 			game.points = game.points - 1
 
 			game.finished[i] = true
+
 			entities[i].position.x = -2000
 			entities[i].position.y = -2000
 		end

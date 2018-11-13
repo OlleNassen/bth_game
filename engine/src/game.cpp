@@ -473,14 +473,14 @@ void Game::update(std::chrono::milliseconds delta)
 
 				if (waiting == net.id())
 				{
-					watching = (watching - 1) % 4;
+					watching = (watching - 1); // % 4;
 					if (watching < 0)
 						watching = 3;
 				}
 
 				if (lua_data.died[watching] || lua_data.finished[watching])
 				{
-					watching = (watching - 1) % 4;
+					watching = (watching - 1); // % 4;
 					if (watching < 0)
 						watching = 3;
 				}

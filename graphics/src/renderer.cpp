@@ -212,10 +212,16 @@ void Renderer::render(
 
 			build_text.render_text("Score: ", 10.f, screen_height - 35.f, 0.75f);
 			std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };
+			std::array<glm::vec3, 4> players_colors = { glm::vec3{ 1.0f, 0.0f, 0.0f},
+														glm::vec3{ 0.2f, 0.9f, 0.1f},
+														glm::vec3{ 0.1f, 0.1f, 0.9f},
+														glm::vec3{ 0.9f, 0.8f, 0.1f} };
+
 			for (int i = 0; i < player_count; i++)
 			{
 				out_text.str("");
 				out_text << players[i] << " : " << scores[i];
+				text_shader.uniform("text_color", players_colors[i]);
 				build_text.render_text(out_text.str(), 10.f, screen_height - (35.f * (i + 2)), 0.75f);
 			}
 
@@ -459,49 +465,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		if (scene->animated_models.size() > 0)
 			a_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->animated_models.front(), &scene->animated_models.back() };
 	}
-
-	/*first_model = 9;
-	last_model = 9;
-	for (auto i = 9u; i < scene->models.size(); ++i)
-	{
-		float culling_distance = 50.0f;
-
-		auto bottom = 0.0f; // scene->moving_models[id].get_y_position() - culling_distance;
-		auto top = 0.0f; // scene->moving_models[id].get_y_position() + culling_distance;
-
-		if (game_state & state::building)
-		{
-			bottom = scene->v[id].y - culling_distance;
-			top = scene->v[id].y + culling_distance;
-		}
-		else if (!died[id] && !finish[id])
-		{
-			bottom = scene->moving_models[id].get_y_position() - culling_distance;
-			top = scene->moving_models[id].get_y_position() + culling_distance;
-		}
-		else
-		{
-			bottom = scene->moving_models[spectator_id].get_y_position() - culling_distance;
-			top = scene->moving_models[spectator_id].get_y_position() + culling_distance;
-		}
-		
-		if (bottom < scene->models[i].get_y_position() && !first_model)
-		{
-			first_model = i;
-			last_model = i;
-		}
-
-		if (top < scene->models[i].get_y_position())
-		{
-			last_model = i;
-			break;
-		}
-
-		if (top >= scene->models.back().get_y_position())
-		{
-			last_model = scene->models.size() - 1;
-		}
-	}*/
 	
 	if (!(game_state & state::playing))
 	{
