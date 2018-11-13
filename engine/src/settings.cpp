@@ -69,5 +69,7 @@ void Settings::create(bool fullscreen)
 		<< "        quality = 9.0 -- 10 is max\n" << "    },\n\n" << "    graphics =\n"
 		<< "    {\n" << "        debug_fov = 90.0,\n" << "        depth_of_field = true\n" << "    }\n"
 		<< "}\n";
+
+	window.fullscreen = fullscreen;
 }
 
