@@ -30,8 +30,12 @@ function setup(entity)
 
 	--steam boost
 	entity.steam_boost_timer = 0.0
+	entity.steam_boost_timer_max = 10
+	entity.steam_boost_delay_timer = 0.0
 	entity.steam_boost_triggerd = false
-	entity.first_jump = true
+	entity.have_doubble_jumpt = false
+
+	entity.can_dubbel_jump = false
 
 
 	entity.ungrounded_time = 0
@@ -40,10 +44,11 @@ end
 
 function update(delta_seconds, entity)
 
-	if entity.anim.current == entity.anim.idle and entity.first_jump == false
-	then
-		entity.first_jump = true
-	end
+	--if entity.anim.current == entity.anim.idle and entity.first_jump_done == true  --trigger
+	--then
+	--	entity.first_jump_done = false
+	--	print("set")
+	--end
 
 	if entity.anim.current == entity.anim.running
 	then
@@ -134,10 +139,14 @@ function update(delta_seconds, entity)
 			entity.impulse.y = 40
 			entity.can_jump = false
 
-			if entity.steam_boost_triggerd and entity.first_jump == false --trigger
+
+			if entity.steam_boost_triggerd and entity.can_dubbel_jump == false and entity.have_doubble_jumpt == false --trigger
 			then
-				entity.first_jump = true
+				entity.can_dubbel_jump = true
+				entity.steam_boost_delay_timer = 0.0
 			end
+
+
 		end	
 	end
 
@@ -182,6 +191,14 @@ function update(delta_seconds, entity)
 		entity.ungrounded_time = 0
 		entity.can_jump = true
 		entity.can_walljump = true
+
+
+		if entity.have_doubble_jumpt --trigger
+		then
+			entity.have_doubble_jumpt = false
+		end
+
+
 		if entity.button.right
 		then
 			if entity.velocity.x < entity.max_air_speed
@@ -225,6 +242,12 @@ function update(delta_seconds, entity)
 
 	if entity.anim.current == entity.anim.falling 
 	then
+
+		if entity.have_doubble_jumpt == false --trigger
+		then
+			entity.can_dubbel_jump = true
+		end
+
 		if entity.button.right 
 		then
 			if entity.velocity.x < entity.max_air_speed
@@ -386,8 +409,9 @@ function update(delta_seconds, entity)
 		then
 			entity.steam_boost_triggerd = true
 			entity.steam_boost_timer = 0.0
+			entity.steam_boost_delay_timer = 0.0
 
-			--print("steam_boost")
+			print("steam_boost")
 		end
 
 		--trampolin
@@ -460,21 +484,27 @@ function update(delta_seconds, entity)
 
 
 	--steam_boost
-	if	entity.steam_boost_triggerd == true and entity.steam_boost_timer <= 5.0
+	if	entity.steam_boost_triggerd and entity.can_dubbel_jump and entity.steam_boost_timer <= entity.steam_boost_timer_max
 	then
-		if entity.button.jump and entity.first_jump == false
+		--print("steam_boost2")
+		if entity.button.jump and entity.steam_boost_delay_timer > 0.2
 		then
 			entity.impulse.y = 40
+			entity.can_dubbel_jump = false
+			entity.have_doubble_jumpt = true
+			print("steam_boost3")
+
 		end
 	end
 
-	if	entity.steam_boost_timer <= 5.0
+	if	entity.steam_boost_timer <= entity.steam_boost_timer_max
 	then
 		entity.steam_boost_timer = entity.steam_boost_timer + delta_seconds
+		entity.steam_boost_delay_timer = entity.steam_boost_delay_timer + delta_seconds
 
-	elseif	entity.steam_boost_timer >= 5.0
+	elseif	entity.steam_boost_timer >= entity.steam_boost_timer_max
 	then
-		entity.speed_boost_triggerd = false
+		entity.steam_boost_triggerd = false
 	end
 
 
