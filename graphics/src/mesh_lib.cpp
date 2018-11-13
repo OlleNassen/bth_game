@@ -34,7 +34,7 @@ void MeshLib::create_mesh_list()
 		"platform.ssp",						//6
 		"steel_beam.ssp",					//7
 		"ladder.ssp",						//8
-		"wood_box.ssp",						//9
+		"box_small.ssp",					//9
 		"valve.ssp",						//10
 		"wall_background.ssp",				//11
 		"fan_shell.ssp",					//12
@@ -60,8 +60,8 @@ void MeshLib::create_mesh_list()
 		"crane_lower_part.ssp",				//32
 		"grinder.ssp",					    //33
 		"wall_hole.ssp",				    //34
-		"crane_small_cog.ssp",				//35
-		"crane_hook.ssp",					//36
+		"box_medium.ssp",					//35
+		"box_big.ssp",						//36
 		"cog_1.ssp",						//37
 		"cog_2.ssp",						//38
 		"cog_3.ssp",						//39 
