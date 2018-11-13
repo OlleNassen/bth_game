@@ -30,6 +30,16 @@ void bit_writer::write_bits(uint32 value, int bits)
     bits_written += bits;
 }
 
+void* bit_writer::data() const
+{
+	return buffer;
+}
+
+int bit_writer::size() const
+{
+	return bits_written * 8;
+}
+
 bit_writer& operator<<(bit_writer& writer, bool value)
 {
     uint32 unsigned_value = value;
@@ -101,6 +111,16 @@ uint32 bit_reader::read_bits(int bits)
 	scratch_bits -= bits;
 
 	return output;
+}
+
+void* bit_reader::data() const
+{
+	return buffer;
+}
+
+int bit_reader::size() const
+{
+	return bits_read * 8;
 }
 
 bit_reader& operator>>(bit_reader& reader, bool& value)

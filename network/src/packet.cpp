@@ -1,6 +1,4 @@
 #include "packet.hpp"
-#include "serialize.hpp"
-
 
 namespace network
 {
@@ -20,20 +18,6 @@ const GameState& Queue::dequeue()
 {
 	front = ++front % size;
 	return data[front - 1];
-}
-
-class Object
-{
-public:
-	glm::vec2 position;
-	glm::vec2 velocity;
-};
-
-
-bit_writer& operator<<(bit_writer& writer, const glm::vec3 value)
-{
-	writer << value.x << value.y << value.z;
-	return writer;
 }
 
 bit_writer& operator<<(bit_writer& writer, const glm::vec2& value)
@@ -96,39 +80,6 @@ bit_reader& operator>>(bit_reader& reader, Object& value)
 	return reader;
 }
 
-class UserInput
-{
-public:
-	int seq;
-	int ack;
-	std::string username;
-	std::string text;
-};
-
-
-class Character
-{
-public:
-	Object object;
-	glm::vec3 color;
-	float score;
-};
-
-class Snapshot
-{
-public:
-	int seq;
-	int ack;
-	int level;
-	int random_seed;
-	float clock;
-	static constexpr int player_count = 32;
-	static constexpr int object_count = 64;
-
-	UserInput players[player_count];
-	Character characters[player_count];
-	Object objects[object_count];
-};
 
 bit_writer& operator<<(bit_writer& writer, const Snapshot& value)
 {
@@ -163,6 +114,16 @@ bit_reader& operator>>(bit_reader& reader, Snapshot& value)
 			reader >> object;
 	}
 
+	return reader;
+}
+
+bit_writer& operator<<(bit_writer& writer, const UserInput& value)
+{
+	return writer;
+}
+
+bit_reader& operator>>(bit_reader& reader, UserInput& value)
+{
 	return reader;
 }
 

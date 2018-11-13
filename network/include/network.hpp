@@ -1,6 +1,7 @@
 #ifndef NETWORK_HPP
 #define NETWORK_HPP
 
+#include <map>
 #include "host.hpp"
 #include "packet.hpp"
 
@@ -15,6 +16,7 @@ public:
 	void update(GameState& state, const char* ip_address);
 
 private:
+	snapshot_map snapshots;
 	EnetInit init;
 	Host player_host;
 	int player_id = 0;

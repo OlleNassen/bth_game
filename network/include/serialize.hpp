@@ -20,6 +20,8 @@ class bit_writer
 public:
 	bit_writer(uint32* buffer, int num_bits);
 	void write_bits(uint32 value, int bits);
+	void* data() const;
+	int size() const;
 
 private:
     uint32* buffer = nullptr;
@@ -42,6 +44,8 @@ class bit_reader
 public:
 	bit_reader(uint32* buffer, int num_bits);
 	uint32 read_bits(int bits);
+	void* data() const;
+	int size() const;
 
 private:
     uint32* buffer = nullptr;

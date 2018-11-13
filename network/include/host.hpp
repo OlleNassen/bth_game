@@ -1,11 +1,15 @@
 #ifndef HOST_HPP
 #define HOST_HPP
 
+#include <vector>
 #include <enet/enet.h>
 #include "packet.hpp"
 
 namespace network
 {
+
+using snapshot_map = std::map<enet_uint32, Snapshot>;
+using input_map = std::map<enet_uint32, UserInput>;
 
 class EnetInit
 {
@@ -27,12 +31,15 @@ public:
 	bool connected() const;
 	bool client() const;
 
-	void send(GameInput& input);
-	void send(GameState& state);
-	void receive(logic::input* input);
-	void receive(GameState& state);
+	void send(const UserInput& input);
+	void receive(Snapshot& snapshot);
+	
+	void send(snapshot_map& snapshots);
+	void receive(input_map& input);
 
 private:
+	void recieve(const ENetEvent& eevent, UserInput& input);
+	void recieve(const ENetEvent& eevent, Snapshot& snapshot);
 	void connect(const ENetEvent& eevent);
 	void disconnect(const ENetEvent& eevent);
 
@@ -41,7 +48,7 @@ private:
 
 	ENetAddress address;
 	ENetHost* enet_host;
-	ENetPeer* peers[4] = { nullptr };
+	std::vector<ENetPeer*> peers;
 
 	bool is_client = false;
 };
