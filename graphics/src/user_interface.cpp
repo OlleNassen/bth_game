@@ -27,14 +27,11 @@ namespace graphics
 
 	}
 
-	void UserInterface::update(const std::vector<Model> &models, int players, glm::vec3 &camera_pos, const std::array<bool, 4> &died)
+	void UserInterface::update(const std::vector<Model> &models, int players, glm::vec3 &camera_pos)
 	{
 		rebind_buffers();
-		for (auto i = 0; i < died.size(); i++)
-		{
-
-		}
-		player_arrows.update(models, players, elements, camera_pos, died);
+		
+		player_arrows.update(models, players, elements, camera_pos);
 	}
 
 	void UserInterface::render(const Shader &shader)const
@@ -134,7 +131,7 @@ namespace graphics
 
 	}
 
-	void PlayerArrows::update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements, glm::vec3 &camera_pos, const std::array<bool, 4> &died)
+	void PlayerArrows::update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements, glm::vec3 &camera_pos)
 	{
 		for (int i = 0; i < players; i++)
 		{
