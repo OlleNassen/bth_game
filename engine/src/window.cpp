@@ -223,8 +223,6 @@ void Window::set_screen_mode(bool fullscreen)
 		// backup windwo position and window size
 		glfwGetWindowPos(glfw_window, &window_pos.x, &window_pos.y);
 		// swithc to full screen
-		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 		glfwSetWindowMonitor(glfw_window, glfwGetPrimaryMonitor(), 0, 0, window_size.x, window_size.y, 0);
 	}
 	else
@@ -232,5 +230,6 @@ void Window::set_screen_mode(bool fullscreen)
 		// restore last window size and position
 		glfwSetWindowMonitor(glfw_window, nullptr, window_pos.x, window_pos.y, window_size.x, window_size.y, 0);
 	}
+	glViewport(0, 0, window_size.x, window_size.y);
 }
 
