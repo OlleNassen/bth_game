@@ -6,6 +6,9 @@ in VS_OUT{
 	vec3 world_normal;
 	vec3 world_pos;
 	vec2 tex_coord;
+	vec3 tangent_light_pos;
+	vec3 tangent_view_pos;
+	vec3 tangent_fragment_pos;
 } fs_in;
 
 // material parameters
@@ -106,22 +109,6 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-float spotlight_falloff(vec3 w)
-{
-	vec3 n_w = normalize(w);
-	float cos_theta = n_w.z;
-	if(cos_theta < cos_total_width)
-	{
-		return 0;
-	}
-	if(cos_theta > cos_falloff_start)
-	{
-		return 1;
-	}
-	float delta = (cos_theta - cos_total_width) / (cos_falloff_start - cos_total_width);
-	return (delta * delta) * (delta * delta);
-}
-
 void main()
 {
 
@@ -133,7 +120,7 @@ void main()
 	//vec3 N = texture(normal_map, fs_in.tex_coord).rgb;
     // transform normal vector to range [-1,1]
     //N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
-	vec3 N = getNormalFromMap();
+	//vec3 N = getNormalFromMap();
 	vec3 V = normalize(cam_pos - fs_in.world_pos);
 	vec3 R = reflect(-V, N);
 
@@ -142,7 +129,7 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < light_count; ++i) 
+    for(int i = 0; i < 9; ++i) 
     {
 			// calculate per-light radiance
 			vec3 L = normalize(light_pos[i] - fs_in.world_pos);
@@ -177,14 +164,22 @@ void main()
 			// add to outgoing radiance Lo
 			Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }
- 
+	
+
 	//for(int i = 0; i < 1; i++)
     { // SPOTLIGHT
+			float intensity;
+			vec3 lightDir = spotlight_pos - fs_in.world_pos;
+			float theta = dot(spotlight_direction, normalize(-lightDir));
+			
+			float epsilon = cos_falloff_start - cos_total_width;
+			intensity = clamp((theta - cos_total_width) / epsilon, 0.0, 1.0);
+
 			// calculate per-light radiance
 			vec3 L = normalize(spotlight_pos - fs_in.world_pos);
 			vec3 H = normalize(V + L);
 			float distance = length(spotlight_pos - fs_in.world_pos);
-			float attenuation = (spotlight_intensity * spotlight_falloff(spotlight_direction - spotlight_pos)) / (distance * distance);
+			float attenuation = spotlight_intensity * intensity / (distance * distance);
 			vec3 radiance = spotlight_color * attenuation;
 
 			// Cook-Torrance BRDF
@@ -247,25 +242,13 @@ void main()
 	
     // ambient lighting (we now use IBL as the ambient term)
 	
-    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
 
-    vec3 kS = F;
-    vec3 kD = 1.0 - kS;
-    kD *= 1.0 - metallic;	
-	
-    vec3 irradiance = texture(irradiance_map, N).rgb;
-    vec3 diffuse      = irradiance * albedo;
 
-	const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(prefilter_map, R,  roughness * MAX_REFLECTION_LOD).rgb;    
-    vec2 brdf  = texture(brdf_lut, vec2(max(dot(N, V), 0.0), roughness)).rg;
-    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
-
-    vec3 ambient = (kD * diffuse + specular) * ao;
+    vec3 ambient = vec3(0.03) * albedo * ao;
 
 	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
     
-    vec3 color = ambient + Lo + emission; //emissive here?
+    vec3 color = ambient + Lo; //emissive here?
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));

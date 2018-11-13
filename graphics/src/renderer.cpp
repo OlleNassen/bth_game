@@ -58,15 +58,15 @@ Renderer::Renderer(GameScene* scene)
 	}
 
 	dir_light.direction = glm::vec3(0, 0, -1);
-	dir_light.color = glm::vec3(0, 1, 0);
-	dir_light.intensity = 50.f;
+	dir_light.color = glm::vec3(1, 0, 1);
+	dir_light.intensity = 0.0f;
 
 	spotlights[0].position = glm::vec3(0, 0, 0);
-	spotlights[0].color = glm::vec3(1.f, 0.1f, 0.1f);
+	spotlights[0].color = glm::vec3(1.f, 1.0f, 0.0f);
 	spotlights[0].direction = glm::vec3(10, 0, 0);
-	spotlights[0].intensity = 3000.f;
-	spotlights[0].cos_total_width = 100.f;
-	spotlights[0].cos_falloff_start = 40.f;
+	spotlights[0].intensity = 200.f;
+	spotlights[0].cos_total_width = std::cos(glm::radians(14.5f));
+	spotlights[0].cos_falloff_start = std::cos(glm::radians(12.5f));
 
 }
 
@@ -510,7 +510,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	leaderboard.update(std::move(scoreboard));
 
-	spotlights[0].position = scene->models[0].get_position();
+	spotlights[0].position = scene->moving_models[0].get_position() + glm::vec3(5, 0,0);
 }
 
 void Renderer::z_prepass(const std::string * begin, const std::string * end,

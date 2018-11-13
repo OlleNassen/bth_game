@@ -19,6 +19,9 @@ out VS_OUT{
 	vec3 world_normal;
 	vec3 world_pos;
 	vec2 tex_coord;
+	vec3 tangent_light_pos;
+	vec3 tangent_view_pos;
+	vec3 tangent_fragment_pos;
 } vs_out;
 
 void main()
@@ -29,6 +32,20 @@ void main()
 
     vs_out.tex_coord = uv;
 	gl_Position = projection * view * model * bone_matrix * vec4(position, 1.0);
+
+	//NORMAL MAPPING STUFF
+
+    mat3 normal_matrix = transpose(inverse(mat3(model)));
+    vec3 new_tangent = normalize(normal_matrix * tangent);
+    vec3 new_normal = normalize(normal_matrix * normal);
+    new_tangent = normalize(new_tangent - dot(tangent, new_normal) * new_normal);
+	vec3 bitangent = cross(new_normal, new_tangent);
+
+    mat3 tbn_matrix = transpose(mat3(new_tangent, bitangent, new_normal));
+    vs_out.tangent_light_pos = tbn_matrix * light_pos;
+    vs_out.tangent_view_pos  = tbn_matrix * view_position;
+	vs_out.tangent_fragment_pos = tbn_matrix * vs_out.fragment_pos;
+
 
 	if(animated == 1)
 	{
