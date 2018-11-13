@@ -288,10 +288,10 @@ void Game::update(std::chrono::milliseconds delta)
 
 		for (auto& ppoi : players_placed_objects_id)
 		{
-			level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
-
 			if (ppoi.place_state != 2)
 			{
+				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
+
 				if (!physics.overlapping(ppoi.dynamics_id))
 					ppoi.place_state = 1;
 				else

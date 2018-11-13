@@ -102,6 +102,8 @@ void Renderer::render(
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
 	bool debug_active = (game_state & state::render_physics);
+	const float screen_width = 1920.f;
+	const float screen_height = 1080.f;
 	
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		
@@ -142,7 +144,7 @@ void Renderer::render(
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Lobby Stage, Host press 'R' to start", 1280.f - 940.f, 720.f - 35.f, 0.75f);
+			build_text.render_text("Lobby Stage, Host press 'R' to start", screen_width * 0.33f, screen_height - 35.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 		}
 		else if (game_state & state::building)
@@ -177,14 +179,14 @@ void Renderer::render(
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Press 'Space' to place object", 1920.f - 540, 10.f, 0.75f);
+			build_text.render_text("Press 'Space' to place object", screen_width - 540, 10.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 
 			glDisable(GL_DEPTH_TEST);
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Build Stage", 1920.f - 210, 1080.f - 35.f, 0.75f);
+			build_text.render_text("Build Stage", screen_width - 210, screen_height - 35.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 		}
 		else if (game_state & state::pre_playing)
@@ -204,7 +206,7 @@ void Renderer::render(
 
 			if (print_time > 0.0f)
 			{
-				build_text.render_text(out_text.str(), 1280.f * 0.477f, 720.f * 0.45f, 2.f);
+				build_text.render_text(out_text.str(), screen_width * 0.477f, screen_height * 0.45f, 2.f);
 			}
 
 			glEnable(GL_DEPTH_TEST);
@@ -217,7 +219,7 @@ void Renderer::render(
 				text_shader.use();
 				text_shader.uniform("projection", projection);
 				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-				build_text.render_text("GO", 1280.f * 0.455f, 720.f * 0.45f, 2.f);
+				build_text.render_text("GO", screen_width * 0.455f, screen_height * 0.45f, 2.f);
 				glEnable(GL_DEPTH_TEST);
 			}
 		}
@@ -247,7 +249,7 @@ void Renderer::render(
 				text_shader.use();
 				text_shader.uniform("projection", projection);
 				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f)); 
-				timer_text.render_text(out_text.str(), 10.f, 720.f - 45.f, 1.f);
+				timer_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
 
 				if (died[player_id] || finish[player_id])
 				{
@@ -255,7 +257,7 @@ void Renderer::render(
 					text_shader.use();
 					text_shader.uniform("projection", projection);
 					text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-					build_text.render_text("Press 'A' or 'D' to change spectator", (1280.f * 0.5f) - 325.f, 720.f - 35.f, 0.75f);
+					build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 					glEnable(GL_DEPTH_TEST);
 				}
 			}
