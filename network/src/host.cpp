@@ -65,21 +65,17 @@ Host& Host::operator=(const Host& other)
 
 bool Host::connected() const
 {
-	for (auto* peer : peers)
-		if (peer)
-			return true;
-
-	return false;
+	return peers.size();
 }
 
 bool Host::client() const
 {
-	return is_client;
+	return peers.size() == 1u;
 }
 
 void Host::send(const UserInput& input)
 {	
-	if (enet_host && peers.size() == 1u)
+	if (enet_host)
 	{
 		uint32 data[320] = {};
 		bit_writer writer{data , 100 / 32};

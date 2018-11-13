@@ -17,9 +17,12 @@ public:
 
 private:
 	snapshot_map snapshots;
+	input_map inputs;
 	EnetInit init;
 	Host player_host;
 	int player_id = 0;
+
+	static constexpr enet_uint32 client = 0;
 };
 
 }
