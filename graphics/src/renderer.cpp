@@ -209,6 +209,16 @@ void Renderer::render(
 				build_text.render_text(out_text.str(), screen_width * 0.477f, screen_height * 0.45f, 2.f);
 			}
 
+
+			build_text.render_text("Score: ", 10.f, screen_height - 35.f, 0.75f);
+			std::array<std::string, 4> players = { "Red", "Green", "Yellow", "Blue" };
+			for (int i = 0; i < 4; i++)
+			{
+				out_text.str("");
+				out_text << players[i] << " : " << scores[i];
+				build_text.render_text(out_text.str(), 10.f, screen_height - (35.f * (i + 2)), 0.75f);
+			}
+
 			glEnable(GL_DEPTH_TEST);
 		}
 		else if (game_state & state::playing)
@@ -260,6 +270,31 @@ void Renderer::render(
 					build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 					glEnable(GL_DEPTH_TEST);
 				}
+			}
+			else if (game_state & state::game_over)
+			{
+				float highest = scores[0];
+				int index = 0;
+
+				for (int i = 1; i < 4; i++)
+				{
+					if (scores[i] > highest)
+					{
+						highest = scores[i];
+						index = i;
+					}
+				}
+
+				std::stringstream out_text;
+
+				out_text << "Player " << index + 1 << " is the winner! Score: " << highest;
+
+				glDisable(GL_DEPTH_TEST);
+				text_shader.use();
+				text_shader.uniform("projection", projection);
+				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+				build_text.render_text(out_text.str(), screen_width * 0.1f, screen_height * 0.5f, 2.f);
+				glEnable(GL_DEPTH_TEST);
 			}
 
 			glEnable(GL_DEPTH_TEST);

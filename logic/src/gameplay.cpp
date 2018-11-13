@@ -139,14 +139,18 @@ LuaExport Gameplay::update(Input inputs,
 
 		//std::cout << "			X2:" << inputs.dynamics[0].velocity.x << " Y2:" << inputs.dynamics[0].velocity.y << std::endl; // test triggers
 	}
-	else if (current_state & state::game_over)
-	{
-
-	}
 	
 	game_script.update_export();
 
 	game_script.data.time = time;
+
+	if (current_state & state::game_over)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			inputs.dynamics[i].position = { 3.0f * i, 1.75 };
+		}
+	}
 
 	//Give up \Vincent
 	//give_up(inputs);
