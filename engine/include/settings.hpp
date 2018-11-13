@@ -26,11 +26,9 @@ public:
 	~Settings();
 	const WindowSettings& get_window_settings()const;
 	const GraphicsSettings& get_graphics_settings()const;
-
-	void set_fullscreen();
-
+	bool get_screen_mode() const;
+	void create(bool);
 private:
-	void create();
 
 	lua_State* importer;
 	GraphicsSettings graphics;

@@ -390,6 +390,11 @@ void Game::update(std::chrono::milliseconds delta)
 			net.id(), game_state, temp, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height);
 	}
+
+	if (game_state & state::menu && menu.get_fullscreen_pressed())
+	{
+		window.toggle_screen_mode(settings);
+	}
 }
 
 void Game::pack_data()

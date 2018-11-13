@@ -420,11 +420,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 		ui.enable_chat();
 	}
 
+	for (auto i = 0u; i < num_players; i++)
+	{
+		ui.player_arrows.set_visibility(i, (died[i] || finish[i]));
+	}
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update(scene->moving_models, 
 		player_count, 
-		game_camera.position, 
-		died);
+		game_camera.position);
 
 	minimap.update(scene->moving_models, player_count, goal_height);
 
