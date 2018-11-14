@@ -86,12 +86,12 @@ Renderer::Renderer(GameScene* scene)
 	dir_light.color = glm::vec3(1.0, 0.8, 0.8);
 	dir_light.intensity = 0.4f;
 
-	spotlights[0].position = glm::vec3(0, 0, 0);
-	spotlights[0].color = glm::vec3(1.f, 1.0f, 0.0f);
-	spotlights[0].direction = glm::vec3(10, 0, 0);
-	spotlights[0].intensity = 200.f;
-	spotlights[0].cos_total_width = std::cos(glm::radians(14.5f));
-	spotlights[0].cos_falloff_start = std::cos(glm::radians(12.5f));
+	//spotlights[0].position = glm::vec3(0, 30, 0);
+	//spotlights[0].color = glm::vec3(1.f, 1.0f, 0.0f);
+	//spotlights[0].direction = glm::vec3(0, -1, 0);
+	//spotlights[0].intensity = 200.f;
+	//spotlights[0].cos_total_width = std::cos(glm::radians(10.f));
+	//spotlights[0].cos_falloff_start = std::cos(glm::radians(8.f));
 }
 
 void Renderer::render(
@@ -446,6 +446,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	leaderboard.update(std::move(scoreboard));
 
+	//spotlights[0].position = scene->moving_models[0].get_position() + glm::vec3(3,0,0);
 }
 
 void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const
@@ -466,6 +467,13 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 	shader.uniform("dir_light_dir", dir_light.direction);
 	shader.uniform("dir_light_color", dir_light.color);
 	shader.uniform("dir_light_intensity", dir_light.intensity);
+
+	shader.uniform("spotlight_pos", spotlights[0].position);
+	shader.uniform("spotlight_color", spotlights[0].color);
+	shader.uniform("spotlight_direction", spotlights[0].direction);
+	shader.uniform("spotlight_intensity", spotlights[0].intensity);
+	shader.uniform("cos_total_width", spotlights[0].cos_total_width);
+	shader.uniform("cos_falloff_start", spotlights[0].cos_falloff_start);
 
 	int light_count = 0;
 
