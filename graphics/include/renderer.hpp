@@ -234,7 +234,7 @@ private:
 	glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
 	Leaderboard leaderboard;
 	
-	//Timer text
+	//Timer info
 	Text timer_text;
 
 	//Build instructions
@@ -259,6 +259,7 @@ private:
 												glm::vec3{ 0.2f, 0.9f, 0.1f},
 												glm::vec3{ 0.1f, 0.1f, 0.9f},
 												glm::vec3{ 0.9f, 0.8f, 0.1f} };
+
 };
 
 }

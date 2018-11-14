@@ -139,173 +139,6 @@ void Renderer::render(
 			glEnable(GL_DEPTH_TEST);
 		}
 		
-		if (game_state & state::lobby)
-		{
-			glDisable(GL_DEPTH_TEST);
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Lobby Stage, Host press 'R' to start", screen_width * 0.33f, screen_height - 35.f, 0.75f);
-			glEnable(GL_DEPTH_TEST);
-		}
-		else if (game_state & state::building)
-		{
-
-			int max = build_info.size();
-			for (int i = 0; i < max; i++)
-			{
-				glDisable(GL_DEPTH_TEST);
-				lines.use();
-				lines.uniform("projection", game_camera.projection);
-				lines.uniform("view", game_camera.view());
-
-				if (build_info[i].place_state == 0)	//Cannot Place
-				{
-					lines.uniform("line_color", glm::vec3(1.0f, 0.0f, 0.0f));
-				}
-				else if (build_info[i].place_state == 1) //Can Place
-				{
-					lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
-				}
-				else if(build_info[i].place_state == 2)	//Has Placed
-				{
-					lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
-				}
-
-				line_debug(build_info[i].debug_positions);
-				glEnable(GL_DEPTH_TEST);
-			}
-
-			glDisable(GL_DEPTH_TEST);			
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Press 'Space' to place object", screen_width - 540, 10.f, 0.75f);
-			glEnable(GL_DEPTH_TEST);
-
-			glDisable(GL_DEPTH_TEST);
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Build Stage", screen_width - 210, screen_height - 35.f, 0.75f);
-			glEnable(GL_DEPTH_TEST);
-		}
-		else if (game_state & state::pre_playing)
-		{
-			glDisable(GL_DEPTH_TEST);
-			std::stringstream out_text;
-
-			if (print_time <= 1.0f)
-			{
-				print_time = 1.0f;
-			}
-
-			out_text << std::fixed << std::setprecision(0) << print_time;
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-
-			if (print_time > 0.0f)
-			{
-				build_text.render_text(out_text.str(), screen_width * 0.477f, screen_height * 0.45f, 2.f);
-			}
-
-			build_text.render_text("Score: ", 10.f, screen_height - 35.f, 0.75f);
-
-			for (int i = 0; i < player_count; i++)
-			{
-				out_text.str("");
-				out_text << players[i] << " : " << scores[i];
-				text_shader.uniform("text_color", players_colors[i]);
-				build_text.render_text(out_text.str(), 10.f, screen_height - (35.f * (i + 2)), 0.75f);
-			}
-
-			glEnable(GL_DEPTH_TEST);
-		}
-		else if (game_state & state::playing)
-		{
-			if (print_time <= 90.f && print_time >= 89.f)
-			{
-				glDisable(GL_DEPTH_TEST);
-				text_shader.use();
-				text_shader.uniform("projection", projection);
-				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-				build_text.render_text("GO", screen_width * 0.455f, screen_height * 0.45f, 2.f);
-				glEnable(GL_DEPTH_TEST);
-			}
-		}
-
-		if (!(game_state & state::pre_playing))
-		{
-			glDisable(GL_DEPTH_TEST);
-			std::stringstream out_text;
-			out_text << std::fixed << std::setprecision(1) << print_time;
-			
-			if (game_state & state::building)
-			{
-				world_text_shader.use();
-				world_text_shader.uniform("view", game_camera.view());
-				world_text_shader.uniform("projection", game_camera.projection);
-
-				if (print_time > 5.f)
-					world_text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-				else
-					world_text_shader.uniform("text_color", glm::vec3(0.8f, 0.2f, 0.2f));
-
-
-				timer_text.render_text(out_text.str(), build_info[player_id].world_position.x - 0.95f, build_info[player_id].world_position.y + 1.f, 0.02f);
-
-				text_shader.use();
-				text_shader.uniform("projection", projection);
-				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-				build_text.render_text("Your object:", 10.f, 45.f, 0.75f);
-				build_text.render_text(objects_description[player_object_id], 10.f, 10.f, 0.75f);
-			}
-			else if (game_state & state::playing)
-			{
-				text_shader.use();
-				text_shader.uniform("projection", projection);
-				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f)); 
-				timer_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
-
-				if (died[player_id] || finish[player_id])
-				{
-					glDisable(GL_DEPTH_TEST);
-					text_shader.use();
-					text_shader.uniform("projection", projection);
-					text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-					build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
-					glEnable(GL_DEPTH_TEST);
-				}
-			}
-			else if (game_state & state::game_over)
-			{
-				float highest = scores[0];
-				int index = 0;
-
-				for (int i = 1; i < 4; i++)
-				{
-					if (scores[i] > highest)
-					{
-						highest = scores[i];
-						index = i;
-					}
-				}
-
-				std::stringstream out_text;
-
-				out_text << "Player " << index + 1 << " is the winner! Score: " << highest;
-
-				glDisable(GL_DEPTH_TEST);
-				text_shader.use();
-				text_shader.uniform("projection", projection);
-				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-				build_text.render_text(out_text.str(), screen_width * 0.1f, screen_height * 0.5f, 2.f);
-				glEnable(GL_DEPTH_TEST);
-			}
-
-			glEnable(GL_DEPTH_TEST);
-		}
 	}
 	else if (!is_menu)
 	{
@@ -366,7 +199,7 @@ void Renderer::render(
 			}
 			if (game_state & state::building)
 			{
-				if (!build_stage_screen.transparency < 0.0005f)
+				if (!(build_stage_screen.transparency < 0.0005f))
 				{
 					build_stage_screen.render(build_stage_screen_shader);
 				}
@@ -382,6 +215,195 @@ void Renderer::render(
 		}
 	}
 
+	glDisable(GL_DEPTH_TEST);
+	std::stringstream out_text;
+	out_text << std::fixed << std::setprecision(1) << print_time;
+
+	if (game_state & state::lobby)
+	{
+		
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		build_text.render_text("Lobby Stage, Host press 'R' to start", screen_width * 0.33f, screen_height - 35.f, 0.75f);
+		
+	}
+	else if (game_state & state::building)
+	{
+
+		int max = build_info.size();
+		for (int i = 0; i < max; i++)
+		{
+			
+			lines.use();
+			lines.uniform("projection", game_camera.projection);
+			lines.uniform("view", game_camera.view());
+
+			if (build_info[i].place_state == 0)	//Cannot Place
+			{
+				lines.uniform("line_color", glm::vec3(1.0f, 0.0f, 0.0f));
+			}
+			else if (build_info[i].place_state == 1) //Can Place
+			{
+				lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
+			}
+			else if (build_info[i].place_state == 2)	//Has Placed
+			{
+				lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
+			}
+
+			line_debug(build_info[i].debug_positions);
+			
+		}
+
+		
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		build_text.render_text("Press 'Space' to place object", screen_width - 540, 10.f, 0.75f);
+		
+
+		
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		build_text.render_text("Build Stage", screen_width - 210, screen_height - 35.f, 0.75f);
+		
+
+		world_text_shader.use();
+		world_text_shader.uniform("view", game_camera.view());
+		world_text_shader.uniform("projection", game_camera.projection);
+
+		if (print_time > 5.f)
+			world_text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		else
+			world_text_shader.uniform("text_color", glm::vec3(0.8f, 0.2f, 0.2f));
+
+		float width = timer_text.get_text_width(out_text.str(), 0.02f);
+
+		timer_text.render_text(out_text.str(), build_info[player_id].world_position.x - (width * 0.5f), build_info[player_id].world_position.y + 1.f, 0.02f);
+
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		build_text.render_text("Your object:", 10.f, 45.f, 0.75f);
+		build_text.render_text(objects_description[player_object_id], 10.f, 10.f, 0.75f);
+	}
+	else if (game_state & state::pre_playing)
+	{
+		
+		std::stringstream out_text;
+
+		if (print_time <= 1.0f)
+		{
+			print_time = 1.0f;
+		}
+
+		out_text << std::fixed << std::setprecision(0) << print_time;
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+
+		if (print_time > 0.0f)
+		{
+			build_text.render_text(out_text.str(), screen_width * 0.477f, screen_height * 0.45f, 2.f);
+		}
+
+		build_text.render_text("Score: ", 10.f, screen_height - 35.f, 0.75f);
+
+		for (int i = 0; i < player_count; i++)
+		{
+			out_text.str("");
+			out_text << players[i] << " : " << scores[i];
+			text_shader.uniform("text_color", players_colors[i]);
+			build_text.render_text(out_text.str(), 10.f, screen_height - (35.f * (i + 2)), 0.75f);
+		}
+
+		
+	}
+	else if (game_state & state::playing)
+	{
+		if (print_time <= 90.f && print_time >= 89.f)
+		{
+			
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			build_text.render_text("GO", screen_width * 0.455f, screen_height * 0.45f, 2.f);
+			
+		}
+
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+
+		if (print_time > 15.f)
+		{
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			timer_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
+		}
+		else
+		{
+			static float t = 0.f;
+			glm::vec2 start = { 10.f, screen_height - 45.f };
+			glm::vec2 end = { (screen_width * 0.5f), (screen_height * 0.7f) };
+
+			glm::vec3 red = glm::vec3(1.f, 0.2f, 0.2f);
+			glm::vec3 white = glm::vec3(1.f, 0.4f, 0.4f);
+
+			float start_size = 1.f;
+			float end_size = 4.f;
+
+			t = 15 - print_time;
+
+			float cos_t = (glm::cos(t * 4.f) + 1.f) / 2.f;
+			glm::vec3 color = red + (white - red) * cos_t;
+
+			if (t > 1.0f)
+				t = 1.f;
+
+			glm::vec2 current = start + (end - start) * t;
+			float current_size = start_size + (end_size - start_size) * t;
+			float width = timer_text.get_text_width(out_text.str(), current_size);
+
+			text_shader.uniform("text_color", color);
+			timer_text.render_text(out_text.str(), current.x - (width * 0.5f), current.y, current_size);
+		}
+
+		if (died[player_id] || finish[player_id])
+		{
+			
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
+		}
+	}
+	else if (game_state & state::game_over)
+	{
+		float highest = scores[0];
+		int index = 0;
+
+		for (int i = 1; i < 4; i++)
+		{
+			if (scores[i] > highest)
+			{
+				highest = scores[i];
+				index = i;
+			}
+		}
+
+		std::stringstream out_text;
+
+		out_text << "Player " << index + 1 << " is the winner! Score: " << highest;
+
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		build_text.render_text(out_text.str(), screen_width * 0.1f, screen_height * 0.5f, 2.f);
+		
+	}
+	glEnable(GL_DEPTH_TEST);
+
 	{
 		glDisable(GL_DEPTH_TEST);
 
@@ -389,7 +411,6 @@ void Renderer::render(
 		{
 			main_menu_screen.render(overlay_shader);
 		}
-
 
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
