@@ -242,16 +242,18 @@ private:
 
 	//Arrays of strings and vec3
 	std::array<std::string, 12> objects_description =
-	{ "Does damage",
-	  "Does damage",
-	  "Robot glides (disrupt movement)",
-	  "Robot get 'stuck'. Movement slow-down",
-	  "Stuns robot. Electric disrupt.",
-	  "Build block, can unlock paths",
-	  "Robot run faster. Movement speed-up",
-	  "Robot jump higher. Only at objects place",
-	  "Robot jump higher. Pick-up and used after",
-	  "Does damage" };
+	{ 	
+		"Saw - Does damage",
+		"Platform oil - Robot glides (disrupt movement)",
+		"Sticky platform - Robot get 'stuck'. Movement slow-down",
+		"Shock trap - Stuns robot. Electric disrupt.",
+		"Treadmill - Has a direction. Give movement boost or slow-down depending on direction",
+		"Standard platform - Build block, can build new paths",
+		"Speed boost - Robot run faster. Movement speed-up",
+		"Steam boost - Robot jump higher. Only at objects place",
+		"Trampolin - Robot jump higher. Pick-up and used after",
+		"Turret - Does damage"
+	};
 
 	std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };
 
