@@ -401,23 +401,26 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_chat_on)
 	{
-		//Dust Particles
+		//Dust
 		fx_emitter.calculate_dust_data(delta, game_camera);
 
-		//Spark Particles
+		//Spark
 		fx_emitter.calculate_spark_data(delta, game_camera);
 
-		//Steam Particles
+		//Steam
 		fx_emitter.calculate_steam_data(delta, game_camera);
 
-		//Blitz Particles
+		//Blitz
 		fx_emitter.calculate_blitz_data(delta, game_camera);
 
-		//Fire Particles
+		//Fire
 		fx_emitter.calculate_fire_data(delta, game_camera);
 
-		//Godray Particle
+		//Godray
 		fx_emitter.calculate_godray_data(delta, game_camera);
+
+		//Lava Light
+		fx_emitter.calculate_lava_light_data(delta, game_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();

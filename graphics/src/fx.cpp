@@ -16,12 +16,14 @@ FX::FX()
 	auto& fx_blitz = *fx_blitz_ptr;
 	auto& fx_fire = *fx_fire_ptr;
 	auto& fx_godray = *fx_godray_ptr;
+	auto& fx_lava_light = *fx_lava_light_ptr;
 	gen_particle_buffer(fx_dust);
 	gen_particle_buffer(fx_spark);
 	gen_particle_buffer(fx_steam);
 	gen_particle_buffer(fx_blitz);
 	gen_particle_buffer(fx_fire);
 	gen_particle_buffer(fx_godray);
+	gen_particle_buffer(fx_lava_light);
 }
 
 void FX::gen_particle_buffer(FXdata & particle)
@@ -56,6 +58,7 @@ void FX::render_particles(const Shader& dust,
 	auto& fx_blitz = *fx_blitz_ptr;
 	auto& fx_fire = *fx_fire_ptr;
 	auto& fx_godray = *fx_godray_ptr;
+	auto& fx_lava_light = *fx_lava_light_ptr;
 
 	glm::vec3 start_point = glm::vec3(0, 0, 0);
 	glm::mat4 view_matrix = camera.view();
@@ -138,6 +141,22 @@ void FX::render_particles(const Shader& dust,
 	godray.uniform("particle_pivot", start_point);
 	godray.uniform("type", fx_godray.particle_container[0].type);
 	render_particles(fx_godray);
+	/*godray.uniform("type", fx_godray.particle_container[1].type);
+	render_particles(fx_godray);*/
+
+	//FX - Lava light
+	godray.use();
+	godray.uniform("particle_texture", 0);
+	this->godray.bind(0);
+	godray.uniform("camera_right_worldspace", camera_right_vector);
+	godray.uniform("camera_up_worldspace", camera_up_vector);
+	godray.uniform("view", camera.view());
+	godray.uniform("projection", camera.projection);
+	godray.uniform("paning", timer);
+	//steam.uniform("view_position", scene->v[0]);
+	godray.uniform("particle_pivot", start_point);
+	godray.uniform("type", 1);
+	render_particles(fx_lava_light);
 	/*godray.uniform("type", fx_godray.particle_container[1].type);
 	render_particles(fx_godray);*/
 }
@@ -354,7 +373,7 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 	fx_spark.default_z = 0.0f;
 	fx_spark.nr_of_particles = 1;
 	int randomizer = rand() % 100;
-	int type = rand() % 4;
+	int type = rand() % 3;
 
 	//Update data for particles
 	if (fx_spark.total_particle_count <= MAX_PARTICLES)
@@ -519,67 +538,6 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 
 				fx_spark.particle_container[particle_index].a = 255;
 				fx_spark.particle_container[particle_index].size = 0.3f;
-			}
-		}
-		else if (type == 3)
-		{
-		//Sparks from melting pot
-			if (randomizer <= 35)
-			{
-				for (int i = 0; i < fx_spark.nr_of_particles; i++)
-				{
-					//Find and update the last used particle
-					fx_spark.last_used_particle = find_unused_particle(fx_spark.particle_container, fx_spark.last_used_particle);
-					int particle_index = fx_spark.last_used_particle;
-
-					fx_spark.random_x = static_cast<float>((rand() % 600) / 200.0f) - 9.0f;
-					fx_spark.random_z = static_cast<float>((rand() % 630) / 230.0f) - 24.0f;
-
-					//Set default values for the particles
-					fx_spark.particle_container[particle_index].random_amp = 2.0f;
-					fx_spark.particle_container[particle_index].life = 1.0f;
-					fx_spark.particle_container[particle_index].pos = glm::vec3(fx_spark.random_x, 39.492f, fx_spark.random_z);
-					fx_spark.particle_container[particle_index].r_amp = 0.0f;
-					fx_spark.particle_container[particle_index].g_amp = 0.0f;
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(0, 60, 0); //(x, y, )
-					glm::vec3 random_dir_up = glm::vec3(0, 20, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -20, 0);
-					glm::vec3 random_dir_right = glm::vec3(35, 0, 0);
-					glm::vec3 random_dir_left = glm::vec3(-35, 0, 0);
-					glm::vec3 random_dir_forward = glm::vec3(0, 0, 25);
-					glm::vec3 random_dir_back = glm::vec3(0, 0, -25);
-					float spread_x = (rand() % 100 / 100.0f);
-					float spread_y = (rand() % 100 / 100.0f);
-					float spread_z = (rand() % 100 / 100.0f);
-
-					int rand_dir_gen = rand() % 8;
-
-					if (rand_dir_gen == 0)
-						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_right * spread_x) + (random_dir_forward * spread_z);
-					else if (rand_dir_gen == 1)
-						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_right * spread_x) + (random_dir_forward * spread_z);
-					else if (rand_dir_gen == 2)
-						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_left  * spread_x) + (random_dir_forward * spread_z);
-					else if (rand_dir_gen == 3)
-						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_forward * spread_z);
-					else if (rand_dir_gen == 4)
-						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_right * spread_x) + (random_dir_back	   * spread_z);
-					else if (rand_dir_gen == 5)
-						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_right * spread_x) + (random_dir_back    * spread_z);
-					else if (rand_dir_gen == 6)
-						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
-					else if (rand_dir_gen == 7)
-						fx_spark.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
-
-					fx_spark.particle_container[particle_index].r = 250;
-					fx_spark.particle_container[particle_index].g = 250;
-					fx_spark.particle_container[particle_index].b = 250;
-
-					fx_spark.particle_container[particle_index].a = 255;
-					fx_spark.particle_container[particle_index].size = 0.6f;
-				}
 			}
 		}
 	}
@@ -3142,6 +3100,106 @@ void FX::calculate_godray_data(std::chrono::milliseconds delta, const Camera & c
 	glBindBuffer(GL_ARRAY_BUFFER, fx_godray.color_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_godray.total_particle_count * 4 * sizeof(GLubyte), fx_godray.color_data);
+}
+
+void FX::calculate_lava_light_data(std::chrono::milliseconds delta, const Camera & camera)
+{
+	using namespace std::chrono_literals;
+	std::chrono::duration<float> seconds = delta;
+	auto& fx_lava_light = *fx_lava_light_ptr;
+
+	fx_lava_light.default_x = 0.0f;
+	fx_lava_light.default_y = 0.0f;
+	fx_lava_light.default_z = 0.0f;
+	fx_lava_light.nr_of_particles = 1;
+	randomizer = rand() % 100;
+
+	//Update data for particles
+	if (fx_lava_light.total_particle_count <= MAX_PARTICLES)
+	{
+		if (randomizer <= 100)
+		{
+			for (auto i = 0u; i < fx_lava_light.nr_of_particles; i++)
+			{
+				//Find and update the last used particle
+				fx_lava_light.last_used_particle = find_unused_particle(fx_lava_light.particle_container, fx_lava_light.last_used_particle);
+				int particle_index = fx_lava_light.last_used_particle;
+
+				//Set default values for the particles, first off life and position.
+				fx_lava_light.particle_container[i].life = 1.0f;
+				//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+				fx_lava_light.particle_container[i].pos = glm::vec3(-7.678f, 50.099f, -22.743f);
+
+				//Create a direction for the particles to travel
+				glm::vec3 main_dir = glm::vec3(0, 0, 0);
+
+				fx_lava_light.particle_container[i].speed = main_dir;
+
+				//Set colors, if you want color from texture, don't change the color
+				fx_lava_light.particle_container[i].r = 240;
+				fx_lava_light.particle_container[i].g = 100;
+				fx_lava_light.particle_container[i].b = 0;
+
+				fx_lava_light.particle_container[i].a = 190;
+
+				fx_lava_light.particle_container[i].size = 22.0f;
+
+				fx_lava_light.particle_container[i].type = 0;
+			}
+		}
+	}
+
+	fx_lava_light.total_particle_count = 0;
+	//Update movement
+	for (int i = 0; i < fx_lava_light.nr_of_particles; i++)
+	{
+		//Update life with delta time
+		fx_lava_light.particle_container[i].life -= (seconds.count() / 10.0f);
+
+		if (fx_lava_light.particle_container[i].life > 0.0f)
+		{
+			fx_lava_light.particle_container[i].pos += fx_lava_light.particle_container[i].speed / 5.0f * seconds.count();
+			fx_lava_light.particle_container[i].camera_distance = glm::length(fx_lava_light.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			fx_lava_light.position_data[4 * fx_lava_light.total_particle_count + 0] = fx_lava_light.particle_container[i].pos.x;
+			fx_lava_light.position_data[4 * fx_lava_light.total_particle_count + 1] = fx_lava_light.particle_container[i].pos.y;
+			fx_lava_light.position_data[4 * fx_lava_light.total_particle_count + 2] = fx_lava_light.particle_container[i].pos.z;
+			fx_lava_light.position_data[4 * fx_lava_light.total_particle_count + 3] = fx_lava_light.particle_container[i].size;
+
+			//Set colors in the color data
+			//Red
+			fx_lava_light.color_data[4 * fx_lava_light.total_particle_count + 0] = fx_lava_light.particle_container[i].r;
+
+			//Green
+			fx_lava_light.color_data[4 * fx_lava_light.total_particle_count + 1] = fx_lava_light.particle_container[i].g;
+
+			//Blue
+			fx_lava_light.color_data[4 * fx_lava_light.total_particle_count + 2] = fx_lava_light.particle_container[i].b;
+
+			//Alpha
+			fx_lava_light.color_data[4 * fx_lava_light.total_particle_count + 3] = (fx_lava_light.particle_container[i].a * fx_lava_light.particle_container[i].life) + 50;
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_lava_light.particle_container[i].camera_distance = -1.0f;
+			fx_lava_light.position_data[4 * fx_lava_light.total_particle_count + 0] = 0;
+			fx_lava_light.position_data[4 * fx_lava_light.total_particle_count + 1] = 0;
+			fx_lava_light.position_data[4 * fx_lava_light.total_particle_count + 2] = 0;
+			fx_lava_light.position_data[4 * fx_lava_light.total_particle_count + 3] = 0;
+		}
+		fx_lava_light.total_particle_count++;
+	}
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, fx_lava_light.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_lava_light.total_particle_count * 4 * sizeof(GLfloat), fx_lava_light.position_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, fx_lava_light.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_lava_light.total_particle_count * 4 * sizeof(GLubyte), fx_lava_light.color_data);
 }
 
 }

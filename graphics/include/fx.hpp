@@ -71,6 +71,7 @@ public:
 	void calculate_blitz_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_fire_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_godray_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
@@ -78,6 +79,7 @@ public:
 	FXdata* fx_blitz_ptr = new FXdata{};
 	FXdata* fx_fire_ptr = new FXdata{};
 	FXdata* fx_godray_ptr = new FXdata{};
+	FXdata* fx_lava_light_ptr = new FXdata{};
 
 private:
 	void render_particles(const FXdata& data) const;
