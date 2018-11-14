@@ -121,7 +121,8 @@ void Game::render()
 		menu.button_strings(),
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
 		lua_data.finished, lua_data.scores, lua_data.time,
-		net.id());
+		net.id(),
+		players_placed_objects_id[0].model_type_id);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -267,7 +268,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < 4; i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
-				placed_objects_list_id = placed_objects_array[0]; //random_picked_object();
+				placed_objects_list_id = placed_objects_array[0]; //random_picked_object(); 
 
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);
@@ -275,6 +276,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 				players_placed_objects_id[i].model_id = model_id;
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
+				players_placed_objects_id[i].model_type_id = data.model_id;
 
 				dynamics[dynamic_id].position = start_position;
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };

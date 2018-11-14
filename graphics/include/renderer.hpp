@@ -77,7 +77,8 @@ public:
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
 		float print_time,
-		int player_id) const;
+		int player_id,
+		int player_object_id) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -238,6 +239,26 @@ private:
 
 	//Build instructions
 	Text build_text;
+
+	//Arrays of strings and vec3
+	std::array<std::string, 12> objects_description =
+	{ "Does damage",
+	  "Does damage",
+	  "Robot glides (disrupt movement)",
+	  "Robot get 'stuck'. Movement slow-down",
+	  "Stuns robot. Electric disrupt.",
+	  "Build block, can unlock paths",
+	  "Robot run faster. Movement speed-up",
+	  "Robot jump higher. Only at objects place",
+	  "Robot jump higher. Pick-up and used after",
+	  "Does damage" };
+
+	std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };
+
+	std::array<glm::vec3, 4> players_colors = { glm::vec3{ 1.0f, 0.0f, 0.0f},
+												glm::vec3{ 0.2f, 0.9f, 0.1f},
+												glm::vec3{ 0.1f, 0.1f, 0.9f},
+												glm::vec3{ 0.9f, 0.8f, 0.1f} };
 };
 
 }

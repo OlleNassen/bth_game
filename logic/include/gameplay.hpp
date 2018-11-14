@@ -24,6 +24,7 @@ struct id_and_model_place
 	int dynamics_id = 0;
 	int model_id = 0;
 	int place_state = 1;
+	int model_type_id = 0;
 };
 
 namespace logic

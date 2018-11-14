@@ -97,7 +97,8 @@ void Renderer::render(
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
 	float print_time,
-	int player_id)const
+	int player_id,
+	int player_object_id)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -209,13 +210,7 @@ void Renderer::render(
 				build_text.render_text(out_text.str(), screen_width * 0.477f, screen_height * 0.45f, 2.f);
 			}
 
-
 			build_text.render_text("Score: ", 10.f, screen_height - 35.f, 0.75f);
-			std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };
-			std::array<glm::vec3, 4> players_colors = { glm::vec3{ 1.0f, 0.0f, 0.0f},
-														glm::vec3{ 0.2f, 0.9f, 0.1f},
-														glm::vec3{ 0.1f, 0.1f, 0.9f},
-														glm::vec3{ 0.9f, 0.8f, 0.1f} };
 
 			for (int i = 0; i < player_count; i++)
 			{
@@ -247,7 +242,7 @@ void Renderer::render(
 			out_text << std::fixed << std::setprecision(1) << print_time;
 			
 			if (game_state & state::building)
-			{ 
+			{
 				world_text_shader.use();
 				world_text_shader.uniform("view", game_camera.view());
 				world_text_shader.uniform("projection", game_camera.projection);
@@ -259,6 +254,12 @@ void Renderer::render(
 
 
 				timer_text.render_text(out_text.str(), build_info[player_id].world_position.x - 0.95f, build_info[player_id].world_position.y + 1.f, 0.02f);
+
+				text_shader.use();
+				text_shader.uniform("projection", projection);
+				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+				build_text.render_text("Your object:", 10.f, 45.f, 0.75f);
+				build_text.render_text(objects_description[player_object_id], 10.f, 10.f, 0.75f);
 			}
 			else if (game_state & state::playing)
 			{
