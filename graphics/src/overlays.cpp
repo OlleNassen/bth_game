@@ -30,12 +30,15 @@ void Overlays::update(
 	std::chrono::milliseconds delta,
 	std::array<bool, 4> died,
 	std::array<bool, 4> finish,
-	std::array<float, 4> scores)
+	std::array<float, 4> scores,
+	int player_id)
+	
 {
 	using namespace std::chrono_literals;
-	
+	this->player_id = player_id;
+
 	//Death screen update
-	if (died && finish)
+	if (died[player_id] && finish[player_id])
 	{
 		death_timer += delta;
 	}
@@ -65,7 +68,7 @@ void Overlays::update(
 	}
 
 	//Finish screen update
-	if (finish && !died)
+	if (finish[player_id] && !died[player_id])
 	{
 		finished_timer += delta;
 	}

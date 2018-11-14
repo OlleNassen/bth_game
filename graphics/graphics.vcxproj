@@ -185,7 +185,9 @@
     <ClCompile Include="src\minimap.cpp" />
     <ClCompile Include="src\game_scene.cpp" />
     <ClCompile Include="src\mesh_lib.cpp" />
-    <ClCompile Include="src\overlays.cpp" />
+    <ClCompile Include="src\overlays.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\post_processing_effects.cpp" />
     <ClCompile Include="src\framebuffer.cpp" />
     <ClCompile Include="src\camera.cpp" />
@@ -218,7 +220,9 @@
     <ClInclude Include="include\mesh_lib.hpp" />
     <ClInclude Include="include\minimap.hpp" />
     <ClInclude Include="include\model.hpp" />
-    <ClInclude Include="include\overlays.hpp" />
+    <ClInclude Include="include\overlays.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="include\post_processing_effects.hpp" />
     <ClInclude Include="include\primitives.hpp" />
     <ClInclude Include="include\renderer.hpp" />
