@@ -39,10 +39,10 @@ Renderer::Renderer(GameScene* scene)
 	//Map Light
 	lights[4].position = glm::vec3{ -4.056,6.283,-4.039 };
 	lights[4].color = glm::vec3{ 1,0.2,0 };
-	lights[5].position = glm::vec3{ -7.74,44.563,-22.984 };
+	lights[5].position = glm::vec3{ -7.74,44,-22.984 };
 	lights[5].color = glm::vec3{ 1,0.2,0 };
-	lights[6].position = glm::vec3{ 15.821,80,-20 };
-	lights[6].color = glm::vec3{ 1,0.48,0 };
+	lights[6].position = glm::vec3{ -7.73,23.368,-22.735 };
+	lights[6].color = glm::vec3{ 1,0.2,0 };
 	lights[7].position = glm::vec3{ -11.853,120,-20 };
 	lights[7].color = glm::vec3{ 0,0.82,1 };
 	lights[8].position = glm::vec3{ 13.34,160,-20 };
@@ -54,8 +54,10 @@ Renderer::Renderer(GameScene* scene)
 
 	for (int i = 4; i < 12; i++)
 	{
-		lights[i].intensity = 500;
+		lights[i].intensity = 400;
 	}
+	lights[5].intensity = 1000;
+	lights[6].intensity = 700;
 
 	dir_light.direction = glm::vec3(0, -0.7, -1);
 	dir_light.color = glm::vec3(0.8, 0.8, 1);
