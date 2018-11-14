@@ -75,7 +75,8 @@ void MeshLib::create_mesh_list()
 		"big_fan_shell.ssp",				//47
 		"platform_fence.ssp",               //48
 		"melting_pot.ssp",                  //49
-		"hydraulic_press.ssp"               //50
+		"hydraulic_press.ssp",              //50
+		"chain.ssp"							//51
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
