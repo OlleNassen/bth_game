@@ -180,6 +180,7 @@
     <ClCompile Include="src\finish_screen.cpp" />
     <ClCompile Include="src\fx.cpp" />
     <ClCompile Include="src\leaderboard.cpp" />
+    <ClCompile Include="src\light_grid.cpp" />
     <ClCompile Include="src\loading_screen.cpp" />
     <ClCompile Include="src\main_menu_screen.cpp" />
     <ClCompile Include="src\minimap.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="include\camera.hpp" />
     <ClInclude Include="include\framebuffer.hpp" />
     <ClInclude Include="include\lights.hpp" />
+    <ClInclude Include="include\light_grid.hpp" />
     <ClInclude Include="include\loading_screen.hpp" />
     <ClInclude Include="include\main_menu_screen.hpp" />
     <ClInclude Include="include\mesh.hpp" />
