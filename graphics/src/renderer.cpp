@@ -86,7 +86,12 @@ Renderer::Renderer(GameScene* scene)
 	dir_light.color = glm::vec3(1.0, 0.8, 0.8);
 	dir_light.intensity = 0.4f;
 
-
+	spotlights[0].position = glm::vec3(0, 0, 0);
+	spotlights[0].color = glm::vec3(1.f, 1.0f, 0.0f);
+	spotlights[0].direction = glm::vec3(10, 0, 0);
+	spotlights[0].intensity = 200.f;
+	spotlights[0].cos_total_width = std::cos(glm::radians(14.5f));
+	spotlights[0].cos_falloff_start = std::cos(glm::radians(12.5f));
 }
 
 void Renderer::render(
