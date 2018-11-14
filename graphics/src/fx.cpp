@@ -2166,7 +2166,7 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
 					fx_steam.particle_container[particle_index].life = 1.0f;
 					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(20.18f, 134.991f, -11.135f);
+					fx_steam.particle_container[particle_index].pos = glm::vec3(20.18f, 142.401f, -11.135f);
 
 					//Create a direction for the particles to travel
 					glm::vec3 main_dir = glm::vec3(-60, 0, -1);
@@ -3053,9 +3053,9 @@ void FX::calculate_godray_data(std::chrono::milliseconds delta, const Camera & c
 				fx_godray.particle_container[i].life = 1.0f;
 				//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 				fx_godray.particle_container[0].pos = glm::vec3(0.0f, 253.0f, 0.0f);
-				fx_godray.particle_container[1].pos = glm::vec3(-12.248f, 121.197f, -26.537f);
-				fx_godray.particle_container[2].pos = glm::vec3(12.248f, 121.197f, -26.537f);
-				fx_godray.particle_container[3].pos = glm::vec3(0.0f, 121.197f, -26.537f);
+				fx_godray.particle_container[1].pos = glm::vec3(-12.248f, 120.597f, -26.537f);
+				fx_godray.particle_container[2].pos = glm::vec3(12.248f, 120.597f, -26.537f);
+				fx_godray.particle_container[3].pos = glm::vec3(0.0f, 120.597f, -26.537f);
 
 				//Create a direction for the particles to travel
 				glm::vec3 main_dir = glm::vec3(0, 0, 0);
