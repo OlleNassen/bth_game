@@ -3,42 +3,45 @@
 namespace graphics
 {
 
-OverlayScreen::OverlayScreen()
-{
-	glGenVertexArrays(1, &vao_id);
-	glBindVertexArray(vao_id);
-	glGenBuffers(1, &vbo_id);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(primitives::quad_uv), &primitives::quad_uv, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)0);
-	glEnableVertexAttribArray(0);
-}
+	OverlayScreen::OverlayScreen()
+	{
+		glGenVertexArrays(1, &vao_id);
+		glBindVertexArray(vao_id);
+		glGenBuffers(1, &vbo_id);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(primitives::quad_uv), &primitives::quad_uv, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)0);
+		glEnableVertexAttribArray(0);
+	}
 
-void OverlayScreen::render(const Shader & shader)
-{
-	glBindVertexArray(vao_id);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-}
+	void OverlayScreen::render(const Shader & shader)
+	{
+		glBindVertexArray(vao_id);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
 
+	Overlays::Overlays()
+	{
 
+	}
 
-Overlays::Overlays()
-{
+	Overlays::Overlays(int player_id)
+		: player_id{ player_id }
+	{
 
-}
+	}
 void Overlays::update(
 	std::chrono::milliseconds delta,
-	std::array<bool, 4> died,
-	std::array<bool, 4> finish,
-	std::array<float, 4> scores,
-	int player_id)
+	bool died,
+	bool finish,
+	bool scores
+)
 	
 {
 	using namespace std::chrono_literals;
-	this->player_id = player_id;
 
 	//Death screen update
-	if (died[player_id] && finish[player_id])
+	if (died && finish)
 	{
 		death_timer += delta;
 	}
@@ -68,7 +71,7 @@ void Overlays::update(
 	}
 
 	//Finish screen update
-	if (finish[player_id] && !died[player_id])
+	if (finish && !died)
 	{
 		finished_timer += delta;
 	}
@@ -112,6 +115,81 @@ void Overlays::render(const Shader & shader) const
 		shader.uniform("overlay_texture", 0);
 		death_6.bind(0);
 	}
+
+	{
+		if (finished_timer <= 1500ms)
+		{
+			this->finish_escaped.bind(0);
+		}
+		else if (finished_timer > 1500ms && finished_timer <= 3000ms)
+		{
+			if(player_id == 0)
+				this->finish_1_1.bind(0);
+			if(player_id == 1)
+				this->finish_2_1.bind(0);
+			if (player_id == 2)
+				this->finish_3_1.bind(0);
+			if (player_id == 3)
+				this->finish_4_1.bind(0);
+
+		}
+		else if (finished_timer > 3000ms)
+		{
+			if (player_id == 0)
+				this->finish_1_2.bind(0);
+			if (player_id == 1)
+				this->finish_2_2.bind(0);
+			if (player_id == 2)
+				this->finish_3_2.bind(0);
+			if (player_id == 3)
+				this->finish_4_2.bind(0);
+		}
+	}
+	/*else if (finish[1])
+	{
+		if (timer <= 1500ms)
+		{
+			this->finish_escaped.bind(0);
+		}
+		else if (finished_timer > 1500ms && finished_timer <= 3000ms)
+		{
+			this->finish_2_1.bind(0);
+		}
+		else if (timer > 3000ms)
+		{
+			this->finish_2_2.bind(0);
+		}
+	}
+	else if (finish[2])
+	{
+		if (timer <= 1500ms)
+		{
+			this->finish_escaped.bind(0);
+		}
+		else if (finished_timer > 1500ms && finished_timer <= 3000ms)
+		{
+			this->finish_3_1.bind(0);
+		}
+		else if (timer > 3000ms)
+		{
+			this->finish_3_2.bind(0);
+		}
+	}
+	else if (finish[3])
+	{
+		if (timer <= 1500ms)
+		{
+			this->finish_escaped.bind(0);
+		}
+		else if (finished_timer > 1500ms && finished_timer <= 3000ms)
+		{
+			this->finish_4_1.bind(0);
+		}
+		else if (timer > 3000ms)
+		{
+			this->finish_4_2.bind(0);
+		}
+	}*/
 }
 
 }

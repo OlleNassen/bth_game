@@ -29,13 +29,14 @@ class Overlays
 {
 public:
 	Overlays();
-
+	Overlays(int player_id);
 	void update(
 		std::chrono::milliseconds delta,
-		std::array<bool, 4> died,
-		std::array<bool, 4> finish,
-		std::array<float, 4> scores,
-		int player_id);
+		bool died,
+		bool finish,
+		bool scores
+	);
+
 	void render(const Shader& shader) const;
 
 private:
@@ -72,7 +73,7 @@ private:
 	Texture death_5{"../resources/textures/death_screen/death_5.png"};
 	Texture death_6{"../resources/textures/death_screen/death_6.png"};
 	
-	unsigned int player_id = 0;
+	unsigned int player_id;
 };
 
 }
