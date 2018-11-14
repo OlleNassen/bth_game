@@ -35,8 +35,26 @@ LightGrid::LightGrid()
 	{
 		lights[i].intensity = 200;
 	}
+}
 
-	grid.fill({ 0, 0, 0 });
+void LightGrid::calculate_grid(const Camera& camera)
+{	
+	glm::vec3 eye = camera.position;
+	for (int j = 0; j < rows; ++j)
+	{
+		for (int i = 0; i < columns; ++i)
+		{
+			int left = i;
+			int right = i + 1920 / columns;
+			int top = j;	
+			int bottom = j + 1080 / rows;	
+		}
+	}
+	
+	
+	
+	
+
 }
 
 void LightGrid::update(const Camera & camera)
