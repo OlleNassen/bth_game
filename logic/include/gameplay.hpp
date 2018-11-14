@@ -25,6 +25,22 @@ struct id_and_model_place
 	int model_id = 0;
 	int place_state = 1;
 	int model_type_id = 0;
+
+	bool operator==(const id_and_model_place& other) 
+	{
+		return	dynamics_id		== other.dynamics_id &&
+				model_id		== other.model_id &&
+				place_state		== other.place_state &&
+				model_type_id	== other.model_type_id;
+	}
+
+	bool operator!=(const id_and_model_place& other)
+	{
+		return	dynamics_id != other.dynamics_id ||
+			model_id != other.model_id ||
+			place_state != other.place_state ||
+			model_type_id != other.model_type_id;
+	}
 };
 
 namespace logic

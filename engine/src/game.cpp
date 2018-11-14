@@ -268,7 +268,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < 4; i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
-				placed_objects_list_id = placed_objects_array[0]; //random_picked_object(); 
+				placed_objects_list_id = placed_objects_array[i]; //random_picked_object(); //placed_objects_array[0];
 
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);
@@ -299,6 +299,31 @@ void Game::update(std::chrono::milliseconds delta)
 				else
 					ppoi.place_state = 0;
 			}
+			else
+			{
+				if (ppoi.model_type_id == 7 && ppoi.place_state == 2)
+				{
+					for (int i = 4; i < level.moving_models.size(); i++)
+					{
+						if (dynamics[i].position != dynamics[ppoi.dynamics_id].position)
+						{
+							float distance = glm::distance(dynamics[i].position, dynamics[ppoi.dynamics_id].position);
+
+							if (distance < 5.0f)
+							{
+								//Remove object
+								dynamics[i].position = glm::vec3{ 3000, 0, 0 };
+								level.moving_models[i].set_position(dynamics[i].position);
+
+								std::swap(level.moving_models[i], level.moving_models[level.moving_models.size() - 1]);
+
+								level.moving_models.pop_back();
+								physics.remove_body(i);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	else if (give_players_objects == true)
@@ -306,8 +331,9 @@ void Game::update(std::chrono::milliseconds delta)
 		give_players_objects = false;
 		for (auto& ppoi : players_placed_objects_id)
 		{
-			if (ppoi.place_state == 0 || ppoi.place_state == 1)
+			if (ppoi.place_state == 0)
 			{
+				//Remove object
 				dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
 				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
 				

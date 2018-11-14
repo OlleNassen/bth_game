@@ -315,7 +315,6 @@ void Renderer::render(
 	{
 		if (print_time <= 90.f && print_time >= 89.f)
 		{
-			
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));

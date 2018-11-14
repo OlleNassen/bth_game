@@ -85,7 +85,7 @@ private:
 
 	//test trigger
 	int placed_objects_list_id = 7;
-	int placed_objects_array[4] = { 0,3,7,7 };
+	int placed_objects_array[4] = { 7,0,0,3 };
 
 	int random_picked_object() { return placed_objects_array[rand() % 4]; };
 	std::array<int, 4> random_indexes();
