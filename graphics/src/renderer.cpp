@@ -221,20 +221,16 @@ void Renderer::render(
 
 	if (game_state & state::lobby)
 	{
-		
 		text_shader.use();
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 		build_text.render_text("Lobby Stage, Host press 'R' to start", screen_width * 0.33f, screen_height - 35.f, 0.75f);
-		
 	}
 	else if (game_state & state::building)
 	{
-
 		int max = build_info.size();
 		for (int i = 0; i < max; i++)
 		{
-			
 			lines.use();
 			lines.uniform("projection", game_camera.projection);
 			lines.uniform("view", game_camera.view());
@@ -253,23 +249,18 @@ void Renderer::render(
 			}
 
 			line_debug(build_info[i].debug_positions);
-			
 		}
 
-		
 		text_shader.use();
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 		build_text.render_text("Press 'Space' to place object", screen_width - 540, 10.f, 0.75f);
-		
-
 		
 		text_shader.use();
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 		build_text.render_text("Build Stage", screen_width - 210, screen_height - 35.f, 0.75f);
 		
-
 		world_text_shader.use();
 		world_text_shader.uniform("view", game_camera.view());
 		world_text_shader.uniform("projection", game_camera.projection);
@@ -291,7 +282,6 @@ void Renderer::render(
 	}
 	else if (game_state & state::pre_playing)
 	{
-		
 		std::stringstream out_text;
 
 		if (print_time <= 1.0f)
@@ -304,9 +294,11 @@ void Renderer::render(
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
+		float width = build_text.get_text_width(out_text.str(), 2.f);
+
 		if (print_time > 0.0f)
 		{
-			build_text.render_text(out_text.str(), screen_width * 0.477f, screen_height * 0.45f, 2.f);
+			build_text.render_text(out_text.str(), (screen_width * 0.5f) - (width * 0.5f), screen_height * 0.45f, 2.f);
 		}
 
 		build_text.render_text("Score: ", 10.f, screen_height - 35.f, 0.75f);
@@ -318,8 +310,6 @@ void Renderer::render(
 			text_shader.uniform("text_color", players_colors[i]);
 			build_text.render_text(out_text.str(), 10.f, screen_height - (35.f * (i + 2)), 0.75f);
 		}
-
-		
 	}
 	else if (game_state & state::playing)
 	{
@@ -329,8 +319,8 @@ void Renderer::render(
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("GO", screen_width * 0.455f, screen_height * 0.45f, 2.f);
-			
+			float width = build_text.get_text_width("GO!", 2.0f);
+			build_text.render_text("GO!", (screen_width * 0.5f) - (width * 0.5f) , screen_height * 0.45f, 2.f);
 		}
 
 		text_shader.use();
