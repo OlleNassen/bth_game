@@ -11,11 +11,33 @@ namespace graphics
 
 using namespace std::chrono_literals;
 
+ModelsToRender::ModelsToRender(const Model& player, const Model* begin, const Model* end)
+{
+	first = begin;
+	last = end - 1;
 
+	float culling_distance = 50.0f;
+	float bottom = player.get_y_position() - culling_distance;
+	float top = player.get_y_position() + culling_distance;
+
+	for (auto it = begin; it != end; ++it)
+	{
+		first = it;
+		if (it->get_y_position() > bottom)
+			break;
+	}
+
+	for (auto it = first; it != end; ++it)
+	{
+		last = it;	
+		if (it->get_y_position() > top)
+			break;
+	}
+}
 
 Renderer::Renderer(GameScene* scene)
-	: db_camera{glm::radians(90.0f), 1280.f / 720.f, 0.1f, 100.f}
-	, game_camera{glm::radians(65.0f), 1280.f / 720.f, 0.1f, 100.f}
+	: db_camera{glm::radians(90.0f), 1920.f / 1080.f, 0.1f, 100.f}
+	, game_camera{glm::radians(65.0f), 1920.f / 1080.f, 0.1f, 100.f}
 	, scene{scene}
 	, irradiance_buffer{irradiance, skybox}
 	, prefilter_buffer{pre_filter, skybox, true}
@@ -24,7 +46,7 @@ Renderer::Renderer(GameScene* scene)
 {
 
 	db_camera.position.z = 20.0f;
-	glViewport(0, 0, 1280, 720); // don't forget to configure the viewport to the capture dimensions.
+	glViewport(0, 0, 1920, 1080); // don't forget to configure the viewport to the capture dimensions.
 	
 	//Player Light
 	lights[0].color = glm::vec3{ 9.0f, 1.0f, 1.0f };
@@ -56,6 +78,12 @@ Renderer::Renderer(GameScene* scene)
 	{
 		lights[i].intensity = 200;
 	}
+
+	dir_light.direction = glm::vec3(0, 0, -1);
+	dir_light.color = glm::vec3(1, 1, 1);
+	dir_light.intensity = 0.5f;
+
+
 }
 
 void Renderer::render(
@@ -82,62 +110,31 @@ void Renderer::render(
 
 	if (!is_menu && connected)
 	{
-		robot_shader.use();
-		robot_shader.uniform("brdf_lut", 6);
-		robot_shader.uniform("irradiance_map", 7);
-		robot_shader.uniform("prefilter_map", 8);
-
-		brdf_buffer.bind_texture(6);
-		irradiance_buffer.bind_texture(7);
-		prefilter_buffer.bind_texture(8);
-		render_character(robot_shader,
-			game_camera, lights, scene->moving_models, player_count);   
-
-		pbr.use();
-		pbr.uniform("brdf_lut", 6);
-		pbr.uniform("irradiance_map", 7);
-		pbr.uniform("prefilter_map", 8);
-
-		brdf_buffer.bind_texture(6);
-		irradiance_buffer.bind_texture(7);
-		prefilter_buffer.bind_texture(8);
-		render_type(pbr, game_camera, lights, 
-			&scene->models[first_model], &scene->models[last_model]);
+		render_character(robot_shader, game_camera, scene->moving_models, player_count); 
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, game_camera, lights,
-				&scene->moving_models[4], &scene->moving_models.back() + 1);
+			render_type(pbr, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbr, game_camera, lights,
-			&scene->models[0], &scene->models[9]);
-
-		skybox_shader.use();
-		skybox.render(skybox_shader, game_camera);
+		render_type(pbra, game_camera,a_to_render.first, a_to_render.last);
+		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
+		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
 
 		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
-
-		glDisable(GL_DEPTH_TEST);
+		
 		if (debug_active)
 		{
+			glDisable(GL_DEPTH_TEST);
 			lines.use();
 			lines.uniform("projection", game_camera.projection);
 			lines.uniform("view", game_camera.view());
 			lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
-			line_debug(debug_positions);
+			line_debug(debug_positions);	
 			glEnable(GL_DEPTH_TEST);
 		}
+		
+		if (game_state & state::building)
+		{
 
-		/*if (game_state & state::waiting)
-		{
-			glDisable(GL_DEPTH_TEST);
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Press 'Space' to start", 1280.f - 410, 10.f, 0.75f);
-			glEnable(GL_DEPTH_TEST);
-		}
-		else */if (game_state & state::building)
-		{
 			int max = build_info.size();
 			for (int i = 0; i < max; i++)
 			{
@@ -167,14 +164,14 @@ void Renderer::render(
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Press 'Space' to place", 1280.f - 410, 10.f, 0.75f);
+			build_text.render_text("Press 'Space' to place object", 1920.f - 540, 10.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 
 			glDisable(GL_DEPTH_TEST);
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Build Stage", 1280.f - 210, 720.f - 35.f, 0.75f);
+			build_text.render_text("Build Stage", 1920.f - 210, 1080.f - 35.f, 0.75f);
 			glEnable(GL_DEPTH_TEST);
 		}
 
@@ -184,36 +181,21 @@ void Renderer::render(
 		text_shader.use();
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-		timer_text.render_text(out_text.str(), 10.f, 720.f - 45.f, 1.f);
+		timer_text.render_text(out_text.str(), 10.f, 1080.f - 45.f, 1.f);
 		glEnable(GL_DEPTH_TEST);
 	}
 	else if (!is_menu)
 	{
-		pbr.use();
-		pbr.uniform("brdf_lut", 6);
-		pbr.uniform("irradiance_map", 7);
-		pbr.uniform("prefilter_map", 8);
-
-		brdf_buffer.bind_texture(6);
-		irradiance_buffer.bind_texture(7);
-		prefilter_buffer.bind_texture(8);
-
 		if(debug)
-			render_character(robot_shader,
-				game_camera, lights, scene->moving_models, 4);
+			render_character(robot_shader, game_camera, scene->moving_models, 4);
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, db_camera, lights,
+			render_type(pbr, db_camera,
 				&scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbr, db_camera, lights, 
-			&scene->models[first_model], &scene->models[last_model]);
-
-		render_type(pbr, db_camera, lights,
-			&scene->models[0], &scene->models[9]);
-
-		skybox_shader.use();
-		skybox.render(skybox_shader, db_camera);
+		render_type(pbra, db_camera, a_to_render.first, a_to_render.last);
+		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
+		render_type(pbr, db_camera, &scene->models[0], &scene->models[9]);
 
 		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
 
@@ -259,6 +241,10 @@ void Renderer::render(
 			{
 				finish_screen.render(overlay_shader, finish);
 			}
+			/*if (!build_stage_screen.transparency < 0.0005f)
+			{
+				build_stage_screen.render(build_stage_screen_shader);
+			}*/
 			glEnable(GL_DEPTH_TEST);
 		}
 	}
@@ -270,7 +256,6 @@ void Renderer::render(
 		}
 	}
 
-
 	{
 		glDisable(GL_DEPTH_TEST);
 
@@ -281,7 +266,7 @@ void Renderer::render(
 
 
 		text_shader.use();
-		glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
+		glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
 		text_shader.uniform("projection", projection);
 		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
@@ -294,7 +279,7 @@ void Renderer::render(
 				text.render_text(s.c_str(), 10.0f, (offset += 25.0f), 0.5f);
 		});
 
-		constexpr float size_y = static_cast<int>(720 / 12);
+		constexpr float size_y = static_cast<int>(1080 / 12);
 
 		for (auto i = 0u; i < buttons.size(); ++i)
 			text.render_text(buttons[i], 10.0f, i * size_y, 1.0f);
@@ -335,48 +320,23 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<float, 4> scores,
 	float print_time,
 	float goal_height)
+
 {
-	first_model = 9;
-	last_model = 9;
-	for (auto i = 9u; i < scene->models.size(); ++i)
-	{
-		float culling_distance = 50.0f;
-
-		auto bottom = 0.0f; // scene->moving_models[id].get_y_position() - culling_distance;
-		auto top = 0.0f; // scene->moving_models[id].get_y_position() + culling_distance;
-
-		if (game_state & state::building)
-		{
-			bottom = scene->v[id].y - culling_distance;
-			top = scene->v[id].y + culling_distance;
-		}
-		else
-		{
-			bottom = scene->moving_models[id].get_y_position() - culling_distance;
-			top = scene->moving_models[id].get_y_position() + culling_distance;
-		}		
-		
-		if (bottom < scene->models[i].get_y_position() && !first_model)
-		{
-			first_model = i;
-			last_model = i;
-		}
-
-		if (top < scene->models[i].get_y_position())
-		{
-			last_model = i;
-			break;
-		}
-
-		if (top >= scene->models.back().get_y_position())
-		{
-			last_model = scene->models.size() - 1;
-		}
-	}
+	bool is_menu = (game_state & state::menu);
+	s_to_render = ModelsToRender{scene->moving_models[id],&scene->models[9], &scene->models.back()};
+	a_to_render = ModelsToRender{scene->moving_models[id],&scene->animated_models.front(), &scene->animated_models.back()};
 	
 	if (game_state & state::building)
 	{
 		post_processing_effects.glow_value = 0.0f;
+		if (!is_menu)
+		{
+			/*build_stage_screen.timer += delta;
+			if (build_stage_screen.timer > 2500ms)
+			{
+				build_stage_screen.transparency -= 0.03f;
+			}*/
+		}
 	}
 	else if (game_state & state::playing && print_time <= 15.0f)
 	{
@@ -422,11 +382,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 		ui.enable_chat();
 	}
 
+	for (auto i = 0u; i < num_players; i++)
+	{
+		ui.player_arrows.set_visibility(i, (died[i] || finish[i]));
+	}
 	game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	ui.update(scene->moving_models, 
 		player_count, 
-		game_camera.position, 
-		died);
+		game_camera.position);
 
 	minimap.update(scene->moving_models, player_count, goal_height);
 
@@ -437,6 +400,85 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	leaderboard.update(std::move(scoreboard));
 
+}
+
+void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const
+{
+	shader.use();
+
+	shader.uniform("brdf_lut", 6);
+	shader.uniform("irradiance_map", 7);
+	shader.uniform("prefilter_map", 8);
+	brdf_buffer.bind_texture(6);
+	irradiance_buffer.bind_texture(7);
+	prefilter_buffer.bind_texture(8);
+
+	shader.uniform("view", camera.view());
+	shader.uniform("projection", camera.projection);
+
+	shader.uniform("cam_pos", camera.position);
+	shader.uniform("dir_light_dir", dir_light.direction);
+	shader.uniform("dir_light_color", dir_light.color);
+	shader.uniform("dir_light_intensity", dir_light.intensity);
+
+	int light_count = 0;
+
+	for (int i = 0; i < 9; i++)
+	{
+		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
+		{
+			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
+			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
+			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
+			light_count++;
+		}
+	}
+
+	shader.uniform("light_count", light_count);
+
+	for (auto it = first; it != last; ++it)
+	{
+		const auto& renderable = *it;
+		renderable.render(shader);
+	}
+}
+
+void Renderer::render_character(const Shader& shader, const Camera& camera, const std::vector<Model>& data, int num_players) const
+{
+	shader.use();
+
+	shader.uniform("brdf_lut", 6);
+	shader.uniform("irradiance_map", 7);
+	shader.uniform("prefilter_map", 8);
+	brdf_buffer.bind_texture(6);
+	irradiance_buffer.bind_texture(7);
+	prefilter_buffer.bind_texture(8);
+
+	shader.uniform("view", camera.view());
+	shader.uniform("projection", camera.projection);
+	shader.uniform("cam_pos", camera.position);
+
+	int light_count = 0;
+
+	for (int i = 0; i < 9; i++)
+	{
+		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
+		{
+			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
+			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
+			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
+			light_count++;
+		}
+	}
+
+	shader.uniform("light_count", light_count);
+
+
+	for (auto i = 0; i < num_players; ++i)
+	{
+		const auto& renderable = data[i];
+		renderable.render(shader);
+	}
 }
 
 }

@@ -192,7 +192,6 @@ void World::update(
 		dynamics[i].forces = {0.0f, 0.0f};
 		dynamics[i].impulse = {0.0f, 0.0f};
 	}
-
 	
 	for (int i = 0; i < 4; ++i)
 	{

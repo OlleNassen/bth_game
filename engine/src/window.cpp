@@ -42,13 +42,9 @@ Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
-	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-	//glCullFace(GL_TRUE);
-
-	//glEnable(GL_CULL_FACE);
-
-	//glFrontFace(GL_CW);
-
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);	
+	glEnable(GL_CULL_FACE);
+	this->window_size = window_size;
 }
 
 Window::~Window()
@@ -210,5 +206,30 @@ void Window::update_input(logic::input& input)
 	}
 	
 	
+}
+
+void Window::toggle_screen_mode(Settings& settings)
+{
+	bool fullscreen = settings.get_screen_mode();
+	set_screen_mode(fullscreen);
+	settings.create(!fullscreen);
+}
+
+void Window::set_screen_mode(bool fullscreen)
+{
+	static glm::ivec2 window_pos = { 0, 0 };
+	if (!fullscreen)
+	{
+		// backup windwo position and window size
+		glfwGetWindowPos(glfw_window, &window_pos.x, &window_pos.y);
+		// swithc to full screen
+		glfwSetWindowMonitor(glfw_window, glfwGetPrimaryMonitor(), 0, 0, window_size.x, window_size.y, 0);
+	}
+	else
+	{
+		// restore last window size and position
+		glfwSetWindowMonitor(glfw_window, nullptr, window_pos.x, window_pos.y, window_size.x, window_size.y, 0);
+	}
+	glViewport(0, 0, window_size.x, window_size.y);
 }
 

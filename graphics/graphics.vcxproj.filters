@@ -81,7 +81,7 @@
     <ClCompile Include="src\finish_screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\overlays.cpp">
+    <ClCompile Include="src\build_stage_screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -164,7 +164,7 @@
     <ClInclude Include="include\finish_screen.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\overlays.hpp">
+    <ClInclude Include="include\build_stage_screen.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

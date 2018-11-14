@@ -125,6 +125,8 @@
     <None Include="shaders\box.vs" />
     <None Include="shaders\brdf.fs" />
     <None Include="shaders\brdf.vs" />
+    <None Include="shaders\build_stage.fs" />
+    <None Include="shaders\build_stage.vs" />
     <None Include="shaders\death_screen.fs" />
     <None Include="shaders\death_screen.vs" />
     <None Include="shaders\finish_screen.fs" />
@@ -145,6 +147,8 @@
     <None Include="shaders\loading_screen.vs" />
     <None Include="shaders\main_menu_screen.fs" />
     <None Include="shaders\main_menu_screen.vs" />
+    <None Include="shaders\overlay.fs" />
+    <None Include="shaders\overlay.vs" />
     <None Include="shaders\pre_filter.fs" />
     <None Include="shaders\robots.fs" />
     <None Include="shaders\robots.vs" />

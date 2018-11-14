@@ -150,17 +150,7 @@ void Game::update(std::chrono::milliseconds delta)
 	if (net.connected())
 		game_state = (game_state | state::connected);
 
-	/*static glm::vec2 temp = dynamics[0].position;
-	if (temp == dynamics[0].position)
-	{
-		game_state = (game_state | state::waiting);
-
-		if ((*local_input)[logic::button::jump] == logic::button_state::pressed)
-		{
-			dynamics[0].position.x += 1;
-		}
-	}
-	else */if (gameplay.build_stage())
+	if (gameplay.build_stage())
 	{
 		game_state = (game_state | state::building);
 	}
@@ -213,18 +203,20 @@ void Game::update(std::chrono::milliseconds delta)
 		if (!give_players_objects)
 		{
 			players_placed_objects_id.fill({ 0, 0, 0 });
+			std::array<int, 4> random_index = { 0,0,0,0 };//random_indexes();
 			for (int i = 0; i < 4; i++)
 			{
-				placed_objects_list_id = placed_objects_array[i];//random_picked_object();
+				glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
+				placed_objects_list_id = placed_objects_array[0]; //random_picked_object();
 
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);
-				int dynamic_id = physics.add_dynamic_body(glm::vec2{ 0, 16 + (i * 2) }, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
+				int dynamic_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
 
 				players_placed_objects_id[i].model_id = model_id;
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
 
-				dynamics[dynamic_id].position = { 0, 20 };
+				dynamics[dynamic_id].position = start_position;
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 				dynamics[dynamic_id].size = { data.width, data.height };
 				dynamics[dynamic_id].forces = { 0.0f, 0.0f };
@@ -344,9 +336,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 	anim idle = anim::falling;
 
-	for (int i = 4; i < level.models.size(); i++)
-		if (level.models[i].is_animated)
-			level.models[i].update_animation((float)delta.count(), idle);
+	for (auto& model : level.animated_models)
+			model.update_animation((float)delta.count(), idle);
 
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
@@ -398,6 +389,11 @@ void Game::update(std::chrono::milliseconds delta)
 			chat[1], player_count,
 			net.id(), game_state, temp, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height);
+	}
+
+	if (game_state & state::menu && menu.get_fullscreen_pressed())
+	{
+		window.toggle_screen_mode(settings);
 	}
 }
 
@@ -512,7 +508,22 @@ void Game::place_random_objects(float start_height, float map_width, int number_
 		level.moving_models[model_id].set_position(dynamics[dynamic_id].position);
 
 	}
+}
 
+std::array<int, 4> Game::random_indexes()
+{
+	std::vector<int> taken = { 0, 1, 2, 3 };
+	std::array<int, 4> out;
 
+	int i = 0;
+	while (taken.size() > 0)
+	{
+		int rand_index = rand() % taken.size();
+		int index = taken[rand_index];
+		taken.erase(taken.begin() + rand_index);
+		out[i] = index;
+		i++;
+	}
 
+	return out;
 }
