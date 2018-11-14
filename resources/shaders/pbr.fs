@@ -207,7 +207,12 @@ void main()
     // HDR tonemapping
     color = color / (color + vec3(1.0));
     // gamma correct
-    color = pow(color, vec3(1.0/2.2)); 
+    color = pow(color, vec3(1.0/2.2));
+
+	if( emission.x > 0.0 )
+	{
+		color = color * emission;
+	}
 
     frag_color = vec4(color, 1.0);
 }

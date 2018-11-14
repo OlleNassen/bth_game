@@ -28,13 +28,13 @@ void MeshLib::create_mesh_list()
 		"robot.ssp",						//0
 		"door.ssp",							//1
 		"floor.ssp",						//2
-		"fence.ssp",						//3
+		"roller_belt.ssp",					//3
 		"surveillencecamera.ssp",			//4
 		"plank.ssp",						//5
 		"platform.ssp",						//6
 		"steel_beam.ssp",					//7
 		"ladder.ssp",						//8
-		"wood_box.ssp",						//9
+		"box_small.ssp",					//9
 		"valve.ssp",						//10
 		"wall_background.ssp",				//11
 		"fan_shell.ssp",					//12
@@ -56,15 +56,15 @@ void MeshLib::create_mesh_list()
 		"wall.ssp",							//28
 		"ventilationdrum_bent.ssp",			//29
 		"ventilationdrum_straight.ssp",		//30
-		"crane_top_part.ssp",				//31
+		"crane.ssp",				        //31
 		"crane_lower_part.ssp",				//32
-		"crane_belt.ssp",					//33
-		"crane_big_cog.ssp",				//34
-		"crane_small_cog.ssp",				//35
-		"crane_hook.ssp",					//36
+		"grinder.ssp",					    //33
+		"wall_hole.ssp",				    //34
+		"box_medium.ssp",					//35
+		"box_big.ssp",						//36
 		"cog_1.ssp",						//37
 		"cog_2.ssp",						//38
-		"cog_3.ssp",						//39
+		"cog_3.ssp",						//39 
 		"machine_1.ssp",					//40
 		"machine_2.ssp",					//41
 		"wall_slim.ssp",					//42
@@ -72,7 +72,9 @@ void MeshLib::create_mesh_list()
 		"wall_single.ssp",					//44
 		"Shit_robot.ssp",					//45
 		"big_propeller.ssp",				//46
-		"big_fan_shell.ssp"					//47
+		"big_fan_shell.ssp",				//47
+		"platform_fence.ssp",               //48
+		"melting_pot.ssp"                   //49
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
