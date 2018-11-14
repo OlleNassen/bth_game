@@ -22,7 +22,7 @@ end
 
 local jump_speed = 0
 local gravity = 120
-local max_gravity = 3000
+local max_gravity = 800
 local wall_jump_speed = 
 {
 	x = 150,
@@ -197,8 +197,7 @@ function update_controls(delta_seconds, entity)
 
 	--In Jump
 	if entity.anim.current == entity.anim.in_jump
-	then
-	print(entity.velocity.y)
+	then 
 		if entity.can_jump 
 		then
 			entity.impulse.y = jump_speed
