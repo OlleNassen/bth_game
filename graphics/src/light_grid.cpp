@@ -46,8 +46,10 @@ void LightGrid::calculate_grid(const Camera& camera)
 		{
 			int left = i;
 			int right = i + 1920 / columns;
-			int top = j;	
-			int bottom = j + 1080 / rows;	
+			int top = j;
+			int bottom = j + 1080 / rows;
+			Frustum f;
+			Plane left_plane;
 		}
 	}
 	
