@@ -40,7 +40,7 @@ function update(delta_seconds, entity)
 
 		if entity.button.rotate and not entity.rotate_was_pressed
 		then
-			print("DO ROTATION!")
+			--print("DO ROTATION!")
 		end
 
 		if entity.button.jump

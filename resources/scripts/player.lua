@@ -66,8 +66,6 @@ function update(delta_seconds, entity)
 		then
 			entity.speed_boost_triggerd = true
 			entity.speed_boost_timer = 0.0
-
-			print("Sprint_boost")
 		end
 	end
 
@@ -198,7 +196,6 @@ function update_controls(delta_seconds, entity)
 	--In Jump
 	if entity.anim.current == entity.anim.in_jump
 	then
-	print(entity.velocity.y)
 		if entity.can_jump 
 		then
 			entity.impulse.y = jump_speed
