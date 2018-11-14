@@ -498,6 +498,9 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 	shader.uniform("cam_pos", camera.position);
+	shader.uniform("dir_light_dir", dir_light.direction);
+	shader.uniform("dir_light_color", dir_light.color);
+	shader.uniform("dir_light_intensity", dir_light.intensity);
 
 	int light_count = 0;
 
