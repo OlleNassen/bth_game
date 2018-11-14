@@ -28,8 +28,9 @@ Overlays::Overlays()
 }
 void Overlays::update(
 	std::chrono::milliseconds delta,
-	bool died,
-	bool finish)
+	std::array<bool, 4> died,
+	std::array<bool, 4> finish,
+	std::array<float, 4> scores)
 {
 	using namespace std::chrono_literals;
 	
