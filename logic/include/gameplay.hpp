@@ -23,6 +23,7 @@ struct id_and_model_place
 {
 	int dynamics_id = 0;
 	int model_id = 0;
+	int place_state = 1;
 };
 
 namespace logic
@@ -38,14 +39,10 @@ struct Input
 	const trigger_array& triggers;
 	const input* player_inputs; //4
 	std::array<anim, 4>& anim_states;
-	std::array<id_and_model_place, 4> players_placed_objects_id;
-};
+	std::array<id_and_model_place, 4>& players_placed_objects_id;
 
-struct Output
-{
-	bool game_over;
+	const trigger_type_array& triggers_types; //test for triggers
 };
-
 
 
 template <typename T>
@@ -58,14 +55,13 @@ public:
 
 	void refresh();
 
-	Output update(Input input,
-		std::array<logic::PlayerResult, 4>& player_results,
+	LuaExport update(Input input,
 		int& current_state);
 	bool build_stage() const;
 private:
 	script_array<int> entities;
 	PlayerScript player_script{"../resources/scripts/player.lua"};
-	PlayerScript placement_script{"../resources/scripts/placing_objects.lua"};
+	PlacingScript placement_script{"../resources/scripts/placing_objects.lua"};
 	GameScript game_script;
 	std::array<glm::vec3, 4> directions;
 

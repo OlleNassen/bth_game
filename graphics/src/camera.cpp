@@ -43,7 +43,7 @@ void GameCamera::update(std::chrono::milliseconds delta, glm::vec2* begin, glm::
 	desired_position.x = position.x;
 	position = glm::mix(position, { desired_position, desired_distance }, delta_seconds.count() * 2.0f);
 
-	position.y = glm::min(position.y, 160.0f);
+	position.y = glm::min(position.y, 250.0f);
 	
 	if (position.y >= 160.0f)
 	{
@@ -68,7 +68,7 @@ void DebugCamera::update(std::chrono::milliseconds delta, const glm::vec3& direc
 void DebugCamera::change_position(std::chrono::milliseconds delta, const glm::vec3& direction)
 {
 	std::chrono::duration<float> float_seconds = delta;
-	auto velocity = 10.0f * float_seconds.count();
+	auto velocity = 30.0f * float_seconds.count();
 
 	position += forward * velocity * direction.z;
 	position += glm::normalize(glm::cross(forward, up)) * velocity * direction.x;

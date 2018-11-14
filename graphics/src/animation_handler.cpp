@@ -12,8 +12,12 @@ Animation_handler::Animation_handler()
 	this->time_at_switch = 0.0f;
 	this->nr_of_animations = 0;
 	this->bone_mat_vector.clear();
-
+	this->previous_animation = 0;
 	this->current_keyframe = 0;
+	switch_quat.clear();
+	switch_translations.clear();
+	this->animation_states.clear();
+
 	for (int i = 0; i < 19; i++)
 	{
 		this->bone_mat_vector.push_back(glm::mat4(1));
@@ -56,8 +60,8 @@ glm::vec3 Animation_handler::calc_interpolated_translation(float time, int index
 
 glm::quat Animation_handler::calc_interpolated_quaternion(float time, int index)
 {
-	if(current_animation != previous_animation)
-		current_keyframe = find_current_keyframe(time, index);
+	//if(current_animation != previous_animation)
+	current_keyframe = find_current_keyframe(time, index);
 	unsigned int nextRotation = current_keyframe + 1;
 
 	float deltaTime = animations[current_animation]->joints[index].keyFrames[nextRotation].time - animations[current_animation]->joints[index].keyFrames[current_keyframe].time;
@@ -311,7 +315,7 @@ bool Animation_handler::switch_animation(anim state)
 	if(current_state != state)
 	{
 		float interpolation_time = animation_logic(state);
-		if (interpolation_time > 0)
+		if (interpolation_time > -0.20)
 		{
 			for (unsigned int i = 0; i < this->animations.size(); i++)
 			{
@@ -358,6 +362,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.1f;
 		else if (state == anim::falling)
 			time = 0.1;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::running)
 	{
@@ -373,12 +379,15 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.2;
 		else if (state == anim::falling)
 			time = 0.1;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::start_jump)
 	{
 		if (state == anim::in_jump)
 			time = 0.02f;
-
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::in_jump)
 	{
@@ -388,6 +397,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.1f;
 		else if (state == anim::hanging_left || state == anim::hanging_right)
 			time = 0.1f;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::falling)
 	{
@@ -397,6 +408,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.1f;
 		else if (state == anim::hanging_left || state == anim::hanging_right)
 			time = 0.1f;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::landing)
 	{
@@ -404,6 +417,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.2f;
 		else if (state == anim::running)
 			time = 0.2f;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::sliding)
 	{
@@ -413,6 +428,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.2f;
 		else if (state == anim::start_jump)
 			time = 0.03f;
+		else if (state == anim::independent)
+			time = 0.0;
 		
 	}
 	else if (current_state == anim::connect_wall)
@@ -423,6 +440,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.1f;
 		else if (state == anim::landing)
 			time = 0.2f;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::hanging_right)
 	{
@@ -432,6 +451,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.2;
 		else if (state == anim::falling)
 			time = 0.2;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::hanging_left)
 	{
@@ -441,11 +462,40 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.2;
 		else if (state == anim::falling)
 			time = 0.2;
+		else if (state == anim::independent)
+			time = 0.0;
 	}
 	else if (current_state == anim::jump_from_wall)
 	{
 		if (state == anim::in_jump)
 			time = 0.002;
+		else if (state == anim::independent)
+			time = 0.0;
+	}
+	else if (current_state == anim::independent)
+	{
+	if (state == anim::connect_wall)
+		time = 0.0f;
+	else if (state == anim::falling)
+		time = 0.0f;
+	else if (state == anim::hanging_left)
+		time = 0.0f;
+	else if (state == anim::hanging_right)
+		time = 0.0f;
+	else if (state == anim::hanging_wall)
+		time = 0.0f;
+	else if (state == anim::idle)
+		time = 0.0f;
+	else if (state == anim::running)
+		time = 0.0f;
+	else if (state == anim::in_jump)
+		time = 0.0f;
+	else if (state == anim::jump_from_wall)
+		time = 0.0f;	
+	else if (state == anim::start_jump)
+		time = 0.0f;
+	else if (state == anim::sliding)
+		time = 0.0f;
 	}
 	return time;
 }
@@ -454,68 +504,67 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 {
 	bool switch_worked = false;
 	
+
 	if (animations[current_animation]->switching)
 		time_at_switch += (delta * 0.001);
 
 	this->time_seconds += (delta * 0.001);
+
+	if (animations.size() > 1)
+	{
+
+		if (animations[current_animation]->looping)
+			switch_worked = switch_animation(play_anim);
+		else if (animations[current_animation]->max_time <= this->time_seconds && !this->animations[current_animation]->looping)
+			switch_worked = switch_animation(play_anim);
 	//get_time(delta);
 	
-	if (animations[current_animation]->looping)
-		switch_worked = switch_animation(play_anim);
-	else if (animations[current_animation]->max_time <= this->time_seconds && !this->animations[current_animation]->looping)
-		switch_worked = switch_animation(play_anim);
-	
-	if (!switch_worked)
-		play_anim = current_state;
+		if (!switch_worked)
+			play_anim = current_state;
 
+		if (animations[current_animation]->switching)
+		{
+			if (switch_time <= time_at_switch)
+				animations[current_animation]->switching = false;
+		}
+
+
+		if (animations[current_animation]->max_time <= this->time_seconds && !this->animations[current_animation]->looping)
+		{
+			if (current_state == anim::turning)
+			{
+				switch_animation(anim::running);
+				play_anim = current_state;
+			}
+			else if (current_state == anim::jump_from_wall)
+			{
+				switch_animation(anim::in_jump);
+				play_anim = current_state;
+			}
+			else if (current_state == anim::start_jump) 
+			{
+				switch_animation(anim::in_jump);
+       				play_anim = current_state;
+			}
+			else if (current_state == anim::landing)
+			{
+				switch_animation(anim::idle);
+				play_anim = current_state;
+			}
+			else
+			{
+				switch_animation(anim::idle);
+				play_anim = current_state;
+			}
+		}
+	}
+
+	//Temp Animation Logic
 	if (animations[current_animation]->max_time <= this->time_seconds && animations[current_animation]->looping)
 	{
 		this->time_seconds = 0.0;
 		this->current_keyframe = 0;
 	}
-	if (animations[current_animation]->switching)
-	{
-		if (switch_time <= time_at_switch)
-			animations[current_animation]->switching = false;
-	}
-
-	//Temp Animation Logic
-
-	if (animations[current_animation]->max_time <= this->time_seconds && !this->animations[current_animation]->looping)
-	{
-		if (current_state == anim::turning)
-		{
-			switch_animation(anim::running);
-			play_anim = current_state;
-		}
-		else if (current_state == anim::jump_from_wall)
-		{
-			switch_animation(anim::in_jump);
-			play_anim = current_state;
-		}
-		//else if (current_state == anim::connect_wall)
-		//{
-		//	switch_animation(anim::hanging_wall);
-		//	play_anim = current_state;
-		//}
-		else if (current_state == anim::start_jump) 
-		{
-			switch_animation(anim::in_jump);
-       			play_anim = current_state;
-		}
-		else if (current_state == anim::landing)
-		{
-			switch_animation(anim::idle);
-			play_anim = current_state;
-		}
-		else
-		{
-			switch_animation(anim::idle);
-			play_anim = current_state;
-		}
-	}
-
-	//Temp Animation Logic
 
 	for (unsigned int i = 0; i < this->joints.size(); i++)
 	{
@@ -606,33 +655,50 @@ void Animation_handler::set_local_matrix(glm::mat4 mat, int index)
 	this->joints[index].local_transform_matrix[3][3] = mat[3][3];
 }
 
-void Animation_handler::create_animation_data(const std::string & file_path, anim enm)
+bool Animation_handler::create_animation_data(const std::string & file_path, anim enm)
 {
+	bool anim_found = false;
 	std::string filepath = "../resources/assets/" + file_path;
-	LeapImporter importer;
-	LeapAnimation* custom_anim = importer.getAnimation(filepath.c_str());
 
-	this->animations.push_back(custom_anim->animation);
-	if (animations.size() > 0)
+	std::fstream tempLoader(filepath);
+	if (tempLoader)
 	{
-		this->current_animation = 0;
-		this->current_state = anim::idle;
-		
-		if(animations.size() == 1)
-			this->joints = custom_anim->animation->joints;
-		
-		this->animation_states.push_back(enm);
+		tempLoader.close();
 
+		LeapImporter importer;
+		LeapAnimation* custom_anim = importer.getAnimation(filepath.c_str());
+	
 
-		for (auto i = 0u; i < this->joints.size(); i++)
+		this->animations.push_back(custom_anim->animation);
+		if (animations.size() > 0)
 		{
-			this->link_matricies.push_back(mat_to_GLM(joints[i].local_transform_matrix));
-		}
-		animation_link.push_back(this->link_matricies);
-		fixInverseBindPoses();
-	}
-	delete custom_anim;
+			this->current_animation = 0;
+			this->previous_animation = 0;
+			this->current_state = anim::falling;
+			time_at_switch = 0.0f;
+			this->time_seconds = 0.0f;
+		
+			if(animations.size() == 1)
+				this->joints = custom_anim->animation->joints;
+		
+			this->animation_states.push_back(enm);
 
+
+			for (auto i = 0u; i < this->joints.size(); i++)
+			{
+				this->link_matricies.push_back(mat_to_GLM(joints[i].local_transform_matrix));
+			}
+			animation_link.push_back(this->link_matricies);
+			fixInverseBindPoses();
+		}
+		anim_found = true;
+		delete custom_anim;
+	}
+	if (tempLoader.is_open())
+	{
+		tempLoader.close();
+	}
+	return anim_found;
 }
 
 glm::mat4 Animation_handler::getMatrices(int index)

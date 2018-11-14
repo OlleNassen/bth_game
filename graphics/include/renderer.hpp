@@ -21,9 +21,17 @@
 #include "loading_screen.hpp"
 #include "death_screen.hpp"
 #include "main_menu_screen.hpp"
+#include "finish_screen.hpp"
+#include "build_stage_screen.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
+
+struct build_information
+{
+	std::vector<glm::vec3> build_positions;
+	int place_state = 1;
+};
 
 namespace graphics
 {
@@ -41,6 +49,17 @@ using objects_array = std::array<objects, 100>;
 // Olle
 // Edvard
 
+class ModelsToRender
+{
+public:
+	ModelsToRender() = default;
+	ModelsToRender(const Model& player, const Model* begin, const Model* end);
+	const Model* first = 0;
+	const Model* last = 0;
+};
+
+
+
 class Renderer
 {
 public:
@@ -51,7 +70,12 @@ public:
 		const std::string* end,
 		const std::array<std::string, 12>& buttons,
 		const std::vector<glm::vec3>& debug_positions,
-		bool game_over) const;
+		const std::vector<build_information>& build_infos,
+		bool game_over, 
+		std::array<bool, 4> died,
+		std::array<bool, 4> finish,
+		std::array<float, 4> scores,
+		float print_time) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -61,7 +85,12 @@ public:
 		int num_players,
 		int id,
 		int new_game_state,
-		std::string scoreboard);
+		std::string scoreboard, 
+		std::array<bool, 4> died,
+		std::array<bool, 4> finish,
+		std::array<float, 4> scores,
+		float print_time,
+		float goal_height);
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -80,9 +109,18 @@ public:
 	}
 
 private:
+	void render_type(const Shader& shader, const Camera& camera, 
+		const Model* first, const Model* last) const;
+	
+	void render_character(const Shader& shader, const Camera& camera, 
+		const std::vector<Model>& data, int num_players) const;
+
 	Shader pbr{ 
 		"../resources/shaders/pbr.vs", 
 		"../resources/shaders/pbr.fs" };
+	Shader pbra{
+		"../resources/shaders/pbra.vs",
+		"../resources/shaders/pbra.fs" };
 	Shader text_shader{ 
 		"../resources/shaders/text.vs", 
 		"../resources/shaders/text.fs" };
@@ -110,6 +148,12 @@ private:
 	Shader fx_steam{ 
 		"../resources/shaders/fx_steam.vs",
 		"../resources/shaders/fx_steam.fs" };
+	Shader fx_blitz{
+		"../resources/shaders/fx_blitz.vs",
+		"../resources/shaders/fx_blitz.fs" };
+	Shader fx_fire{
+		"../resources/shaders/fx_fire.vs",
+		"../resources/shaders/fx_fire.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
@@ -119,15 +163,15 @@ private:
 	Shader minimap_shader{ 
 		"../resources/shaders/minimap.vs",
 		"../resources/shaders/minimap.fs" };
-	Shader loading_screen_shader{
-		"../resources/shaders/loading_screen.vs",
-		"../resources/shaders/loading_screen.fs" };
-	Shader death_screen_shader{
-		"../resources/shaders/death_screen.vs",
-		"../resources/shaders/death_screen.fs" };
-	Shader main_menu_shader{
-		"../resources/shaders/main_menu_screen.vs",
-		"../resources/shaders/main_menu_screen.fs" };
+	Shader overlay_shader{
+		"../resources/shaders/overlay.vs",
+		"../resources/shaders/overlay.fs" };
+	Shader robot_shader{
+		"../resources/shaders/robots.vs",
+		"../resources/shaders/robots.fs" };
+	Shader build_stage_screen_shader{
+		"../resources/shaders/build_stage.vs",
+		"../resources/shaders/build_stage.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -154,7 +198,12 @@ private:
 
 	PostProcessingEffects post_processing_effects;
 
-	std::array<PointLight, 4> lights;
+	std::array<PointLight, 14> lights;
+	std::array<SpotLight, 1> spotlights;
+	DirectionalLight dir_light;
+
+	ModelsToRender s_to_render;
+	ModelsToRender a_to_render;
 
 	int player_count{0};
 	glm::vec2 v[4];
@@ -165,6 +214,9 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
+	//BuildStageScreen build_stage_screen;
+	FinishScreen finish_screen;
+	int player_id;
 
 	FX fx_emitter;
 
@@ -172,31 +224,15 @@ private:
 
 
 	//Test of leaderboard
-	glm::mat4 projection = glm::ortho(0.0f, 1280.f, 0.0f, 720.f);
+	glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
 	Leaderboard leaderboard;
 	
+	//Timer text
+	Text timer_text;
+
+	//Build instructions
+	Text build_text;
 };
-
-
-template <typename T>
-void render_type(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T& data)
-{
-	for (auto i = 4u; i < data.size(); ++i)
-	{
-		const auto& renderable = data[i];
-		renderable.render(shader, camera, lights);
-	}
-}
-
-template <typename T>
-void render_character(const Shader& shader, const Camera& camera, const std::array<PointLight, 4>&  lights, const T& data, int num_players)
-{
-	for (auto i = 0; i < num_players; ++i)
-	{
-		const auto& renderable = data[i];
-		renderable.render(shader, camera, lights);
-	}
-}
 
 }
 

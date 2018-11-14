@@ -8,6 +8,7 @@
 
 #include <input.hpp>
 #include "gui.hpp"
+#include "settings.hpp"
 
 //::.. authors ..:://
 // Olle
@@ -205,6 +206,8 @@ public:
 	void show_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
 	void hide_cursor() { glfwSetInputMode(glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); }
 	void title(const char* title) { glfwSetWindowTitle(glfw_window, title); }
+	void toggle_screen_mode(Settings&);
+	void set_screen_mode(bool);
 	
 private:
 	GLFWwindow* glfw_window;
@@ -217,6 +220,7 @@ private:
 
 	int input_index = 0;
 	bool using_controller = false;
+	glm::ivec2 window_size;
 };
 
 #endif

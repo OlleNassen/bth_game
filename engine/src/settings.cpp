@@ -1,6 +1,7 @@
 #include "settings.hpp"
 #include <iostream>
 #include <fstream>
+#include <string>
 
 Settings::Settings()
 {
@@ -9,7 +10,9 @@ Settings::Settings()
 
 	if (luaL_loadfile(importer, "../resources/scripts/setup/settings.lua") || lua_pcall(importer, 0, 0, 0))
 	{
-		create();
+		std::cout << "create" << "\n";
+
+		create(false);
 		if (luaL_loadfile(importer, "../resources/scripts/setup/settings.lua") || lua_pcall(importer, 0, 0, 0))
 		{
 			std::cout << lua_tostring(importer, -1) << '\n';
@@ -49,16 +52,24 @@ const GraphicsSettings & Settings::get_graphics_settings() const
 	return graphics;
 }
 
-void Settings::create()
+bool Settings::get_screen_mode() const
 {
+	return window.fullscreen;
+}
+
+void Settings::create(bool fullscreen)
+{
+	std::string fullscreen_string = (fullscreen) ? "true" : "false";
 	std::ofstream out("../resources/scripts/setup/settings.lua");
 
 	std::string tab = "    ";
 
-	out << "settings = \n" << "{\n" << "    window = \n" << "    {\n" << "        fullscreen = false,\n"
-		<< "        width = 1280,\n" << "        height = 720,\n" << "    },\n\n" << "    sound =\n" << "    {\n"
+	out << "settings = \n" << "{\n" << "    window = \n" << "    {\n" << "        fullscreen = " << fullscreen_string << ",\n"
+		<< "        width = 1920,\n" << "        height = 1080,\n" << "    },\n\n" << "    sound =\n" << "    {\n"
 		<< "        quality = 9.0 -- 10 is max\n" << "    },\n\n" << "    graphics =\n"
 		<< "    {\n" << "        debug_fov = 90.0,\n" << "        depth_of_field = true\n" << "    }\n"
 		<< "}\n";
+
+	window.fullscreen = fullscreen;
 }
 

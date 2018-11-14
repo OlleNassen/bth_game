@@ -49,5 +49,17 @@
     <None Include="shaders\death_screen.vs" />
     <None Include="shaders\main_menu_screen.fs" />
     <None Include="shaders\main_menu_screen.vs" />
+    <None Include="shaders\robots.vs" />
+    <None Include="shaders\robots.fs" />
+    <None Include="shaders\fx_blitz.fs" />
+    <None Include="shaders\fx_blitz.vs" />
+    <None Include="shaders\finish_screen.fs" />
+    <None Include="shaders\finish_screen.vs" />
+    <None Include="shaders\fx_fire.fs" />
+    <None Include="shaders\fx_fire.vs" />
+    <None Include="shaders\overlay.fs" />
+    <None Include="shaders\overlay.vs" />
+    <None Include="shaders\build_stage.fs" />
+    <None Include="shaders\build_stage.vs" />
   </ItemGroup>
 </Project>

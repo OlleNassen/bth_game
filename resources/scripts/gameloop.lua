@@ -1,19 +1,34 @@
 function setup(game)
-	game.goal = 171
+	game.goal = 258
 	game.points = 0 -- do not change this, edit value in update loop
 	game.max_points = 10
 	--4 playerscores:
+	game.names = {"p1", "p2", "p3", "p4"}
 	game.scores = { 0, 0, 0, 0 }
 	game.finished = { false, false, false, false }
+	game.died = {false, false, false, false}
 	game.clock = 0.0
 	game.winner = false
+
+	--game.speed_boost_timer = {0.0, 0.0, 0.0, 0.0}
+	--game.speed_boost_triggerd = { false, false, false, false }
+	--game.max_speed = 8700
+	--game.max_speed_boost = game.max_speed * 2
+	--game.max_velocity = 16
+	--game.max_velocity_boost = game.max_velocity * 1.3
+
+	game.time = 0.0
 end
+
+max_time = 90.0
 
 function update(delta_seconds, game, entities)
 
 	game.clock = game.clock + delta_seconds
+	game.time = max_time - game.clock
 
-	if game.clock > 60.0 -- Deal out points and reset if timer is too high
+	--should be as long as a play time
+	if game.clock > max_time -- Deal out points and reset if timer is too high
 	then
 		while game.points > 0
 		do
@@ -69,6 +84,7 @@ function update(delta_seconds, game, entities)
 		for i = 1, 4, 1
 		do
 			game.finished[i] = false
+			game.died[i] = false
 		end
 
 	end
@@ -89,13 +105,21 @@ function update(delta_seconds, game, entities)
 		--Check if players dead
 	for i = 1, 4, 1
 	do
+
 		if entities[i].triggered >= 4 and not game.finished[i]
 		then
-			game.points = game.points - 1
 
-			game.finished[i] = true
-			entities[i].position.x = -2000
-			entities[i].position.y = -2000
+			--spike_trap -- kvar
+			if entities[i].triggered_type == 0
+			then
+				game.finished[i] = true
+				game.died[i] = true
+				entities[i].position.y = -2000
+				entities[i].position.x = -2000
+
+				game.points = game.points - 1
+
+			end
 		end
 	end
 
@@ -107,4 +131,12 @@ function update(delta_seconds, game, entities)
 		end
 	end
 
+	for i = 1, 4, 1
+	do
+		if game.died[i] == true or game.finished[i]
+		then
+			entities[i].impulse.y = -entities[i].velocity.y
+			--print(entities[i].position.y)
+		end
+	end
 end

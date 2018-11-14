@@ -4,13 +4,15 @@
 
 enum state : int
 {
+	waiting = 1 << 0,
 	debug = 1 << 1,
 	connected = 1 << 2,
 	menu = 1 << 3,
 	building = 1 << 4,
 	chat = 1 << 5,
 	render_physics = 1 << 6,
-	playing = 1 << 7
+	playing = 1 << 7,
+	pre_playing = 1 << 8
 };
 
 enum class anim 
@@ -27,7 +29,8 @@ enum class anim
 	turning,
 	sliding,
 	hanging_left,
-	hanging_right
+	hanging_right,
+	independent
 };
 
 

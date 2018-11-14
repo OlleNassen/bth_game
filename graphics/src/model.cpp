@@ -9,12 +9,15 @@ Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh
 	, model{ model }
 	, emissive_color{emissive_color}
 {
+	std::string animationPath = mesh->name + "_anim" + ".sspAnim";
+	bool animated = animation_handler.create_animation_data(animationPath, anim::falling);
+	if (animated == true)
+		is_animated = true;
 }
 
 void Model::create_animation_data(const std::string & file_path, anim enm)
 {
-	this->animation_handler.create_animation_data(file_path, enm);
-	is_animated = true;
+	is_animated = this->animation_handler.create_animation_data(file_path, enm);
 }
 anim Model::get_state()
 {
@@ -68,6 +71,11 @@ glm::vec3 Model::get_position()const
 	return glm::vec3(model[3][0], model[3][1] + 3, model[3][2]);
 }
 
+glm::vec3 Model::get_color() const
+{
+	return emissive_color;
+}
+
 
 float Model::get_y_position() const
 {
@@ -79,34 +87,17 @@ void Model::rotate(const glm::vec3 axis, float angle)
 	model = glm::rotate(glm::mat4{ 1.0f }, angle, axis);
 }
 
-void Model::render(const Shader & shader, const Camera& camera, const std::array<PointLight, 4>& lights)const
+void Model::render(const Shader & shader) const
 {
 	shader.uniform("model", model);
-	shader.uniform("view", camera.view());
-	shader.uniform("projection", camera.projection);
-
-	shader.uniform("cam_pos", camera.position);
-	
-	shader.uniform("light_pos[0]", lights[0].position);
-	shader.uniform("light_pos[1]", lights[1].position);
-	shader.uniform("light_pos[2]", lights[2].position);
-	shader.uniform("light_pos[3]", lights[3].position);
-	
-	shader.uniform("light_color", lights[0].color);
-
 	shader.uniform("albedo_map", 0);
 	shader.uniform("normal_map", 1);
 	shader.uniform("roughness_metallic_ao_map", 2);
 	shader.uniform("emissive_map", 3);
 	shader.uniform("player_color", emissive_color);
 	
-	shader.uniform("animated", is_animated);
-	
 	if (is_animated)
-	{
 		shader.uniform("bone_mats", this->animation_handler.bone_mat_vector);
-	}
-	
 	
 	mesh->textures[0].bind(0);
 	mesh->textures[1].bind(1);

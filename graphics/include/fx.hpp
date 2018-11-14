@@ -7,10 +7,8 @@
 #include "camera.hpp"
 #include "shader.hpp"
 #include <chrono>
-#define MAX_PARTICLES 10000
-#define MAX_DUST_PARTICLES 200
-#define MAX_STEAM_PARTICLES 100
-#define DF 3.0f
+
+#define MAX_PARTICLES 1000
 
 namespace graphics
 {
@@ -27,6 +25,7 @@ public:
 		float life;
 		float camera_distance;
 		float random_amp;
+		float r_amp, g_amp, b_amp;
 	};
 
 	struct FXdata {
@@ -49,21 +48,30 @@ public:
 	Texture dust;
 	Texture spark;
 	Texture steam;
+	Texture blitz;
+	Texture fire;
 
 	
 	unsigned int randomizer = 0;
 
-	void render_particles(const Shader& dust,
+	void render_particles(
+		const Shader& dust,
 		const Shader& spark,
-		const Shader& steam, 
+		const Shader& steam,
+		const Shader& blitz,
+		const Shader& fire,
 		const Camera& camera) const;
 	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_spark_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_steam_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_blitz_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_fire_data(std::chrono::milliseconds delta, const Camera& camera);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
 	FXdata* fx_steam_ptr = new FXdata{};
+	FXdata* fx_blitz_ptr = new FXdata{};
+	FXdata* fx_fire_ptr = new FXdata{};
 
 private:
 	void render_particles(const FXdata& data) const;

@@ -22,12 +22,12 @@ namespace graphics
 		death_screen_shader.use();
 		if (timer <= 800ms)
 		{
-			death_screen_shader.uniform("main_menu_texture", 0);
+			death_screen_shader.uniform("overlay_texture", 0);
 			this->main_1.bind(0);
 		}
 		else if (timer > 800ms)
 		{
-			death_screen_shader.uniform("main_menu_texture", 0);
+			death_screen_shader.uniform("overlay_texture", 0);
 			this->main_2.bind(0);
 		}
 		//else if (timer >= 100ms && timer <= 150ms)

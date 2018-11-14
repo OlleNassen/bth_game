@@ -24,22 +24,22 @@ void graphics::LoadingScreen::render(const Shader& loading_screen_shader) const
 	loading_screen_shader.use();
 	if (timer <= 1000ms)
 	{
-		loading_screen_shader.uniform("loading_texture", 0);
+		loading_screen_shader.uniform("overlay_texture", 0);
 		this->waiting_1.bind(0);
 	}
 	else if (timer >= 1000ms && timer <= 2000ms)
 	{
-		loading_screen_shader.uniform("loading_texture", 0);
+		loading_screen_shader.uniform("overlay_texture", 0);
 		this->waiting_2.bind(0);
 	}
 	else if (timer >= 2000ms && timer <= 3000ms)
 	{
-		loading_screen_shader.uniform("loading_texture", 0);
+		loading_screen_shader.uniform("overlay_texture", 0);
 		this->waiting_3.bind(0);
 	}
-	else if (timer >= 3000ms && timer <= 4000ms)
+	else if (timer >= 3000ms)
 	{
-		loading_screen_shader.uniform("loading_texture", 0);
+		loading_screen_shader.uniform("overlay_texture", 0);
 		this->waiting_4.bind(0);
 	}
 

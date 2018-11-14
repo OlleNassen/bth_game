@@ -9,10 +9,8 @@ namespace graphics
 struct DirectionalLight
 {
 	glm::vec3 direction;
-	//colors
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
+	glm::vec3 color;
+	float intensity;
 };
 
 struct PointLight
@@ -25,11 +23,17 @@ struct PointLight
 	}
 	glm::vec3 position;
 	glm::vec3 color;
+	float intensity;
 };
 
 struct SpotLight
 {
-	//todo
+	glm::vec3 position;
+	glm::vec3 direction;
+	glm::vec3 color;
+	float intensity;
+	float cos_total_width;
+	float cos_falloff_start;
 };
 
 }
