@@ -336,6 +336,8 @@ function update(delta_seconds, entity)
 		end
 	end
 	
+	update_triggers(delta_seconds, entity)
+
 	--if entity.anim.current == entity.anim.jump_from_wall
 	--then
 	--	if 
@@ -352,6 +354,9 @@ function update(delta_seconds, entity)
 	--entity.velocity.y = delta_seconds * 100 * entity.direction.z
 
 
+end
+
+function update_triggers(delta_seconds, entity)
 
 	entity.friction = entity.normal_friction
 	--trigger
