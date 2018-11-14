@@ -12,8 +12,8 @@ uniform float pulse;
 
 #define PI  3.14159265
 
-float width = 1280; //texture width
-float height = 720; //texture height
+float width = 1920; //texture width
+float height = 1080; //texture height
 
 vec2 texel = vec2(1.0/width,1.0/height);
 
