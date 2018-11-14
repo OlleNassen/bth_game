@@ -285,12 +285,12 @@ void FX::calculate_dust_data(std::chrono::milliseconds delta, const Camera& came
 
 			if (fx_dust.particle_container[i].life >= 0.5f)
 			{
-				fx_dust.particle_container[i].size = abs(fx_dust.particle_container[i].life - 1) / 3.0f;
+				fx_dust.particle_container[i].size = (abs(fx_dust.particle_container[i].life - 1) / 3.0f) + 0.05f;
 				fx_dust.position_data[4 * fx_dust.total_particle_count + 3] = fx_dust.particle_container[i].size;
 			}
 			else if (fx_dust.particle_container[i].life <= 0.5f)
 			{
-				fx_dust.particle_container[i].size = fx_dust.particle_container[i].life / 3.0f;
+				fx_dust.particle_container[i].size = (fx_dust.particle_container[i].life / 3.0f) + 0.05f;
 				fx_dust.position_data[4 * fx_dust.total_particle_count + 3] = fx_dust.particle_container[i].size;
 			}
 
@@ -498,6 +498,7 @@ void FX::calculate_spark_data(std::chrono::milliseconds delta, const Camera& cam
 		}
 		else if (type == 3)
 		{
+		//Sparks from melting pot
 			if (randomizer <= 35)
 			{
 				for (int i = 0; i < fx_spark.nr_of_particles; i++)
