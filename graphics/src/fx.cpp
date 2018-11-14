@@ -120,6 +120,7 @@ void FX::render_particles(const Shader& dust,
 	fire.uniform("camera_up_worldspace", camera_up_vector);
 	fire.uniform("view", camera.view());
 	fire.uniform("projection", camera.projection);
+	fire.uniform("paning", timer);
 	//steam.uniform("view_position", scene->v[0]);
 	fire.uniform("particle_pivot", start_point);
 	render_particles(fx_fire);
