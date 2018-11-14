@@ -7,6 +7,12 @@
 namespace graphics
 {
 
+struct Plane
+{
+	float distance;
+	glm::vec3 normal;
+};
+
 class LightGrid
 {
 public:
