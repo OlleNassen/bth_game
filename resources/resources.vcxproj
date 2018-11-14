@@ -137,6 +137,8 @@
     <None Include="shaders\fx_dust.vs" />
     <None Include="shaders\fx_fire.fs" />
     <None Include="shaders\fx_fire.vs" />
+    <None Include="shaders\fx_godray.fs" />
+    <None Include="shaders\fx_godray.vs" />
     <None Include="shaders\fx_spark.fs" />
     <None Include="shaders\fx_spark.vs" />
     <None Include="shaders\fx_steam.fs" />

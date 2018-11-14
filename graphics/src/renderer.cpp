@@ -65,7 +65,7 @@ Renderer::Renderer(GameScene* scene)
 	lights[5].color = glm::vec3{ 1,0.2,0 };
 	lights[6].position = glm::vec3{ -7.74,44,-22.984 };
 	lights[6].color = glm::vec3{ 1,0.2,0 };
-	lights[7].position = glm::vec3{ -11.853,120,-20 };
+	lights[7].position = glm::vec3{ 0, 123.035, -23.725 };
 	lights[7].color = glm::vec3{ 0,0.82,1 };
 	lights[8].position = glm::vec3{ 13.34,160,-20 };
 	lights[8].color = glm::vec3{ 1,0.48,0 };
@@ -122,7 +122,7 @@ void Renderer::render(
 		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, game_camera, fx_emitter.timer);
 		
 		if (debug_active)
 		{
@@ -200,7 +200,7 @@ void Renderer::render(
 		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, db_camera, &scene->models[0], &scene->models[9]);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, game_camera, fx_emitter.timer);
 
 		if (debug_active)
 		{
@@ -351,6 +351,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	game_state = new_game_state;
 	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
+	fx_emitter.timer += delta;
 
 	using namespace std::chrono_literals;
 
@@ -414,6 +415,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		//Fire Particles
 		fx_emitter.calculate_fire_data(delta, game_camera);
+
+		//Godray Particle
+		fx_emitter.calculate_godray_data(delta, game_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();

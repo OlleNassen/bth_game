@@ -61,5 +61,7 @@
     <None Include="shaders\overlay.vs" />
     <None Include="shaders\build_stage.fs" />
     <None Include="shaders\build_stage.vs" />
+    <None Include="shaders\fx_godray.fs" />
+    <None Include="shaders\fx_godray.vs" />
   </ItemGroup>
 </Project>

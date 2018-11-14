@@ -8,17 +8,20 @@ FX::FX()
 	,steam("../resources/textures/fx/steam_texture_1.png")
 	,blitz("../resources/textures/fx/blitz_texture_1.png")
 	,fire("../resources/textures/fx/fire_texture_1.png")
+	,godray("../resources/textures/fx/godray_1.png")
 {
 	auto& fx_dust = *fx_dust_ptr;
 	auto& fx_spark = *fx_spark_ptr;
 	auto& fx_steam = *fx_steam_ptr;
 	auto& fx_blitz = *fx_blitz_ptr;
 	auto& fx_fire = *fx_fire_ptr;
+	auto& fx_godray = *fx_godray_ptr;
 	gen_particle_buffer(fx_dust);
 	gen_particle_buffer(fx_spark);
 	gen_particle_buffer(fx_steam);
 	gen_particle_buffer(fx_blitz);
 	gen_particle_buffer(fx_fire);
+	gen_particle_buffer(fx_godray);
 }
 
 void FX::gen_particle_buffer(FXdata & particle)
@@ -43,18 +46,23 @@ void FX::render_particles(const Shader& dust,
 	const Shader& steam,
 	const Shader& blitz,
 	const Shader& fire,
-	const Camera& camera) const
+	const Shader& godray,
+	const Camera& camera,
+	std::chrono::milliseconds delta) const
 {
 	auto& fx_dust = *fx_dust_ptr;
 	auto& fx_spark = *fx_spark_ptr;
 	auto& fx_steam = *fx_steam_ptr;
 	auto& fx_blitz = *fx_blitz_ptr;
 	auto& fx_fire = *fx_fire_ptr;
+	auto& fx_godray = *fx_godray_ptr;
 
 	glm::vec3 start_point = glm::vec3(0, 0, 0);
 	glm::mat4 view_matrix = camera.view();
 	glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
 	glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
+
+	float timer = ((int)delta.count() % 10000) / 10000.0f;
 
 	//FX Dust
 	dust.use();
@@ -115,6 +123,22 @@ void FX::render_particles(const Shader& dust,
 	//steam.uniform("view_position", scene->v[0]);
 	fire.uniform("particle_pivot", start_point);
 	render_particles(fx_fire);
+
+	//FX - Godray
+	godray.use();
+	godray.uniform("particle_texture", 0);
+	this->godray.bind(0);
+	godray.uniform("camera_right_worldspace", camera_right_vector);
+	godray.uniform("camera_up_worldspace", camera_up_vector);
+	godray.uniform("view", camera.view());
+	godray.uniform("projection", camera.projection);
+	godray.uniform("paning", timer);
+	//steam.uniform("view_position", scene->v[0]);
+	godray.uniform("particle_pivot", start_point);
+	godray.uniform("type", fx_godray.particle_container[0].type);
+	render_particles(fx_godray);
+	/*godray.uniform("type", fx_godray.particle_container[1].type);
+	render_particles(fx_godray);*/
 }
 
 void FX::render_particles(const FXdata& data) const
@@ -208,7 +232,7 @@ void FX::calculate_dust_data(std::chrono::milliseconds delta, const Camera& came
 			{
 				//Create a random position here
 				fx_dust.random_x = static_cast<float>(rand() % 40) - 20.0f;
-				fx_dust.random_y = static_cast<float>(rand() % 256);
+				fx_dust.random_y = static_cast<float>(rand() % 250);
 				fx_dust.random_z = static_cast<float>(rand() % 20) - 12.0f;
 
 				//Find and update the last used particle
@@ -3000,6 +3024,123 @@ void FX::calculate_fire_data(std::chrono::milliseconds delta, const Camera & cam
 	glBindBuffer(GL_ARRAY_BUFFER, fx_fire.color_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_fire.total_particle_count * 4 * sizeof(GLubyte), fx_fire.color_data);
+}
+
+void FX::calculate_godray_data(std::chrono::milliseconds delta, const Camera & camera)
+{
+	using namespace std::chrono_literals;
+	std::chrono::duration<float> seconds = delta;
+	auto& fx_godray = *fx_godray_ptr;
+
+	fx_godray.default_x = 0.0f;
+	fx_godray.default_y = 0.0f;
+	fx_godray.default_z = 0.0f;
+	fx_godray.nr_of_particles = 4;
+	randomizer = rand() % 100;
+
+	//Update data for particles
+	if (fx_godray.total_particle_count <= MAX_PARTICLES)
+	{
+		if (randomizer <= 100)
+		{
+			for (auto i = 0u; i < fx_godray.nr_of_particles; i++)
+			{
+				//Find and update the last used particle
+				fx_godray.last_used_particle = find_unused_particle(fx_godray.particle_container, fx_godray.last_used_particle);
+				int particle_index = fx_godray.last_used_particle;
+
+				//Set default values for the particles, first off life and position.
+				fx_godray.particle_container[i].life = 1.0f;
+				//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+				fx_godray.particle_container[0].pos = glm::vec3(0.0f, 253.0f, 0.0f);
+				fx_godray.particle_container[1].pos = glm::vec3(-12.248f, 121.197f, -26.537f);
+				fx_godray.particle_container[2].pos = glm::vec3(12.248f, 121.197f, -26.537f);
+				fx_godray.particle_container[3].pos = glm::vec3(0.0f, 121.197f, -26.537f);
+
+				//Create a direction for the particles to travel
+				glm::vec3 main_dir = glm::vec3(0, 0, 0);
+
+				fx_godray.particle_container[i].speed = main_dir;
+
+				//Set colors, if you want color from texture, don't change the color
+				fx_godray.particle_container[0].r = 220;
+				fx_godray.particle_container[0].g = 220;
+				fx_godray.particle_container[0].b = 220;
+
+				fx_godray.particle_container[1].r = 133;
+				fx_godray.particle_container[1].g = 249;
+				fx_godray.particle_container[1].b = 255;
+				fx_godray.particle_container[2].r = 133;
+				fx_godray.particle_container[2].g = 249;
+				fx_godray.particle_container[2].b = 255;
+				fx_godray.particle_container[3].r = 133;
+				fx_godray.particle_container[3].g = 249;
+				fx_godray.particle_container[3].b = 255;
+
+				fx_godray.particle_container[i].a = 190;
+
+				fx_godray.particle_container[0].size = 22.0f;
+				fx_godray.particle_container[1].size = 16.0f;
+				fx_godray.particle_container[2].size = 16.0f;
+				fx_godray.particle_container[3].size = 16.0f;
+
+				fx_godray.particle_container[0].type = 0;
+				fx_godray.particle_container[1].type = 1;
+			}
+		}
+	}
+
+	fx_godray.total_particle_count = 0;
+	//Update movement
+	for (int i = 0; i < fx_godray.nr_of_particles; i++)
+	{
+		//Update life with delta time
+		fx_godray.particle_container[i].life -= (seconds.count() / 10.0f);
+
+		if (fx_godray.particle_container[i].life > 0.0f)
+		{
+			fx_godray.particle_container[i].pos += fx_godray.particle_container[i].speed / 5.0f * seconds.count();
+			fx_godray.particle_container[i].camera_distance = glm::length(fx_godray.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			fx_godray.position_data[4 * fx_godray.total_particle_count + 0] = fx_godray.particle_container[i].pos.x;
+			fx_godray.position_data[4 * fx_godray.total_particle_count + 1] = fx_godray.particle_container[i].pos.y;
+			fx_godray.position_data[4 * fx_godray.total_particle_count + 2] = fx_godray.particle_container[i].pos.z;
+			fx_godray.position_data[4 * fx_godray.total_particle_count + 3] = fx_godray.particle_container[i].size;
+
+			//Set colors in the color data
+			//Red
+			fx_godray.color_data[4 * fx_godray.total_particle_count + 0] = fx_godray.particle_container[i].r;
+
+			//Green
+			fx_godray.color_data[4 * fx_godray.total_particle_count + 1] = fx_godray.particle_container[i].g;
+
+			//Blue
+			fx_godray.color_data[4 * fx_godray.total_particle_count + 2] = fx_godray.particle_container[i].b;
+
+			//Alpha
+			fx_godray.color_data[4 * fx_godray.total_particle_count + 3] = (fx_godray.particle_container[i].a * fx_godray.particle_container[i].life) + 50;
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_godray.particle_container[i].camera_distance = -1.0f;
+			fx_godray.position_data[4 * fx_godray.total_particle_count + 0] = 0;
+			fx_godray.position_data[4 * fx_godray.total_particle_count + 1] = 0;
+			fx_godray.position_data[4 * fx_godray.total_particle_count + 2] = 0;
+			fx_godray.position_data[4 * fx_godray.total_particle_count + 3] = 0;
+		}
+		fx_godray.total_particle_count++;
+	}
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, fx_godray.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_godray.total_particle_count * 4 * sizeof(GLfloat), fx_godray.position_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, fx_godray.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_godray.total_particle_count * 4 * sizeof(GLubyte), fx_godray.color_data);
 }
 
 }

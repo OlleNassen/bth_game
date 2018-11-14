@@ -23,6 +23,7 @@ public:
 		unsigned char r, g, b, a;
 		float size, angle, weight;
 		float life;
+		int type;
 		float camera_distance;
 		float random_amp;
 		float r_amp, g_amp, b_amp;
@@ -50,9 +51,10 @@ public:
 	Texture steam;
 	Texture blitz;
 	Texture fire;
-
+	Texture godray;
 	
 	unsigned int randomizer = 0;
+	std::chrono::milliseconds timer;
 
 	void render_particles(
 		const Shader& dust,
@@ -60,18 +62,22 @@ public:
 		const Shader& steam,
 		const Shader& blitz,
 		const Shader& fire,
-		const Camera& camera) const;
+		const Shader& godray,
+		const Camera& camera,
+		std::chrono::milliseconds delta) const;
 	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_spark_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_steam_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_blitz_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_fire_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_godray_data(std::chrono::milliseconds delta, const Camera& camera);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
 	FXdata* fx_steam_ptr = new FXdata{};
 	FXdata* fx_blitz_ptr = new FXdata{};
 	FXdata* fx_fire_ptr = new FXdata{};
+	FXdata* fx_godray_ptr = new FXdata{};
 
 private:
 	void render_particles(const FXdata& data) const;

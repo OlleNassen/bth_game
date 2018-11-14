@@ -154,6 +154,9 @@ private:
 	Shader fx_fire{
 		"../resources/shaders/fx_fire.vs",
 		"../resources/shaders/fx_fire.fs" };
+	Shader fx_godray{
+		"../resources/shaders/fx_godray.vs",
+		"../resources/shaders/fx_godray.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
