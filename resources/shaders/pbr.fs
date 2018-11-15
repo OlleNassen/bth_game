@@ -31,6 +31,11 @@ uniform sampler2D   brdf_lut;
 uniform samplerCube irradiance_map;
 uniform samplerCube prefilter_map;
 
+const int max_num_lights = 3;
+const int block_size = 24;
+
+uniform int light_id[max_num_lights][block_size][block_size];
+
 const float PI = 3.14159265359;
 
 vec3 getNormalFromMap()
@@ -115,40 +120,44 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < light_count; ++i) 
+    //for(int i = 0; i < light_count; ++i) 
     {
-			// calculate per-light radiance
-			vec3 L = normalize(light_pos[i] - fs_in.world_pos);
-			vec3 H = normalize(V + L);
-			float distance = length(light_pos[i] - fs_in.world_pos);
-			float attenuation = light_intensity[i] / (distance * distance);
-			vec3 radiance = light_color[i] * attenuation;
+		int x = floor(gl_FragCoord.x) / block_size;
+		int y = floor(gl_FragCoord.y) / block_size;
+		int i = light_id[0][x][y];
+			
+		// calculate per-light radiance
+		vec3 L = normalize(light_pos[i] - fs_in.world_pos);
+		vec3 H = normalize(V + L);
+		float distance = length(light_pos[i] - fs_in.world_pos);
+		float attenuation = light_intensity[i] / (distance * distance);
+		vec3 radiance = light_color[i] * attenuation;
 
-			// Cook-Torrance BRDF
-			float NDF = DistributionGGX(N, H, roughness);   
-			float G   = GeometrySmith(N, V, L, roughness);      
-			vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+		// Cook-Torrance BRDF
+		float NDF = DistributionGGX(N, H, roughness);   
+		float G   = GeometrySmith(N, V, L, roughness);      
+		vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
            
-			vec3 nominator    = NDF * G * F; 
-			float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
-			vec3 specular = nominator / denominator;
+		vec3 nominator    = NDF * G * F; 
+		float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
+		vec3 specular = nominator / denominator;
         
-			// kS is equal to Fresnel
-			vec3 kS = F;
-			// for energy conservation, the diffuse and specular light can't
-			// be above 1.0 (unless the surface emits light); to preserve this
-			// relationship the diffuse component (kD) should equal 1.0 - kS.
-			vec3 kD = vec3(1.0) - kS;
-			// multiply kD by the inverse metalness such that only non-metals 
-			// have diffuse lighting, or a linear blend if partly metal (pure metals
-			// have no diffuse light).
-			kD *= 1.0 - metallic;	  
+		// kS is equal to Fresnel
+		vec3 kS = F;
+		// for energy conservation, the diffuse and specular light can't
+		// be above 1.0 (unless the surface emits light); to preserve this
+		// relationship the diffuse component (kD) should equal 1.0 - kS.
+		vec3 kD = vec3(1.0) - kS;
+		// multiply kD by the inverse metalness such that only non-metals 
+		// have diffuse lighting, or a linear blend if partly metal (pure metals
+		// have no diffuse light).
+		kD *= 1.0 - metallic;	  
 
-			// scale light by NdotL
-			float NdotL = max(dot(N, L), 0.0);        
+		// scale light by NdotL
+		float NdotL = max(dot(N, L), 0.0);        
 
-			// add to outgoing radiance Lo
-			Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+		// add to outgoing radiance Lo
+		Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }
 
 	{ //Dir light
