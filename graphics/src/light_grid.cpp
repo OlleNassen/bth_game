@@ -38,8 +38,20 @@ LightGrid::LightGrid()
 
 	for (int i = 4; i < 12; i++)
 	{
-		lights[i].intensity = 200;
+		lights[i].intensity = 400;
 	}
+	lights[4].intensity = 100;
+	lights[5].intensity = 700;
+	lights[6].intensity = 1000;
+}
+
+const int* LightGrid::data()const
+{
+	return &indices[0][0][0];
+}
+int LightGrid::size()const
+{
+	return 3 * block_size * block_size;
 }
 
 void LightGrid::calculate_grid(const Camera& camera)

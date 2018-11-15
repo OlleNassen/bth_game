@@ -198,7 +198,6 @@ private:
 
 	PostProcessingEffects post_processing_effects;
 
-	std::array<PointLight, 14> lights;
 	DirectionalLight dir_light;
 
 	ModelsToRender s_to_render;
@@ -231,6 +230,8 @@ private:
 
 	//Build instructions
 	Text build_text;
+
+	LightGrid grid;
 };
 
 }

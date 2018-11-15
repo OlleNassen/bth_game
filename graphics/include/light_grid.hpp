@@ -31,12 +31,16 @@ class LightGrid
 {
 public:
 	LightGrid();
+	
+	const int* data()const;
+	int size()const;
 
 	void calculate_grid(const Camera& camera);
+	void update(const Camera& camera);	
 
-	void update(const Camera& camera);
-private:
 	std::array<PointLight, 32> lights;
+private:
+	
 	static constexpr int max_num_lights = 3;
 	static constexpr int columns = 80;
 	static constexpr int rows = 45;

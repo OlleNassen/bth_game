@@ -6,6 +6,8 @@
 #include <gl/glew.h>
 #include <glm/glm.hpp>
 
+#include "light_grid.hpp"
+
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -52,6 +54,13 @@ public:
 	{
 		glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()),
 			value.size(), GL_FALSE, glm::value_ptr(value.front()));
+	}
+
+	void uniform(const std::string& name,
+		const LightGrid& value) const
+	{
+		glUniform1iv(glGetUniformLocation(id, name.c_str()),
+			value.size(), value.data());
 	}
 
 private:

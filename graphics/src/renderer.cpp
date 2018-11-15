@@ -44,43 +44,9 @@ Renderer::Renderer(GameScene* scene)
 	, brdf_buffer{brdf, skybox, 3.f}
 	, leaderboard(projection)
 {
-
+	grid.calculate_grid(game_camera);
 	db_camera.position.z = 20.0f;
 	glViewport(0, 0, 1920, 1080); // don't forget to configure the viewport to the capture dimensions.
-	
-	//Player Light
-	lights[0].color = glm::vec3{ 9.0f, 1.0f, 1.0f };
-	lights[0].intensity = 30;
-	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
-	lights[1].intensity = 30;
-	lights[2].color = glm::vec3{ 0.1f, 0.1f, 0.9f };
-	lights[2].intensity = 30;
-	lights[3].color = glm::vec3{ 0.9f, 0.8f, 0.1f };
-	lights[3].intensity = 30;
-
-	//Map Light
-	lights[4].position = glm::vec3{ -0.145,-6.289,8.929 };
-	lights[4].color = glm::vec3{ 1,0.2,0 };
-	lights[5].position = glm::vec3{ -7.73,23.368,-22.735 };
-	lights[5].color = glm::vec3{ 1,0.2,0 };
-	lights[6].position = glm::vec3{ -7.74,44,-22.984 };
-	lights[6].color = glm::vec3{ 1,0.2,0 };
-	lights[7].position = glm::vec3{ -11.853,120,-20 };
-	lights[7].color = glm::vec3{ 0,0.82,1 };
-	lights[8].position = glm::vec3{ 13.34,160,-20 };
-	lights[8].color = glm::vec3{ 1,0.48,0 };
-	lights[9].position = glm::vec3{ -11.853,200,-20 };
-	lights[9].color = glm::vec3{ 0,0.82,1 };
-	lights[10].position = glm::vec3{ 13.34,240,-20 };
-	lights[10].color = glm::vec3{ 1,0.48,0 };
-
-	for (int i = 4; i < 12; i++)
-	{
-		lights[i].intensity = 400;
-	}
-	lights[4].intensity = 100;
-	lights[5].intensity = 700;
-	lights[6].intensity = 1000;
 
 	dir_light.direction = glm::vec3(0, -0.7, -1);
 	dir_light.color = glm::vec3(1.0, 0.8, 0.8);
@@ -436,11 +402,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	for (int i = 0; i < 4; ++i)
 	{
-		lights[i].position = scene->moving_models[i].get_position();
+		grid.lights[i].position = scene->moving_models[i].get_position();
 	}
 
 	leaderboard.update(std::move(scoreboard));
-
+	grid.update(game_camera);
 }
 
 void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const
@@ -457,25 +423,24 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
+	shader.uniform("light_id", grid);
+
 	shader.uniform("cam_pos", camera.position);
 	shader.uniform("dir_light_dir", dir_light.direction);
 	shader.uniform("dir_light_color", dir_light.color);
 	shader.uniform("dir_light_intensity", dir_light.intensity);
 
-	int light_count = 0;
-
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < grid.lights.size(); ++i)
 	{
-		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
-		{
-			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
-			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
-			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
-			light_count++;
-		}
+		shader.uniform("light_pos[" + std::to_string(i) + "]", 
+			grid.lights[i].position);
+		shader.uniform("light_color[" + std::to_string(i) + "]", 
+			grid.lights[i].color);
+		shader.uniform("light_intensity[" + std::to_string(i) + "]", 
+			grid.lights[i].intensity);
 	}
 
-	shader.uniform("light_count", light_count);
+	shader.uniform("light_count", (int)grid.lights.size());
 
 	for (auto it = first; it != last; ++it)
 	{
@@ -499,20 +464,17 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 	shader.uniform("projection", camera.projection);
 	shader.uniform("cam_pos", camera.position);
 
-	int light_count = 0;
-
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < grid.lights.size(); ++i)
 	{
-		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
-		{
-			shader.uniform("light_pos[" + std::to_string(light_count) + "]", lights[i].position);
-			shader.uniform("light_color[" + std::to_string(light_count) + "]", lights[i].color);
-			shader.uniform("light_intensity[" + std::to_string(light_count) + "]", lights[i].intensity);
-			light_count++;
-		}
+		shader.uniform("light_pos[" + std::to_string(i) + "]",
+			grid.lights[i].position);
+		shader.uniform("light_color[" + std::to_string(i) + "]",
+			grid.lights[i].color);
+		shader.uniform("light_intensity[" + std::to_string(i) + "]",
+			grid.lights[i].intensity);
 	}
 
-	shader.uniform("light_count", light_count);
+	shader.uniform("light_count", (int)grid.lights.size());
 
 
 	for (auto i = 0; i < num_players; ++i)
