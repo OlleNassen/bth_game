@@ -289,7 +289,7 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 		}
 
-		/*remove_lines.clear();
+		//remove_lines.clear();
 		for (auto& ppoi : players_placed_objects_id)
 		{
 			if (ppoi.place_state != 2)
@@ -301,7 +301,8 @@ void Game::update(std::chrono::milliseconds delta)
 				else
 					ppoi.place_state = 0;
 			}
-			else
+		}
+			/*else
 			{
 				if (ppoi.model_type_id == 7)
 				{
