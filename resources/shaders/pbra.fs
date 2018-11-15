@@ -120,7 +120,7 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int j = 0; j < max_num_lights; ++j) 
+    //for(int j = 0; j < max_num_lights; ++j) 
     {
 		int x = int(gl_FragCoord.x / block_size);
 		int y = int(gl_FragCoord.y / block_size);
