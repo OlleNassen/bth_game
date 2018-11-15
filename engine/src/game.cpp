@@ -14,7 +14,7 @@ Game::Game()
 	, "Scrap Escape")
 	, mesh_lib{0}
 	, object_lib{1}
-	, level{"../resources/level/level.ssp", &mesh_lib, &object_lib}
+	, level{"../resources/level/level_1_testing.ssp", &mesh_lib, &object_lib}
 	, renderer{&level}
 {
 	anim_states[0] = anim::idle;
@@ -389,6 +389,11 @@ void Game::update(std::chrono::milliseconds delta)
 			chat[1], player_count,
 			net.id(), game_state, temp, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height);
+	}
+
+	if (game_state & state::menu && menu.get_fullscreen_pressed())
+	{
+		window.toggle_screen_mode(settings);
 	}
 }
 
