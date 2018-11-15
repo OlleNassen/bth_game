@@ -43,6 +43,11 @@ LightGrid::LightGrid()
 	lights[4].intensity = 100;
 	lights[5].intensity = 700;
 	lights[6].intensity = 1000;
+
+	for (int i = 0; i < 32; i++)
+	{
+		lights[i].radius = 1.0f;
+	}
 }
 
 const int* LightGrid::data()const
@@ -136,24 +141,18 @@ Frustum compute_frustum(const glm::mat4& screen_to_view, int x, int y)
 
 bool sphere_inside_plane(Sphere sphere, Plane plane)
 {
-	return glm::dot(plane.normal, sphere.center) - plane.distance < -sphere.radius;
+	return 
+		glm::dot(plane.normal, sphere.center) - plane.distance 
+		< -sphere.radius;
 }
 
 bool sphere_inside_frustum(Sphere sphere, Frustum frustum)
 {
-	if (sphere_inside_plane(sphere, frustum.left))
-		return false;
-
-	if (sphere_inside_plane(sphere, frustum.right))
-		return false;
-
-	if (sphere_inside_plane(sphere, frustum.top))
-		return false;
-
-	if (sphere_inside_plane(sphere, frustum.bottom))
-		return false;
-
-	return true;
+	return 
+		sphere_inside_plane(sphere, frustum.left)  || 
+		sphere_inside_plane(sphere, frustum.right) || 
+		sphere_inside_plane(sphere, frustum.top)   || 
+		sphere_inside_plane(sphere, frustum.bottom);
 }
 
 }
