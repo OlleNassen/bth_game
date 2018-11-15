@@ -120,11 +120,11 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    //for(int i = 0; i < light_count; ++i) 
+    for(int j = 0; j < max_num_lights; ++j) 
     {
 		int x = floor(gl_FragCoord.x) / block_size;
 		int y = floor(gl_FragCoord.y) / block_size;
-		int i = light_id[0][x][y];
+		int i = light_id[j][x][y];
 			
 		// calculate per-light radiance
 		vec3 L = normalize(light_pos[i] - fs_in.world_pos);
