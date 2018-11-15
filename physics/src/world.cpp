@@ -135,9 +135,14 @@ void World::update(
 	int index = 0;
 	for (auto& body : bodies)
 	{	
-		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
+		/*body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
 		body.forces.x = dynamics[index].forces.x;
 		body.forces.y = dynamics[index].forces.y;
+		++index;*/
+		
+		body.velocity.x = dynamics[index].velocity.x;
+		body.velocity.y = dynamics[index].velocity.y;
+		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
 		++index;
 	}
 

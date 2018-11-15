@@ -192,7 +192,7 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::loading)
 	{
-		level = graphics::GameScene("../resources/level/level.ssp", &mesh_lib, &object_lib);
+		level = graphics::GameScene("../resources/level/level_1_testing.ssp", &mesh_lib, &object_lib);
 
 		gameplay.refresh();
 		gameplay.is_new_round = false;
@@ -505,6 +505,11 @@ void Game::update(std::chrono::milliseconds delta)
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height,
 			watching,
 			moving_objects_id);
+	}
+
+	if (game_state & state::menu && menu.get_fullscreen_pressed())
+	{
+		window.toggle_screen_mode(settings);
 	}
 }
 
