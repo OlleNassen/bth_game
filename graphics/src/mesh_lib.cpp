@@ -79,7 +79,8 @@ void MeshLib::create_mesh_list()
 		"chain.ssp",						//51
 		"furnace.ssp",                      //52
 		"furnace.ssp",                      //53 <--Spinning cylinder
-		"iron_chunk.ssp"                    //54
+		"iron_chunk.ssp",                   //54
+		"scrap_robot.ssp"                   //55
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
