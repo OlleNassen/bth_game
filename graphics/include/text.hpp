@@ -27,6 +27,7 @@ public:
 	void render_text(const std::string& text,
 		float x, float y, float scale)const;
 
+	float get_text_width(const std::string& text, float scale)const;
 private:
 	FT_Library library;
 	unsigned int VAO, VBO;

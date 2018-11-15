@@ -453,6 +453,19 @@ float GameScript::get_time()
 	return temp;
 }
 
+void GameScript::reset_time()
+{
+	{
+		stack.getglobal("game");
+	}
+
+	stack.getglobal("reset_time");
+	stack.getglobal("game");
+	stack.call(1, 0);
+
+	stack.clear();
+}
+
 PlacingScript::PlacingScript(const std::string& path)
 	: stack{ path.c_str() }
 {

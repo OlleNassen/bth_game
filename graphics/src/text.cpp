@@ -124,4 +124,22 @@ void Text::render_text(const std::string& text,
 	glBindVertexArray(0);
 }
 
+float Text::get_text_width(const std::string& text, float scale)const
+{
+	float w = 0;
+	for (auto& c : text)
+	{
+		auto& ch = characters[c];
+
+		if (c != '.')
+		{
+			w += 25 * scale;
+		}
+		else
+			w += ch.size.x * scale;
+	}
+
+	return w;
+}
+
 }
