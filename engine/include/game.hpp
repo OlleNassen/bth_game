@@ -88,9 +88,9 @@ private:
 
 	//test trigger
 	int placed_objects_list_id = 7;
-	int placed_objects_array[4] = { 7,0,0,3 };
+	int placed_objects_array[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-	int random_picked_object() { return placed_objects_array[rand() % 4]; };
+	int random_picked_object() { return placed_objects_array[rand() % 10]; };
 	std::array<int, 4> random_indexes();
 
 	//spectator

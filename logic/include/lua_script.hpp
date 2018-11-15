@@ -40,6 +40,7 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+	bool is_stund;
 
 };
 
