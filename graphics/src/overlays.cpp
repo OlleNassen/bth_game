@@ -14,7 +14,7 @@ namespace graphics
 		glEnableVertexAttribArray(0);
 	}
 
-	void OverlayScreen::render(const Shader & shader)
+	void OverlayScreen::render(const Shader & shader) const
 	{
 		glBindVertexArray(vao_id);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -35,8 +35,7 @@ void Overlays::update(
 	bool died,
 	bool finish,
 	bool scores
-)
-	
+)	
 {
 	using namespace std::chrono_literals;
 
@@ -85,6 +84,8 @@ void Overlays::render(const Shader & shader) const
 {
 	using namespace std::chrono_literals;
 	shader.use();
+
+	//Render death screen
 	if (death_timer <= 50ms)
 	{
 		shader.uniform("overlay_texture", 0);
@@ -115,81 +116,70 @@ void Overlays::render(const Shader & shader) const
 		shader.uniform("overlay_texture", 0);
 		death_6.bind(0);
 	}
-
+	//Render loading screen
+	if (loading_timer <= 1000ms)
 	{
-		if (finished_timer <= 1500ms)
-		{
-			this->finish_escaped.bind(0);
-		}
-		else if (finished_timer > 1500ms && finished_timer <= 3000ms)
-		{
-			if(player_id == 0)
-				this->finish_1_1.bind(0);
-			if(player_id == 1)
-				this->finish_2_1.bind(0);
-			if (player_id == 2)
-				this->finish_3_1.bind(0);
-			if (player_id == 3)
-				this->finish_4_1.bind(0);
-
-		}
-		else if (finished_timer > 3000ms)
-		{
-			if (player_id == 0)
-				this->finish_1_2.bind(0);
-			if (player_id == 1)
-				this->finish_2_2.bind(0);
-			if (player_id == 2)
-				this->finish_3_2.bind(0);
-			if (player_id == 3)
-				this->finish_4_2.bind(0);
-		}
+		shader.uniform("overlay_texture", 0);
+		this->waiting_1.bind(0);
 	}
-	/*else if (finish[1])
+	else if (loading_timer >= 1000ms && loading_timer <= 2000ms)
 	{
-		if (timer <= 1500ms)
-		{
-			this->finish_escaped.bind(0);
-		}
-		else if (finished_timer > 1500ms && finished_timer <= 3000ms)
-		{
+		shader.uniform("overlay_texture", 0);
+		this->waiting_2.bind(0);
+	}
+	else if (loading_timer >= 2000ms && loading_timer <= 3000ms)
+	{
+		shader.uniform("overlay_texture", 0);
+		this->waiting_3.bind(0);
+	}
+	else if (loading_timer >= 3000ms)
+	{
+		shader.uniform("overlay_texture", 0);
+		this->waiting_4.bind(0);
+	}
+
+	//Render main menu screen
+	if (main_menu_timer <= 800ms)
+	{
+		shader.uniform("overlay_texture", 0);
+		this->main_menu_1.bind(0);
+	}
+	else if (main_menu_timer > 800ms)
+	{
+		shader.uniform("overlay_texture", 0);
+		this->main_menu_2.bind(0);
+	}
+
+	//Render finished screen
+	if (finished_timer <= 1500ms)
+	{
+		this->finish_escaped.bind(0);
+	}
+	else if (finished_timer > 1500ms && finished_timer <= 3000ms)
+	{
+		if(player_id == 0)
+			this->finish_1_1.bind(0);
+		if(player_id == 1)
 			this->finish_2_1.bind(0);
-		}
-		else if (timer > 3000ms)
-		{
-			this->finish_2_2.bind(0);
-		}
-	}
-	else if (finish[2])
-	{
-		if (timer <= 1500ms)
-		{
-			this->finish_escaped.bind(0);
-		}
-		else if (finished_timer > 1500ms && finished_timer <= 3000ms)
-		{
+		if (player_id == 2)
 			this->finish_3_1.bind(0);
-		}
-		else if (timer > 3000ms)
-		{
-			this->finish_3_2.bind(0);
-		}
-	}
-	else if (finish[3])
-	{
-		if (timer <= 1500ms)
-		{
-			this->finish_escaped.bind(0);
-		}
-		else if (finished_timer > 1500ms && finished_timer <= 3000ms)
-		{
+		if (player_id == 3)
 			this->finish_4_1.bind(0);
-		}
-		else if (timer > 3000ms)
-		{
+
+	}
+	else if (finished_timer > 3000ms)
+	{
+		if (player_id == 0)
+			this->finish_1_2.bind(0);
+		if (player_id == 1)
+			this->finish_2_2.bind(0);
+		if (player_id == 2)
+			this->finish_3_2.bind(0);
+		if (player_id == 3)
 			this->finish_4_2.bind(0);
-		}
-	}*/
+	}
+	
+	overlay.render(shader);
 }
 
 }

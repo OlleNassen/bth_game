@@ -19,7 +19,7 @@ public:
 	OverlayScreen();
 	~OverlayScreen() = default;
 
-	void render(const Shader& shader);
+	void render(const Shader& shader) const;
 private:
 	unsigned int vao_id;
 	unsigned int vbo_id;
@@ -73,7 +73,7 @@ private:
 	Texture death_5{"../resources/textures/death_screen/death_5.png"};
 	Texture death_6{"../resources/textures/death_screen/death_6.png"};
 	
-	unsigned int player_id;
+	int player_id;
 };
 
 }
