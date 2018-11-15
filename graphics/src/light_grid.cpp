@@ -146,13 +146,6 @@ Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y)
 	return frustum;
 }
 
-glm::vec3 closest_point(const Plane& plane, const glm::vec3& point)
-{
-	float dot = glm::dot(plane.normal, point);
-	float distance = dot - plane.distance;
-	return point - plane.normal * distance;
-}
-
 bool sphere_inside_plane(const Sphere& sphere, const Plane& plane)
 {
 	return glm::dot(plane.normal, sphere.center) - plane.distance < -sphere.radius;
