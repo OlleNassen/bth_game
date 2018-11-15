@@ -173,11 +173,11 @@ bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum)
 
 	if (sphere_inside_plane(sphere, frustum.left))
 		result = false;
-	else if (sphere_inside_plane(sphere, frustum.left))
+	if (sphere_inside_plane(sphere, frustum.right))
 		result = false;
-	else if (sphere_inside_plane(sphere, frustum.left))
+	if (sphere_inside_plane(sphere, frustum.top))
 		result = false;
-	else if (sphere_inside_plane(sphere, frustum.left))
+	if (sphere_inside_plane(sphere, frustum.bottom))
 		result = false;
 
 	return result;
