@@ -2246,7 +2246,7 @@ void FX::calculate_blitz_data(std::chrono::milliseconds delta, const Camera & ca
 	fx_blitz.default_z = 0.0f;
 	int randomizer = rand() % 100;
 	int random_amount = rand() % 4 + 2.0f;
-	int location = rand() % 11;
+	int location = rand() % 10;
 
 	//Update data for particles
 	if (fx_blitz.total_particle_count <= MAX_PARTICLES)
@@ -2588,7 +2588,7 @@ void FX::calculate_blitz_data(std::chrono::milliseconds delta, const Camera & ca
 					//Set default values for the particles
 					fx_blitz.particle_container[particle_index].random_amp = 2.0f;
 					fx_blitz.particle_container[particle_index].life = 1.0f;
-					fx_blitz.particle_container[particle_index].pos = glm::vec3(14.370f, 182.692f, -11.447f);
+					fx_blitz.particle_container[particle_index].pos = glm::vec3(15.509f, 182.692f, -11.447f);
 
 					//Create a direction for the particles to travel
 					glm::vec3 main_dir = glm::vec3(0, 10, 0);
@@ -2640,7 +2640,7 @@ void FX::calculate_blitz_data(std::chrono::milliseconds delta, const Camera & ca
 					//Set default values for the particles
 					fx_blitz.particle_container[particle_index].random_amp = 2.0f;
 					fx_blitz.particle_container[particle_index].life = 1.0f;
-					fx_blitz.particle_container[particle_index].pos = glm::vec3(15.189f, 182.194f, -11.357f);
+					fx_blitz.particle_container[particle_index].pos = glm::vec3(12.530f, 182.194f, -11.357f);
 
 					//Create a direction for the particles to travel
 					glm::vec3 main_dir = glm::vec3(-10, -10, 0);
@@ -2692,58 +2692,6 @@ void FX::calculate_blitz_data(std::chrono::milliseconds delta, const Camera & ca
 					//Set default values for the particles
 					fx_blitz.particle_container[particle_index].random_amp = 2.0f;
 					fx_blitz.particle_container[particle_index].life = 1.0f;
-					fx_blitz.particle_container[particle_index].pos = glm::vec3(10.251f, 182.194f, -11.357f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(0, 20, 0);
-					glm::vec3 random_dir_up = glm::vec3(0, 1, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -10, 0);
-					glm::vec3 random_dir_right = glm::vec3(25, 0, 0);
-					glm::vec3 random_dir_left = glm::vec3(-25, 0, 0);
-					glm::vec3 random_dir_forward = glm::vec3(0, 0, 10);
-					glm::vec3 random_dir_back = glm::vec3(0, 0, -10);
-					float spread_x = (rand() % 100 / 100.0f);
-					float spread_y = (rand() % 100 / 100.0f);
-					float spread_z = (rand() % 100 / 100.0f);
-
-					int rand_dir_gen = rand() % 8;
-
-					if (rand_dir_gen == 0)
-						fx_blitz.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_right * spread_x) + (random_dir_forward * spread_z);
-					else if (rand_dir_gen == 1)
-						fx_blitz.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_right * spread_x) + (random_dir_forward * spread_z);
-					else if (rand_dir_gen == 2)
-						fx_blitz.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_left  * spread_x) + (random_dir_forward * spread_z);
-					else if (rand_dir_gen == 3)
-						fx_blitz.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_forward * spread_z);
-					else if (rand_dir_gen == 4)
-						fx_blitz.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_right * spread_x) + (random_dir_back	   * spread_z);
-					else if (rand_dir_gen == 5)
-						fx_blitz.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_right * spread_x) + (random_dir_back    * spread_z);
-					else if (rand_dir_gen == 6)
-						fx_blitz.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
-					else if (rand_dir_gen == 7)
-						fx_blitz.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
-
-					fx_blitz.particle_container[particle_index].r = 190.0f;
-					fx_blitz.particle_container[particle_index].g = 240.0f;
-					fx_blitz.particle_container[particle_index].b = 250.0f;
-
-					fx_blitz.particle_container[particle_index].a = 250;
-					fx_blitz.particle_container[particle_index].size = 0.2f;
-				}
-			}
-			else if (location == 9)
-			{
-				for (int i = 0; i < random_amount; i++)
-				{
-					//Find and update the last used particle
-					fx_blitz.last_used_particle = find_unused_particle(fx_blitz.particle_container, fx_blitz.last_used_particle);
-					int particle_index = fx_blitz.last_used_particle;
-
-					//Set default values for the particles
-					fx_blitz.particle_container[particle_index].random_amp = 2.0f;
-					fx_blitz.particle_container[particle_index].life = 1.0f;
 					fx_blitz.particle_container[particle_index].pos = glm::vec3(-10.012f, 127.560f, 11.316f);
 
 					//Create a direction for the particles to travel
@@ -2785,7 +2733,7 @@ void FX::calculate_blitz_data(std::chrono::milliseconds delta, const Camera & ca
 					fx_blitz.particle_container[particle_index].size = 0.2f;
 				}
 			}
-			else if (location == 10)
+			else if (location == 9)
 			{
 				for (int i = 0; i < random_amount; i++)
 				{
@@ -2944,8 +2892,8 @@ void FX::calculate_fire_data(std::chrono::milliseconds delta, const Camera & cam
 				for (auto i = 0u; i < fx_fire.nr_of_particles; i++)
 				{
 					//Create a random position here
-					fx_fire.random_x = static_cast<float>((rand() % 100) / 50.0f) - 1.21f;
-					fx_fire.random_z = static_cast<float>((rand() % 100) / 62.77f) - 18.5f;
+					fx_fire.random_x = static_cast<float>((rand() % 100) / 65.0f) - 0.75f;
+					fx_fire.random_z = static_cast<float>((rand() % 100) / 62.77f) - 19.0f;
 
 					//Find and update the last used particle
 					fx_fire.last_used_particle = find_unused_particle(fx_fire.particle_container, fx_fire.last_used_particle);
@@ -2957,6 +2905,72 @@ void FX::calculate_fire_data(std::chrono::milliseconds delta, const Camera & cam
 					fx_fire.particle_container[particle_index].g_amp = 1.0f;
 					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 					fx_fire.particle_container[particle_index].pos = glm::vec3(fx_fire.random_x, 194.472f, fx_fire.random_z);
+
+					//Create a direction for the particles to travel
+					glm::vec3 main_dir = glm::vec3(0, -20, -1);
+
+					fx_fire.particle_container[particle_index].speed = main_dir;
+
+					//Set colors, if you want color from texture, don't change the color
+					fx_fire.particle_container[particle_index].r = 250;
+					fx_fire.particle_container[particle_index].g = 200;
+					fx_fire.particle_container[particle_index].b = 0;
+
+					fx_fire.particle_container[particle_index].a = 250;
+					fx_fire.particle_container[particle_index].size = 1.5f;
+				}
+			}
+			else if (type == 2)
+			{
+				for (auto i = 0u; i < fx_fire.nr_of_particles; i++)
+				{
+					//Create a random position here
+					fx_fire.random_x = static_cast<float>((rand() % 100) / 65.0f) - 0.75f;
+					fx_fire.random_z = static_cast<float>((rand() % 100) / 62.77f) - 35.0f;
+
+					//Find and update the last used particle
+					fx_fire.last_used_particle = find_unused_particle(fx_fire.particle_container, fx_fire.last_used_particle);
+					int particle_index = fx_fire.last_used_particle;
+
+					//Set default values for the particles, first off life and position.
+					fx_fire.particle_container[particle_index].random_amp = (static_cast<float>(rand() % 200) / 200.0f) + 2;
+					fx_fire.particle_container[particle_index].life = 1.0f;
+					fx_fire.particle_container[particle_index].g_amp = 1.0f;
+					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+					fx_fire.particle_container[particle_index].pos = glm::vec3(fx_fire.random_x, 214.785f, fx_fire.random_z);
+
+					//Create a direction for the particles to travel
+					glm::vec3 main_dir = glm::vec3(0, -20, -1);
+
+					fx_fire.particle_container[particle_index].speed = main_dir;
+
+					//Set colors, if you want color from texture, don't change the color
+					fx_fire.particle_container[particle_index].r = 250;
+					fx_fire.particle_container[particle_index].g = 200;
+					fx_fire.particle_container[particle_index].b = 0;
+
+					fx_fire.particle_container[particle_index].a = 250;
+					fx_fire.particle_container[particle_index].size = 1.5f;
+				}
+			}
+			else if (type == 3)
+			{
+				for (auto i = 0u; i < fx_fire.nr_of_particles; i++)
+				{
+					//Create a random position here
+					fx_fire.random_x = static_cast<float>((rand() % 100) / 65.0f) - 0.75f;
+					fx_fire.random_z = static_cast<float>((rand() % 100) / 62.77f) - 29.641f;
+
+					//Find and update the last used particle
+					fx_fire.last_used_particle = find_unused_particle(fx_fire.particle_container, fx_fire.last_used_particle);
+					int particle_index = fx_fire.last_used_particle;
+
+					//Set default values for the particles, first off life and position.
+					fx_fire.particle_container[particle_index].random_amp = (static_cast<float>(rand() % 200) / 200.0f) + 2;
+					fx_fire.particle_container[particle_index].life = 1.0f;
+					fx_fire.particle_container[particle_index].g_amp = 1.0f;
+					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+					fx_fire.particle_container[particle_index].pos = glm::vec3(fx_fire.random_x, 94.833, fx_fire.random_z);
 
 					//Create a direction for the particles to travel
 					glm::vec3 main_dir = glm::vec3(0, -20, -1);

@@ -67,7 +67,7 @@ function update(delta_seconds, game, entities)
 	then
 		-- Start positions
 		entities[1].position.x = 0
-		entities[1].position.y = 110
+		entities[1].position.y = 4
 
 		entities[2].position.x = 3
 		entities[2].position.y = 4

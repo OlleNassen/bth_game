@@ -73,8 +73,8 @@ Renderer::Renderer(GameScene* scene)
 	lights[9].color = glm::vec3{ 1, 0.2, 0 };
 	lights[10].position = glm::vec3{ 0, 260.169, 5.0 };
 	lights[10].color = glm::vec3{ 1, 1, 1 };
-	lights[11].position = glm::vec3{ 0, 260.169, 5.0 };
-	lights[11].color = glm::vec3{ 1, 1, 1 };
+	lights[11].position = glm::vec3{ 0, 88.553, -29.053 };
+	lights[11].color = glm::vec3{ 1, 0.2, 0 };
 
 	for (int i = 4; i < 12; i++)
 	{
