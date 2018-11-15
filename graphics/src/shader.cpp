@@ -184,6 +184,12 @@ void Shader::uniform(const std::string& name,
 	}
 }
 
+void Shader::uniform(const std::string& name, const LightGrid& value) const
+{
+	glUniform1iv(glGetUniformLocation(id, name.c_str()),
+		value.size(), value.data());
+}
+
 std::string Shader::load(const std::string& path) const
 {
 	std::string code;

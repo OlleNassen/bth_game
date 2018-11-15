@@ -47,6 +47,8 @@ public:
 		const std::vector<glm::vec4>& value) const;
 	void uniform(const std::string& name,
 		const std::vector<glm::mat4>& value) const;
+
+	void uniform(const std::string& name, const LightGrid& value) const;
 	
 	template <std::size_t N>
 	void uniform(const std::string& name,
@@ -54,13 +56,6 @@ public:
 	{
 		glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()),
 			value.size(), GL_FALSE, glm::value_ptr(value.front()));
-	}
-
-	void uniform(const std::string& name,
-		const LightGrid& value) const
-	{
-		glUniform1iv(glGetUniformLocation(id, name.c_str()),
-			value.size(), value.data());
 	}
 
 private:

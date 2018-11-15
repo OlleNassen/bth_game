@@ -413,6 +413,8 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 {
 	shader.use();
 
+	shader.uniform("light_indices", grid);
+	
 	shader.uniform("brdf_lut", 6);
 	shader.uniform("irradiance_map", 7);
 	shader.uniform("prefilter_map", 8);
@@ -423,12 +425,11 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
-	shader.uniform("light_id", grid);
-
 	shader.uniform("cam_pos", camera.position);
 	shader.uniform("dir_light_dir", dir_light.direction);
 	shader.uniform("dir_light_color", dir_light.color);
 	shader.uniform("dir_light_intensity", dir_light.intensity);
+	shader.uniform("light_count", (int)grid.lights.size());
 
 	for (int i = 0; i < grid.lights.size(); ++i)
 	{
@@ -439,8 +440,6 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 		shader.uniform("light_intensity[" + std::to_string(i) + "]", 
 			grid.lights[i].intensity);
 	}
-
-	shader.uniform("light_count", (int)grid.lights.size());
 
 	for (auto it = first; it != last; ++it)
 	{
@@ -453,6 +452,8 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 {
 	shader.use();
 
+	shader.uniform("light_indices", grid);
+
 	shader.uniform("brdf_lut", 6);
 	shader.uniform("irradiance_map", 7);
 	shader.uniform("prefilter_map", 8);
@@ -463,6 +464,7 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 	shader.uniform("cam_pos", camera.position);
+	shader.uniform("light_count", (int)grid.lights.size());
 
 	for (int i = 0; i < grid.lights.size(); ++i)
 	{
@@ -473,10 +475,7 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 		shader.uniform("light_intensity[" + std::to_string(i) + "]",
 			grid.lights[i].intensity);
 	}
-
-	shader.uniform("light_count", (int)grid.lights.size());
-
-
+	
 	for (auto i = 0; i < num_players; ++i)
 	{
 		const auto& renderable = data[i];
