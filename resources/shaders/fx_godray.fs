@@ -20,7 +20,7 @@ void main()
 	{
 		bb_texture = texture(particle_texture, uv_1).rgba;
 	}
-	else
+	else if (type == 1)
 	{
 		bb_texture = texture(particle_texture, uv_2).rgba;
 	}

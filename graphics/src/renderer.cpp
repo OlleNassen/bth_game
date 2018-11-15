@@ -422,6 +422,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Lava Light
 		fx_emitter.calculate_lava_light_data(delta, game_camera);
 
+		//Furance Light
+		fx_emitter.calculate_furnace_light_data(delta, game_camera);
+
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();
 	}
