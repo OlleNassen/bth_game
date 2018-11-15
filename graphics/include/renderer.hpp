@@ -58,8 +58,6 @@ public:
 	const Model* last = 0;
 };
 
-
-
 class Renderer
 {
 public:
@@ -172,6 +170,7 @@ private:
 	Shader build_stage_screen_shader{
 		"../resources/shaders/build_stage.vs",
 		"../resources/shaders/build_stage.fs" };
+	Shader compute_lights{"../resources/shaders/light_cull.comp"};
 
 	GameScene* scene;
 	DebugCamera db_camera;

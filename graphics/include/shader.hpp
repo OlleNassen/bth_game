@@ -21,6 +21,8 @@ public:
 	Shader(const std::string& vertex_path,
 		const std::string& geo_path, const std::string& fragment_path);
 
+	Shader(const std::string& compute_path);
+
 	~Shader();
 
 	void use() const;

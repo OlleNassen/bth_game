@@ -1,0 +1,153 @@
+#version 430
+
+uniform mat4 projection;
+uniform mat4 view;
+
+// Declare custom data struct, which represents either vertex or colour.
+
+struct Light
+{
+	vec4 positionVS;
+	vec3 positionWS;
+	vec3 color;
+	float range;
+	float intensity;
+};
+
+// A plane defined by a normal and distance from origin
+struct Plane
+{
+	vec3 N;
+	float d;
+};
+
+// A frustrum defined by 4 planes
+struct Frustum
+{
+	Plane planes[4];
+};
+
+// A sphere defined as a center point and radius
+struct Sphere
+{
+	vec3 center;
+	float  radius;
+};
+
+
+bool SphereInsidePlane(Sphere sphere, Plane plane)
+{
+	return dot(plane.N, sphere.center) < -sphere.radius;
+}
+
+bool SphereInsideFrustum(Sphere sphere, Frustum frustum, float zNear, float zFar)
+{
+	bool result = true;
+	
+	if (sphere.center.z - sphere.radius > zNear ||
+		sphere.center.z + sphere.radius < zFar)
+	{
+		result = false;
+	}
+
+	//[unroll]
+	for (int i = 0; i < 4 && result; i++)
+    {
+		if (SphereInsidePlane(sphere, frustum.planes[i]))
+        {
+			result = false;
+		}
+	}
+
+	return result;
+}
+
+vec4 ClipToView(vec4 clip)
+{
+	// View space position
+	vec4 view = mul(InvProjection, clip);
+	// Perspective projection
+	view = view / view.w;
+
+	return view;
+}
+
+vec4 ScreenToView(vec4 screen)
+{
+	// Convert to normalized texture coordinates
+	vec2 texCoord = screen.xy / float2(WIDTH, HEIGHT);
+
+	// Convert to clip space
+	vec4 clip = vec4(vec2(texCoord.x, 1.0f - texCoord.y) * 2.0f - 1.0f, screen.z, screen.w);
+
+	return ClipToView(clip);
+}
+
+// Declare input/output buffer from/to wich we will read/write data.
+
+// In this particular shader we only write data into the buffer.
+
+// If you do not want your data to be aligned by compiler try to use:
+
+// packed or shared instead of std140 keyword.
+
+// We also bind the buffer to index 0. You need to set the buffer binding
+
+// in the range [0..3] – this is the minimum range approved by Khronos.
+
+// Notice that various platforms might support more indices than that.
+
+layout(std140, binding = 0) buffer destBuffer
+{
+    AttribData data [];
+}outBuffer;
+
+layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+
+// glDispatchCompute is called from the application.
+
+void main()
+{
+    // Read current global position for this thread
+
+    ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+
+    // Calculate the global number of threads (size) for this
+
+    uint gWidth = gl_WorkGroupSize.x * gl_NumWorkGroups.x;
+
+    uint gHeight = gl_WorkGroupSize.y * gl_NumWorkGroups.y;
+
+    uint gSize = gWidth * gHeight;
+
+    // Since we have 1D array we need to calculate offset.
+
+    uint offset = storePos.y * gWidth + storePos.x;
+
+    // Calculate an angle for the current thread
+
+    float alpha = 2.0 * 3.14159265359 * (float(offset) / float(gSize));
+
+    // Calculate vertex position based on the already calculate angle
+
+    // and radius, which is given by application
+
+    outBuffer.data[offset].v.x = sin(alpha) * radius;
+
+    outBuffer.data[offset].v.y = cos(alpha) * radius;
+
+    outBuffer.data[offset].v.z = 0.0;
+
+    outBuffer.data[offset].v.w = 1.0;
+
+    // Assign colour for the vertex
+
+    outBuffer.data[offset].c.x = storePos.x / float(gWidth);
+
+    outBuffer.data[offset].c.y = 0.0;
+
+    outBuffer.data[offset].c.z = 1.0;
+
+    outBuffer.data[offset].c.w = 1.0;
+
+}

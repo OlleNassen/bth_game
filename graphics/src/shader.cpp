@@ -71,6 +71,30 @@ Shader::Shader(const std::string& vertex_path,
 	glDeleteShader(fragment_shader);
 }
 
+Shader::Shader(const std::string & compute_path)
+{
+	auto compute_code = load(compute_path);
+
+	auto compute_shader = create(GL_COMPUTE_SHADER, compute_code.c_str());
+
+	auto success = 0;
+	char infoLog[512];
+
+	id = glCreateProgram();
+	glAttachShader(id, compute_shader);
+	glLinkProgram(id);
+	// print linking errors if any
+	glGetProgramiv(id, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		glGetProgramInfoLog(id, 512, NULL, infoLog);
+		std::cout << "Error linking failed: " << infoLog << " in "
+			<< compute_path << std::endl;
+	}
+
+	glDeleteShader(compute_shader);
+}
+
 Shader::~Shader()
 {
 	glDeleteProgram(id);
@@ -172,7 +196,6 @@ void Shader::uniform(const std::string& name,
 		glUniform4fv(glGetUniformLocation(id, name.c_str()),
 			value.size(), glm::value_ptr(value.front()));
 	}
-}
 
 void Shader::uniform(const std::string& name,
 	const std::vector<glm::mat4>& value) const
