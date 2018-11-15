@@ -36,7 +36,7 @@ private:
 	static constexpr int rows = 45;
 	std::array<std::array<int, max_num_lights>, (columns * rows)> grid_fake;
 
-	Frustum grid[columns * rows];
+	Frustum grid[columns][rows];
 };
 
 }
