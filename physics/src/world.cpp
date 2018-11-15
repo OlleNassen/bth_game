@@ -27,10 +27,10 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	bodies.push_back(body);
 	
 	//dynamic_positions.push_back(start_position);
-	dynamic_rigidbodies.push_back(start_force);
+	//dynamic_rigidbodies.push_back(start_force);
 	//dynamic_box_colliders.push_back(Box(width, height, offset, false));
 
-	return dynamic_rigidbodies.size() - 1;
+	return bodies.size() - 1;
 }
 
 int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger)
@@ -462,9 +462,9 @@ void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int s
 
 void World::clear_object()
 {
-	while (dynamic_rigidbodies.size() > 4)
+	while (bodies.size() > 4)
 	{
-		dynamic_rigidbodies.pop_back();
+		bodies.pop_back();
 	}
 }
 

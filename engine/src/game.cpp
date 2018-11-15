@@ -279,6 +279,9 @@ void Game::update(std::chrono::milliseconds delta)
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
 				players_placed_objects_id[i].model_type_id = data.model_id;
 
+				/*std::cout << "Dyn ID: " << players_placed_objects_id[i].dynamics_id << " - Mod ID: " << players_placed_objects_id[i].model_id <<
+					" - Type ID: " << players_placed_objects_id[i].model_type_id << "\n";*/
+
 				dynamics[dynamic_id].position = start_position;
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 				dynamics[dynamic_id].size = { data.width, data.height };
