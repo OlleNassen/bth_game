@@ -1,5 +1,7 @@
 #include "light_grid.hpp"
 
+#include <iostream>
+
 namespace graphics
 {
 
@@ -74,13 +76,12 @@ void LightGrid::calculate_grid(const Camera& camera)
 
 void LightGrid::update(const Camera& camera)
 {
-	const glm::mat4 screen_to_view = glm::inverse(camera.projection);
 	for (int light_id = 0; light_id < lights.size(); ++light_id)
 	{
 		glm::vec3 p{lights[light_id].position};
 		glm::vec4 v{p.x, p.y,p.z, 1.0f};
-		v = screen_to_view * v;
-		p = glm::vec3{p.x, p.y,p.z};
+		v = camera.view() * v;
+		p = glm::vec3{p.x, p.y, p.z};
 		Sphere sphere{p, lights[light_id].radius};
 		
 		for (int j = 0; j < block_size; ++j)

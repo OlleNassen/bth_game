@@ -16,9 +16,9 @@ uniform sampler2D normal_map;
 uniform sampler2D roughness_metallic_ao_map;
 uniform vec3 player_color;
 
-uniform vec3 light_pos[14];
-uniform vec3 light_color[14];
-uniform float light_intensity[14];
+uniform vec3 light_pos[32];
+uniform vec3 light_color[32];
+uniform float light_intensity[32];
 uniform vec3 cam_pos;
 uniform vec3 dir_light_dir;
 uniform vec3 dir_light_color;
@@ -30,6 +30,11 @@ uniform int light_count;
 uniform sampler2D   brdf_lut;
 uniform samplerCube irradiance_map;
 uniform samplerCube prefilter_map;
+
+const int max_num_lights = 3;
+const int block_size = 24;
+
+uniform int light_id[max_num_lights][block_size][block_size];
 
 const float PI = 3.14159265359;
 
@@ -115,40 +120,44 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < light_count; ++i) 
+    for(int j = 0; j < max_num_lights; ++j) 
     {
-			// calculate per-light radiance
-			vec3 L = normalize(light_pos[i] - fs_in.world_pos);
-			vec3 H = normalize(V + L);
-			float distance = length(light_pos[i] - fs_in.world_pos);
-			float attenuation = light_intensity[i] / (distance * distance);
-			vec3 radiance = light_color[i] * attenuation;
+		int x = int(gl_FragCoord.x / block_size);
+		int y = int(gl_FragCoord.y / block_size);
+		int i = light_id[j][x][y];
+			
+		// calculate per-light radiance
+		vec3 L = normalize(light_pos[i] - fs_in.world_pos);
+		vec3 H = normalize(V + L);
+		float distance = length(light_pos[i] - fs_in.world_pos);
+		float attenuation = light_intensity[i] / (distance * distance);
+		vec3 radiance = light_color[i] * attenuation;
 
-			// Cook-Torrance BRDF
-			float NDF = DistributionGGX(N, H, roughness);   
-			float G   = GeometrySmith(N, V, L, roughness);      
-			vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+		// Cook-Torrance BRDF
+		float NDF = DistributionGGX(N, H, roughness);   
+		float G   = GeometrySmith(N, V, L, roughness);      
+		vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
            
-			vec3 nominator    = NDF * G * F; 
-			float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
-			vec3 specular = nominator / denominator;
+		vec3 nominator    = NDF * G * F; 
+		float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
+		vec3 specular = nominator / denominator;
         
-			// kS is equal to Fresnel
-			vec3 kS = F;
-			// for energy conservation, the diffuse and specular light can't
-			// be above 1.0 (unless the surface emits light); to preserve this
-			// relationship the diffuse component (kD) should equal 1.0 - kS.
-			vec3 kD = vec3(1.0) - kS;
-			// multiply kD by the inverse metalness such that only non-metals 
-			// have diffuse lighting, or a linear blend if partly metal (pure metals
-			// have no diffuse light).
-			kD *= 1.0 - metallic;	  
+		// kS is equal to Fresnel
+		vec3 kS = F;
+		// for energy conservation, the diffuse and specular light can't
+		// be above 1.0 (unless the surface emits light); to preserve this
+		// relationship the diffuse component (kD) should equal 1.0 - kS.
+		vec3 kD = vec3(1.0) - kS;
+		// multiply kD by the inverse metalness such that only non-metals 
+		// have diffuse lighting, or a linear blend if partly metal (pure metals
+		// have no diffuse light).
+		kD *= 1.0 - metallic;	  
 
-			// scale light by NdotL
-			float NdotL = max(dot(N, L), 0.0);        
+		// scale light by NdotL
+		float NdotL = max(dot(N, L), 0.0);        
 
-			// add to outgoing radiance Lo
-			Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+		// add to outgoing radiance Lo
+		Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }
 
 	{ //Dir light
@@ -207,7 +216,12 @@ void main()
     // HDR tonemapping
     color = color / (color + vec3(1.0));
     // gamma correct
-    color = pow(color, vec3(1.0/2.2)); 
+    color = pow(color, vec3(1.0/2.2));
+
+	if( emission.x > 0.0 )
+	{
+		color = color * emission;
+	}
 
     frag_color = vec4(color, 1.0);
 }
