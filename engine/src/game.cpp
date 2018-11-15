@@ -279,8 +279,6 @@ void Game::update(std::chrono::milliseconds delta)
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
 				players_placed_objects_id[i].model_type_id = data.model_id;
 
-				std::cout << "ADDED: Dynamic ID: " << dynamic_id << " - Model ID : " << model_id << std::endl;
-
 				dynamics[dynamic_id].position = start_position;
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 				dynamics[dynamic_id].size = { data.width, data.height };
@@ -345,11 +343,6 @@ void Game::update(std::chrono::milliseconds delta)
 				
 				std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
 				std::swap(ppoi, players_placed_objects_id[players_placed_objects_id.size() - 1]);
-
-				std::cout << "REMOVED: Dynamic ID: " << ppoi.dynamics_id << " - Model ID : " << ppoi.model_id << std::endl;
-
-				if (ppoi.dynamics_id != ppoi.model_id)
-					std::cout << "NOT THE SAME!\n";
 
 				level.moving_models.pop_back();
 				physics.remove_body(ppoi.dynamics_id);
