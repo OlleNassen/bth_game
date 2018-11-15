@@ -289,7 +289,7 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 		}
 
-		remove_lines.clear();
+		/*remove_lines.clear();
 		for (auto& ppoi : players_placed_objects_id)
 		{
 			if (ppoi.place_state != 2)
@@ -328,14 +328,14 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 				}
 			}
-		}
+		}*/
 	}
 	else if (give_players_objects == true)
 	{
 		give_players_objects = false;
 		for (auto& ppoi : players_placed_objects_id)
 		{
-			if (ppoi.place_state == 0 || ppoi.place_state == 1 || ppoi.model_type_id == 7)
+			if (ppoi.place_state == 0 || ppoi.place_state == 1 /*|| ppoi.model_type_id == 7*/)
 			{
 				//Remove object
 				dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
