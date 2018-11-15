@@ -34,7 +34,7 @@ public:
 		std::chrono::milliseconds delta,
 		bool died,
 		bool finish,
-		bool scores
+		std::array<float, 4> scores
 	);
 
 	void render(const Shader& shader) const;

@@ -34,7 +34,7 @@ void Overlays::update(
 	std::chrono::milliseconds delta,
 	bool died,
 	bool finish,
-	bool scores
+	std::array<float, 4> scores
 )	
 {
 	using namespace std::chrono_literals;
@@ -84,6 +84,7 @@ void Overlays::render(const Shader & shader) const
 {
 	using namespace std::chrono_literals;
 	shader.use();
+	shader.uniform("overlay_texture", 0);
 
 	//Render death screen
 	if (death_timer <= 50ms)
