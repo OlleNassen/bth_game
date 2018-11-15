@@ -17,7 +17,7 @@ float height = 1080; //texture height
 
 vec2 texel = vec2(1.0/width,1.0/height);
 
-float focalDepth = 1.0;
+float focalDepth = 26.0;
 float focalLength = 5.0;
 float fstop = 2.0;
 bool showFocus = false;
@@ -29,14 +29,14 @@ int samples = 4; //samples on the first ring
 int rings = 2; //ring count
 
 bool manualdof = true; //manual dof calculation
-float ndofstart = 0.0; //near dof blur start
-float ndofdist = 0.0; //near dof blur falloff distance
-float fdofstart = 26.0; //far dof blur start
+float ndofstart = 4.0; //near dof blur start
+float ndofdist = 1.0; //near dof blur falloff distance
+float fdofstart = 4.0; //far dof blur start
 float fdofdist = 40.0; //far dof blur falloff distance
 
 float CoC = 0.03;//circle of confusion size in mm (35mm film = 0.03mm)
 
-float maxblur = 1.0; //clamp value of max blur (0.0 = no blur,1.0 default)
+float maxblur = 1.5; //clamp value of max blur (0.0 = no blur,1.0 default)
 
 float threshold = 0.7; //highlight threshold;
 float gain = 100.0; //highlight gain;

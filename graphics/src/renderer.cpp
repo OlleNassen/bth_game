@@ -59,20 +59,22 @@ Renderer::Renderer(GameScene* scene)
 	lights[3].intensity = 30;
 
 	//Map Light
-	lights[4].position = glm::vec3{ -0.145,-6.289,8.929 };
+	lights[4].position = glm::vec3{ -0.145, -6.289, 8.929 };
 	lights[4].color = glm::vec3{ 1,0.2,0 };
-	lights[5].position = glm::vec3{ -7.73,23.368,-22.735 };
+	lights[5].position = glm::vec3{ -7.73, 23.368, -22.735 };
 	lights[5].color = glm::vec3{ 1,0.2,0 };
-	lights[6].position = glm::vec3{ -7.74,44,-22.984 };
+	lights[6].position = glm::vec3{ -7.74, 44, -22.984 };
 	lights[6].color = glm::vec3{ 1,0.2,0 };
-	lights[7].position = glm::vec3{ -11.853,120,-20 };
-	lights[7].color = glm::vec3{ 0,0.82,1 };
-	lights[8].position = glm::vec3{ 13.34,160,-20 };
-	lights[8].color = glm::vec3{ 1,0.48,0 };
-	lights[9].position = glm::vec3{ -11.853,200,-20 };
-	lights[9].color = glm::vec3{ 0,0.82,1 };
-	lights[10].position = glm::vec3{ 13.34,240,-20 };
-	lights[10].color = glm::vec3{ 1,0.48,0 };
+	lights[7].position = glm::vec3{ 0, 123.035, -23.725 };
+	lights[7].color = glm::vec3{ 0, 0.82, 1 };
+	lights[8].position = glm::vec3{ 0, 187.484, -18.185 };
+	lights[8].color = glm::vec3{ 1, 0.2, 0 };
+	lights[9].position = glm::vec3{ 0, 208.400, -34.226 };
+	lights[9].color = glm::vec3{ 1, 0.2, 0 };
+	lights[10].position = glm::vec3{ 0, 260.169, 5.0 };
+	lights[10].color = glm::vec3{ 1, 1, 1 };
+	lights[11].position = glm::vec3{ 0, 260.169, 5.0 };
+	lights[11].color = glm::vec3{ 1, 1, 1 };
 
 	for (int i = 4; i < 12; i++)
 	{
@@ -122,7 +124,7 @@ void Renderer::render(
 		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, game_camera, fx_emitter.timer);
 		
 		if (debug_active)
 		{
@@ -200,7 +202,7 @@ void Renderer::render(
 		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, db_camera, &scene->models[0], &scene->models[9]);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, game_camera, fx_emitter.timer);
 
 		if (debug_active)
 		{
@@ -351,6 +353,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	game_state = new_game_state;
 	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
+	fx_emitter.timer += delta;
 
 	using namespace std::chrono_literals;
 
@@ -400,20 +403,32 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	if (!is_chat_on)
 	{
-		//Dust Particles
+		//Dust
 		fx_emitter.calculate_dust_data(delta, game_camera);
 
-		//Spark Particles
+		//Spark
 		fx_emitter.calculate_spark_data(delta, game_camera);
 
-		//Steam Particles
+		//Steam
 		fx_emitter.calculate_steam_data(delta, game_camera);
 
-		//Blitz Particles
+		//Blitz
 		fx_emitter.calculate_blitz_data(delta, game_camera);
 
-		//Fire Particles
+		//Fire
 		fx_emitter.calculate_fire_data(delta, game_camera);
+
+		//Godray
+		fx_emitter.calculate_godray_data(delta, game_camera);
+
+		//Lava Light
+		fx_emitter.calculate_lava_light_data(delta, game_camera);
+
+		//Furance Light
+		fx_emitter.calculate_furnace_light_data(delta, game_camera);
+
+		//Gust
+		fx_emitter.calculate_gust_data(delta, game_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();
@@ -464,7 +479,7 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 
 	int light_count = 0;
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{
@@ -501,7 +516,7 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 
 	int light_count = 0;
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{

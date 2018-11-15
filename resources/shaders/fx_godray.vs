@@ -6,7 +6,8 @@ layout(location = 1) in vec4 center;
 layout(location = 2) in vec4 color;
 
 // Output data ; will be interpolated for each fragment.
-out vec2 uv;
+out vec2 uv_1;
+out vec2 uv_2;
 out vec4 particle_color;
 
 // Values that stay constant for the whole mesh.
@@ -27,7 +28,9 @@ void main()
 	gl_Position = projection * view * vec4(vertex_position_worldspace, 1.0f);
 	//gl_Position.w = 0.1;
 	
+	vec2 swap;
 	// UVs
-	uv = square_vertices.xy + vec2(0.5, 0.5);
+	uv_1 = square_vertices.xy + vec2(0.5, 0.5);
+	uv_2 = -square_vertices.xy + vec2(0.5, 0.5);
 	particle_color = color;
 }

@@ -154,6 +154,12 @@ private:
 	Shader fx_fire{
 		"../resources/shaders/fx_fire.vs",
 		"../resources/shaders/fx_fire.fs" };
+	Shader fx_godray{
+		"../resources/shaders/fx_godray.vs",
+		"../resources/shaders/fx_godray.fs" };
+	Shader fx_gust{
+		"../resources/shaders/fx_gust.vs",
+		"../resources/shaders/fx_gust.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
@@ -213,7 +219,7 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
-	//BuildStageScreen build_stage_screen;
+	BuildStageScreen build_stage_screen;
 	FinishScreen finish_screen;
 	int player_id;
 

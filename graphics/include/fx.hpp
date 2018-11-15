@@ -50,9 +50,12 @@ public:
 	Texture steam;
 	Texture blitz;
 	Texture fire;
-
+	Texture godray;
+	Texture furnace;
+	Texture gust;
 	
 	unsigned int randomizer = 0;
+	std::chrono::milliseconds timer;
 
 	void render_particles(
 		const Shader& dust,
@@ -60,18 +63,29 @@ public:
 		const Shader& steam,
 		const Shader& blitz,
 		const Shader& fire,
-		const Camera& camera) const;
+		const Shader& godray,
+		const Shader& gust,
+		const Camera& camera,
+		std::chrono::milliseconds delta) const;
 	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_spark_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_steam_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_blitz_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_fire_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_godray_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
 	FXdata* fx_steam_ptr = new FXdata{};
 	FXdata* fx_blitz_ptr = new FXdata{};
 	FXdata* fx_fire_ptr = new FXdata{};
+	FXdata* fx_godray_ptr = new FXdata{};
+	FXdata* fx_lava_light_ptr = new FXdata{};
+	FXdata* fx_furnace_light_ptr = new FXdata{};
+	FXdata* fx_gust_ptr = new FXdata{};
 
 private:
 	void render_particles(const FXdata& data) const;
