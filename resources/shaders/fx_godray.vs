@@ -31,6 +31,6 @@ void main()
 	vec2 swap;
 	// UVs
 	uv_1 = square_vertices.xy + vec2(0.5, 0.5);
-	uv_2 = square_vertices.xy + vec2(paning, 0.5);
+	uv_2 = -square_vertices.xy + vec2(0.5, 0.5);
 	particle_color = color;
 }

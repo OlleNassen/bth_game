@@ -59,20 +59,22 @@ Renderer::Renderer(GameScene* scene)
 	lights[3].intensity = 30;
 
 	//Map Light
-	lights[4].position = glm::vec3{ -0.145,-6.289,8.929 };
+	lights[4].position = glm::vec3{ -0.145, -6.289, 8.929 };
 	lights[4].color = glm::vec3{ 1,0.2,0 };
-	lights[5].position = glm::vec3{ -7.73,23.368,-22.735 };
+	lights[5].position = glm::vec3{ -7.73, 23.368, -22.735 };
 	lights[5].color = glm::vec3{ 1,0.2,0 };
-	lights[6].position = glm::vec3{ -7.74,44,-22.984 };
+	lights[6].position = glm::vec3{ -7.74, 44, -22.984 };
 	lights[6].color = glm::vec3{ 1,0.2,0 };
 	lights[7].position = glm::vec3{ 0, 123.035, -23.725 };
-	lights[7].color = glm::vec3{ 0,0.82,1 };
-	lights[8].position = glm::vec3{ 13.34,160,-20 };
-	lights[8].color = glm::vec3{ 1,0.48,0 };
-	lights[9].position = glm::vec3{ -11.853,200,-20 };
-	lights[9].color = glm::vec3{ 0,0.82,1 };
-	lights[10].position = glm::vec3{ 13.34,240,-20 };
-	lights[10].color = glm::vec3{ 1,0.48,0 };
+	lights[7].color = glm::vec3{ 0, 0.82, 1 };
+	lights[8].position = glm::vec3{ 0, 187.484, -18.185 };
+	lights[8].color = glm::vec3{ 1, 0.2, 0 };
+	lights[9].position = glm::vec3{ 0, 208.400, -34.226 };
+	lights[9].color = glm::vec3{ 1, 0.2, 0 };
+	lights[10].position = glm::vec3{ 0, 260.169, 5.0 };
+	lights[10].color = glm::vec3{ 1, 1, 1 };
+	lights[11].position = glm::vec3{ 0, 260.169, 5.0 };
+	lights[11].color = glm::vec3{ 1, 1, 1 };
 
 	for (int i = 4; i < 12; i++)
 	{
@@ -477,7 +479,7 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 
 	int light_count = 0;
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{
@@ -514,7 +516,7 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 
 	int light_count = 0;
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{
