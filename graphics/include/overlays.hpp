@@ -9,7 +9,7 @@
 #include "texture.hpp"
 #include "flags.hpp"
 #include "shader.hpp"
-
+#include <iostream>
 namespace graphics
 {
 
@@ -34,8 +34,9 @@ public:
 		std::chrono::milliseconds delta,
 		bool died,
 		bool finish,
-		std::array<float, 4> scores,
-		int games_state
+		std::array<float, 4> &scores,
+		int game_state,
+		int player
 	);
 
 	void render(const Shader& shader) const;

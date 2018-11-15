@@ -235,11 +235,11 @@ void Renderer::render(
 
 			if (finish[player_id] && died[player_id])
 			{
-				death_screen.render(overlay_shader);
+			//	death_screen.render(overlay_shader);
 			}
 			if (finish[player_id] && !died[player_id])
 			{
-				finish_screen.render(overlay_shader, finish);
+			//	finish_screen.render(overlay_shader, finish);
 			}
 			/*if (!build_stage_screen.transparency < 0.0005f)
 			{
@@ -252,16 +252,18 @@ void Renderer::render(
 	{
 		if (!is_menu)
 		{
-			loading_screen.render(overlay_shader);
+			//loading_screen.render(overlay_shader);
 		}
 	}
 
 	{
+		overlays.render(overlay_shader);
+
 		glDisable(GL_DEPTH_TEST);
 
 		if (is_menu)
 		{
-			main_menu_screen.render(overlay_shader);
+			//main_menu_screen.render(overlay_shader);
 		}
 
 
@@ -400,6 +402,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	leaderboard.update(std::move(scoreboard));
 
+	overlays.update(delta, 
+		died[player_id], 
+		finish[player_id], 
+		scores, 
+		game_state, 
+		player_id);
 }
 
 void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const

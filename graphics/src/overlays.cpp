@@ -22,7 +22,6 @@ void OverlayScreen::render(const Shader & shader) const
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 	glEnable(GL_DEPTH_TEST);
-
 }
 
 Overlays::Overlays()
@@ -39,14 +38,16 @@ void Overlays::update(
 	std::chrono::milliseconds delta,
 	bool died,
 	bool finish,
-	std::array<float, 4> scores,
-	int game_state
+	std::array<float, 4> &scores,
+	int game_state,
+	int player
 )	
 {
 using namespace std::chrono_literals;
 current_state = game_state;
 is_dead = died;
 has_finished = finish;
+player_id = player;
 
 //Death screen update
 if (current_state & state::playing)
@@ -95,6 +96,7 @@ if (current_state & state::menu)
 	{
 		main_menu_timer += delta;
 	}
+	std::cout << "menu\n";
 }
 }
 
