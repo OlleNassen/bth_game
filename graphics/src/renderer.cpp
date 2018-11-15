@@ -588,6 +588,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		ui.player_arrows.set_visibility(i, (died[i] || finish[i]));
 	}
+	
 	if (!died[id] && !finish[id])
 		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	else

@@ -141,7 +141,7 @@ void Game::update(std::chrono::milliseconds delta)
 		level.clear_object();
 		gameplay.refresh();
 		for (int i = 0; i < 4; ++i)
-			dynamics[i].position = glm::vec2(3.f * i, 1.75f);
+			dynamics[i].position = glm::vec2(3.f * i, 2.5f);
 		for (int i = 4; i < dynamics.size(); ++i)
 			dynamics[i].position = glm::vec2(-20000.f, -20000.f);
 		give_players_objects = false;
@@ -279,9 +279,6 @@ void Game::update(std::chrono::milliseconds delta)
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
 				players_placed_objects_id[i].model_type_id = data.model_id;
 
-				/*std::cout << "Dyn ID: " << players_placed_objects_id[i].dynamics_id << " - Mod ID: " << players_placed_objects_id[i].model_id <<
-					" - Type ID: " << players_placed_objects_id[i].model_type_id << "\n";*/
-
 				dynamics[dynamic_id].position = start_position;
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 				dynamics[dynamic_id].size = { data.width, data.height };
@@ -292,7 +289,7 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 		}
 
-		/*remove_lines.clear();
+		remove_lines.clear();
 		for (auto& ppoi : players_placed_objects_id)
 		{
 			if (ppoi.place_state != 2)
@@ -304,7 +301,8 @@ void Game::update(std::chrono::milliseconds delta)
 				else
 					ppoi.place_state = 0;
 			}
-			else
+
+			/*else
 			{
 				if (ppoi.model_type_id == 7)
 				{
@@ -330,8 +328,8 @@ void Game::update(std::chrono::milliseconds delta)
 						remove_lines.push_back(glm::vec3(dynamics[i].position.x, dynamics[i].position.y, 0.f));
 					}
 				}
-			}
-		}*/
+			}*/
+		}
 	}
 	else if (give_players_objects == true)
 	{
