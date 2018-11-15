@@ -198,6 +198,7 @@ private:
 
 	PostProcessingEffects post_processing_effects;
 
+
 	DirectionalLight dir_light;
 
 	ModelsToRender s_to_render;

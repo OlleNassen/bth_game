@@ -34,7 +34,7 @@ uniform samplerCube prefilter_map;
 const int max_num_lights = 3;
 const int block_size = 24;
 
-uniform int light_id[max_num_lights][block_size][block_size];
+uniform int light_id[block_size * block_size];
 
 const float PI = 3.14159265359;
 
@@ -120,11 +120,11 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int j = 0; j < max_num_lights; ++j) 
+    //for(int j = 0; j < max_num_lights; ++j) 
     {
 		int x = int(gl_FragCoord.x / block_size);
 		int y = int(gl_FragCoord.y / block_size);
-		int i = light_id[j][x][y];
+		int i = light_id[x + y * block_size];
 			
 		// calculate per-light radiance
 		vec3 L = normalize(light_pos[i] - fs_in.world_pos);

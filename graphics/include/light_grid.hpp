@@ -46,7 +46,7 @@ private:
 	static constexpr int rows = 45;
 	static constexpr int block_size = 24;
 
-	int indices[max_num_lights][block_size][block_size];
+	int indices[block_size*block_size];
 	Frustum grid[block_size][block_size];
 };
 
