@@ -11,7 +11,7 @@ Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y);
 bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum);
 
 LightGrid::LightGrid()
-{
+{	
 	//Player Light
 	lights[0].color = glm::vec3{ 0.9f, 1.0f, 1.0f };
 	lights[0].intensity = 30;
@@ -112,25 +112,18 @@ glm::vec4 clip_to_view(const glm::mat4& inv_proj, const glm::vec4& clip)
 	return view;
 }
 
-Plane compute_plane(glm::vec3 p0, const glm::vec3& p1, const glm::vec3& p2)
+Plane compute_plane(const glm::vec3& p1, const glm::vec3& p2)
 {
 	Plane plane;
-	glm::vec3 v0 = p1 - p0;
-	glm::vec3 v2 = p2 - p0;
-
-	plane.normal = glm::normalize(glm::cross(v0, v2));
-	plane.distance = glm::dot(plane.normal, p0);
-
+	plane.normal = glm::normalize(glm::cross(p1, p2));
+	plane.distance = 0.0f;
 	return plane;
 }
 
 Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y)
 {	
 	const int block_size = 24;
-	const glm::vec3 eye{0.0f, 0.0f, 0.0f};
 
-	// Compute the 4 corner points on the far clipping plane to use as the 
-	// frustum vertices.
 	glm::vec4 screen_space[4];	
 	screen_space[0] = glm::vec4(x * block_size, y * block_size, -1.0f, 1.0f);// Top left point	
 	screen_space[1] = glm::vec4((x + 1)* block_size, y * block_size, -1.0f, 1.0f);// Top right point	
@@ -138,19 +131,17 @@ Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y)
 	screen_space[3] = glm::vec4((x + 1) * block_size, (y + 1) * block_size, -1.0f, 1.0f);// Bottom right point
 
 	glm::vec3 view_space[4];
-	// Now convert the screen space points to view space
 	for (int i = 0; i < 4; ++i)
 	{
 		glm::vec4 v = screen_to_view(inv_proj, screen_space[i]);
 		view_space[i] = glm::vec3{v.x, v.y, v.z};
 	}
 
-	// Now build the frustum planes from the view space points
 	Frustum frustum;
-	frustum.left = compute_plane(eye, view_space[2], view_space[0]);
-	frustum.right = compute_plane(eye, view_space[1], view_space[3]);
-	frustum.top = compute_plane(eye, view_space[0], view_space[1]);
-	frustum.bottom = compute_plane(eye, view_space[3], view_space[2]);
+	frustum.left = compute_plane(view_space[2], view_space[0]);
+	frustum.right = compute_plane(view_space[1], view_space[3]);
+	frustum.top = compute_plane(view_space[0], view_space[1]);
+	frustum.bottom = compute_plane(view_space[3], view_space[2]);
 	
 	return frustum;
 }
