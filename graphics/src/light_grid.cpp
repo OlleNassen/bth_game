@@ -7,7 +7,7 @@ namespace graphics
 
 Plane compute_plane(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2);
 Frustum compute_frustum(const glm::mat4& projection, int x, int y);
-bool sphere_inside_plane(Sphere sphere, Plane plane);
+bool sphere_inside_plane(const Sphere& sphere, const Plane& plane);
 bool sphere_inside_frustum(Sphere sphere, Frustum frustum);
 
 LightGrid::LightGrid()
@@ -140,11 +140,20 @@ Frustum compute_frustum(const glm::mat4& screen_to_view, int x, int y)
 	return frustum;
 }
 
-bool sphere_inside_plane(Sphere sphere, Plane plane)
+glm::vec3 closest_point(const Plane& plane, const glm::vec3& point)
 {
-	return 
-		glm::dot(plane.normal, sphere.center) - plane.distance 
-		< -sphere.radius;
+	float dot = glm::dot(plane.normal, point);
+	float distance = dot - plane.distance;
+	return point - plane.normal * distance;
+}
+
+bool sphere_inside_plane(const Sphere& sphere, const Plane& plane)
+{
+	glm::vec3 closest = closest_point(plane, sphere.center);
+	glm::vec3 v = sphere.center - closest;
+	float distance_squared = glm::dot(v, v);
+	float radius_squared = sphere.radius * sphere.radius;
+	return distance_squared < radius_squared;
 }
 
 bool sphere_inside_frustum(Sphere sphere, Frustum frustum)
