@@ -144,6 +144,9 @@ void PlayerScript::update(
 		object.impulse.x = stack.tonumber(-2);
 		object.impulse.y = stack.tonumber(-1);
 		
+		stack.getfield(top, "is_stund");
+		object.is_stund = stack.toboolean(-1);
+
 		stack.clear();
 	}	
 }
