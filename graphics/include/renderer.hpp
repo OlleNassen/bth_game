@@ -29,7 +29,8 @@
 
 struct build_information
 {
-	std::vector<glm::vec3> build_positions;
+	glm::vec2 world_position;
+	std::vector<glm::vec3> debug_positions;
 	int place_state = 1;
 };
 
@@ -75,7 +76,10 @@ public:
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
-		float print_time) const;
+		float print_time,
+		int player_id,
+		int player_object_id,
+		std::vector<glm::vec3> remove_lines) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -90,7 +94,25 @@ public:
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
 		float print_time,
-		float goal_height);
+		float goal_height,
+		int spectator_id,
+		std::array<int, 4> moving_objects_id);
+
+	static void point_debug(const std::vector<glm::vec3>& lines)
+	{
+		VertexArray vao;
+		Buffer vertex_buffer;
+
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+		gl_buffer_data(GL_ARRAY_BUFFER, lines, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
+
+		glPointSize(5.0f);
+		glDrawArrays(GL_LINES, 0, lines.size());
+		glBindVertexArray(0);
+	}
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -124,6 +146,9 @@ private:
 	Shader text_shader{ 
 		"../resources/shaders/text.vs", 
 		"../resources/shaders/text.fs" };
+	Shader world_text_shader{ 
+		"../resources/shaders/world_text.vs",
+		"../resources/shaders/world_text.fs" };
 	Shader gui{ 
 		"../resources/shaders/gui.vs",
 		"../resources/shaders/gui.fs" };
@@ -214,7 +239,7 @@ private:
 	LoadingScreen loading_screen;
 	DeathScreen death_screen;
 	MainMenuScreen main_menu_screen;
-	//BuildStageScreen build_stage_screen;
+	BuildStageScreen build_stage_screen;
 	FinishScreen finish_screen;
 	int player_id;
 
@@ -227,11 +252,34 @@ private:
 	glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
 	Leaderboard leaderboard;
 	
-	//Timer text
+	//Timer info
 	Text timer_text;
 
 	//Build instructions
 	Text build_text;
+
+	//Arrays of strings and vec3
+	std::array<std::string, 12> objects_description =
+	{ 	
+		"Saw - Does damage",
+		"Platform oil - Robot glides (disrupt movement)",
+		"Sticky platform - Robot get 'stuck'. Movement slow-down",
+		"Shock trap - Stuns robot. Electric disrupt.",
+		"Treadmill - Has a direction. Give movement boost or slow-down depending on direction",
+		"Standard platform - Build block, can build new paths",
+		"Speed boost - Robot run faster. Movement speed-up",
+		"Steam boost - Robot jump higher. Only at objects place",
+		"Trampolin - Robot jump higher. Pick-up and used after",
+		"Turret - Does damage"
+	};
+
+	std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };
+
+	std::array<glm::vec3, 4> players_colors = { glm::vec3{ 1.0f, 0.0f, 0.0f},
+												glm::vec3{ 0.2f, 0.9f, 0.1f},
+												glm::vec3{ 0.1f, 0.1f, 0.9f},
+												glm::vec3{ 0.9f, 0.8f, 0.1f} };
+
 };
 
 }

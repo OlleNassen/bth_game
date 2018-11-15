@@ -22,8 +22,11 @@ enum class SessionState : uint8
 {
 	none,
 	waiting,
+	lobby,
+	loading,
 	building,
-	playing
+	playing,
+	game_over
 };
 
 class Vec2

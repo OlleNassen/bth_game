@@ -24,6 +24,23 @@ struct id_and_model_place
 	int dynamics_id = 0;
 	int model_id = 0;
 	int place_state = 1;
+	int model_type_id = 0;
+
+	bool operator==(const id_and_model_place& other) 
+	{
+		return	dynamics_id		== other.dynamics_id &&
+				model_id		== other.model_id &&
+				place_state		== other.place_state &&
+				model_type_id	== other.model_type_id;
+	}
+
+	bool operator!=(const id_and_model_place& other)
+	{
+		return	dynamics_id != other.dynamics_id ||
+			model_id != other.model_id ||
+			place_state != other.place_state ||
+			model_type_id != other.model_type_id;
+	}
 };
 
 namespace logic
@@ -58,6 +75,9 @@ public:
 	LuaExport update(Input input,
 		int& current_state);
 	bool build_stage() const;
+	bool pre_playing_stage() const;
+	bool is_new_round = false;
+	void new_round();
 private:
 	script_array<int> entities;
 	PlayerScript player_script{"../resources/scripts/player.lua"};
@@ -76,6 +96,8 @@ private:
 	std::vector<int> current_gameboard;
 	int	get_random_object_id(Input input);
 	int players_done = 0;
+	bool pre_playing_done = false;
+	float pre_starter_time = 3.5f;
 };
 
 }
