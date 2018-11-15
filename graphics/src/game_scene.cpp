@@ -68,10 +68,15 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 			float height = level.levelObjects[i].collisionBox[0];
 			auto* ptr = level.levelObjects[i].centerPivot;
 			
-			coll_data.emplace_back(collision_data{ 
+			//coll_data.emplace_back(collision_data{ 
+			//	glm::vec2{ ptr[0], ptr[1] }, width, height, false });
+
+			coll_data_test.emplace_back(collision_data{ 
 				glm::vec2{ ptr[0], ptr[1] }, width, height, false });
 		}
 	}
+
+	coll_data = combineding_coll_data();
 
 	auto beg = models.begin();
 	beg += 9;
@@ -140,6 +145,209 @@ void GameScene::rotate_object(int model_id)
 	moving_models[model_id].rotate(90.0f);
 }
 
+std::vector<collision_data> GameScene::combineding_coll_data()
+{
+
+	std::vector<collision_data> sorted_coll_data = coll_data_test;
+
+	std::vector<collision_data> new_coll_data;
+
+
+	std::sort(sorted_coll_data.begin(), sorted_coll_data.end(), [](const auto& left, const auto& right)
+	{
+		return left.position.y < right.position.y || ((left.position.y <= right.position.y) && (left.position.x < right.position.x));
+	});
+
+	//std::sort(sorted_coll_data.begin(), sorted_coll_data.end(), [](const auto& left, const auto& right)
+	//{
+	//	return left.position.x < right.position.x;
+	//});
+
+
+	glm::vec2 temp_pos = {0.0, 0.0};
+	float temp_height = 0;
+	float temp_width = 0;
+	float min_x = 0;
+	float max_x = 0;
+
+	float left_side = 0;
+	float right_side = 0;
+
+	float temp_x = 0;
+
+	float nr_of_models = 1;
+
+	float margin = 0.5;
+	
+	float index = 0;
+
+	/*for (int i = index; i < sorted_coll_data.size() - 1; i++)
+	{
+		nr_of_models = 1;
+
+		temp_pos = sorted_coll_data[i].position;
+		temp_height = sorted_coll_data[i].height;
+		temp_width = sorted_coll_data[i].width;
+
+		min_x = sorted_coll_data[i].position.x;
+		max_x = sorted_coll_data[i].position.x;
+
+		for (int j = i; j < sorted_coll_data.size(); j++)
+		{
+
+			if ((sorted_coll_data[j].position.y - 0.1) <= sorted_coll_data[j + 1].position.y && (sorted_coll_data[j].position.y + 0.1) >= sorted_coll_data[j + 1].position.y)
+			{
+				if (temp_pos.y < sorted_coll_data[j + 1].position.y)
+				{
+					temp_pos.y = sorted_coll_data[j + 1].position.y;
+				}
+
+				if (min_x > sorted_coll_data[j + 1].position.x)
+				{
+					min_x = sorted_coll_data[j + 1].position.x;
+				}
+				else if (max_x < sorted_coll_data[j + 1].position.x)
+				{
+					max_x = sorted_coll_data[j + 1].position.x;
+				}
+
+				temp_width += sorted_coll_data[j + 1].width;
+
+				nr_of_models++;
+				index++;
+			}
+
+			if (((min_x + temp_width / 2) - 0.1) <= (sorted_coll_data[j + 1].position.x - (sorted_coll_data[j + 1].width / 2))
+				|| (max_x - temp_width / 2) - 0.1) >= (sorted_coll_data[j + 1].position.x + sorted_coll_data[j + 1].width / 2)
+			{
+
+			}
+		}
+
+		if (nr_of_models > 1)
+		{
+			temp_pos.x = (max_x + min_x) / 2;
+		}
+
+		new_coll_data.push_back(collision_data{ temp_pos, temp_width, temp_height, false });
+	}*/
+
+
+
+	while (sorted_coll_data.size() > 0)
+	{
+		int i = 0;
+
+		temp_pos = sorted_coll_data[i].position;
+		temp_height = sorted_coll_data[i].height;
+		temp_width = sorted_coll_data[i].width;
+
+		min_x = sorted_coll_data[i].position.x;
+		max_x = sorted_coll_data[i].position.x;
+
+		temp_x = (min_x + max_x) / 2;
+
+		left_side = temp_x - (temp_width / 2);
+		right_side = temp_x + (temp_width / 2);
+
+		collision_data temp_data;
+
+		sorted_coll_data.erase(sorted_coll_data.begin() + i);
+
+		//temp_data = sorted_coll_data[sorted_coll_data.size() - 1];
+		//sorted_coll_data[sorted_coll_data.size() - 1] = sorted_coll_data[i];
+		//sorted_coll_data[i] = temp_data;
+		//
+		//sorted_coll_data.pop_back();
+
+		for (int j = 0; j < sorted_coll_data.size(); j++)
+		{
+
+			if ((temp_pos.y - margin) <= sorted_coll_data[j].position.y
+				&& (temp_pos.y + margin) >= sorted_coll_data[j].position.y)
+			{
+				if ((left_side - margin) <= (sorted_coll_data[j].position.x + (sorted_coll_data[j].width / 2))
+					&& (left_side + margin) >= (sorted_coll_data[j].position.x + (sorted_coll_data[j].width / 2)))
+				{
+					if (temp_pos.y < sorted_coll_data[j].position.y)
+					{
+						temp_pos.y = sorted_coll_data[j].position.y;
+					}
+
+					if (min_x > sorted_coll_data[j].position.x)
+					{
+						min_x = sorted_coll_data[j].position.x;
+					}
+					else if (max_x < sorted_coll_data[j].position.x)
+					{
+						max_x = sorted_coll_data[j].position.x;
+					}
+
+					temp_width += sorted_coll_data[j].width;
+					temp_x = (min_x + max_x) / 2;
+
+					left_side = temp_x - (temp_width / 2);
+					right_side = temp_x + (temp_width / 2);
+
+					//temp_data = sorted_coll_data[sorted_coll_data.size() - 1];
+					//sorted_coll_data[sorted_coll_data.size() - 1] = sorted_coll_data[j];
+					//sorted_coll_data[j] = temp_data;
+					//
+					//sorted_coll_data.pop_back();
+
+					sorted_coll_data.erase(sorted_coll_data.begin() + j);
+
+					j = 0;
+
+				}
+				else if ((right_side - margin) <= (sorted_coll_data[j].position.x - (sorted_coll_data[j].width / 2))
+					&& (right_side + margin) >= (sorted_coll_data[j].position.x - (sorted_coll_data[j].width / 2)))
+				{
+					if (temp_pos.y < sorted_coll_data[j].position.y)
+					{
+						temp_pos.y = sorted_coll_data[j].position.y;
+					}
+
+					if (min_x > sorted_coll_data[j].position.x)
+					{
+						min_x = sorted_coll_data[j].position.x;
+					}
+					else if (max_x < sorted_coll_data[j].position.x)
+					{
+						max_x = sorted_coll_data[j].position.x;
+					}
+
+					temp_width += sorted_coll_data[j].width;
+
+					temp_width += sorted_coll_data[j].width;
+					temp_x = (min_x + max_x) / 2;
+
+					left_side = temp_x - (temp_width / 2);
+					right_side = temp_x + (temp_width / 2);
+
+					//temp_data = sorted_coll_data[sorted_coll_data.size() - 1];
+					//sorted_coll_data[sorted_coll_data.size() - 1] = sorted_coll_data[j];
+					//sorted_coll_data[j] = temp_data;
+					//
+					//sorted_coll_data.pop_back();
+
+					sorted_coll_data.erase(sorted_coll_data.begin() + j);
+
+					j = 0;
+
+				}
+			}
+		}
+
+		temp_pos.x = temp_x;
+
+		new_coll_data.push_back(collision_data{ temp_pos, temp_width, temp_height, false });
+	}
+
+	
+	return new_coll_data;
+	
 }
 
+}
 

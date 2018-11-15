@@ -41,6 +41,7 @@ public:
 	std::vector<Model> animated_models;
 	std::vector<collision_data> coll_data;
 
+	std::vector<collision_data> coll_data_test;
 
 
 // Lucas/Vincet Test för placering av object.
@@ -54,6 +55,8 @@ public:
 	int add_object(collision_data& physics_data, int id);
 	void clear_object();
 	void rotate_object(int model_id);
+
+	std::vector<collision_data> combineding_coll_data();
 };
 
 }
