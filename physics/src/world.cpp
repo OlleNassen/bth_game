@@ -236,7 +236,7 @@ void World::update(
 		{
 			if (points[0].x > 19.3f || points[0].x < -19.3f)
 			{
-				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump/* || anim_states[i] == anim::idle || anim_states[i] == anim::running*/)
+				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump /*|| anim_states[i] == anim::idle || anim_states[i] == anim::running*/)
 				{
 
 					for (auto& walls : statics)
