@@ -113,16 +113,17 @@ void Game::render()
 		info.world_position = dynamics[d_id].position;
 		info.debug_positions = physics.get_debug_for(d_id);
 		info.place_state = players_placed_objects_id[i].place_state;
-
+		
 		build_info.push_back(info);
 	}
-	
+
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
 		lua_data.finished, lua_data.scores, lua_data.time,
 		net.id(),
-		players_placed_objects_id[0].model_type_id);
+		players_placed_objects_id[0].model_type_id,
+		remove_lines);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -278,6 +279,8 @@ void Game::update(std::chrono::milliseconds delta)
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
 				players_placed_objects_id[i].model_type_id = data.model_id;
 
+				std::cout << "ADDED: Dynamic ID: " << dynamic_id << " - Model ID : " << model_id << std::endl;
+
 				dynamics[dynamic_id].position = start_position;
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 				dynamics[dynamic_id].size = { data.width, data.height };
@@ -288,6 +291,7 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 		}
 
+		remove_lines.clear();
 		for (auto& ppoi : players_placed_objects_id)
 		{
 			if (ppoi.place_state != 2)
@@ -299,6 +303,33 @@ void Game::update(std::chrono::milliseconds delta)
 				else
 					ppoi.place_state = 0;
 			}
+			else
+			{
+				if (ppoi.model_type_id == 7)
+				{
+					for (int i = 4; i < level.moving_models.size(); i++)
+					{
+						float distance = glm::distance(dynamics[i].position, dynamics[ppoi.dynamics_id].position);
+						if (distance < 5.0f && distance != 0.0f)
+						{
+							remove_object(i);
+						}
+					}
+				}
+			}
+
+			if (ppoi.model_type_id == 7)
+			{
+				for (int i = 4; i < level.moving_models.size(); i++)
+				{
+					float distance = glm::distance(dynamics[i].position, dynamics[ppoi.dynamics_id].position);
+					if (distance < 5.0f && distance != 0.0f)
+					{
+						remove_lines.push_back(glm::vec3(dynamics[ppoi.dynamics_id].position.x, dynamics[ppoi.dynamics_id].position.y, 0.f));
+						remove_lines.push_back(glm::vec3(dynamics[i].position.x, dynamics[i].position.y, 0.f));
+					}
+				}
+			}
 		}
 	}
 	else if (give_players_objects == true)
@@ -306,7 +337,7 @@ void Game::update(std::chrono::milliseconds delta)
 		give_players_objects = false;
 		for (auto& ppoi : players_placed_objects_id)
 		{
-			if (ppoi.place_state == 0)
+			if (ppoi.place_state == 0 || ppoi.place_state == 1 || ppoi.model_type_id == 7)
 			{
 				//Remove object
 				dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
@@ -314,6 +345,11 @@ void Game::update(std::chrono::milliseconds delta)
 				
 				std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
 				std::swap(ppoi, players_placed_objects_id[players_placed_objects_id.size() - 1]);
+
+				std::cout << "REMOVED: Dynamic ID: " << ppoi.dynamics_id << " - Model ID : " << ppoi.model_id << std::endl;
+
+				if (ppoi.dynamics_id != ppoi.model_id)
+					std::cout << "NOT THE SAME!\n";
 
 				level.moving_models.pop_back();
 				physics.remove_body(ppoi.dynamics_id);
@@ -642,4 +678,10 @@ std::array<int, 4> Game::random_indexes()
 	}
 
 	return out;
+}
+
+void Game::remove_object(int id)
+{
+	dynamics[id].position = glm::vec3{ 3000, 0, 0 };
+	level.moving_models[id].set_position(dynamics[id].position);
 }

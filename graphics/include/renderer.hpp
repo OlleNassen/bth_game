@@ -78,7 +78,8 @@ public:
 		std::array<float, 4> scores,
 		float print_time,
 		int player_id,
-		int player_object_id) const;
+		int player_object_id,
+		std::vector<glm::vec3> remove_lines) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -96,6 +97,22 @@ public:
 		float goal_height,
 		int spectator_id,
 		std::array<int, 4> moving_objects_id);
+
+	static void point_debug(const std::vector<glm::vec3>& lines)
+	{
+		VertexArray vao;
+		Buffer vertex_buffer;
+
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+		gl_buffer_data(GL_ARRAY_BUFFER, lines, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
+
+		glPointSize(5.0f);
+		glDrawArrays(GL_LINES, 0, lines.size());
+		glBindVertexArray(0);
+	}
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{

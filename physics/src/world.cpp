@@ -362,6 +362,7 @@ std::vector<glm::vec3> World::get_all_debug() const
 
 		for (auto& vertex : vertices)
 		{		
+			vertex.z = 0.f;
 			out_vertices.push_back(vertex);
 		}
 	}
@@ -373,6 +374,7 @@ std::vector<glm::vec3> World::get_all_debug() const
 		
 		for (auto& vertex : vertices)
 		{
+			vertex.z = 0.f;
 			out_vertices.push_back(vertex);
 		}
 	}
@@ -388,6 +390,7 @@ std::vector<glm::vec3> World::get_debug_for(int id) const
 
 	for (auto& vertex : vertices)
 	{
+		vertex.z = 0.f;
 		out_vertices.push_back(vertex);
 	}
 

@@ -106,7 +106,8 @@ void Renderer::render(
 	std::array<float, 4> scores,
 	float print_time,
 	int player_id,
-	int player_object_id)const
+	int player_object_id,
+	std::vector<glm::vec3> remove_lines)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -143,7 +144,7 @@ void Renderer::render(
 			lines.uniform("projection", game_camera.projection);
 			lines.uniform("view", game_camera.view());
 			lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
-			line_debug(debug_positions);	
+			point_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
 		
@@ -170,7 +171,7 @@ void Renderer::render(
 			lines.uniform("projection", db_camera.projection);
 			lines.uniform("view", db_camera.view());
 			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
-			line_debug(debug_positions);
+			point_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
 
@@ -256,8 +257,9 @@ void Renderer::render(
 				lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
 			}
 
-			line_debug(build_info[i].debug_positions);
+			point_debug(build_info[i].debug_positions);
 		}
+		point_debug(remove_lines);
 
 		text_shader.use();
 		text_shader.uniform("projection", projection);

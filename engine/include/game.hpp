@@ -79,6 +79,9 @@ private:
 	std::vector<glm::vec3> placed_objects_hitbox_positions;
 	bool buildmode = true;
 	bool give_players_objects = false;
+	std::vector<glm::vec3> remove_lines;
+
+	void remove_object(int id);
 
 	//Random placed objects
 	std::array <id_and_model_place, 4> random_placed_objects_id;
