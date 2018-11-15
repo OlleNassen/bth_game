@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include "primitives.hpp"
 #include "texture.hpp"
-
+#include "flags.hpp"
 #include "shader.hpp"
 
 namespace graphics
@@ -34,10 +34,12 @@ public:
 		std::chrono::milliseconds delta,
 		bool died,
 		bool finish,
-		std::array<float, 4> scores
+		std::array<float, 4> scores,
+		int games_state
 	);
 
 	void render(const Shader& shader) const;
+	//void render_death_screen(const Shader& shader) const;
 
 private:
 	OverlayScreen overlay;
@@ -74,6 +76,9 @@ private:
 	Texture death_6{"../resources/textures/death_screen/death_6.png"};
 	
 	int player_id;
+	int current_state = 0;
+	bool is_dead = false;
+	bool has_finished = false;
 };
 
 }
