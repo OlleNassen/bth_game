@@ -77,7 +77,9 @@ void MeshLib::create_mesh_list()
 		"melting_pot.ssp",                  //49
 		"hydraulic_press.ssp",              //50
 		"chain.ssp",						//51
-		"furnace.ssp"                       //52
+		"furnace.ssp",                      //52
+		"furnace.ssp",                      //53 <--Spinning cylinder
+		"iron_chunk.ssp"                    //54
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)

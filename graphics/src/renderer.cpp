@@ -122,7 +122,7 @@ void Renderer::render(
 		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, game_camera, fx_emitter.timer);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, game_camera, fx_emitter.timer);
 		
 		if (debug_active)
 		{
@@ -200,7 +200,7 @@ void Renderer::render(
 		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, db_camera, &scene->models[0], &scene->models[9]);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, game_camera, fx_emitter.timer);
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, game_camera, fx_emitter.timer);
 
 		if (debug_active)
 		{
@@ -424,6 +424,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		//Furance Light
 		fx_emitter.calculate_furnace_light_data(delta, game_camera);
+
+		//Gust
+		fx_emitter.calculate_gust_data(delta, game_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();

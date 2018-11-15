@@ -157,6 +157,9 @@ private:
 	Shader fx_godray{
 		"../resources/shaders/fx_godray.vs",
 		"../resources/shaders/fx_godray.fs" };
+	Shader fx_gust{
+		"../resources/shaders/fx_gust.vs",
+		"../resources/shaders/fx_gust.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
