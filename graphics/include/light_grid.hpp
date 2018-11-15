@@ -42,11 +42,9 @@ public:
 private:
 	
 	static constexpr int max_num_lights = 3;
-	static constexpr int columns = 80;
-	static constexpr int rows = 45;
 	static constexpr int block_size = 24;
 
-	int indices[block_size*block_size];
+	int indices[block_size * block_size];
 	Frustum grid[block_size][block_size];
 };
 

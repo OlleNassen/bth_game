@@ -58,7 +58,7 @@ const int* LightGrid::data()const
 }
 int LightGrid::size()const
 {
-	return 3 * block_size * block_size;
+	return block_size * block_size;
 }
 
 void LightGrid::calculate_grid(const Camera& camera)
@@ -180,7 +180,7 @@ bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum)
 	if (sphere_inside_plane(sphere, frustum.bottom))
 		result = false;
 
-	return !result;
+	return result;
 }
 
 }
