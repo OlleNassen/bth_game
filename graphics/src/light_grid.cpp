@@ -5,6 +5,8 @@ namespace graphics
 
 Plane compute_plane(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2);
 Frustum compute_frustum(const glm::mat4& projection, int x, int y);
+bool sphere_inside_plane(Sphere sphere, Plane plane);
+bool sphere_inside_frustum(Sphere sphere, Frustum frustum);
 
 LightGrid::LightGrid()
 {
@@ -42,22 +44,37 @@ LightGrid::LightGrid()
 
 void LightGrid::calculate_grid(const Camera& camera)
 {	
-	for (int j = 0; j < rows; ++j)
+	const glm::mat4 screen_to_view = glm::inverse(camera.projection);
+	
+	for (int j = 0; j < block_size; ++j)
 	{
-		for (int i = 0; i < columns; ++i)
+		for (int i = 0; i < block_size; ++i)
 		{
-			grid[i][j] = compute_frustum(camera.projection, i, j);
+			grid[i][j] = compute_frustum(screen_to_view, i, j);
 		}
 	}
 }
 
-void LightGrid::update(const Camera & camera)
+void LightGrid::update(const Camera& camera)
 {
-	for (auto& box : grid)
+	const glm::mat4 screen_to_view = glm::inverse(camera.projection);
+	for (int light_id = 0; light_id < lights.size(); ++light_id)
 	{
-		for (auto& light : lights)
+		glm::vec3 p{lights[light_id].position};
+		glm::vec4 v{p.x, p.y,p.z, 1.0f};
+		v = screen_to_view * v;
+		p = glm::vec3{p.x, p.y,p.z};
+		Sphere sphere{p, lights[light_id].radius};
+		
+		for (int j = 0; j < block_size; ++j)
 		{
-
+			for (int i = 0; i < block_size; ++i)
+			{
+				if (sphere_inside_frustum(sphere, grid[i][j]))
+				{
+					indices[0][i][j] = light_id;
+				}
+			}
 		}
 	}
 }
@@ -74,11 +91,10 @@ Plane compute_plane(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2)
 	return plane;
 }
 
-Frustum compute_frustum(const glm::mat4& projection, int x, int y)
+Frustum compute_frustum(const glm::mat4& screen_to_view, int x, int y)
 {	
 	const int block_size = 24;
 	const glm::vec3 eye{0.0f, 0.0f, 0.0f};
-	const glm::mat4 screen_to_view = glm::inverse(projection);
 
 	// Compute the 4 corner points on the far clipping plane to use as the 
 	// frustum vertices.
@@ -104,6 +120,28 @@ Frustum compute_frustum(const glm::mat4& projection, int x, int y)
 	frustum.bottom = compute_plane(eye, view_space[3], view_space[2]);
 	
 	return frustum;
+}
+
+bool sphere_inside_plane(Sphere sphere, Plane plane)
+{
+	return glm::dot(plane.normal, sphere.center) - plane.distance < -sphere.radius;
+}
+
+bool sphere_inside_frustum(Sphere sphere, Frustum frustum)
+{
+	if (sphere_inside_plane(sphere, frustum.left))
+		return false;
+
+	if (sphere_inside_plane(sphere, frustum.right))
+		return false;
+
+	if (sphere_inside_plane(sphere, frustum.top))
+		return false;
+
+	if (sphere_inside_plane(sphere, frustum.bottom))
+		return false;
+
+	return true;
 }
 
 }

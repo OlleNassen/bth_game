@@ -7,10 +7,16 @@
 namespace graphics
 {
 
-struct Plane
+struct Sphere
 {
-	float distance;
+	glm::vec3 center;
+	float radius;
+};
+
+struct Plane
+{	
 	glm::vec3 normal;
+	float distance;
 };
 
 struct Frustum
@@ -34,9 +40,10 @@ private:
 	static constexpr int max_num_lights = 3;
 	static constexpr int columns = 80;
 	static constexpr int rows = 45;
-	std::array<std::array<int, max_num_lights>, (columns * rows)> grid_fake;
+	static constexpr int block_size = 24;
 
-	Frustum grid[columns][rows];
+	int indices[max_num_lights][block_size][block_size];
+	Frustum grid[block_size][block_size];
 };
 
 }
