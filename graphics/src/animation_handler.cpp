@@ -18,7 +18,7 @@ Animation_handler::Animation_handler()
 	switch_translations.clear();
 	this->animation_states.clear();
 
-	for (int i = 0; i < 19; i++)
+	for (int i = 0; i < 40; i++)
 	{
 		this->bone_mat_vector.push_back(glm::mat4(1));
 	}
@@ -242,8 +242,15 @@ void Animation_handler::get_parent_transform()
 
 	for (auto i = 1u; i < this->joints.size(); i++)
 	{
-		global_joint_transforms[i] = global_joint_transforms[this->joints[i].parent_id] *
+		if (joints[i].parent_id != -1)
+		{
+			global_joint_transforms[i] = global_joint_transforms[this->joints[i].parent_id] *
 			mat_to_GLM(this->joints[i].local_transform_matrix);
+		}
+		else
+		{
+			global_joint_transforms[i] = mat_to_GLM(this->joints[i].local_transform_matrix);
+		}
 
 		this->parent_transforms[i] = global_joint_transforms[i];
 	}
@@ -255,7 +262,7 @@ void Animation_handler::update_bone_mat_vector()
 
 	this->bone_mat_vector.clear();
 	get_parent_transform();
-	for (unsigned int i = 0; i < 20; i++)
+	for (unsigned int i = 0; i < 40; i++)
 	{
 		if (i > joints.size() - 1)
 			bone_mat_vector.push_back(glm::mat4(1));
@@ -572,7 +579,17 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 	}
 	update_bone_mat_vector();
 
-
+	if (animations[current_animation]->nr_of_keyframes == 100)
+	{
+		if (time_seconds >= 1.0)
+		{
+			bone_mat_vector;
+			animations[current_animation]->switching = true;
+			if (animations[current_animation]->switching == true)
+				animations[current_animation]->switching = false;
+		}
+		return true;
+	}
 
 	return true;
 }
@@ -595,16 +612,27 @@ void Animation_handler::fixInverseBindPoses()
 		IBP.push_back(glm::mat4(1));
 	}
 
-	LM[0] = (this->animation_link[current_animation][0]);
-	GM[0] = (LM[0]);
-	IBP[0] = (glm::inverse(LM[0]));
-	offset_matrices.push_back(IBP[0]);
+	//LM[0] = (this->animation_link[current_animation][0]);
+	//GM[0] = (LM[0]);
+	//IBP[0] = (glm::inverse(LM[0]));
+	//offset_matrices.push_back(IBP[0]);
 
-	for (auto i = 1u; i < this->joints.size(); i++)
+	for (auto i = 0u; i < this->joints.size(); i++)
 	{
-		LM[i] = this->animation_link[current_animation][i];
-		GM[i] = GM[joints[i].parent_id] * LM[i];
-		IBP[i] = glm::inverse(GM[i]);
+		if (joints[i].parent_id != -1)
+		{
+
+			LM[i] = this->animation_link[current_animation][i];
+			GM[i] = GM[joints[i].parent_id] * LM[i];
+			IBP[i] = glm::inverse(GM[i]);
+		}
+		else
+		{
+			LM[i] = (this->animation_link[current_animation][i]);
+			GM[i] = (LM[i]);
+			IBP[i] = (glm::inverse(LM[i]));
+		}
+
 
 		this->offset_matrices.push_back(IBP[i]);
 	}
