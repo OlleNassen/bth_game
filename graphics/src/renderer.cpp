@@ -59,20 +59,20 @@ Renderer::Renderer(GameScene* scene)
 	lights[3].intensity = 30;
 
 	//Map Light
-	lights[4].position = glm::vec3{ -0.145,-6.289,8.929 };
-	lights[4].color = glm::vec3{ 1,0.2,0 };
-	lights[5].position = glm::vec3{ -7.73,23.368,-22.735 };
-	lights[5].color = glm::vec3{ 1,0.2,0 };
-	lights[6].position = glm::vec3{ -7.74,44,-22.984 };
-	lights[6].color = glm::vec3{ 1,0.2,0 };
-	lights[7].position = glm::vec3{ -11.853,120,-20 };
-	lights[7].color = glm::vec3{ 0,0.82,1 };
-	lights[8].position = glm::vec3{ 13.34,160,-20 };
-	lights[8].color = glm::vec3{ 1,0.48,0 };
-	lights[9].position = glm::vec3{ -11.853,200,-20 };
-	lights[9].color = glm::vec3{ 0,0.82,1 };
-	lights[10].position = glm::vec3{ 13.34,240,-20 };
-	lights[10].color = glm::vec3{ 1,0.48,0 };
+	lights[4].position = glm::vec3{ -0.145f, -6.289f ,8.929f };
+	lights[4].color = glm::vec3{ 1.0f, 0.2f, 0.0f };
+	lights[5].position = glm::vec3{ -7.73f, 23.368f, -22.735f };
+	lights[5].color = glm::vec3{ 1.0f, 0.2f, 0.0f };
+	lights[6].position = glm::vec3{ -7.74f, 44.0f, -22.984f };
+	lights[6].color = glm::vec3{ 1.0f, 0.2f, 0.0f };
+	lights[7].position = glm::vec3{ -11.853f, 120.0f, -20.0f };
+	lights[7].color = glm::vec3{ 0.0f, 0.82f, 1.0f };
+	lights[8].position = glm::vec3{ 13.34f, 160.0f, -20.0f };
+	lights[8].color = glm::vec3{ 1.0f, 0.48f, 0.0f };
+	lights[9].position = glm::vec3{ -11.853f, 200.0f, -20.0f };
+	lights[9].color = glm::vec3{ 0.0f, 0.82f, 1.0f };
+	lights[10].position = glm::vec3{ 13.34f, 240.0f, -20.0f };
+	lights[10].color = glm::vec3{ 1.0f, 0.48f, 0.0f };
 
 	for (int i = 4; i < 12; i++)
 	{
