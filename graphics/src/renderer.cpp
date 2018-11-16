@@ -353,7 +353,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	}
 
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
-	player_count = num_players;
+	player_count = num_players - 1;
 	game_state = new_game_state;
 	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
