@@ -15,15 +15,16 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 	//Create players
 	CustomLevel level(file_name);
 	CustomLevel objects("../resources/level/objects.ssp");
+	models.clear();
 	models.reserve(sizeof(Model) * (level.counterReader.levelObjectCount));
 
 	using glm::vec3;
 	glm::mat4 model{ 1.0f };
 
-	v[0] = { 10, 15 };
-	v[1] = { -3, 0 };
-	v[2] = { 3, 0 };
-	v[3] = { -9, 0 };
+	v[0] = { 0, 1.75 };
+	v[1] = { 3, 1.75 };
+	v[2] = { 6, 1.75 };
+	v[3] = { 9, 1.75 };
 
 	moving_models.emplace_back(glm::translate(model, vec3{ v[0], 0 }), vec3{ 1.0f, 0.0f, 0.0f}, mesh_lib->get_mesh(0));
 	moving_models.emplace_back(glm::translate(model, vec3{ v[1], 0 }), vec3{ 0.2f, 0.9f, 0.1f}, mesh_lib->get_mesh(0));
@@ -97,6 +98,7 @@ GameScene::~GameScene()
 
 void GameScene::inititate_object(CustomLevel& objects, MeshLib* object_lib)
 {
+	this->objects.clear();
 	for (unsigned int i = 0; i < objects.counterReader.levelObjectCount; i++)
 	{
 		glm::mat4 model{ 1.0f };
@@ -111,9 +113,10 @@ void GameScene::inititate_object(CustomLevel& objects, MeshLib* object_lib)
 		float width = objects.levelObjects[i].collisionBox[1];
 		float height = objects.levelObjects[i].collisionBox[0];
 		auto* ptr = objects.levelObjects[i].centerPivot;
+		int model_type_id = i;
 
 		Model tempModel = { model, glm::vec3(0, 0, 0), object_lib->get_mesh(i) };
-		collision_data tempInfo = { glm::vec2{ ptr[0], ptr[1] }, width, height, false };
+		collision_data tempInfo = { glm::vec2{ ptr[0], ptr[1] }, width, height, false, model_type_id };
 		placeableObjectInfo info = { tempModel, tempInfo };
 		this->objects.emplace_back(info);
 	}

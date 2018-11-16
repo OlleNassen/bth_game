@@ -79,16 +79,22 @@ private:
 	std::vector<glm::vec3> placed_objects_hitbox_positions;
 	bool buildmode = true;
 	bool give_players_objects = false;
+	std::vector<glm::vec3> remove_lines;
+
+	void remove_object(int id);
 
 	//Random placed objects
 	std::array <id_and_model_place, 4> random_placed_objects_id;
 
 	//test trigger
 	int placed_objects_list_id = 7;
-	int placed_objects_array[4] = { 0,3,7,7 };
+	int placed_objects_array[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-	int random_picked_object() { return placed_objects_array[rand() % 4];};
+	int random_picked_object() { return placed_objects_array[rand() % 10]; };
 	std::array<int, 4> random_indexes();
+
+	//spectator
+	int watching = 0;
 };
 
 
