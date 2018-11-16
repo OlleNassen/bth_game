@@ -240,7 +240,7 @@ private:
 	//LoadingScreen loading_screen;
 	//DeathScreen death_screen;
 	//MainMenuScreen main_menu_screen;
-	////BuildStageScreen build_stage_screen;
+	BuildStageScreen build_stage_screen;
 	//FinishScreen finish_screen;
 	Overlays overlays;
 	int player_id;
