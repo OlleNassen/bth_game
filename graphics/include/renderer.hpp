@@ -259,8 +259,9 @@ private:
 	Text build_text;
 
 	//Arrays of strings and vec3
-	std::array<std::string, 12> objects_description =
+	std::array<std::string, 11> objects_description =
 	{ 	
+		"Spike trap - Does damage",
 		"Saw - Does damage",
 		"Platform oil - Robot glides (disrupt movement)",
 		"Sticky platform - Robot get 'stuck'. Movement slow-down",
