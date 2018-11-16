@@ -59,7 +59,7 @@ Renderer::Renderer(GameScene* scene)
 	lights[3].intensity = 30;
 
 	//Map Light
-	lights[4].position = glm::vec3{ -0.145, -6.289, 8.929 };
+	lights[4].position = glm::vec3{ -0.145, -4.289, 8.929 };
 	lights[4].color = glm::vec3{ 1,0.2,0 };
 	lights[5].position = glm::vec3{ -7.73, 23.368, -22.735 };
 	lights[5].color = glm::vec3{ 1,0.2,0 };
@@ -80,7 +80,7 @@ Renderer::Renderer(GameScene* scene)
 	{
 		lights[i].intensity = 400;
 	}
-	lights[4].intensity = 100;
+	lights[4].intensity = 400;
 	lights[5].intensity = 700;
 	lights[6].intensity = 1000;
 
@@ -137,57 +137,6 @@ void Renderer::render(
 			glEnable(GL_DEPTH_TEST);
 		}
 		
-		if (game_state & state::building)
-		{
-
-			int max = build_info.size();
-			for (int i = 0; i < max; i++)
-			{
-				glDisable(GL_DEPTH_TEST);
-				lines.use();
-				lines.uniform("projection", game_camera.projection);
-				lines.uniform("view", game_camera.view());
-
-				if (build_info[i].place_state == 0)	//Cannot Place
-				{
-					lines.uniform("line_color", glm::vec3(1.0f, 0.0f, 0.0f));
-				}
-				else if (build_info[i].place_state == 1) //Can Place
-				{
-					lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
-				}
-				else if(build_info[i].place_state == 2)	//Has Placed
-				{
-					lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
-				}
-
-				line_debug(build_info[i].build_positions);
-				glEnable(GL_DEPTH_TEST);
-			}
-
-			glDisable(GL_DEPTH_TEST);			
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Press 'Space' to place object", 1920.f - 540, 10.f, 0.75f);
-			glEnable(GL_DEPTH_TEST);
-
-			glDisable(GL_DEPTH_TEST);
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Build Stage", 1920.f - 210, 1080.f - 35.f, 0.75f);
-			glEnable(GL_DEPTH_TEST);
-		}
-
-		glDisable(GL_DEPTH_TEST);
-		std::stringstream out_text;
-		out_text << std::fixed << std::setprecision(1) << print_time;
-		text_shader.use();
-		text_shader.uniform("projection", projection);
-		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-		timer_text.render_text(out_text.str(), 10.f, 1080.f - 45.f, 1.f);
-		glEnable(GL_DEPTH_TEST);
 	}
 	else if (!is_menu)
 	{
@@ -259,6 +208,61 @@ void Renderer::render(
 		{
 			loading_screen.render(overlay_shader);
 		}
+	}
+
+	if (game_state & state::building)
+	{
+
+		int max = build_info.size();
+		for (int i = 0; i < max; i++)
+		{
+			glDisable(GL_DEPTH_TEST);
+			lines.use();
+			lines.uniform("projection", game_camera.projection);
+			lines.uniform("view", game_camera.view());
+
+			if (build_info[i].place_state == 0)	//Cannot Place
+			{
+				lines.uniform("line_color", glm::vec3(1.0f, 0.0f, 0.0f));
+			}
+			else if (build_info[i].place_state == 1) //Can Place
+			{
+				lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
+			}
+			else if (build_info[i].place_state == 2)	//Has Placed
+			{
+				lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
+			}
+
+			line_debug(build_info[i].build_positions);
+			glEnable(GL_DEPTH_TEST);
+		}
+
+		glDisable(GL_DEPTH_TEST);
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		build_text.render_text("Press 'Space' to place object", 1920.f - 540, 10.f, 0.75f);
+		glEnable(GL_DEPTH_TEST);
+
+		glDisable(GL_DEPTH_TEST);
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		build_text.render_text("Build Stage", 1920.f - 210, 1080.f - 35.f, 0.75f);
+		glEnable(GL_DEPTH_TEST);
+	}
+
+	if (!is_menu)
+	{
+		glDisable(GL_DEPTH_TEST);
+		std::stringstream out_text;
+		out_text << std::fixed << std::setprecision(1) << print_time;
+		text_shader.use();
+		text_shader.uniform("projection", projection);
+		text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+		timer_text.render_text(out_text.str(), 10.f, 1080.f - 45.f, 1.f);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	{

@@ -20,7 +20,7 @@ function setup(game)
 	game.time = 0.0
 end
 
-max_time = 90.0
+max_time = 500.0
 
 function update(delta_seconds, game, entities)
 
