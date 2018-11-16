@@ -97,7 +97,6 @@ if (current_state & state::menu)
 	{
 		main_menu_timer += delta;
 	}
-	std::cout << "menu\n";
 }
 }
 
