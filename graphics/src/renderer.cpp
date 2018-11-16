@@ -196,33 +196,9 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
-			/*glDisable(GL_DEPTH_TEST);
-
-			if (finish[player_id] && died[player_id])
-			{
-				death_screen.render(overlay_shader);
-			}
-			if (finish[player_id] && !died[player_id])
-			{
-				finish_screen.render(overlay_shader, finish);
-			}
-			if (game_state & state::building)
-			{
-				if (!(build_stage_screen.transparency < 0.0005f))
-				{
-					build_stage_screen.render(build_stage_screen_shader);
-				}
-			}
-			glEnable(GL_DEPTH_TEST);*/
 		}
 	}
-	/*else
-	{
-		if (!is_menu)
-		{
-			loading_screen.render(overlay_shader);
-		}
-	}*/
+
 	overlays.render(overlay_shader);
 
 	glDisable(GL_DEPTH_TEST);
