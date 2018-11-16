@@ -120,11 +120,6 @@ LuaExport Gameplay::update(Input inputs,
 				inputs.triggers[i], 
 				inputs.triggers_types[i],
 				inputs.anim_states[i]);
-			if (i == 1)
-			{
-				//std::cout << "X2:" << inputs.dynamics[0].forces.x << " Y2:" << inputs.dynamics[0].forces.y << std::endl; // test triggers
-			}
-
 		}
 		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0]);
 
@@ -136,8 +131,6 @@ LuaExport Gameplay::update(Input inputs,
 			is_new_round = true;
 			new_round();
 		}
-
-		//std::cout << "			X2:" << inputs.dynamics[0].velocity.x << " Y2:" << inputs.dynamics[0].velocity.y << std::endl; // test triggers
 	}
 	
 	game_script.update_export();
@@ -146,9 +139,32 @@ LuaExport Gameplay::update(Input inputs,
 
 	if (current_state & state::game_over)
 	{
+		static bool winner_calculated = false;
+		static std::array<glm::vec2, 4> heights;
+
+		if (!winner_calculated)
+		{
+			float highest = 0;
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (game_script.data.scores[i] > highest)
+				{
+					highest = game_script.data.scores[i];
+				}
+			}
+
+			for (int i = 0; i < 4; i++)
+			{
+				heights[i] = { 3.0f * (i - 1.5f), ((game_script.data.scores[i] / highest) * 4.f) };
+			}
+
+			winner_calculated = true;
+		}
+
 		for (int i = 0; i < 4; i++)
 		{
-			inputs.dynamics[i].position = { 3.0f * i, 1.75 };
+			inputs.dynamics[i].position = heights[i];
 		}
 	}
 
