@@ -367,10 +367,10 @@ function update_controls(delta_seconds, entity)
 			entity.anim.current = entity.anim.landing
 	end]]--
 
-	--[[if entity.anim.current == entity.anim.falling
+	if entity.anim.current == entity.anim.falling
 	then
 		print("falling")
-	end]]--
+	end
 	 
 	--Cap the velocity/entity.forces.x
 	--[[if entity.forces.x > entity.maxSpeed
