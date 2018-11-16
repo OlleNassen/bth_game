@@ -244,6 +244,116 @@ int FX::find_unused_particle(Particle * container, int lastUsedParticle)
 	return 0;
 }
 
+void FX::steam_right(glm::vec3 pos_vec)
+{
+	auto& fx_steam = *fx_steam_ptr;
+
+	if (randomizer <= 100)
+	{
+		for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
+		{
+			//Create a random position here
+			fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
+			fx_steam.random_y = static_cast<float>(rand() % 60);
+			fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
+
+			//Find and update the last used particle
+			fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
+			int particle_index = fx_steam.last_used_particle;
+
+			//Set default values for the particles, first off life and position.
+			fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
+			fx_steam.particle_container[particle_index].life = 1.0f;
+			//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+			fx_steam.particle_container[particle_index].pos = pos_vec;
+
+			//Create a direction for the particles to travel
+			glm::vec3 main_dir = glm::vec3(60, 0, -1);
+			glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
+			glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
+			float spread_x = (rand() % 100 / 100.0f) + 1;
+			float spread_y = (rand() % 100 / 100.0f);
+
+			int temp = rand() % 2;
+
+			if (temp == 0)
+				fx_steam.particle_container[particle_index].speed = main_dir * spread_x + random_dir_up * spread_y;
+			else
+				fx_steam.particle_container[particle_index].speed = main_dir + random_dir_down * spread_y;
+
+
+			//Set colors, if you want color from texture, don't change the color
+			fx_steam.particle_container[particle_index].r = 120;
+			fx_steam.particle_container[particle_index].g = 120;
+			fx_steam.particle_container[particle_index].b = 120;
+
+			fx_steam.particle_container[particle_index].a = 180;
+			fx_steam.particle_container[particle_index].size = 2.5f;
+		}
+	}
+}
+
+void FX::steam_back(glm::vec3 pos_vec)
+{
+	auto& fx_steam = *fx_steam_ptr;
+
+	if (randomizer <= 100)
+	{
+		for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
+		{
+			//Create a random position here
+			fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
+			fx_steam.random_y = static_cast<float>(rand() % 60);
+			fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
+
+			//Find and update the last used particle
+			fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
+			int particle_index = fx_steam.last_used_particle;
+
+			//Set default values for the particles, first off life and position.
+			fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
+			fx_steam.particle_container[particle_index].life = 1.0f;
+			//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+			fx_steam.particle_container[particle_index].pos = pos_vec;
+
+			//Create a direction for the particles to travel
+			glm::vec3 main_dir = glm::vec3(0, 0, 40);
+			glm::vec3 random_dir_up = glm::vec3(0, 10, 0);
+			glm::vec3 random_dir_down = glm::vec3(0, -10, 0);
+			glm::vec3 random_dir_right = glm::vec3(10, 0, 0);
+			glm::vec3 random_dir_left = glm::vec3(-10, 0, 0);
+			float spread_x = (rand() % 100 / 100.0f);
+			float spread_y = (rand() % 100 / 100.0f);
+			float spread_z = (rand() % 100 / 100.0f);
+
+
+			int randomizer = rand() % 4;
+
+			if (randomizer == 0)
+				fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_right * spread_x);
+			else if (randomizer == 1)
+				fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_right * spread_x);
+			else if (randomizer == 2)
+				fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x);
+			else if (randomizer == 3)
+				fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_left  * spread_x);
+
+
+			//Set colors, if you want color from texture, don't change the color
+			fx_steam.particle_container[particle_index].r = 120;
+			fx_steam.particle_container[particle_index].g = 120;
+			fx_steam.particle_container[particle_index].b = 120;
+
+			fx_steam.particle_container[particle_index].a = 180;
+			fx_steam.particle_container[particle_index].size = 2.5f;
+		}
+	}
+}
+
+void FX::steam_left(glm::vec3 pos_vec)
+{
+}
+
 void FX::particle_linear_sort(Particle * arr, int size)
 {
 	int a, b;
@@ -654,595 +764,51 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 	{
 		if (type == 0)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-20.227f, 28.479f, 2.467f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(60, 0, -1);
-					glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
-					float spread_x = (rand() % 100 / 100.0f) + 1;
-					float spread_y = (rand() % 100 / 100.0f);
-
-					int temp = rand() % 2;
-
-					if (temp == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir * spread_x + random_dir_up * spread_y;
-					else
-						fx_steam.particle_container[particle_index].speed = main_dir + random_dir_down * spread_y;
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-					
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_right(glm::vec3(-20.227f, 28.479f, 2.467f));
 		}
 		else if (type == 1)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-20.227f, 30.754f, 2.467f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(60, 0, -1);
-					glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
-					float spread_x = (rand() % 100 / 100.0f) + 1;
-					float spread_y = (rand() % 100 / 100.0f);
-
-					int temp = rand() % 2;
-
-					if (temp == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir * spread_x + random_dir_up * spread_y;
-					else
-						fx_steam.particle_container[particle_index].speed = main_dir + random_dir_down * spread_y;
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_right(glm::vec3(-20.227f, 30.754f, 2.467f));
 		}
 		else if (type == 2)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-20.227f, 77.239f, -7.042f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(60, 0, -1);
-					glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
-					float spread_x = (rand() % 100 / 100.0f) + 1;
-					float spread_y = (rand() % 100 / 100.0f);
-
-					int temp = rand() % 2;
-
-					if (temp == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir * spread_x + random_dir_up * spread_y;
-					else
-						fx_steam.particle_container[particle_index].speed = main_dir + random_dir_down * spread_y;
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_right(glm::vec3(-20.227f, 77.239f, -7.042f));
 		}
 		else if (type == 3)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-20.227f, 74.079f, -7.042f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(60, 0, -1);
-					glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
-					float spread_x = (rand() % 100 / 100.0f) + 1;
-					float spread_y = (rand() % 100 / 100.0f);
-
-					int temp = rand() % 2;
-
-					if (temp == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir * spread_x + random_dir_up * spread_y;
-					else
-						fx_steam.particle_container[particle_index].speed = main_dir + random_dir_down * spread_y;
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_right(glm::vec3(-20.227f, 74.079f, -7.042f));
 		}
 		else if (type == 4)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-20.227f, 72.239f, -11.717f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(60, 0, -1);
-					glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
-					float spread_x = (rand() % 100 / 100.0f) + 1;
-					float spread_y = (rand() % 100 / 100.0f);
-
-					int temp = rand() % 2;
-
-					if (temp == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir * spread_x + random_dir_up * spread_y;
-					else
-						fx_steam.particle_container[particle_index].speed = main_dir + random_dir_down * spread_y;
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_right(glm::vec3(-20.227f, 72.239f, -11.717f));
 		}
 		else if (type == 5)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-20.227f, 74.079f, -16.06f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(60, 0, -1);
-					glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
-					float spread_x = (rand() % 100 / 100.0f) + 1;
-					float spread_y = (rand() % 100 / 100.0f);
-
-					int temp = rand() % 2;
-
-					if (temp == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir * spread_x + random_dir_up * spread_y;
-					else
-						fx_steam.particle_container[particle_index].speed = main_dir + random_dir_down * spread_y;
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_right(glm::vec3(-20.227f, 74.079f, -16.06f));
 		}
 		else if (type == 6)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-20.227f, 77.239f, -16.06f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(60, 0, -1);
-					glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
-					float spread_x = (rand() % 100 / 100.0f) + 1;
-					float spread_y = (rand() % 100 / 100.0f);
-
-					int temp = rand() % 2;
-
-					if (temp == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir * spread_x + random_dir_up * spread_y;
-					else
-						fx_steam.particle_container[particle_index].speed = main_dir + random_dir_down * spread_y;
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_right(glm::vec3(-20.227f, 77.239f, -16.06f));
 		}
 		else if (type == 7)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-9.756f, -1.555f, -14.777f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(0, 0, 40);
-					glm::vec3 random_dir_up = glm::vec3(0, 10, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -10, 0);
-					glm::vec3 random_dir_right = glm::vec3(10, 0, 0);
-					glm::vec3 random_dir_left = glm::vec3(-10, 0, 0);
-					float spread_x = (rand() % 100 / 100.0f);
-					float spread_y = (rand() % 100 / 100.0f);
-					float spread_z = (rand() % 100 / 100.0f);
-
-
-					int randomizer = rand() % 4;
-
-					if (randomizer == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_right * spread_x);
-					else if (randomizer == 1)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_right * spread_x);
-					else if (randomizer == 2)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x);
-					else if (randomizer == 3)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_left  * spread_x);
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_back(glm::vec3(-9.756f, -1.555f, -14.777f));
 		}
 		else if (type == 8)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(7.822f, 54.979f, -40.233f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(0, 0, 40);
-					glm::vec3 random_dir_up = glm::vec3(0, 10, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -10, 0);
-					glm::vec3 random_dir_right = glm::vec3(10, 0, 0);
-					glm::vec3 random_dir_left = glm::vec3(-10, 0, 0);
-					float spread_x = (rand() % 100 / 100.0f);
-					float spread_y = (rand() % 100 / 100.0f);
-					float spread_z = (rand() % 100 / 100.0f);
-
-
-					int randomizer = rand() % 4;
-
-					if (randomizer == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_right * spread_x);
-					else if (randomizer == 1)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_right * spread_x);
-					else if (randomizer == 2)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x);
-					else if (randomizer == 3)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_left  * spread_x);
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_back(glm::vec3(7.822f, 54.979f, -40.233f));
 		}
 		else if (type == 9)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-14.738f, 134.088f, -39.778f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(0, 0, 40);
-					glm::vec3 random_dir_up = glm::vec3(0, 10, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -10, 0);
-					glm::vec3 random_dir_right = glm::vec3(10, 0, 0);
-					glm::vec3 random_dir_left = glm::vec3(-10, 0, 0);
-					float spread_x = (rand() % 100 / 100.0f);
-					float spread_y = (rand() % 100 / 100.0f);
-					float spread_z = (rand() % 100 / 100.0f);
-
-
-					int randomizer = rand() % 4;
-
-					if (randomizer == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_right * spread_x);
-					else if (randomizer == 1)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_right * spread_x);
-					else if (randomizer == 2)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x);
-					else if (randomizer == 3)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_left  * spread_x);
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_back(glm::vec3(-14.738f, 134.088f, -39.778f));
 		}
 		else if (type == 10)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-14.738f, 153.538f, -39.778f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(0, 0, 40);
-					glm::vec3 random_dir_up = glm::vec3(0, 10, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -10, 0);
-					glm::vec3 random_dir_right = glm::vec3(10, 0, 0);
-					glm::vec3 random_dir_left = glm::vec3(-10, 0, 0);
-					float spread_x = (rand() % 100 / 100.0f);
-					float spread_y = (rand() % 100 / 100.0f);
-					float spread_z = (rand() % 100 / 100.0f);
-
-
-					int randomizer = rand() % 4;
-
-					if (randomizer == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_right * spread_x);
-					else if (randomizer == 1)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_right * spread_x);
-					else if (randomizer == 2)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x);
-					else if (randomizer == 3)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_left  * spread_x);
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_back(glm::vec3(-14.738f, 153.538f, -39.778f));
 		}
 		else if (type == 11)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_steam.nr_of_particles; i++)
-				{
-					//Create a random position here
-					fx_steam.random_x = static_cast<float>(rand() % 40) - 20.0f;
-					fx_steam.random_y = static_cast<float>(rand() % 60);
-					fx_steam.random_z = static_cast<float>(rand() % 20) - 12.0f;
-
-					//Find and update the last used particle
-					fx_steam.last_used_particle = find_unused_particle(fx_steam.particle_container, fx_steam.last_used_particle);
-					int particle_index = fx_steam.last_used_particle;
-
-					//Set default values for the particles, first off life and position.
-					fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
-					fx_steam.particle_container[particle_index].life = 1.0f;
-					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-					fx_steam.particle_container[particle_index].pos = glm::vec3(-7.538f, 153.538f, -39.778f);
-
-					//Create a direction for the particles to travel
-					glm::vec3 main_dir = glm::vec3(0, 0, 40);
-					glm::vec3 random_dir_up = glm::vec3(0, 10, 0);
-					glm::vec3 random_dir_down = glm::vec3(0, -10, 0);
-					glm::vec3 random_dir_right = glm::vec3(10, 0, 0);
-					glm::vec3 random_dir_left = glm::vec3(-10, 0, 0);
-					float spread_x = (rand() % 100 / 100.0f);
-					float spread_y = (rand() % 100 / 100.0f);
-					float spread_z = (rand() % 100 / 100.0f);
-
-
-					int randomizer = rand() % 4;
-
-					if (randomizer == 0)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_right * spread_x);
-					else if (randomizer == 1)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_right * spread_x);
-					else if (randomizer == 2)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_up   * spread_y) + (random_dir_left  * spread_x);
-					else if (randomizer == 3)
-						fx_steam.particle_container[particle_index].speed = main_dir + (random_dir_down * spread_y) + (random_dir_left  * spread_x);
-
-
-					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
-
-					fx_steam.particle_container[particle_index].a = 180;
-					fx_steam.particle_container[particle_index].size = 2.5f;
-				}
-			}
+			steam_back(glm::vec3(-7.538f, 153.538f, -39.778f));
 		}
 		else if (type == 12)
 		{
@@ -1289,9 +855,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1343,9 +909,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1397,9 +963,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1451,9 +1017,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1505,9 +1071,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1559,9 +1125,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1613,9 +1179,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1667,9 +1233,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1721,9 +1287,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1775,9 +1341,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1829,9 +1395,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1883,9 +1449,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1937,9 +1503,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -1991,9 +1557,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -2037,9 +1603,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -2083,9 +1649,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -2129,9 +1695,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;
@@ -2175,9 +1741,9 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_steam.particle_container[particle_index].r = 180;
-					fx_steam.particle_container[particle_index].g = 180;
-					fx_steam.particle_container[particle_index].b = 180;
+					fx_steam.particle_container[particle_index].r = 120;
+					fx_steam.particle_container[particle_index].g = 120;
+					fx_steam.particle_container[particle_index].b = 120;
 
 					fx_steam.particle_container[particle_index].a = 180;
 					fx_steam.particle_container[particle_index].size = 2.5f;

@@ -433,7 +433,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		fx_emitter.calculate_furnace_light_data(delta, game_camera);
 
 		//Gust
-		//fx_emitter.calculate_gust_data(delta, game_camera);
+		fx_emitter.calculate_gust_data(delta, game_camera);
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();

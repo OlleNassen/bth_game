@@ -93,6 +93,9 @@ private:
 	void gen_particle_buffer(FXdata& particle);
 	void particle_linear_sort(Particle* arr, int size);
 	int find_unused_particle(Particle* container, int lastUsedParticle);
+	void steam_right(glm::vec3 pos_vec);
+	void steam_back(glm::vec3 pos_vec);
+	void steam_left(glm::vec3 pos_vec);
 
 };
 
