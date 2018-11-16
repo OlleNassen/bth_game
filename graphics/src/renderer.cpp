@@ -603,8 +603,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	leaderboard.update(std::move(scoreboard));
 
 	overlays.update(delta, 
-		died[false], 
-		finish[true], 
+		died[player_id], 
+		finish[player_id], 
 		scores, 
 		game_state, 
 		player_id);
