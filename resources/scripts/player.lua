@@ -38,13 +38,14 @@ function setup(entity)
 
 	--steam boost
 	entity.steam_boost_timer = 0.0
-	entity.steam_boost_timer_max = 20
+	entity.steam_boost_timer_max = 5
 	entity.steam_boost_delay_timer = 0.0
 	entity.steam_boost_triggerd = false
 	entity.have_doubble_jumpt = false
 	entity.can_dubbel_jump = false
-	entity.steam_boost_jump_impulse = 60
+	entity.steam_boost_jump_impulse = 50
 	entity.jump_was_push = false
+	entity.have_wall_jumpt = false
 
 	--trampolin
 	entity.trampolin_jump = false
@@ -55,7 +56,7 @@ end
 
 local jump_speed = 0
 local gravity = 120
-local max_gravity = 1750
+local max_gravity = 1700
 local wall_jump_speed = 
 {
 	x = 150,
@@ -65,77 +66,14 @@ local wall_jump_speed =
 function update(delta_seconds, entity)
 	
 	--update_anim_state(delta_seconds, entity)
+
+	have_wall_jumpt = true
+
 	if entity.shock_trap_triggerd == false
 	then
 		update_controls(delta_seconds, entity)
 	end
 
-
-	--[[--trigger
-	if entity.triggered >= 4
-	then
-		--sticky_platform
-		if entity.triggered_type == 3
-		then
-			
-			if entity.velocity.x >= entity.max_velocity and entity.velocity.x > 0 --right
-			then
-				--entity.velocity.x = 1
-				entity.forces.x = entity.forces.x - (entity.forces.x / 1.5) 
-			
-			elseif entity.velocity.x <= -entity.max_velocity and entity.velocity.x < 0 --left
-			then
-				--entity.velocity.x = -1
-				entity.forces.x = entity.forces.x - (entity.forces.x / 1.5)
-			end
-		end
-
-		----standard_platform
-		--if entity.triggered_type == 6
-		--then
-		--
-		--end
-
-		--speed_boost
-		if entity.triggered_type == 7 and entity.speed_boost_triggerd == false
-		then
-			entity.speed_boost_triggerd = true
-			entity.speed_boost_timer = 0.0
-		end
-	end
-
-	if	entity.speed_boost_triggerd == true and entity.speed_boost_timer <= 5.0
-	then
-		if entity.velocity.x < entity.max_velocity_boost and entity.velocity.x > -entity.max_velocity_boost and entity.button.right
-		then
-			if entity.velocity.x > 0
-			then
-				entity.forces.x = entity.max_speed_boost * 1.2 --right
-			else
-				entity.forces.x = entity.max_speed_boost * 0.6
-			end
-
-		elseif entity.velocity.x > -entity.max_velocity_boost and entity.velocity.x < entity.max_velocity_boost and entity.button.left
-		then 
-			if entity.velocity.x < 0
-			then
-				entity.forces.x = -entity.max_speed_boost * 1.2 --left
-			else
-				entity.forces.x = -entity.max_speed_boost * 0.6
-			end
-
-		end
-	end
-
-	if	entity.speed_boost_timer <= 5.0
-	then
-		entity.speed_boost_timer = entity.speed_boost_timer + delta_seconds
-
-	elseif	entity.speed_boost_timer >= 5.0
-	then
-		entity.speed_boost_triggerd = false
-	end]]--
-	
 	update_triggers(delta_seconds, entity)
 
 
@@ -291,9 +229,11 @@ function update_controls(delta_seconds, entity)
 		entity.can_walljump = true
 
 
-		if entity.have_doubble_jumpt --trigger
+		if entity.steam_boost_triggerd --trigger
 		then
 			entity.have_doubble_jumpt = false
+			entity.can_dubbel_jump = false
+			entity.have_wall_jumpt = false
 		end
 
 		
@@ -339,6 +279,12 @@ function update_controls(delta_seconds, entity)
 	--Hanging_Right
 	if entity.anim.current == entity.anim.hanging_right
 	then
+		
+		if entity.steam_boost_triggerd--trigger
+		then
+			entity.have_wall_jumpt = true
+		end
+
 		entity.ungrounded_time = 0
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		
@@ -367,6 +313,11 @@ function update_controls(delta_seconds, entity)
 	if entity.anim.current == entity.anim.hanging_left
 	then
 
+		if entity.steam_boost_triggerd --trigger
+		then
+			entity.have_wall_jumpt = true
+		end
+
 		entity.ungrounded_time = 0
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		
@@ -386,6 +337,7 @@ function update_controls(delta_seconds, entity)
 			entity.can_walljump = true
 			entity.jump_timer = 0
 		end
+
 		
 		--entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
 	end
@@ -577,7 +529,7 @@ function update_triggers(delta_seconds, entity)
 	--steam_boost
 	if	entity.steam_boost_triggerd and entity.can_dubbel_jump and entity.steam_boost_timer <= entity.steam_boost_timer_max
 	then
-		if entity.button.jump and not entity.jump_was_push and entity.steam_boost_delay_timer > 0.2
+		if entity.button.jump and not entity.jump_was_push and entity.have_wall_jumpt == false and entity.steam_boost_delay_timer > 0.2
 		then
 			
 			entity.velocity.y = entity.steam_boost_jump_impulse
