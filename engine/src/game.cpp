@@ -141,7 +141,7 @@ void Game::update(std::chrono::milliseconds delta)
 		level.clear_object();
 		gameplay.refresh();
 		for (int i = 0; i < 4; ++i)
-			dynamics[i].position = glm::vec2(3.f * i, 1.75f);
+			dynamics[i].position = glm::vec2(3.f * i, 2.5f);
 		for (int i = 4; i < dynamics.size(); ++i)
 			dynamics[i].position = glm::vec2(-20000.f, -20000.f);
 		give_players_objects = false;
@@ -289,7 +289,7 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 		}
 
-		//remove_lines.clear();
+		
 		for (auto& ppoi : players_placed_objects_id)
 		{
 			if (ppoi.place_state != 2)
@@ -302,42 +302,13 @@ void Game::update(std::chrono::milliseconds delta)
 					ppoi.place_state = 0;
 			}
 		}
-			/*else
-			{
-				if (ppoi.model_type_id == 7)
-				{
-					for (int i = 4; i < level.moving_models.size(); i++)
-					{
-						float distance = glm::distance(dynamics[i].position, dynamics[ppoi.dynamics_id].position);
-						if (distance < 5.0f && distance != 0.0f)
-						{
-							remove_object(i);
-						}
-					}
-				}
-			}
-
-			if (ppoi.model_type_id == 7)
-			{
-				for (int i = 4; i < level.moving_models.size(); i++)
-				{
-					float distance = glm::distance(dynamics[i].position, dynamics[ppoi.dynamics_id].position);
-					if (distance < 5.0f && distance != 0.0f)
-					{
-						remove_lines.push_back(glm::vec3(dynamics[ppoi.dynamics_id].position.x, dynamics[ppoi.dynamics_id].position.y, 0.f));
-						remove_lines.push_back(glm::vec3(dynamics[i].position.x, dynamics[i].position.y, 0.f));
-					}
-				}
-			}
-		}*/
 	}
 	else if (give_players_objects == true)
 	{
 		give_players_objects = false;
 		for (auto& ppoi : players_placed_objects_id)
 		{
-			if (ppoi.place_state == 0 || ppoi.place_state == 1 /*|| ppoi.model_type_id == 7*/)
-			{
+			if (ppoi.place_state == 0 || ppoi.place_state == 1)			{
 				//Remove object
 				dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
 				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
@@ -505,20 +476,20 @@ void Game::update(std::chrono::milliseconds delta)
 
 			if ((*local_input)[logic::button::left] == logic::button_state::pressed)
 			{
-				watching = (watching - 1); // % 4;
+				watching = (watching - 1);
 				if (watching < 0)
 					watching = 3;
 
 				if (waiting == net.id())
 				{
-					watching = (watching - 1); // % 4;
+					watching = (watching - 1);
 					if (watching < 0)
 						watching = 3;
 				}
 
 				if (lua_data.died[watching] || lua_data.finished[watching])
 				{
-					watching = (watching - 1); // % 4;
+					watching = (watching - 1);
 					if (watching < 0)
 						watching = 3;
 				}

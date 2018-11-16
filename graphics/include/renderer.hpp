@@ -261,18 +261,19 @@ private:
 	Text build_text;
 
 	//Arrays of strings and vec3
-	std::array<std::string, 12> objects_description =
+	std::array<std::string, 11> objects_description =
 	{ 	
-		"Saw - Does damage",
+		"Spike trap - Kills player if touched",
+		"Saw - Kills player if touched",
 		"Platform oil - Robot glides (disrupt movement)",
 		"Sticky platform - Robot get 'stuck'. Movement slow-down",
 		"Shock trap - Stuns robot. Electric disrupt.",
-		"Treadmill - Has a direction. Give movement boost or slow-down depending on direction",
+		"Treadmill - Moves a player in a direction",
 		"Standard platform - Build block, can build new paths",
-		"Speed boost - Robot run faster. Movement speed-up",
-		"Steam boost - Robot jump higher. Only at objects place",
-		"Trampolin - Robot jump higher. Pick-up and used after",
-		"Turret - Does damage"
+		"Speed boost - Movement speed-up. For a limited time",
+		"Steam boost - Robot double jump. For a limited time",
+		"Trampolin - Robot jump higher",
+		"Turret - Kills player if shot"
 	};
 
 	std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };
