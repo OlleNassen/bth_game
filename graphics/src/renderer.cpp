@@ -230,7 +230,7 @@ void Renderer::render(
 	std::stringstream out_text;
 	out_text << std::fixed << std::setprecision(1) << print_time;
 
-	if (game_state & state::lobby)
+	if (game_state & state::lobby && !(game_state & state::menu))
 	{
 		text_shader.use();
 		text_shader.uniform("projection", projection);
