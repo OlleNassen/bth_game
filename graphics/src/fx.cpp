@@ -2220,4 +2220,8 @@ void FX::calculate_gust_data(std::chrono::milliseconds delta, const Camera & cam
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_gust.total_particle_count * 4 * sizeof(GLubyte), fx_gust.color_data);
 }
 
+void FX::update_build_position(glm::vec3 build_position)
+{
+}
+
 }
