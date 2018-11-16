@@ -404,6 +404,11 @@ function update_triggers(delta_seconds, entity)
 				--entity.velocity.x = -1
 				entity.velocity.x = -entity.slow_speed
 			end
+
+			if entity.button.jump
+			then
+				entity.impulse.y = entity.impulse.y * 0.675
+			end
 		end
 
 
