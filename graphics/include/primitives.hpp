@@ -11,13 +11,13 @@ namespace primitives
 
 	constexpr std::array<glm::vec2, 6> quad
 	{
+		glm::vec2{ 0.5f, -0.5f },
+		glm::vec2{ -0.5f,  0.5f },
 		glm::vec2{ -0.5f, -0.5f },
-		glm::vec2{ -0.5f,  0.5f },
-		glm::vec2{ 0.5f, -0.5f },
 
-		glm::vec2{ 0.5f, -0.5f },
+		glm::vec2{ 0.5f,  0.5f },
 		glm::vec2{ -0.5f,  0.5f },
-		glm::vec2{ 0.5f,  0.5f }
+		glm::vec2{ 0.5f, -0.5f }
 	};
 
 	constexpr std::array<float, 24> quad_uv

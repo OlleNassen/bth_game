@@ -26,18 +26,15 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 
 	bodies.push_back(body);
 	
-	dynamic_positions.push_back(start_position);
+	//dynamic_positions.push_back(start_position);
 	dynamic_rigidbodies.push_back(start_force);
-	dynamic_box_colliders.push_back(Box(width, height, offset, false));
+	//dynamic_box_colliders.push_back(Box(width, height, offset, false));
 
 	return dynamic_rigidbodies.size() - 1;
 }
 
 int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger)
 {
-	static_positions.push_back(start_position);
-	static_box_colliders.push_back(Box(width, height, offset, _is_trigger));
-
 	glm::vec3 position{start_position.x, start_position.y, 0.0f};
 	glm::vec3 size{width / 2.0f, height / 2.0f, 1.0f};
 	glm::mat3 orientation{1.0f};
@@ -236,7 +233,7 @@ void World::update(
 		{
 			if (points[0].x > 19.3f || points[0].x < -19.3f)
 			{
-				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump/* || anim_states[i] == anim::idle || anim_states[i] == anim::running*/)
+				if (anim_states[i] == anim::falling || anim_states[i] == anim::in_jump /*|| anim_states[i] == anim::idle || anim_states[i] == anim::running*/)
 				{
 
 					for (auto& walls : statics)
@@ -365,6 +362,7 @@ std::vector<glm::vec3> World::get_all_debug() const
 
 		for (auto& vertex : vertices)
 		{		
+			vertex.z = 0.f;
 			out_vertices.push_back(vertex);
 		}
 	}
@@ -376,6 +374,7 @@ std::vector<glm::vec3> World::get_all_debug() const
 		
 		for (auto& vertex : vertices)
 		{
+			vertex.z = 0.f;
 			out_vertices.push_back(vertex);
 		}
 	}
@@ -391,6 +390,7 @@ std::vector<glm::vec3> World::get_debug_for(int id) const
 
 	for (auto& vertex : vertices)
 	{
+		vertex.z = 0.f;
 		out_vertices.push_back(vertex);
 	}
 
@@ -400,6 +400,15 @@ std::vector<glm::vec3> World::get_debug_for(int id) const
 void World::rotate_static_box(int id)
 {
 	static_box_colliders[id].rotate_colliders();
+}
+
+void World::remove_body(int at)
+{
+	std::swap(bodies[at], bodies[bodies.size() - 1]);
+	std::swap(dynamic_rigidbodies[at], dynamic_rigidbodies[dynamic_rigidbodies.size() - 1]);
+
+	dynamic_rigidbodies.pop_back();
+	bodies.pop_back();
 }
 
 void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index)
@@ -456,6 +465,14 @@ void World::clear_object()
 	while (dynamic_rigidbodies.size() > 4)
 	{
 		dynamic_rigidbodies.pop_back();
+	}
+}
+
+void World::clear_static_object()
+{
+	while (statics.size() > 0)
+	{
+		statics.pop_back();
 	}
 }
 

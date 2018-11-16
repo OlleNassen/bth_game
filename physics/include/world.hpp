@@ -37,6 +37,7 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+	bool is_stund;
 };
 
 using objects_array = std::array<objects, 100>;
@@ -79,13 +80,14 @@ public:
 	std::vector<glm::vec3> get_debug_for(int id)const;
 
 	void clear_object();
+	void clear_static_object();
 
 	void rotate_static_box(int id);
 
 	bool rw[4];
 	bool lw[4];
 
-
+	void remove_body(int at);
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 

@@ -27,7 +27,7 @@ public:
 	std::array<float, 4> scores;
 	std::array<bool, 4> died;
 	std::array<bool, 4> finished;
-	bool game_over;
+	bool game_over = false;
 	float time;
 	float goal_height;
 };
@@ -40,6 +40,7 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+	bool is_stund;
 
 };
 
@@ -84,6 +85,7 @@ public:
 	void update_export();
 	float get_time();
 	LuaExport data;
+	void reset_time();
 private:
 	LuaStack stack;
 };

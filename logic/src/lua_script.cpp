@@ -144,6 +144,9 @@ void PlayerScript::update(
 		object.impulse.x = stack.tonumber(-2);
 		object.impulse.y = stack.tonumber(-1);
 		
+		stack.getfield(top, "is_stund");
+		object.is_stund = stack.toboolean(-1);
+
 		stack.clear();
 	}	
 }
@@ -451,6 +454,19 @@ float GameScript::get_time()
 	stack.clear();
 
 	return temp;
+}
+
+void GameScript::reset_time()
+{
+	{
+		stack.getglobal("game");
+	}
+
+	stack.getglobal("reset_time");
+	stack.getglobal("game");
+	stack.call(1, 0);
+
+	stack.clear();
 }
 
 PlacingScript::PlacingScript(const std::string& path)
