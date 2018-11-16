@@ -26,8 +26,18 @@ void OverlayScreen::render(const Shader & shader) const
 
 Overlays::Overlays()
 {
-	/*main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_no_battery.png"});
-	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_low_battery.png" });*/
+	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_no_battery.png"});
+	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_low_battery.png" });
+	waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_1.png" });
+	waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_2.png" });
+	waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_3.png" });
+	waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_4.png" });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_1.png" });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_2.png" });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_3.png" });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_4.png" });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_5.png" });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_6.png" });
 }
 
 Overlays::Overlays(int player_id)
@@ -113,27 +123,27 @@ void Overlays::render(const Shader & shader) const
 		{
 			if (death_timer <= 50ms)
 			{
-				death_1.bind(0);
+				death.at(0).bind(0);
 			}
 			else if (death_timer >= 50ms && death_timer <= 100ms)
 			{
-				death_2.bind(0);
+				death.at(1).bind(0);
 			}
 			else if (death_timer >= 100ms && death_timer <= 150ms)
 			{
-				death_3.bind(0);
+				death.at(2).bind(0);
 			}
 			else if (death_timer >= 150ms && death_timer <= 200ms)
 			{
-				death_4.bind(0);
+				death.at(3).bind(0);
 			}
 			else if (death_timer >= 200ms && death_timer <= 250ms)
 			{
-				death_5.bind(0);
+				death.at(4).bind(0);
 			}
 			else if (death_timer >= 250ms)
 			{
-				death_6.bind(0);
+				death.at(5).bind(0);
 			}
 		}
 		//Render finished screen
@@ -173,19 +183,19 @@ void Overlays::render(const Shader & shader) const
 
 		if (loading_timer <= 1000ms)
 		{
-			this->waiting_1.bind(0);
+			this->waiting.at(0).bind(0);
 		}
 		else if (loading_timer >= 1000ms && loading_timer <= 2000ms)
 		{
-			this->waiting_2.bind(0);
+			this->waiting.at(1).bind(0);
 		}
 		else if (loading_timer >= 2000ms && loading_timer <= 3000ms)
 		{
-			this->waiting_3.bind(0);
+			this->waiting.at(2).bind(0);
 		}
 		else if (loading_timer >= 3000ms)
 		{
-			this->waiting_4.bind(0);
+			this->waiting.at(3).bind(0);
 		}
 	}
 	if (current_state & state::menu)
@@ -193,11 +203,11 @@ void Overlays::render(const Shader & shader) const
 		//Render main menu screen
 		if (main_menu_timer <= 800ms)
 		{
-			this->main_menu_1.bind(0);
+			this->main_menu.at(0).bind(0);
 		}
 		else if (main_menu_timer > 800ms)
 		{
-			this->main_menu_2.bind(0);
+			this->main_menu.at(1).bind(0);
 		}
 	}
 

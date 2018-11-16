@@ -196,6 +196,15 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
+			glDisable(GL_DEPTH_TEST);
+			if (game_state & state::building)
+			{
+				if (!(build_stage_screen.transparency < 0.0005f))
+				{
+					build_stage_screen.render(build_stage_screen_shader);
+				}
+			}
+			glEnable(GL_DEPTH_TEST);
 		}
 	}
 
@@ -205,7 +214,7 @@ void Renderer::render(
 	std::stringstream out_text;
 	out_text << std::fixed << std::setprecision(1) << print_time;
 
-	if (game_state & state::lobby)
+	if (game_state & state::lobby && !(game_state & state::menu))
 	{
 		text_shader.use();
 		text_shader.uniform("projection", projection);
@@ -490,46 +499,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 	time = data != log ? 0ms : time + delta;
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
-
-	//Death screen update
-	//if (died[id] && finish[id])
-	//{
-	//	death_screen.timer += delta;
-	//}
-	//else
-	//{
-	//	death_screen.timer = 0ms;
-	//}
-
-	////Loading screen update
-	//if (loading_screen.timer > 4000ms)
-	//{
-	//	loading_screen.timer = 0ms;
-	//}
-	//else
-	//{
-	//	loading_screen.timer += delta;
-	//}
-
-	////Main menu update
-	//if (main_menu_screen.timer > 1600ms)
-	//{
-	//	main_menu_screen.timer = 0ms;
-	//}
-	//else
-	//{
-	//	main_menu_screen.timer += delta;
-	//}
-
-	////Finish screen update
-	//if (finish[id] && !died[id])
-	//{
-	//	finish_screen.timer += delta;
-	//}
-	//else
-	//{
-	//	finish_screen.timer = 0ms;
-	//}
 
 	if (!is_chat_on)
 	{
