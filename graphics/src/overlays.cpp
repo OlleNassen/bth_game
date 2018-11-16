@@ -26,15 +26,6 @@ void OverlayScreen::render(const Shader & shader) const
 
 Overlays::Overlays()
 {
-	/*finish.push_back(Texture{ "../resources/textures/finish_screen/finish_escaped.png" });
-	finish.push_back(Texture{ "../resources/textures/finish_screen/finish_1.1.png" });
-	finish.push_back(Texture{ "../resources/textures/finish_screen/finish_1.2.png" });
-	finish.push_back(Texture{"../resources/textures/finish_screen/finish_2.1.png"});
-	finish.push_back(Texture{"../resources/textures/finish_screen/finish_2.2.png"});
-	finish.push_back(Texture{"../resources/textures/finish_screen/finish_3.1.png"});
-	finish.push_back(Texture{"../resources/textures/finish_screen/finish_3.2.png"});
-	finish.push_back(Texture{"../resources/textures/finish_screen/finish_4.1.png"});
-	finish.push_back(Texture{"../resources/textures/finish_screen/finish_4.2.png"});*/
 	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_no_battery.png"});
 	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_low_battery.png" });
 	waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_1.png" });

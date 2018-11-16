@@ -18,10 +18,6 @@
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
 #include "minimap.hpp"
-//#include "loading_screen.hpp"
-//#include "death_screen.hpp"
-//#include "main_menu_screen.hpp"
-//#include "finish_screen.hpp"
 #include "build_stage_screen.hpp"
 #include "overlays.hpp"
 
