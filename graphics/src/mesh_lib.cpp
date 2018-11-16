@@ -78,7 +78,7 @@ void MeshLib::create_mesh_list()
 		"hydraulic_press.ssp",              //50
 		"chain.ssp",						//51
 		"furnace.ssp",                      //52
-		"furnace.ssp",                      //53 <--Spinning cylinder
+		"machine_arm.ssp",                  //53
 		"iron_chunk.ssp",                   //54
 		"scrap_robot.ssp"                   //55
 	};
