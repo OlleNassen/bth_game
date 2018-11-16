@@ -26,7 +26,8 @@ void OverlayScreen::render(const Shader & shader) const
 
 Overlays::Overlays()
 {
-
+	/*main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_no_battery.png"});
+	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_low_battery.png" });*/
 }
 
 Overlays::Overlays(int player_id)

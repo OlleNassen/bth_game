@@ -230,29 +230,6 @@ void Renderer::render(
 
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
-
-			glDisable(GL_DEPTH_TEST);
-
-			if (finish[player_id] && died[player_id])
-			{
-			//	death_screen.render(overlay_shader);
-			}
-			if (finish[player_id] && !died[player_id])
-			{
-			//	finish_screen.render(overlay_shader, finish);
-			}
-			/*if (!build_stage_screen.transparency < 0.0005f)
-			{
-				build_stage_screen.render(build_stage_screen_shader);
-			}*/
-			glEnable(GL_DEPTH_TEST);
-		}
-	}
-	else
-	{
-		if (!is_menu)
-		{
-			//loading_screen.render(overlay_shader);
 		}
 	}
 
@@ -260,12 +237,6 @@ void Renderer::render(
 		overlays.render(overlay_shader);
 
 		glDisable(GL_DEPTH_TEST);
-
-		if (is_menu)
-		{
-			//main_menu_screen.render(overlay_shader);
-		}
-
 
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);

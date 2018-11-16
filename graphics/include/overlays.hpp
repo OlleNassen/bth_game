@@ -50,6 +50,7 @@ private:
 	std::chrono::milliseconds waiting_timer{0};
 	std::chrono::milliseconds death_timer{0};
 	std::chrono::milliseconds loading_timer{0};
+	std::vector<Texture> main_menu;
 	
 	Texture main_menu_1{ "../resources/textures/main_menu_screen/mainmenu_no_battery.png" };
 	Texture main_menu_2{ "../resources/textures/main_menu_screen/mainmenu_low_battery.png" };

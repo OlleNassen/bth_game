@@ -176,12 +176,20 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\build_stage_screen.cpp" />
-    <ClCompile Include="src\death_screen.cpp" />
-    <ClCompile Include="src\finish_screen.cpp" />
+    <ClCompile Include="src\death_screen.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\finish_screen.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\fx.cpp" />
     <ClCompile Include="src\leaderboard.cpp" />
-    <ClCompile Include="src\loading_screen.cpp" />
-    <ClCompile Include="src\main_menu_screen.cpp" />
+    <ClCompile Include="src\loading_screen.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\main_menu_screen.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\minimap.cpp" />
     <ClCompile Include="src\game_scene.cpp" />
     <ClCompile Include="src\mesh_lib.cpp" />
@@ -206,16 +214,24 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="include\build_stage_screen.hpp" />
-    <ClInclude Include="include\death_screen.hpp" />
-    <ClInclude Include="include\finish_screen.hpp" />
+    <ClInclude Include="include\death_screen.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="include\finish_screen.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="include\fx.hpp" />
     <ClInclude Include="include\game_scene.hpp" />
     <ClInclude Include="include\helpers.hpp" />
     <ClInclude Include="include\camera.hpp" />
     <ClInclude Include="include\framebuffer.hpp" />
     <ClInclude Include="include\lights.hpp" />
-    <ClInclude Include="include\loading_screen.hpp" />
-    <ClInclude Include="include\main_menu_screen.hpp" />
+    <ClInclude Include="include\loading_screen.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="include\main_menu_screen.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="include\mesh.hpp" />
     <ClInclude Include="include\mesh_lib.hpp" />
     <ClInclude Include="include\minimap.hpp" />

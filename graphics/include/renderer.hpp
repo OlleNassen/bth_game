@@ -18,10 +18,10 @@
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
 #include "minimap.hpp"
-#include "loading_screen.hpp"
-#include "death_screen.hpp"
-#include "main_menu_screen.hpp"
-#include "finish_screen.hpp"
+//#include "loading_screen.hpp"
+//#include "death_screen.hpp"
+//#include "main_menu_screen.hpp"
+//#include "finish_screen.hpp"
 #include "build_stage_screen.hpp"
 #include "overlays.hpp"
 
@@ -211,11 +211,11 @@ private:
 	bool show_start{false};
 	Minimap minimap;
 
-	LoadingScreen loading_screen;
-	DeathScreen death_screen;
-	MainMenuScreen main_menu_screen;
-	//BuildStageScreen build_stage_screen;
-	FinishScreen finish_screen;
+	//LoadingScreen loading_screen;
+	//DeathScreen death_screen;
+	//MainMenuScreen main_menu_screen;
+	////BuildStageScreen build_stage_screen;
+	//FinishScreen finish_screen;
 	Overlays overlays;
 	int player_id;
 
