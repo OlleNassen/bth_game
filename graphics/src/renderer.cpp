@@ -205,7 +205,8 @@ void Renderer::render(
 			if (finish[player_id] && !died[player_id])
 			{
 				finish_screen.render(overlay_shader, finish);
-			}
+			}*/
+			glDisable(GL_DEPTH_TEST);
 			if (game_state & state::building)
 			{
 				if (!(build_stage_screen.transparency < 0.0005f))
@@ -213,7 +214,7 @@ void Renderer::render(
 					build_stage_screen.render(build_stage_screen_shader);
 				}
 			}
-			glEnable(GL_DEPTH_TEST);*/
+			glEnable(GL_DEPTH_TEST);
 		}
 	}
 	/*else
