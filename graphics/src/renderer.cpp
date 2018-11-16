@@ -196,7 +196,7 @@ void Renderer::render(
 			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 			post_processing_effects.render();
 
-			glDisable(GL_DEPTH_TEST);
+			/*glDisable(GL_DEPTH_TEST);
 
 			if (finish[player_id] && died[player_id])
 			{
@@ -213,16 +213,17 @@ void Renderer::render(
 					build_stage_screen.render(build_stage_screen_shader);
 				}
 			}
-			glEnable(GL_DEPTH_TEST);
+			glEnable(GL_DEPTH_TEST);*/
 		}
 	}
-	else
+	/*else
 	{
 		if (!is_menu)
 		{
 			loading_screen.render(overlay_shader);
 		}
-	}
+	}*/
+	overlays.render(overlay_shader);
 
 	glDisable(GL_DEPTH_TEST);
 	std::stringstream out_text;
@@ -406,11 +407,6 @@ void Renderer::render(
 	{
 		glDisable(GL_DEPTH_TEST);
 
-		if (is_menu)
-		{
-			main_menu_screen.render(overlay_shader);
-		}
-
 		text_shader.use();
 		glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
 		text_shader.uniform("projection", projection);
@@ -520,44 +516,44 @@ void Renderer::update(std::chrono::milliseconds delta,
 	is_chat_visible = is_chat_on || time < 3s;
 
 	//Death screen update
-	if (died[id] && finish[id])
-	{
-		death_screen.timer += delta;
-	}
-	else
-	{
-		death_screen.timer = 0ms;
-	}
+	//if (died[id] && finish[id])
+	//{
+	//	death_screen.timer += delta;
+	//}
+	//else
+	//{
+	//	death_screen.timer = 0ms;
+	//}
 
-	//Loading screen update
-	if (loading_screen.timer > 4000ms)
-	{
-		loading_screen.timer = 0ms;
-	}
-	else
-	{
-		loading_screen.timer += delta;
-	}
+	////Loading screen update
+	//if (loading_screen.timer > 4000ms)
+	//{
+	//	loading_screen.timer = 0ms;
+	//}
+	//else
+	//{
+	//	loading_screen.timer += delta;
+	//}
 
-	//Main menu update
-	if (main_menu_screen.timer > 1600ms)
-	{
-		main_menu_screen.timer = 0ms;
-	}
-	else
-	{
-		main_menu_screen.timer += delta;
-	}
+	////Main menu update
+	//if (main_menu_screen.timer > 1600ms)
+	//{
+	//	main_menu_screen.timer = 0ms;
+	//}
+	//else
+	//{
+	//	main_menu_screen.timer += delta;
+	//}
 
-	//Finish screen update
-	if (finish[id] && !died[id])
-	{
-		finish_screen.timer += delta;
-	}
-	else
-	{
-		finish_screen.timer = 0ms;
-	}
+	////Finish screen update
+	//if (finish[id] && !died[id])
+	//{
+	//	finish_screen.timer += delta;
+	//}
+	//else
+	//{
+	//	finish_screen.timer = 0ms;
+	//}
 
 	if (!is_chat_on)
 	{
@@ -606,7 +602,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	leaderboard.update(std::move(scoreboard));
 
-	//spotlights[0].position = scene->moving_models[0].get_position() + glm::vec3(3,0,0);
+	overlays.update(delta, 
+		died[player_id], 
+		finish[player_id], 
+		scores, 
+		game_state, 
+		player_id);
 }
 
 void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const
