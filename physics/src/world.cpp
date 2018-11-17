@@ -3,6 +3,10 @@
 namespace physics
 {
 
+glm::vec3 find_closest_wall(
+	const std::vector<Rigidbody>& statics,
+	const Rigidbody& player);
+
 int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	float width, float height, glm::vec2 start_force, int trigger_type)
 {
@@ -289,6 +293,9 @@ void World::update(
 
 		}
 	}
+
+	glm::vec3 closest = find_closest_wall(statics, bodies[0]);
+	//std::cout << closest.x << ' ' << closest.y << ' ' << closest.z << '\n';
 }
 
 std::vector<glm::vec2> World::get_forces() const
@@ -501,6 +508,26 @@ void World::clear_static_object()
 	{
 		statics.pop_back();
 	}
+}
+
+glm::vec3 find_closest_wall(
+	const std::vector<Rigidbody>& statics, 
+	const Rigidbody& player)
+{
+	float closest = 100.0f;	
+	glm::vec3 direction{0.0f, -1.0f, 0.0f};
+	
+	for (auto& body : statics)
+	{
+		float distance = glm::length(player.box.position - body.box.position);
+		if (distance < closest)
+		{
+			closest = distance;
+			direction = glm::normalize(player.box.position - body.box.position);
+		}
+	}
+
+	return player.box.position + direction * closest;
 }
 
 }
