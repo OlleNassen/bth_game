@@ -295,7 +295,6 @@ void World::update(
 	}
 
 	glm::vec3 closest = find_closest_wall(statics, bodies[0]);
-	//std::cout << closest.x << ' ' << closest.y << ' ' << closest.z << '\n';
 }
 
 std::vector<glm::vec2> World::get_forces() const
