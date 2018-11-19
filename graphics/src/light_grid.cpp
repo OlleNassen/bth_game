@@ -48,7 +48,7 @@ LightGrid::LightGrid()
 
 	for (int i = 0; i < 32; ++i)
 	{
-		lights[i].radius = 100.0f;
+		lights[i].radius = 3.0f;
 	}
 }
 
@@ -98,13 +98,8 @@ void LightGrid::update(const Camera& camera)
 			for (int i = 0; i < block_size; ++i)
 			{
 				light_grid_element& elem = indices[i + j * block_size];
-				//if (sphere_inside_frustum(sphere, grid[i][j]) && elem.count < 5)		
-					elem.count = 4;
-					elem.indices[0] = 0;
-					elem.indices[1] = 1;
-					elem.indices[2] = 2;
-					elem.indices[3] = 3;
-					elem.indices[4] = 0;
+				if (sphere_inside_frustum(sphere, grid[i][j]) && elem.count < 5)		
+					elem.indices[elem.count++] = light_id;
 			}
 		}
 	}
