@@ -210,7 +210,29 @@ void Renderer::render(
 
 	overlays.render(overlay_shader);
 
-	glDisable(GL_DEPTH_TEST);
+	//Text rendering
+	{ 
+		glDisable(GL_DEPTH_TEST);
+		std::stringstream out_text;
+		out_text << std::fixed << std::setprecision(1) << print_time;
+
+		if (game_state & state::lobby)
+		{
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			build_text.render_text("Lobby Stage, Host press 'R' to start", screen_width * 0.33f, screen_height - 35.f, 0.75f);
+		}
+
+		if (game_state & state::pre_building)
+		{
+
+		}
+
+		glEnable(GL_DEPTH_TEST);
+	}
+
+	/*glDisable(GL_DEPTH_TEST);
 	std::stringstream out_text;
 	out_text << std::fixed << std::setprecision(1) << print_time;
 
@@ -387,7 +409,7 @@ void Renderer::render(
 		build_text.render_text(out_text.str(), screen_width * 0.1f, screen_height * 0.5f, 2.f);
 		
 	}
-	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);*/
 
 	{
 		glDisable(GL_DEPTH_TEST);
@@ -474,7 +496,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (!(game_state & state::playing))
 	{
 		post_processing_effects.glow_value = 0.0f;
-		if (!is_menu && game_state & state::building)
+		if (!is_menu && game_state & state::pre_building)
 		{
 			build_stage_screen.timer += delta;
 			if (build_stage_screen.timer > 2500ms)

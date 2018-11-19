@@ -25,7 +25,10 @@ enum class SessionState : uint8
 	lobby,
 	loading,
 	building,
+	pre_building,
 	playing,
+	pre_playing,
+	score,
 	game_over
 };
 
