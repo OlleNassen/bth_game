@@ -2392,7 +2392,7 @@ void FX::calculate_object_1_data(std::chrono::milliseconds delta, const Camera &
 
 		if (fx_object_1.particle_container[i].life > 0.0f)
 		{
-			fx_object_1.particle_container[i].pos = build_info.local_position;
+			fx_object_1.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
 			fx_object_1.particle_container[i].camera_distance = glm::length(fx_object_1.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
@@ -2516,7 +2516,7 @@ void FX::calculate_object_2_data(std::chrono::milliseconds delta, const Camera &
 
 		if (fx_object_2.particle_container[i].life > 0.0f)
 		{
-			fx_object_2.particle_container[i].pos = build_info.local_position;
+			fx_object_2.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
 			fx_object_2.particle_container[i].camera_distance = glm::length(fx_object_2.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
@@ -2640,7 +2640,7 @@ void FX::calculate_object_3_data(std::chrono::milliseconds delta, const Camera &
 
 		if (fx_object_3.particle_container[i].life > 0.0f)
 		{
-			fx_object_3.particle_container[i].pos = build_info.local_position;
+			fx_object_3.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
 			fx_object_3.particle_container[i].camera_distance = glm::length(fx_object_3.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
@@ -2764,7 +2764,7 @@ void FX::calculate_object_4_data(std::chrono::milliseconds delta, const Camera &
 
 		if (fx_object_4.particle_container[i].life > 0.0f)
 		{
-			fx_object_4.particle_container[i].pos = build_info.local_position;
+			fx_object_4.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
 			fx_object_4.particle_container[i].camera_distance = glm::length(fx_object_4.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
