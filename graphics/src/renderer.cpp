@@ -436,8 +436,15 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Gust
 		fx_emitter.calculate_gust_data(delta, game_camera);
 
-		//Capsule
-		fx_emitter.calculate_capsule_data(delta, game_camera, build_infos);
+		//Object 1
+		fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[0]);
+		//Object 2
+		fx_emitter.calculate_object_2_data(delta, game_camera, build_infos[1]);
+		//Object 3
+		fx_emitter.calculate_object_3_data(delta, game_camera, build_infos[2]);
+		//Object 4
+		fx_emitter.calculate_object_4_data(delta, game_camera, build_infos[3]);
+		
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();

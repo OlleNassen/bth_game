@@ -43,7 +43,7 @@ public:
 		unsigned int position_buffer, color_buffer;
 		unsigned int nr_of_particles;
 		unsigned int texture_buffer;
-		int fx_object_id[4];
+		int fx_object_id;
 		float g_vertex_buffer_data[12] = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, -0.5f,  0.5f, 0.0f, 0.5f,  0.5f, 0.0f };
 		float default_x, default_y, default_z;
 		float random_x, random_y, random_z;
@@ -61,7 +61,6 @@ public:
 	Texture godray;
 	Texture furnace;
 	Texture gust;
-
 	
 	unsigned int randomizer = 0;
 	std::chrono::milliseconds timer;
@@ -85,8 +84,10 @@ public:
 	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_capsule_data(std::chrono::milliseconds delta, const Camera& camera, std::vector<build_information> build_info);
-
+	void calculate_object_1_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	void calculate_object_2_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	void calculate_object_3_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	void calculate_object_4_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
@@ -97,7 +98,10 @@ public:
 	FXdata* fx_lava_light_ptr = new FXdata{};
 	FXdata* fx_furnace_light_ptr = new FXdata{};
 	FXdata* fx_gust_ptr = new FXdata{};
-	FXdata* fx_capsule_ptr = new FXdata{};
+	FXdata* fx_object_1_ptr = new FXdata{};
+	FXdata* fx_object_2_ptr = new FXdata{};
+	FXdata* fx_object_3_ptr = new FXdata{};
+	FXdata* fx_object_4_ptr = new FXdata{};
 
 private:
 	void render_particles(const FXdata& data) const;
@@ -109,7 +113,8 @@ private:
 	void steam_back(glm::vec3 pos_vec);
 	void steam_left(glm::vec3 pos_vec);
 
-	glm::vec3 build_position;
 };
+
+void object_render();
 
 }
