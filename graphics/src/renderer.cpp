@@ -234,7 +234,7 @@ void Renderer::render(
 				lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
 			}
 
-			line_debug(build_info[i].build_positions);
+			line_debug(build_info[i].debug_positions);
 			glEnable(GL_DEPTH_TEST);
 		}
 

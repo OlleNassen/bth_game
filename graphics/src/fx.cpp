@@ -2261,12 +2261,8 @@ void FX::calculate_capsule_data(std::chrono::milliseconds delta, const Camera & 
 
 	for (int x = 0; x < build_info.size(); x++)
 	{
-		
 		fx_capsule.fx_object_id[x] = build_info[x].object_id;
 	}
-	fx_capsule.fx_object_id[1] = 1;
-	fx_capsule.fx_object_id[2] = 2;
-	fx_capsule.fx_object_id[3] = 3;
 
 	fx_capsule.default_x = 0.0f;
 	fx_capsule.default_y = 0.0f;
@@ -2327,7 +2323,7 @@ void FX::calculate_capsule_data(std::chrono::milliseconds delta, const Camera & 
 
 		if (fx_capsule.particle_container[i].life > 0.0f)
 		{
-			fx_capsule.particle_container[i].pos = build_info[i].build_positions[i] + glm::vec3(-1.0f, 0.0f, -2.0f);
+			fx_capsule.particle_container[i].pos = build_info[i].local_position;
 			fx_capsule.particle_container[i].camera_distance = glm::length(fx_capsule.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data

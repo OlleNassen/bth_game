@@ -12,7 +12,8 @@
 
 struct build_information
 {
-	std::vector<glm::vec3> build_positions;
+	std::vector<glm::vec3> debug_positions;
+	glm::vec3 local_position;
 	int object_id;
 	int place_state = 1;
 };

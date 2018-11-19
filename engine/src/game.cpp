@@ -110,7 +110,8 @@ void Game::render()
 		int d_id = players_placed_objects_id[i].dynamics_id;
 		build_information info;
 		
-		info.build_positions = physics.get_debug_for(d_id);
+		info.debug_positions = physics.get_debug_for(d_id);
+		info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0);
 		info.place_state = players_placed_objects_id[i].place_state;
 		info.object_id = players_placed_objects_id[i].object_type_id;
 
