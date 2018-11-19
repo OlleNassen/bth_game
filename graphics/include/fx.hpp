@@ -18,6 +18,25 @@ struct build_information
 	int place_state = 1;
 };
 
+enum object_type
+{
+	SPEEDBOOST,        //Gul
+	JUMPBOOST,         //Grön
+	SHIELD,            //Ljusblå
+	GLIDETRAP,         //Lila
+	RANDOM             //Random
+};
+
+enum color_state
+{
+	RED,
+	PURPLE,
+	BLUE,
+	TURQUOISE,
+	GREEN,
+	YELLOW,
+};
+
 namespace graphics
 {
 
@@ -63,7 +82,12 @@ public:
 	Texture gust;
 	
 	unsigned int randomizer = 0;
+	unsigned int color_picker[4];
 	std::chrono::milliseconds timer;
+
+	unsigned char random_color_r[4] = { 0 };
+	unsigned char random_color_g[4] = { 0 };
+	unsigned char random_color_b[4] = { 0 };
 
 	void render_particles(
 		const Shader& dust,
