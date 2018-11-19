@@ -145,12 +145,6 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::lobby);
 
 		load_map("../resources/level/lobby.ssp");
-		for (int i = 0; i < 4; ++i)
-			dynamics[i].position = glm::vec2(3.f * i, 2.5f);
-
-		//Gameplay stuff
-		watching = net.id();
-		gameplay.refresh();
 	}
 
 	/*if (net_state.state == network::SessionState::waiting)
@@ -836,11 +830,17 @@ void Game::remove_object(int id)
 
 void Game::load_map(const char*  file_path)
 {
+	physics.clear_object();
+	level.clear_object();
+	gameplay.refresh();
+
+	for (int i = 0; i < 4; ++i)
+		dynamics[i].position = glm::vec2(3.f * i, 2.5f);
+	for (int i = 4; i < dynamics.size(); ++i)
+		dynamics[i].position = glm::vec2(-20000.f, -20000.f);
+
 	level = graphics::GameScene(file_path, &mesh_lib, &object_lib);
 
-	gameplay.refresh();
-	gameplay.is_new_round = false;
-	give_players_objects = false;
 	physics.clear_static_object();
 	for (auto& coll : level.coll_data)
 	{
@@ -848,6 +848,8 @@ void Game::load_map(const char*  file_path)
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
 	}
 
-	for (int i = 4; i < dynamics.size(); ++i)
-		dynamics[i].position = glm::vec2(-20000.f, -20000.f);
+	gameplay.is_new_round = false;
+	give_players_objects = false;
+	give_players_objects = false;
+	watching = net.id();
 }
