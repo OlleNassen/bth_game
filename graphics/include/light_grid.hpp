@@ -27,12 +27,18 @@ struct Frustum
 	Plane bottom;
 };
 
+struct light_grid_element
+{
+	int count = 0;
+	int indices[5] = {};
+};
+
 class LightGrid
 {
 public:
 	LightGrid();
 	
-	const int* data()const;
+	const light_grid_element* data()const;
 	int size()const;
 
 	void calculate_grid(const Camera& camera);
@@ -44,7 +50,7 @@ private:
 	static constexpr int max_num_lights = 3;
 	static constexpr int block_size = 24;
 
-	int indices[block_size * block_size];
+	light_grid_element indices[block_size * block_size];
 	Frustum grid[block_size][block_size];
 };
 

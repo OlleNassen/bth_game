@@ -52,13 +52,13 @@ LightGrid::LightGrid()
 	}
 }
 
-const int* LightGrid::data()const
+const light_grid_element* LightGrid::data() const
 {
 	return indices;
 }
 int LightGrid::size()const
 {
-	return block_size * block_size;
+	return block_size * block_size * 6;
 }
 
 void LightGrid::calculate_grid(const Camera& camera)
@@ -90,7 +90,8 @@ void LightGrid::update(const Camera& camera)
 			{
 				if (sphere_inside_frustum(sphere, grid[i][j]))
 				{
-					indices[i + j * block_size] = light_id;
+					indices[i + j * block_size].indices[0] = light_id;
+					indices[i + j * block_size].count++;
 				}
 			}
 		}

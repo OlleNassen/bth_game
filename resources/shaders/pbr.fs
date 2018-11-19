@@ -10,11 +10,10 @@ in VS_OUT{
 
 struct light_grid_element
 {
-	int light_count;
-	//int indices[5];
+	int count;
+	int indices[5];
 };
 
-const int max_num_lights = 3;
 const int block_size =  24;
 const int block_size_x = 1920 / block_size;
 const int block_size_y = 1080 / block_size;
@@ -134,7 +133,7 @@ void main()
 		int x = int(gl_FragCoord.x / block_size_x);
 		int y = int(gl_FragCoord.y / block_size_y);
 		light_grid_element elem = light_indices[x + y * block_size];
-		int i = elem.light_count;	
+		int i = elem.indices[0];	
 			
 		// calculate per-light radiance
 		vec3 L = normalize(light_pos[i] - fs_in.world_pos);
