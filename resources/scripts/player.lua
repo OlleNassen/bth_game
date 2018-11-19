@@ -190,17 +190,23 @@ function update_controls(delta_seconds, entity)
 
 		if entity.button.right 
 		then
-			entity.velocity.x = 0
+			--entity.velocity.x = 0
 			entity.velocity.x = entity.max_air_speed
 			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
-		end
-		if entity.button.left
+		elseif entity.button.left
 		then
-			entity.velocity.x = 0
+			--entity.velocity.x = 0
 			entity.velocity.x = -entity.max_air_speed
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		elseif entity.velocity.x > 1 
+		then
+			entity.velocity.x = entity.velocity.x -(30*delta_seconds )
+		elseif entity.velocity.x < -1 
+		then
+			entity.velocity.x = entity.velocity.x +(30*delta_seconds )
+		else	
+			entity.velocity.x = 0
 		end
-		
 
 		if entity.velocity.y < -0.0
 		then 
@@ -271,7 +277,13 @@ function update_controls(delta_seconds, entity)
 			entity.velocity.x = 0
 			entity.velocity.x = -entity.max_air_speed
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
-		else
+		elseif entity.velocity.x > 1 
+		then
+			entity.velocity.x = entity.velocity.x -(30*delta_seconds )
+		elseif entity.velocity.x < -1 
+		then
+			entity.velocity.x = entity.velocity.x +(30*delta_seconds )
+		else	
 			entity.velocity.x = 0
 		end
 
