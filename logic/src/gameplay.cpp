@@ -60,7 +60,7 @@ LuaExport Gameplay::update(Input inputs,
 		}
 		//game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0]);
 	}
-	
+
 	if (current_state & state::pre_building)
 	{
 		new_round();

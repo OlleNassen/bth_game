@@ -208,8 +208,7 @@ void Game::update(std::chrono::milliseconds delta)
 			game_state = (game_state | state::loading);
 		}
 	}
-
-	if (net_state.state == network::SessionState::loading)
+	else if (net_state.state == network::SessionState::loading)
 	{
 		game_state = (game_state | state::loading);
 
@@ -221,8 +220,7 @@ void Game::update(std::chrono::milliseconds delta)
 		net_state.state = network::SessionState::pre_building;
 		game_state = (game_state | state::pre_building);
 	}
-
-	if (net_state.state == network::SessionState::pre_building)
+	else if (net_state.state == network::SessionState::pre_building)
 	{
 		//Render text of state and what to do.
 		game_state = (game_state | state::pre_building);
@@ -237,8 +235,7 @@ void Game::update(std::chrono::milliseconds delta)
 			game_state = (game_state | state::building);
 		}
 	}
-	
-	if (net_state.state == network::SessionState::building)
+	else if (net_state.state == network::SessionState::building)
 	{
 		//Inititate player objects and move it.
 		game_state = (game_state | state::building);
@@ -295,8 +292,7 @@ void Game::update(std::chrono::milliseconds delta)
 			game_state = (game_state | state::pre_playing);
 		}
 	}
-
-	if (net_state.state == network::SessionState::pre_playing)
+	else if (net_state.state == network::SessionState::pre_playing)
 	{
 		//Begin 3, 2, 1, GO! countdown.
 		game_state = (game_state | state::pre_playing);
@@ -309,8 +305,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 		//Set State -> playing
 	}
-	
-	if (net_state.state == network::SessionState::playing)
+	else if (net_state.state == network::SessionState::playing)
 	{
 		//RUN!
 		game_state = (game_state | state::playing);
@@ -322,8 +317,7 @@ void Game::update(std::chrono::milliseconds delta)
 			game_state = (game_state | state::score);
 		}
 	}
-
-	if (net_state.state == network::SessionState::score)
+	else if (net_state.state == network::SessionState::score)
 	{
 		//Distribute score
 		game_state = (game_state | state::score);
@@ -346,8 +340,7 @@ void Game::update(std::chrono::milliseconds delta)
 			//}
 		}
 	}
-
-	if (net_state.state == network::SessionState::game_over)
+	else if (net_state.state == network::SessionState::game_over)
 	{
 		//Announs winner and return to lobby.
 		game_state = (game_state | state::game_over);
