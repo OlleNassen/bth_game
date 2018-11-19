@@ -4,13 +4,19 @@ function setup(entity)
 	entity.can_walljump = true
 	entity.can_move = true -- instead of playable
 	entity.max_speed = 16
-	entity.max_air_speed = 14
+	entity.max_air_speed = 16
  	entity.acceleration = 580000
 	entity.jump_timer = 0
 	entity.jump_impulse_x = 0
 
 	entity.ungrounded_time = 0
 	entity.jump_forgiveness_time = 0.5
+
+
+	--test for new controlls Lucas
+	entity.max_air_movement = entity.max_air_speed / 2 --test
+	entity.have_jumpt = false
+	entity.jump_iterator = 0
 
 	--trigger
 
@@ -54,9 +60,21 @@ function setup(entity)
 
 end
 
+--sticky_platform
+--local slow_speed = entity.max_speed / 2
+
+--speed boost
+--local max_speed_boost = entity.max_speed * 1.5 = 1
+
+--steam boost
+--local steam_boost_jump_impulse = 50
+
+
+
+
 local jump_speed = 0
 local gravity = 120
-local max_gravity = 800
+local max_gravity = 1700
 local wall_jump_speed = 
 {
 	x = 150,
@@ -161,7 +179,7 @@ function update_controls(delta_seconds, entity)
 	--Start jump
 	if entity.anim.current == entity.anim.start_jump
 	then
-		if entity.can_jump and entity.button.jump == true and entity.jump_timer < 0.17
+		--[[if entity.can_jump and entity.button.jump == true and entity.jump_timer < 0.17
 		then
 			jump_speed = jump_speed + 5
 			entity.jump_timer = entity.jump_timer + delta_seconds
@@ -169,24 +187,36 @@ function update_controls(delta_seconds, entity)
 		elseif jump_speed > 0 and entity.button.jump == false and entity.jump_timer > 0.016 or entity.jump_timer > 0.17  and entity.jump_timer > 0.016
 		then
 			entity.anim.current = entity.anim.in_jump
+		end]]--
+
+
+
+		--test for new controlls Lucas
+		if entity.can_jump and entity.button.jump == true
+		then
+			--entity.impulse.y = 10
+			entity.jump_timer = 0.0
+			entity.can_jump = false
+			entity.have_jumpt = true
+			entity.jump_iterator = 0
+
+			entity.anim.current = entity.anim.in_jump
 		end
+
+
+
 
 		if entity.steam_boost_triggerd and entity.can_dubbel_jump == false and entity.have_doubble_jumpt == false --trigger
 		then
 			entity.can_dubbel_jump = true
 			entity.steam_boost_delay_timer = 0.0
 		end
-
 	end
 
 	--In Jump
-	if entity.anim.current == entity.anim.in_jump
+	if entity.anim.current == entity.anim.in_jump 
 	then 
-		if entity.can_jump
-		then
-			entity.impulse.y = jump_speed
-			entity.can_jump = false
-		end
+
 
 		if entity.button.right 
 		then
@@ -201,15 +231,15 @@ function update_controls(delta_seconds, entity)
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 
-		if entity.velocity.y < -0.0
+		if entity.velocity.y < -2
 		then 
 			entity.anim.current = entity.anim.falling
 		end
 
-		if entity.velocity.y == 0
-		then 
-			entity.anim.current = entity.anim.idle
-		end
+		--if entity.velocity.y == 0
+		--then 
+		--	entity.anim.current = entity.anim.idle
+		--end
 	end
 
 	--Landing
@@ -249,18 +279,18 @@ function update_controls(delta_seconds, entity)
 	then
 		if entity.button.right 
 		then
-			entity.velocity.x = 0
-			entity.velocity.x =  entity.max_air_speed
+			--entity.velocity.x = 0
+			entity.velocity.x =  entity.max_air_movement
 			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 		if entity.button.left
 		then
-			entity.velocity.x = 0
-			entity.velocity.x = -entity.max_air_speed
+			--entity.velocity.x = 0
+			entity.velocity.x = -entity.max_air_movement
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 
-		if entity.velocity.y == 0
+		if entity.velocity.y < 0.1 and entity.velocity.y > -0.1
 		then 
 			entity.anim.current = entity.anim.idle
 		end
@@ -301,6 +331,9 @@ function update_controls(delta_seconds, entity)
 			entity.impulse.x = -26
 			entity.can_walljump = true
 			entity.jump_timer = 0
+
+
+			entity.have_jumpt = false
 		end
 	
 		--entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
@@ -333,10 +366,39 @@ function update_controls(delta_seconds, entity)
 			entity.impulse.x = 26
 			entity.can_walljump = true
 			entity.jump_timer = 0
+
+
+			entity.have_jumpt = false
 		end
 
 		
 		--entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
+	end
+
+
+	if entity.anim.current == entity.anim.jump_from_wall
+	then
+		if entity.velocity.y < 0.1 and entity.velocity.y > -0.1
+		then 
+			entity.anim.current = entity.anim.landing
+		end
+	end
+
+
+	if  entity.jump_iterator < 10 and entity.have_jumpt == true
+	then
+		if entity.button.jump == true
+		then
+			entity.jump_iterator = entity.jump_iterator + 1
+			entity.impulse.y = entity.impulse.y + 7.5
+			print("2323")
+		else
+			entity.have_jumpt = false
+		end
+		--if entity.jump_iterator == 10
+		--then
+		--	entity.have_jumpt = false
+		--end
 	end
 
 	--Cap the velocity/entity.forces.x
