@@ -111,7 +111,7 @@ void Renderer::render(
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
-	bool debug_active = true;//(game_state & state::render_physics);
+	bool debug_active = (game_state & state::render_physics);
 	const float screen_width = 1920.f;
 	const float screen_height = 1080.f;
 	
