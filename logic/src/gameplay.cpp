@@ -65,7 +65,8 @@ LuaExport Gameplay::update(Input inputs,
 	{
 		
 	}
-	else if (current_state & state::building)
+	
+	if (current_state & state::building)
 	{
 		if (inputs.players_placed_objects_id[0].dynamics_id != -1)
 		{
@@ -101,11 +102,45 @@ LuaExport Gameplay::update(Input inputs,
 				{
 					placement_script.set_build_stage_done(d_id, false);
 				}
-
 			}
 		}
 	}
 
+	if (current_state & state::pre_playing)
+	{
+		pre_starter_time -= dt;
+		time = pre_starter_time;
+
+		for (int i = 0; i < inputs.player_count; i++)
+		{
+			inputs.dynamics[i].position = { i * 3.f, 1.75f };
+		}
+	}
+	
+	if (current_state & state::playing)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			player_script.update(
+				inputs.delta,
+				inputs.dynamics[i],
+				inputs.player_inputs[i],
+				i,
+				inputs.triggers[i], 
+				inputs.triggers_types[i],
+				inputs.anim_states[i]);
+		}
+		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0]);
+
+		time = game_script.get_time();
+
+		//if (time < 0.0f)
+		//{
+		//	//new round
+		//	is_new_round = true;
+		//	new_round();
+		//}
+	}
 
 	//else if (current_state & state::building)
 	//{

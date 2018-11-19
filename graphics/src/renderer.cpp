@@ -211,6 +211,7 @@ void Renderer::render(
 	overlays.render(overlay_shader);
 
 	//Text rendering
+	if (!is_menu)
 	{ 
 		glDisable(GL_DEPTH_TEST);
 		std::stringstream out_text;
@@ -226,7 +227,138 @@ void Renderer::render(
 
 		if (game_state & state::pre_building)
 		{
+			std::string text = "Build Mode etc";
 
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+
+			float width = build_text.get_text_width(text, 2.f);
+
+			build_text.render_text(text, (screen_width * 0.5f) - (width * 0.5f), screen_height * 0.45f, 2.f);
+		}
+
+		if (game_state & state::building)
+		{
+			//Other Text
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+
+			build_text.render_text("Press 'Space' to place object", screen_width - 540, 10.f, 0.75f);
+			build_text.render_text("Build Stage", screen_width - 210, screen_height - 35.f, 0.75f);
+			build_text.render_text("Your object:", 10.f, 45.f, 0.75f);
+			build_text.render_text(objects_description[player_object_id], 10.f, 10.f, 0.75f);
+
+			//Timer
+			world_text_shader.use();
+			world_text_shader.uniform("view", game_camera.view());
+			world_text_shader.uniform("projection", game_camera.projection);
+
+			if (print_time > 5.f)
+				world_text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			else
+				world_text_shader.uniform("text_color", glm::vec3(0.8f, 0.2f, 0.2f));
+
+			float width = timer_text.get_text_width(out_text.str(), 0.02f);
+
+			timer_text.render_text(out_text.str(), build_info[player_id].world_position.x - (width * 0.5f), build_info[player_id].world_position.y + 1.f, 0.02f);
+
+			//Build area
+			for (int i = 0; i < player_count; i++)
+			{
+				lines.use();
+				lines.uniform("projection", game_camera.projection);
+				lines.uniform("view", game_camera.view());
+
+				if (build_info[i].place_state == 0)	//Cannot Place
+				{
+					lines.uniform("line_color", glm::vec3(1.0f, 0.0f, 0.0f));
+				}
+				else if (build_info[i].place_state == 1) //Can Place
+				{
+					lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
+				}
+				else if (build_info[i].place_state == 2)	//Has Placed
+				{
+					lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
+				}
+
+				point_debug(build_info[i].debug_positions);
+			}
+		}
+
+		if (game_state & state::pre_playing)
+		{
+			std::stringstream out_text;
+
+			/*if (print_time <= 1.0f)
+			{
+				print_time = 1.0f;
+			}*/
+
+			out_text << std::fixed << std::setprecision(0) << print_time;
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+
+			float width = build_text.get_text_width(out_text.str(), 2.f);
+
+			if (print_time > 0.0f)
+			{
+				build_text.render_text(out_text.str(), (screen_width * 0.5f) - (width * 0.5f), screen_height * 0.45f, 2.f);
+			}
+		}
+
+		if (game_state & state::playing)
+		{
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+
+			if (print_time <= 90.f && print_time >= 89.f)
+			{
+				float width = build_text.get_text_width("GO!", 2.0f);
+				build_text.render_text("GO!", (screen_width * 0.5f) - (width * 0.5f), screen_height * 0.45f, 2.f);
+			}
+			
+			if (print_time > 15.f)
+			{
+				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+				timer_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
+			}
+			else
+			{
+				static float t = 0.f;
+				glm::vec2 start = { 10.f, screen_height - 45.f };
+				glm::vec2 end = { (screen_width * 0.5f), (screen_height * 0.7f) };
+
+				glm::vec3 red = glm::vec3(1.f, 0.2f, 0.2f);
+				glm::vec3 white = glm::vec3(1.f, 0.4f, 0.4f);
+
+				float start_size = 1.f;
+				float end_size = 4.f;
+
+				t = 15 - print_time;
+
+				float cos_t = (glm::cos(t * 4.f) + 1.f) / 2.f;
+				glm::vec3 color = red + (white - red) * cos_t;
+
+				if (t > 1.0f)
+					t = 1.f;
+
+				glm::vec2 current = start + (end - start) * t;
+				float current_size = start_size + (end_size - start_size) * t;
+				float width = timer_text.get_text_width(out_text.str(), current_size);
+
+				text_shader.uniform("text_color", color);
+				timer_text.render_text(out_text.str(), current.x - (width * 0.5f), current.y, current_size);
+			}
+
+			if (died[player_id] || finish[player_id])
+			{				
+				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
+			}
 		}
 
 		glEnable(GL_DEPTH_TEST);

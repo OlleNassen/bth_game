@@ -57,7 +57,7 @@ struct Input
 	const input* player_inputs; //4
 	std::array<anim, 4>& anim_states;
 	std::array<id_and_model_place, 4>& players_placed_objects_id;
-	int player_count = 1;
+	int player_count = 0;
 
 	const trigger_type_array& triggers_types; //test for triggers
 };

@@ -66,7 +66,7 @@ public:
 	GameObject game_objects[100];
 	logic::input inputs[4]{};
 	uint32 sequence = 0;
-	uint8 player_count = 1;
+	uint8 player_count = 0;
 	uint8 player_id = 0;
 	SessionState state = SessionState::none;
 };

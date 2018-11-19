@@ -110,7 +110,7 @@ void Game::render()
 	std::vector<glm::vec3> db_coll = physics.get_all_debug();
 
 	std::vector<build_information> build_info;
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < static_cast<int>(player_count); i++)
 	{
 		int d_id = players_placed_objects_id[i].dynamics_id;
 		build_information info;
@@ -222,6 +222,7 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::pre_building);
 		static float pre_build_timer = 3.5f;
 
+		//Set State -> building
 		pre_build_timer -= dt;
 		if (pre_build_timer <= 0.0f)
 		{
@@ -229,7 +230,6 @@ void Game::update(std::chrono::milliseconds delta)
 			net_state.state = network::SessionState::building;
 			game_state = (game_state | state::building);
 		}
-		//Set State -> building
 	}
 	else if (net_state.state == network::SessionState::building)
 	{
@@ -241,7 +241,7 @@ void Game::update(std::chrono::milliseconds delta)
 			players_placed_objects_id.fill({ -1, -1, -1, -1 });
 			std::array<int, 4> random_position = random_indexes();
 
-			for (int i = 0; i < player_count; i++)
+			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
 				placed_objects_list_id = random_picked_object(); //placed_objects_array[0];
@@ -259,7 +259,6 @@ void Game::update(std::chrono::milliseconds delta)
 				dynamics[dynamic_id].size = { data.width, data.height };
 				dynamics[dynamic_id].forces = { 0.0f, 0.0f };
 				dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
-
 			}
 
 			give_players_objects = true;
@@ -277,14 +276,27 @@ void Game::update(std::chrono::milliseconds delta)
 					ppoi.place_state = 0;
 			}
 		}
+
+		level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
+
 		//Set State -> pre_playing
+		if (!gameplay.build_stage(static_cast<int>(player_count)))
+		{
+			net_state.state = network::SessionState::pre_playing;
+			game_state = (game_state | state::pre_playing);
+		}
 	}
 
 	if (net_state.state == network::SessionState::pre_playing)
 	{
 		//Begin 3, 2, 1, GO! countdown.
 		game_state = (game_state | state::pre_playing);
-
+		
+		if (lua_data.time <= 0.5f)
+		{
+			net_state.state = network::SessionState::playing;
+			game_state = (game_state | state::playing);
+		}
 
 		//Set State -> playing
 	}
@@ -479,7 +491,7 @@ void Game::update(std::chrono::milliseconds delta)
 			player_inputs, 
 			anim_states,
 			players_placed_objects_id,
-			player_count,
+			static_cast<int>(player_count),
 			triggers_types },
 			game_state);
 
@@ -540,8 +552,11 @@ void Game::update(std::chrono::milliseconds delta)
 				dynamics[i].position.y - dynamics[i].size.y
 			};
 					
-			level.v[i] = pos;
-			level.moving_models[i].set_position(pos);
+			if (!(game_state & state::building))
+			{
+				level.v[i] = pos;
+				level.moving_models[i].set_position(pos);
+			}
 		}
 	}
 
@@ -648,7 +663,7 @@ void Game::update(std::chrono::milliseconds delta)
 			obj,
 			player_inputs[net.id()].cursor,
 			directions,
-			chat[1], player_count,
+			chat[1], static_cast<int>(player_count),
 			net.id(), game_state, temp, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height,
 			watching,

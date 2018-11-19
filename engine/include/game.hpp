@@ -52,7 +52,7 @@ private:
 
 	logic::trigger_type_array triggers_types; //test for triggers
 	
-	network::uint8 player_count = 1;
+	network::uint8 player_count = 0;
 	network::uint32 state_sequence = 0;
 	network::GameState net_state;
 	network::Messenger net;
