@@ -129,12 +129,13 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    //for(int j = 0; j < max_num_lights; ++j) 
+    int x = int(gl_FragCoord.x / block_size_x);
+	int y = int(gl_FragCoord.y / block_size_y);
+	light_grid_element elem = light_indices[x + y * block_size];
+	
+	for(int j = 0; j < elem.count; ++j) 
     {
-		int x = int(gl_FragCoord.x / block_size_x);
-		int y = int(gl_FragCoord.y / block_size_y);
-		light_grid_element elem = light_indices[x + y * block_size];
-		int i = elem.indices[0];
+		int i = elem.indices[j];
 			
 		// calculate per-light radiance
 		vec3 L = normalize(light_pos[i] - fs_in.world_pos);
