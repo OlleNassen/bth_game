@@ -206,6 +206,7 @@ void FX::render_particles(const Shader& dust,
 
 	//FX - Objects
 	dust.use();
+	this->dust.bind(0);
 	dust.uniform("particle_texture", 0);
 	dust.uniform("camera_right_worldspace", camera_right_vector);
 	dust.uniform("camera_up_worldspace", camera_up_vector);
@@ -213,81 +214,9 @@ void FX::render_particles(const Shader& dust,
 	dust.uniform("projection", camera.projection);
 	dust.uniform("view_position", camera.position);
 	dust.uniform("particle_pivot", start_point);
-
-	//--Object 1--
-	if (fx_object_1.fx_object_id == RANDOM)
-	{
-		this->dust.bind(0);
-	}
-	else if (fx_object_1.fx_object_id == 1)
-	{
-		this->fire.bind(0);
-	}
-	else if (fx_object_1.fx_object_id == 2)
-	{
-		this->gust.bind(0);
-	}
-	else
-	{
-		this->godray.bind(0);
-	}
 	render_particles(fx_object_1);
-
-	//--Object 2--
-	if (fx_object_2.fx_object_id == 0)
-	{
-		this->dust.bind(0);
-	}
-	else if (fx_object_2.fx_object_id == 1)
-	{
-		this->fire.bind(0);
-	}
-	else if (fx_object_2.fx_object_id == 2)
-	{
-		this->gust.bind(0);
-	}
-	else
-	{
-		this->godray.bind(0);
-	}
 	render_particles(fx_object_2);
-
-	//--Object 3--
-	if (fx_object_3.fx_object_id == 0)
-	{
-		this->dust.bind(0);
-	}
-	else if (fx_object_3.fx_object_id == 1)
-	{
-		this->fire.bind(0);
-	}
-	else if (fx_object_3.fx_object_id == 2)
-	{
-		this->gust.bind(0);
-	}
-	else
-	{
-		this->godray.bind(0);
-	}
 	render_particles(fx_object_3);
-
-	//--Object 4--
-	if (fx_object_4.fx_object_id == 0)
-	{
-		this->dust.bind(0);
-	}
-	else if (fx_object_4.fx_object_id == 1)
-	{
-		this->fire.bind(0);
-	}
-	else if (fx_object_4.fx_object_id == 2)
-	{
-		this->gust.bind(0);
-	}
-	else
-	{
-		this->godray.bind(0);
-	}
 	render_particles(fx_object_4);
 	
 }
@@ -2326,7 +2255,6 @@ void FX::calculate_object_1_data(std::chrono::milliseconds delta, const Camera &
 	auto& fx_object_1 = *fx_object_1_ptr;
 	
 	fx_object_1.fx_object_id = build_info.object_id;
-	fx_object_1.fx_object_id = object_type::RANDOM;
 
 	fx_object_1.default_x = 0.0f;
 	fx_object_1.default_y = 0.0f;
@@ -2356,33 +2284,40 @@ void FX::calculate_object_1_data(std::chrono::milliseconds delta, const Camera &
 						fx_object_1.particle_container[i].r = 255;
 						fx_object_1.particle_container[i].g = 222;
 						fx_object_1.particle_container[i].b = 34;
+						fx_object_1.particle_container[i].a = 180;
 					}
 					else if (fx_object_1.fx_object_id == JUMPBOOST)
 					{
 						fx_object_1.particle_container[i].r = 0;
 						fx_object_1.particle_container[i].g = 255;
 						fx_object_1.particle_container[i].b = 0;
+						fx_object_1.particle_container[i].a = 180;
 					}
 					else if (fx_object_1.fx_object_id == SHIELD)
 					{
 						fx_object_1.particle_container[i].r = 24;
 						fx_object_1.particle_container[i].g = 208;
 						fx_object_1.particle_container[i].b = 255;
+						fx_object_1.particle_container[i].a = 180;
 					}
 					else if (fx_object_1.fx_object_id == GLIDETRAP)
 					{
 						fx_object_1.particle_container[i].r = 151;
 						fx_object_1.particle_container[i].g = 0;
 						fx_object_1.particle_container[i].b = 255;
+						fx_object_1.particle_container[i].a = 180;
 					}
 					else if (fx_object_1.fx_object_id == RANDOM)
 					{
 						fx_object_1.particle_container[i].r = 0;
 						fx_object_1.particle_container[i].g = 0;
 						fx_object_1.particle_container[i].b = 0;
+						fx_object_1.particle_container[i].a = 180;
 					}
-
-					fx_object_1.particle_container[i].a = 180;
+					else
+					{
+						fx_object_1.particle_container[i].a = 0;
+					}
 
 					fx_object_1.particle_container[i].size = 4.0f;
 				}
@@ -2494,13 +2429,8 @@ void FX::calculate_object_1_data(std::chrono::milliseconds delta, const Camera &
 			}
 			else
 			{
-				//Red
 				fx_object_1.color_data[4 * fx_object_1.total_particle_count + 0] = fx_object_1.particle_container[i].r;
-
-				//Green
 				fx_object_1.color_data[4 * fx_object_1.total_particle_count + 1] = fx_object_1.particle_container[i].g;
-
-				//Blue
 				fx_object_1.color_data[4 * fx_object_1.total_particle_count + 2] = fx_object_1.particle_container[i].b;
 			}
 
@@ -2542,7 +2472,6 @@ void FX::calculate_object_2_data(std::chrono::milliseconds delta, const Camera &
 	auto& fx_object_2 = *fx_object_2_ptr;
 
 	fx_object_2.fx_object_id = build_info.object_id;
-	fx_object_2.fx_object_id = 1;
 
 	fx_object_2.default_x = 0.0f;
 	fx_object_2.default_y = 0.0f;
@@ -2567,32 +2496,45 @@ void FX::calculate_object_2_data(std::chrono::milliseconds delta, const Camera &
 					fx_object_2.particle_container[i].life = 1.0f;
 
 					//Set colors, if you want color from texture, don't change the color
-					if (fx_object_2.fx_object_id == 0)
+					if (fx_object_2.fx_object_id == SPEEDBOOST)
 					{
 						fx_object_2.particle_container[i].r = 255;
 						fx_object_2.particle_container[i].g = 222;
 						fx_object_2.particle_container[i].b = 34;
+						fx_object_2.particle_container[i].a = 180;
 					}
-					else if (fx_object_2.fx_object_id == 1)
+					else if (fx_object_2.fx_object_id == JUMPBOOST)
 					{
-						fx_object_2.particle_container[i].r = 250;
-						fx_object_2.particle_container[i].g = 80;
+						fx_object_2.particle_container[i].r = 0;
+						fx_object_2.particle_container[i].g = 255;
 						fx_object_2.particle_container[i].b = 0;
+						fx_object_2.particle_container[i].a = 180;
 					}
-					else if (fx_object_2.fx_object_id == 2)
+					else if (fx_object_2.fx_object_id == SHIELD)
 					{
 						fx_object_2.particle_container[i].r = 24;
 						fx_object_2.particle_container[i].g = 208;
 						fx_object_2.particle_container[i].b = 255;
+						fx_object_2.particle_container[i].a = 180;
+					}
+					else if (fx_object_2.fx_object_id == GLIDETRAP)
+					{
+						fx_object_2.particle_container[i].r = 151;
+						fx_object_2.particle_container[i].g = 0;
+						fx_object_2.particle_container[i].b = 255;
+						fx_object_2.particle_container[i].a = 180;
+					}
+					else if (fx_object_2.fx_object_id == RANDOM)
+					{
+						fx_object_2.particle_container[i].r = 0;
+						fx_object_2.particle_container[i].g = 0;
+						fx_object_2.particle_container[i].b = 0;
+						fx_object_2.particle_container[i].a = 180;
 					}
 					else
 					{
-						fx_object_2.particle_container[i].r = 220;
-						fx_object_2.particle_container[i].g = 220;
-						fx_object_2.particle_container[i].b = 220;
+						fx_object_2.particle_container[i].a = 0;
 					}
-
-					fx_object_2.particle_container[i].a = 180;
 
 					fx_object_2.particle_container[i].size = 4.0f;
 				}
@@ -2619,14 +2561,100 @@ void FX::calculate_object_2_data(std::chrono::milliseconds delta, const Camera &
 			fx_object_2.position_data[4 * fx_object_2.total_particle_count + 3] = fx_object_2.particle_container[i].size;
 
 			//Set colors in the color data
-			//Red
-			fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = fx_object_2.particle_container[i].r;
+			if (fx_object_2.fx_object_id == RANDOM)
+			{
+				//RAINBOWS
 
-			//Green
-			fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = fx_object_2.particle_container[i].g;
+				if (random_color_r[1] == 0 && random_color_g[1] == 0 && random_color_b[1] == 0)
+				{
+					random_color_r[1] = 255;
+					color_picker[1] = RED;
+				}
 
-			//Blue
-			fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = fx_object_2.particle_container[i].b;
+				if (color_picker[1] == RED)
+				{
+					random_color_b[1] += seconds.count() * 200.0f;
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
+					if (random_color_b[1] >= 255)
+					{
+						random_color_b[1] = 255;
+						color_picker[1] = PURPLE;
+					}
+				}
+				else if (color_picker[1] == PURPLE)
+				{
+					random_color_r[1] -= seconds.count() * 200.0f;
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
+					if (random_color_r[1] <= 0)
+					{
+						random_color_r[1] = 0;
+						color_picker[1] = BLUE;
+					}
+				}
+				else if (color_picker[1] == BLUE)
+				{
+					random_color_g[1] += seconds.count() * 200.0f;
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
+					if (random_color_g[1] >= 255)
+					{
+						random_color_g[1] = 255;
+						color_picker[1] = TURQUOISE;
+					}
+				}
+				else if (color_picker[1] == TURQUOISE)
+				{
+					random_color_b[1] -= seconds.count() * 200.0f;
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
+					if (random_color_b[1] <= 0)
+					{
+						random_color_b[1] = 0;
+						color_picker[1] = GREEN;
+					}
+				}
+				else if (color_picker[1] == GREEN)
+				{
+					random_color_r[1] += seconds.count() * 200.0f;
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
+					if (random_color_r[1] >= 255)
+					{
+						random_color_r[1] = 255;
+						color_picker[1] = YELLOW;
+					}
+				}
+				else if (color_picker[1] == YELLOW)
+				{
+					random_color_g[1] -= seconds.count() * 200.0f;
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
+					if (random_color_g[1] <= 0)
+					{
+						random_color_g[1] = 0;
+						color_picker[1] = RED;
+					}
+				}
+			}
+			else
+			{
+				//Red
+				fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = fx_object_2.particle_container[i].r;
+
+				//Green
+				fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = fx_object_2.particle_container[i].g;
+
+				//Blue
+				fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = fx_object_2.particle_container[i].b;
+			}
 
 			//Alpha
 			if (fx_object_2.particle_container[i].life >= 0.5f)
@@ -2666,7 +2694,6 @@ void FX::calculate_object_3_data(std::chrono::milliseconds delta, const Camera &
 	auto& fx_object_3 = *fx_object_3_ptr;
 
 	fx_object_3.fx_object_id = build_info.object_id;
-	fx_object_3.fx_object_id = 2;
 
 	fx_object_3.default_x = 0.0f;
 	fx_object_3.default_y = 0.0f;
@@ -2691,32 +2718,45 @@ void FX::calculate_object_3_data(std::chrono::milliseconds delta, const Camera &
 					fx_object_3.particle_container[i].life = 1.0f;
 
 					//Set colors, if you want color from texture, don't change the color
-					if (fx_object_3.fx_object_id == 0)
+					if (fx_object_3.fx_object_id == SPEEDBOOST)
 					{
 						fx_object_3.particle_container[i].r = 255;
 						fx_object_3.particle_container[i].g = 222;
 						fx_object_3.particle_container[i].b = 34;
+						fx_object_3.particle_container[i].a = 180;
 					}
-					else if (fx_object_3.fx_object_id == 1)
+					else if (fx_object_3.fx_object_id == JUMPBOOST)
 					{
-						fx_object_3.particle_container[i].r = 250;
-						fx_object_3.particle_container[i].g = 80;
+						fx_object_3.particle_container[i].r = 0;
+						fx_object_3.particle_container[i].g = 255;
 						fx_object_3.particle_container[i].b = 0;
+						fx_object_3.particle_container[i].a = 180;
 					}
-					else if (fx_object_3.fx_object_id == 2)
+					else if (fx_object_3.fx_object_id == SHIELD)
 					{
 						fx_object_3.particle_container[i].r = 24;
 						fx_object_3.particle_container[i].g = 208;
 						fx_object_3.particle_container[i].b = 255;
+						fx_object_3.particle_container[i].a = 180;
+					}
+					else if (fx_object_3.fx_object_id == GLIDETRAP)
+					{
+						fx_object_3.particle_container[i].r = 151;
+						fx_object_3.particle_container[i].g = 0;
+						fx_object_3.particle_container[i].b = 255;
+						fx_object_3.particle_container[i].a = 180;
+					}
+					else if (fx_object_3.fx_object_id == RANDOM)
+					{
+						fx_object_3.particle_container[i].r = 0;
+						fx_object_3.particle_container[i].g = 0;
+						fx_object_3.particle_container[i].b = 0;
+						fx_object_3.particle_container[i].a = 180;
 					}
 					else
 					{
-						fx_object_3.particle_container[i].r = 220;
-						fx_object_3.particle_container[i].g = 220;
-						fx_object_3.particle_container[i].b = 220;
+						fx_object_3.particle_container[i].a = 0;
 					}
-
-					fx_object_3.particle_container[i].a = 180;
 
 					fx_object_3.particle_container[i].size = 4.0f;
 				}
@@ -2743,14 +2783,100 @@ void FX::calculate_object_3_data(std::chrono::milliseconds delta, const Camera &
 			fx_object_3.position_data[4 * fx_object_3.total_particle_count + 3] = fx_object_3.particle_container[i].size;
 
 			//Set colors in the color data
-			//Red
-			fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = fx_object_3.particle_container[i].r;
+			if (fx_object_3.fx_object_id == RANDOM)
+			{
+				//RAINBOWS
 
-			//Green
-			fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = fx_object_3.particle_container[i].g;
+				if (random_color_r[2] == 0 && random_color_g[2] == 0 && random_color_b[2] == 0)
+				{
+					random_color_r[2] = 255;
+					color_picker[2] = RED;
+				}
 
-			//Blue
-			fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = fx_object_3.particle_container[i].b;
+				if (color_picker[2] == RED)
+				{
+					random_color_b[2] += seconds.count() * 200.0f;
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
+					if (random_color_b[2] >= 255)
+					{
+						random_color_b[2] = 255;
+						color_picker[2] = PURPLE;
+					}
+				}
+				else if (color_picker[2] == PURPLE)
+				{
+					random_color_r[2] -= seconds.count() * 200.0f;
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
+					if (random_color_r[2] <= 0)
+					{
+						random_color_r[2] = 0;
+						color_picker[2] = BLUE;
+					}
+				}
+				else if (color_picker[2] == BLUE)
+				{
+					random_color_g[2] += seconds.count() * 200.0f;
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
+					if (random_color_g[2] >= 255)
+					{
+						random_color_g[2] = 255;
+						color_picker[2] = TURQUOISE;
+					}
+				}
+				else if (color_picker[2] == TURQUOISE)
+				{
+					random_color_b[2] -= seconds.count() * 200.0f;
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
+					if (random_color_b[2] <= 0)
+					{
+						random_color_b[2] = 0;
+						color_picker[2] = GREEN;
+					}
+				}
+				else if (color_picker[2] == GREEN)
+				{
+					random_color_r[2] += seconds.count() * 200.0f;
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
+					if (random_color_r[2] >= 255)
+					{
+						random_color_r[2] = 255;
+						color_picker[2] = YELLOW;
+					}
+				}
+				else if (color_picker[2] == YELLOW)
+				{
+					random_color_g[2] -= seconds.count() * 200.0f;
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
+					if (random_color_g[2] <= 0)
+					{
+						random_color_g[2] = 0;
+						color_picker[2] = RED;
+					}
+				}
+			}
+			else
+			{
+				//Red
+				fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = fx_object_3.particle_container[i].r;
+
+				//Green
+				fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = fx_object_3.particle_container[i].g;
+
+				//Blue
+				fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = fx_object_3.particle_container[i].b;
+			}
 
 			//Alpha
 			if (fx_object_3.particle_container[i].life >= 0.5f)
@@ -2790,7 +2916,6 @@ void FX::calculate_object_4_data(std::chrono::milliseconds delta, const Camera &
 	auto& fx_object_4 = *fx_object_4_ptr;
 
 	fx_object_4.fx_object_id = build_info.object_id;
-	fx_object_4.fx_object_id = 3;
 
 	fx_object_4.default_x = 0.0f;
 	fx_object_4.default_y = 0.0f;
@@ -2815,32 +2940,45 @@ void FX::calculate_object_4_data(std::chrono::milliseconds delta, const Camera &
 					fx_object_4.particle_container[i].life = 1.0f;
 
 					//Set colors, if you want color from texture, don't change the color
-					if (fx_object_4.fx_object_id == 0)
+					if (fx_object_4.fx_object_id == SPEEDBOOST)
 					{
 						fx_object_4.particle_container[i].r = 255;
 						fx_object_4.particle_container[i].g = 222;
 						fx_object_4.particle_container[i].b = 34;
+						fx_object_4.particle_container[i].a = 180;
 					}
-					else if (fx_object_4.fx_object_id == 1)
+					else if (fx_object_4.fx_object_id == JUMPBOOST)
 					{
-						fx_object_4.particle_container[i].r = 250;
-						fx_object_4.particle_container[i].g = 80;
+						fx_object_4.particle_container[i].r = 0;
+						fx_object_4.particle_container[i].g = 255;
 						fx_object_4.particle_container[i].b = 0;
+						fx_object_4.particle_container[i].a = 180;
 					}
-					else if (fx_object_4.fx_object_id == 2)
+					else if (fx_object_4.fx_object_id == SHIELD)
 					{
 						fx_object_4.particle_container[i].r = 24;
 						fx_object_4.particle_container[i].g = 208;
 						fx_object_4.particle_container[i].b = 255;
+						fx_object_4.particle_container[i].a = 180;
+					}
+					else if (fx_object_4.fx_object_id == GLIDETRAP)
+					{
+						fx_object_4.particle_container[i].r = 151;
+						fx_object_4.particle_container[i].g = 0;
+						fx_object_4.particle_container[i].b = 255;
+						fx_object_4.particle_container[i].a = 180;
+					}
+					else if (fx_object_4.fx_object_id == RANDOM)
+					{
+						fx_object_4.particle_container[i].r = 0;
+						fx_object_4.particle_container[i].g = 0;
+						fx_object_4.particle_container[i].b = 0;
+						fx_object_4.particle_container[i].a = 180;
 					}
 					else
 					{
-						fx_object_4.particle_container[i].r = 220;
-						fx_object_4.particle_container[i].g = 220;
-						fx_object_4.particle_container[i].b = 220;
+						fx_object_4.particle_container[i].a = 0;
 					}
-
-					fx_object_4.particle_container[i].a = 180;
 
 					fx_object_4.particle_container[i].size = 4.0f;
 				}
@@ -2867,14 +3005,100 @@ void FX::calculate_object_4_data(std::chrono::milliseconds delta, const Camera &
 			fx_object_4.position_data[4 * fx_object_4.total_particle_count + 3] = fx_object_4.particle_container[i].size;
 
 			//Set colors in the color data
-			//Red
-			fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = fx_object_4.particle_container[i].r;
+			if (fx_object_4.fx_object_id == RANDOM)
+			{
+				//RAINBOWS
 
-			//Green
-			fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = fx_object_4.particle_container[i].g;
+				if (random_color_r[3] == 0 && random_color_g[3] == 0 && random_color_b[3] == 0)
+				{
+					random_color_r[3] = 255;
+					color_picker[3] = RED;
+				}
 
-			//Blue
-			fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = fx_object_4.particle_container[i].b;
+				if (color_picker[3] == RED)
+				{
+					random_color_b[3] += seconds.count() * 200.0f;
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
+					if (random_color_b[3] >= 255)
+					{
+						random_color_b[3] = 255;
+						color_picker[3] = PURPLE;
+					}
+				}
+				else if (color_picker[3] == PURPLE)
+				{
+					random_color_r[3] -= seconds.count() * 200.0f;
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
+					if (random_color_r[3] <= 0)
+					{
+						random_color_r[3] = 0;
+						color_picker[3] = BLUE;
+					}
+				}
+				else if (color_picker[3] == BLUE)
+				{
+					random_color_g[3] += seconds.count() * 200.0f;
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
+					if (random_color_g[3] >= 255)
+					{
+						random_color_g[3] = 255;
+						color_picker[3] = TURQUOISE;
+					}
+				}
+				else if (color_picker[3] == TURQUOISE)
+				{
+					random_color_b[3] -= seconds.count() * 200.0f;
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
+					if (random_color_b[3] <= 0)
+					{
+						random_color_b[3] = 0;
+						color_picker[3] = GREEN;
+					}
+				}
+				else if (color_picker[3] == GREEN)
+				{
+					random_color_r[3] += seconds.count() * 200.0f;
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
+					if (random_color_r[3] >= 255)
+					{
+						random_color_r[3] = 255;
+						color_picker[3] = YELLOW;
+					}
+				}
+				else if (color_picker[3] == YELLOW)
+				{
+					random_color_g[3] -= seconds.count() * 200.0f;
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
+					if (random_color_g[3] <= 0)
+					{
+						random_color_g[3] = 0;
+						color_picker[3] = RED;
+					}
+				}
+			}
+			else
+			{
+				//Red
+				fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = fx_object_4.particle_container[i].r;
+
+				//Green
+				fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = fx_object_4.particle_container[i].g;
+
+				//Blue
+				fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = fx_object_4.particle_container[i].b;
+			}
 
 			//Alpha
 			if (fx_object_4.particle_container[i].life >= 0.5f)

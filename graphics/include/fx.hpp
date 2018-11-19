@@ -20,10 +20,13 @@ struct build_information
 
 enum object_type
 {
+	SPIKETRAP,
+	TURRET,
+	STUNTRAP,
+	GLIDETRAP,         //Lila
 	SPEEDBOOST,        //Gul
 	JUMPBOOST,         //Grön
 	SHIELD,            //Ljusblå
-	GLIDETRAP,         //Lila
 	RANDOM             //Random
 };
 
