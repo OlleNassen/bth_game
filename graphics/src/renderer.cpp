@@ -279,7 +279,7 @@ void Renderer::render(
 				{
 					lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
 				}
-				else if (build_info[i].place_state == 2)	//Has Placed
+				else if (build_info[i].place_state == 2) //Has Placed
 				{
 					lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
 				}
@@ -359,6 +359,32 @@ void Renderer::render(
 			{				
 				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 			}
+		}
+
+		if (game_state & state::score)
+		{
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+
+			build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
+
+			//float width = timer_text.get_text_width(out_text.str(), 0.02f);
+
+			
+
+			for (int i = 0; i < player_count; i++)
+			{
+				out_text.str("");
+				out_text << players[i] << " : " << scores[i];
+				text_shader.uniform("text_color", players_colors[i]);
+				build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
+			}
+		}
+
+		if (game_state & state::game_over)
+		{
+
 		}
 
 		glEnable(GL_DEPTH_TEST);

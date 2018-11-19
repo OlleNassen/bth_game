@@ -63,7 +63,10 @@ LuaExport Gameplay::update(Input inputs,
 	
 	if (current_state & state::pre_building)
 	{
-		
+		new_round();
+
+		for (int i = 0; i < 4; ++i)
+			inputs.dynamics[i].position = glm::vec2(3.f * i, 2.5f);
 	}
 	
 	if (current_state & state::building)
@@ -140,6 +143,11 @@ LuaExport Gameplay::update(Input inputs,
 		//	is_new_round = true;
 		//	new_round();
 		//}
+	}
+
+	if (current_state & state::score)
+	{
+
 	}
 
 	//else if (current_state & state::building)
@@ -339,18 +347,12 @@ void Gameplay::new_round()
 {
 	pre_playing_done = false;
 	pre_starter_time = 3.5f;
-
-	/*for (auto i = 0; i < 4; ++i)
-	{
-		player_script.setup(i);
-	}*/
-
+	
 	for (int i = 0; i < 100; ++i)
 	{
 		placement_script.setup(i);
 	}
 
-	//game_script.setup();
 	game_script.reset_time();
 }
 

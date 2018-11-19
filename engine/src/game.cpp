@@ -149,8 +149,8 @@ void Game::update(std::chrono::milliseconds delta)
 			dynamics[i].position = glm::vec2(3.f * i, 2.5f);
 
 		//Gameplay stuff
-		give_players_objects = false;
 		watching = net.id();
+		gameplay.refresh();
 	}
 
 	/*if (net_state.state == network::SessionState::waiting)
@@ -282,6 +282,8 @@ void Game::update(std::chrono::milliseconds delta)
 		//Set State -> pre_playing
 		if (!gameplay.build_stage(static_cast<int>(player_count)))
 		{
+			give_players_objects = false;
+
 			net_state.state = network::SessionState::pre_playing;
 			game_state = (game_state | state::pre_playing);
 		}
@@ -305,20 +307,36 @@ void Game::update(std::chrono::milliseconds delta)
 		//RUN!
 		game_state = (game_state | state::playing);
 
-
 		//Set State -> score
+		if (lua_data.time <= 0.0f)
+		{
+			net_state.state = network::SessionState::score;
+			game_state = (game_state | state::score);
+		}
 	}
 
 	if (net_state.state == network::SessionState::score)
 	{
 		//Distribute score
 		game_state = (game_state | state::score);
+		static float score_timer = 3.5f;
 
+		//score_timer -= dt;
 
-		//If no winner found
-			//Set State -> pre_building
-		//else
+		//If winner found
 			//Set State -> game_over
+		if (lua_data.game_over)
+		{
+			//net_state.state = network::SessionState::game_over;
+			//game_state = (game_state | state::game_over);
+		}
+		else //Otherwise distribute score and //Set State -> pre_building
+		{
+			//if (score_timer <= 0.0f)
+			//{
+			//	score_timer = 3.5f;
+			//}
+		}
 	}
 
 	if (net_state.state == network::SessionState::game_over)
@@ -674,6 +692,8 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		window.toggle_screen_mode(settings);
 	}
+
+	std::cout << static_cast<int>(player_count) << "\n";
 }
 
 void Game::pack_data()
