@@ -50,7 +50,7 @@ class World
 {
 public:
 	int add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force, int trigger_type = -1);
-	int add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
+	void add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
 
 	//Dynamic
 	std::vector<Rigidbody_old> dynamic_rigidbodies;
