@@ -204,16 +204,22 @@ void Game::update(std::chrono::milliseconds delta)
 
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed)
 		{
-			//load map
-
-			load_map("../resources/level/level_1_testing.ssp");
-
-			for (int i = 0; i < 4; ++i)
-				dynamics[i].position = glm::vec2(3.f * i, 2.5f);
-
-			net_state.state = network::SessionState::pre_building;
-			game_state = (game_state | state::pre_building);
+			net_state.state = network::SessionState::loading;
+			game_state = (game_state | state::loading);
 		}
+	}
+
+	if (net_state.state == network::SessionState::loading)
+	{
+		game_state = (game_state | state::loading);
+
+		load_map("../resources/level/level_1_testing.ssp");
+
+		for (int i = 0; i < 4; ++i)
+			dynamics[i].position = glm::vec2(3.f * i, 2.5f);
+
+		net_state.state = network::SessionState::pre_building;
+		game_state = (game_state | state::pre_building);
 	}
 
 	if (net_state.state == network::SessionState::pre_building)
@@ -231,7 +237,8 @@ void Game::update(std::chrono::milliseconds delta)
 			game_state = (game_state | state::building);
 		}
 	}
-	else if (net_state.state == network::SessionState::building)
+	
+	if (net_state.state == network::SessionState::building)
 	{
 		//Inititate player objects and move it.
 		game_state = (game_state | state::building);
@@ -302,7 +309,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 		//Set State -> playing
 	}
-	else if (net_state.state == network::SessionState::playing)
+	
+	if (net_state.state == network::SessionState::playing)
 	{
 		//RUN!
 		game_state = (game_state | state::playing);
