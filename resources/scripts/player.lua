@@ -232,11 +232,10 @@ function update_controls(delta_seconds, entity)
 		
 		if entity.velocity.y < 0.0 and entity.velocity.y >= -0.1
 		then
-			print("Pannkakor")
-			entity.anim.current = entity.anim.falling
+			entity.anim.current = entity.anim.landing
 		end
 
-		print(entity.velocity.y)
+		
 	end
 
 	--Landing
@@ -281,7 +280,6 @@ function update_controls(delta_seconds, entity)
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 
-		print(entity.velocity.y)
 
 		if entity.velocity.y <= 0.1 and entity.velocity.y >= -0.1
 		then
