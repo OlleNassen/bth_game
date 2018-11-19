@@ -22,7 +22,7 @@ public:
 		glm::vec3 pos, speed;
 		unsigned char r, g, b, a;
 		float size, angle, weight;
-		float life;
+		float life = 0.0f;
 		float camera_distance;
 		float random_amp;
 		float r_amp, g_amp, b_amp;
@@ -77,7 +77,7 @@ public:
 	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
-	void update_build_position(glm::vec3 build_position);
+	void calculate_capsule_data(std::chrono::milliseconds delta, const Camera& camera, std::vector<glm::vec3> build_position);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
@@ -88,6 +88,7 @@ public:
 	FXdata* fx_lava_light_ptr = new FXdata{};
 	FXdata* fx_furnace_light_ptr = new FXdata{};
 	FXdata* fx_gust_ptr = new FXdata{};
+	FXdata* fx_capsule_ptr = new FXdata{};
 
 private:
 	void render_particles(const FXdata& data) const;

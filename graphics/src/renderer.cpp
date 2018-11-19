@@ -328,7 +328,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
 	float print_time,
-	float goal_height)
+	float goal_height,
+	std::vector<build_information>& build_infos)
 
 {
 	bool is_menu = (game_state & state::menu);
@@ -405,9 +406,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 		finish_screen.timer = 0ms;
 	}
 
+	//--FX Calculations--
 	if (!is_chat_on)
 	{
-		//--FX Calculations--
 		//Dust
 		fx_emitter.calculate_dust_data(delta, game_camera);
 
@@ -434,6 +435,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		//Gust
 		fx_emitter.calculate_gust_data(delta, game_camera);
+
+		//Capsule
+		fx_emitter.calculate_capsule_data(delta, game_camera, build_infos[id].build_positions);
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();

@@ -21,6 +21,7 @@ FX::FX()
 	auto& fx_lava_light = *fx_lava_light_ptr;
 	auto& fx_furnace_light = *fx_furnace_light_ptr;
 	auto& fx_gust = *fx_gust_ptr;
+	auto& fx_capsule = *fx_capsule_ptr;
 	gen_particle_buffer(fx_dust);
 	gen_particle_buffer(fx_spark);
 	gen_particle_buffer(fx_steam);
@@ -30,6 +31,7 @@ FX::FX()
 	gen_particle_buffer(fx_lava_light);
 	gen_particle_buffer(fx_furnace_light);
 	gen_particle_buffer(fx_gust);
+	gen_particle_buffer(fx_capsule);
 }
 
 void FX::gen_particle_buffer(FXdata & particle)
@@ -68,6 +70,7 @@ void FX::render_particles(const Shader& dust,
 	auto& fx_lava_light = *fx_lava_light_ptr;
 	auto& fx_furnace_light = *fx_furnace_light_ptr;
 	auto& fx_gust = *fx_gust_ptr;
+	auto& fx_capsule = *fx_capsule_ptr;
 
 	glm::vec3 start_point = glm::vec3(0, 0, 0);
 	glm::mat4 view_matrix = camera.view();
@@ -179,6 +182,18 @@ void FX::render_particles(const Shader& dust,
 	//steam.uniform("view_position", scene->v[0]);
 	gust.uniform("particle_pivot", start_point);
 	render_particles(fx_gust);
+
+	//FX - Capsule
+	dust.use();
+	dust.uniform("particle_texture", 0);
+	this->dust.bind(0);
+	dust.uniform("camera_right_worldspace", camera_right_vector);
+	dust.uniform("camera_up_worldspace", camera_up_vector);
+	dust.uniform("view", camera.view());
+	dust.uniform("projection", camera.projection);
+	dust.uniform("view_position", camera.position);
+	dust.uniform("particle_pivot", start_point);
+	render_particles(fx_capsule);
 
 	//FX Dust
 	dust.use();
@@ -2220,8 +2235,111 @@ void FX::calculate_gust_data(std::chrono::milliseconds delta, const Camera & cam
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_gust.total_particle_count * 4 * sizeof(GLubyte), fx_gust.color_data);
 }
 
-void FX::update_build_position(glm::vec3 build_position)
+void FX::calculate_capsule_data(std::chrono::milliseconds delta, const Camera & camera, std::vector<glm::vec3> build_position)
 {
+	using namespace std::chrono_literals;
+	std::chrono::duration<float> seconds = delta;
+	auto& fx_capsule = *fx_capsule_ptr;
+
+	fx_capsule.default_x = 0.0f;
+	fx_capsule.default_y = 0.0f;
+	fx_capsule.default_z = 0.0f;
+	fx_capsule.nr_of_particles = 1;
+	randomizer = rand() % 100;
+
+	//Update data for particles
+	if (fx_capsule.total_particle_count <= MAX_PARTICLES)
+	{
+		if (randomizer <= 100)
+		{
+			if (fx_capsule.particle_container[0].life <= 0.1f)
+			{
+				for (auto i = 0u; i < fx_capsule.nr_of_particles; i++)
+				{
+					//Find and update the last used particle
+					fx_capsule.last_used_particle = find_unused_particle(fx_capsule.particle_container, fx_capsule.last_used_particle);
+					int particle_index = fx_capsule.last_used_particle;
+
+					//Set default values for the particles, first off life and position.
+					fx_capsule.particle_container[i].life = 1.0f;
+					//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
+
+					//Create a direction for the particles to travel
+					glm::vec3 main_dir = glm::vec3(0, 0, 0);
+
+					fx_capsule.particle_container[i].speed = main_dir;
+
+					//Set colors, if you want color from texture, don't change the color
+					fx_capsule.particle_container[i].r = 255;
+					fx_capsule.particle_container[i].g = 222;
+					fx_capsule.particle_container[i].b = 34;
+
+					fx_capsule.particle_container[i].a = 180;
+
+					fx_capsule.particle_container[i].size = 4.0f;
+				}
+			}
+		}
+	}
+
+	fx_capsule.total_particle_count = 0;
+	//Update movement
+	for (int i = 0; i < fx_capsule.nr_of_particles; i++)
+	{
+		//Update life with delta time
+		fx_capsule.particle_container[i].life -= (seconds.count() / 2.0f);
+
+		if (fx_capsule.particle_container[i].life > 0.0f)
+		{
+			fx_capsule.particle_container[0].pos = build_position[0] + glm::vec3(-1.0f, 0.0f, -2.0f);
+			fx_capsule.particle_container[i].camera_distance = glm::length(fx_capsule.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			fx_capsule.position_data[4 * fx_capsule.total_particle_count + 0] = fx_capsule.particle_container[i].pos.x;
+			fx_capsule.position_data[4 * fx_capsule.total_particle_count + 1] = fx_capsule.particle_container[i].pos.y;
+			fx_capsule.position_data[4 * fx_capsule.total_particle_count + 2] = fx_capsule.particle_container[i].pos.z;
+			fx_capsule.position_data[4 * fx_capsule.total_particle_count + 3] = fx_capsule.particle_container[i].size;
+
+			//Set colors in the color data
+			//Red
+			fx_capsule.color_data[4 * fx_capsule.total_particle_count + 0] = fx_capsule.particle_container[i].r;
+
+			//Green
+			fx_capsule.color_data[4 * fx_capsule.total_particle_count + 1] = fx_capsule.particle_container[i].g;
+
+			//Blue
+			fx_capsule.color_data[4 * fx_capsule.total_particle_count + 2] = fx_capsule.particle_container[i].b;
+
+			//Alpha
+			if (fx_capsule.particle_container[i].life >= 0.5f)
+			{
+				fx_capsule.color_data[4 * fx_capsule.total_particle_count + 3] = fx_capsule.particle_container[i].a * fx_capsule.particle_container[i].life;
+			}
+			else
+			{
+				fx_capsule.color_data[4 * fx_capsule.total_particle_count + 3] = fx_capsule.particle_container[i].a * abs(fx_capsule.particle_container[i].life - 1);
+			}
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_capsule.particle_container[i].camera_distance = -1.0f;
+			fx_capsule.position_data[4 * fx_capsule.total_particle_count + 0] = 0;
+			fx_capsule.position_data[4 * fx_capsule.total_particle_count + 1] = 0;
+			fx_capsule.position_data[4 * fx_capsule.total_particle_count + 2] = 0;
+			fx_capsule.position_data[4 * fx_capsule.total_particle_count + 3] = 0;
+		}
+		fx_capsule.total_particle_count++;
+	}
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, fx_capsule.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_capsule.total_particle_count * 4 * sizeof(GLfloat), fx_capsule.position_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, fx_capsule.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_capsule.total_particle_count * 4 * sizeof(GLubyte), fx_capsule.color_data);
 }
 
 }

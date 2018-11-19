@@ -104,7 +104,7 @@ void Game::render()
 {	
 	std::vector<glm::vec3> db_coll = physics.get_all_debug();
 
-	std::vector<build_information> build_info;
+	build_info.clear();
 	for (int i = 0; i < 4; i++)
 	{
 		int d_id = players_placed_objects_id[i].dynamics_id;
@@ -115,7 +115,7 @@ void Game::render()
 
 		build_info.push_back(info);
 	}
-	
+
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
@@ -388,7 +388,7 @@ void Game::update(std::chrono::milliseconds delta)
 			directions,
 			chat[1], player_count,
 			net.id(), game_state, temp, lua_data.died, 
-			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height);
+			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height, build_info);
 	}
 
 	if (game_state & state::menu && menu.get_fullscreen_pressed())
