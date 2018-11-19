@@ -141,6 +141,7 @@ function update_controls(delta_seconds, entity)
 	--Running
 	if entity.anim.current == entity.anim.running
 	then
+		print("In_running")
 		entity.anim.current = entity.anim.idle
 		if entity.button.right 
 		then
@@ -163,6 +164,7 @@ function update_controls(delta_seconds, entity)
 	--Idle
 	if entity.anim.current == entity.anim.idle
 	then
+		print("In idle")
 		if entity.button.right 
 		then
 			entity.velocity.x = entity.max_speed
@@ -186,10 +188,10 @@ function update_controls(delta_seconds, entity)
 	--Start jump
 	if entity.anim.current == entity.anim.start_jump
 	then
-
+		print("In strart_jump")
 		if entity.can_jump and entity.button.jump == true
 		then
-			jump_speed = 8
+			--jump_speed = 10
 			entity.jump_timer = entity.jump_timer + delta_seconds
 			entity.anim.current = entity.anim.in_jump
 		end
@@ -198,14 +200,16 @@ function update_controls(delta_seconds, entity)
 	--In Jump
 	if entity.anim.current == entity.anim.in_jump
 	then 
-
+		print("In in_jump")
 		--Start here after lunch
-		if entity.can_jump == true and entity.button.jump == true and entity.jump_timer < 0.18
+		if entity.can_jump == true and entity.button.jump == true and entity.jump_timer < 0.10
 		then
-			jump_speed = jump_speed + 2
+			jump_speed = jump_speed + 9
 			entity.jump_timer = entity.jump_timer + delta_seconds
 			entity.impulse.y = jump_speed
-		elseif  entity.jump_timer >= 0.15 or entity.button.jump == false
+		end
+		
+		if  entity.jump_timer >= 0.15 or entity.button.jump == false and jump_speed >= 18
 		then
 			entity.can_jump = false
 			jump_speed = 0
@@ -213,13 +217,13 @@ function update_controls(delta_seconds, entity)
 
 		if entity.button.right 
 		then
-			entity.velocity.x = 0
+			--entity.velocity.x = 0
 			entity.velocity.x = entity.max_air_speed
 			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 		if entity.button.left
 		then
-			entity.velocity.x = 0
+			--entity.velocity.x = 0
 			entity.velocity.x = -entity.max_air_speed
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
@@ -241,6 +245,7 @@ function update_controls(delta_seconds, entity)
 	--Landing
 	if entity.anim.current == entity.anim.landing
 	then
+		print("In landing")
 		jump_speed = 0
 		entity.ungrounded_time = 0	
 		entity.jump_timer = 0
@@ -250,13 +255,13 @@ function update_controls(delta_seconds, entity)
 		
 		if entity.button.right
 		then
-			entity.velocity.x = 0
+			--entity.velocity.x = 0
 			entity.velocity.x = entity.max_air_speed
 			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 		if entity.button.left
 		then
-			entity.velocity.x = 0
+			--entity.velocity.x = 0
 			entity.velocity.x = -entity.max_air_speed
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
@@ -265,27 +270,27 @@ function update_controls(delta_seconds, entity)
 	--Falling
 	if entity.anim.current == entity.anim.falling
 	then
-	
+		print("In falling")
 
 		if entity.button.right 
 		then
-			entity.velocity.x = 0
+			--entity.velocity.x = 0
 			entity.velocity.x =  entity.max_air_speed
 			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 		if entity.button.left
 		then
-			entity.velocity.x = 0
+			--entity.velocity.x = 0
 			entity.velocity.x = -entity.max_air_speed
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 
 
-		if entity.velocity.y <= 0.1 and entity.velocity.y >= -0.1
+		--[[if entity.velocity.y <= 0.1 and entity.velocity.y >= -0.1
 		then
 			print("Pannkakor")
 			entity.anim.current = entity.anim.landing
-		end
+		end]]--
 
 		--print(entity.velocity.x)
 		--[[Test of jumpforgiveness
@@ -304,6 +309,7 @@ function update_controls(delta_seconds, entity)
 	--Hanging_Right
 	if entity.anim.current == entity.anim.hanging_right
 	then
+		print("In Hanging_Right")
 		entity.ungrounded_time = 0
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		
@@ -331,7 +337,7 @@ function update_controls(delta_seconds, entity)
 	--Hanging_Left
 	if entity.anim.current == entity.anim.hanging_left
 	then
-
+		print("In Hanging_Left")
 		entity.ungrounded_time = 0
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		
@@ -355,7 +361,7 @@ function update_controls(delta_seconds, entity)
 		--entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
 	end
 	 
-	 if entity.anim.current == entity.anim.in_jump
+	if entity.anim.current == entity.anim.in_jump
 	 then 
 		print("In_jump")
 	end
