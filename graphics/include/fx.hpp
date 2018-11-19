@@ -10,6 +10,13 @@
 
 #define MAX_PARTICLES 1000
 
+struct build_information
+{
+	std::vector<glm::vec3> build_positions;
+	int object_id;
+	int place_state = 1;
+};
+
 namespace graphics
 {
 
@@ -31,11 +38,11 @@ public:
 	struct FXdata {
 		unsigned int last_used_particle = 0;
 		unsigned int total_particle_count = 0;
-
 		unsigned int vao, vbo;
 		unsigned int position_buffer, color_buffer;
 		unsigned int nr_of_particles;
 		unsigned int texture_buffer;
+		int fx_object_id[4];
 		float g_vertex_buffer_data[12] = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, -0.5f,  0.5f, 0.0f, 0.5f,  0.5f, 0.0f };
 		float default_x, default_y, default_z;
 		float random_x, random_y, random_z;
@@ -77,7 +84,8 @@ public:
 	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_capsule_data(std::chrono::milliseconds delta, const Camera& camera, std::vector<glm::vec3> build_position);
+	void calculate_capsule_data(std::chrono::milliseconds delta, const Camera& camera, std::vector<build_information> build_info);
+
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};

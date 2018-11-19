@@ -27,12 +27,6 @@
 //test of new leaderboard
 #include <leaderboard.hpp>
 
-struct build_information
-{
-	std::vector<glm::vec3> build_positions;
-	int place_state = 1;
-};
-
 namespace graphics
 {
 

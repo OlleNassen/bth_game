@@ -112,6 +112,7 @@ void Game::render()
 		
 		info.build_positions = physics.get_debug_for(d_id);
 		info.place_state = players_placed_objects_id[i].place_state;
+		info.object_id = players_placed_objects_id[i].object_type_id;
 
 		build_info.push_back(info);
 	}
@@ -215,6 +216,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 				players_placed_objects_id[i].model_id = model_id;
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
+				players_placed_objects_id[i].object_type_id = placed_objects_list_id;
 
 				dynamics[dynamic_id].position = start_position;
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };

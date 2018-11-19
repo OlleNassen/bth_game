@@ -186,14 +186,32 @@ void FX::render_particles(const Shader& dust,
 	//FX - Capsule
 	dust.use();
 	dust.uniform("particle_texture", 0);
-	this->dust.bind(0);
 	dust.uniform("camera_right_worldspace", camera_right_vector);
 	dust.uniform("camera_up_worldspace", camera_up_vector);
 	dust.uniform("view", camera.view());
 	dust.uniform("projection", camera.projection);
 	dust.uniform("view_position", camera.position);
 	dust.uniform("particle_pivot", start_point);
-	render_particles(fx_capsule);
+	for (int i = 0; i < sizeof(fx_capsule.fx_object_id); i++)
+	{
+		if (fx_capsule.fx_object_id[i] == 0)
+		{
+			this->dust.bind(0);
+		}
+		else if (fx_capsule.fx_object_id[i] == 1)
+		{
+			this->fire.bind(0);
+		}
+		else if (fx_capsule.fx_object_id[i] == 2)
+		{
+			this->gust.bind(0);
+		}
+		else
+		{
+			this->godray.bind(0);
+		}
+		render_particles(fx_capsule);
+	}
 
 	//FX Dust
 	dust.use();
@@ -2235,16 +2253,25 @@ void FX::calculate_gust_data(std::chrono::milliseconds delta, const Camera & cam
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_gust.total_particle_count * 4 * sizeof(GLubyte), fx_gust.color_data);
 }
 
-void FX::calculate_capsule_data(std::chrono::milliseconds delta, const Camera & camera, std::vector<glm::vec3> build_position)
+void FX::calculate_capsule_data(std::chrono::milliseconds delta, const Camera & camera, std::vector<build_information> build_info)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
 	auto& fx_capsule = *fx_capsule_ptr;
 
+	for (int x = 0; x < build_info.size(); x++)
+	{
+		
+		fx_capsule.fx_object_id[x] = build_info[x].object_id;
+	}
+	fx_capsule.fx_object_id[1] = 1;
+	fx_capsule.fx_object_id[2] = 2;
+	fx_capsule.fx_object_id[3] = 3;
+
 	fx_capsule.default_x = 0.0f;
 	fx_capsule.default_y = 0.0f;
 	fx_capsule.default_z = 0.0f;
-	fx_capsule.nr_of_particles = 1;
+	fx_capsule.nr_of_particles = build_info.size();
 	randomizer = rand() % 100;
 
 	//Update data for particles
@@ -2270,9 +2297,18 @@ void FX::calculate_capsule_data(std::chrono::milliseconds delta, const Camera & 
 					fx_capsule.particle_container[i].speed = main_dir;
 
 					//Set colors, if you want color from texture, don't change the color
-					fx_capsule.particle_container[i].r = 255;
-					fx_capsule.particle_container[i].g = 222;
-					fx_capsule.particle_container[i].b = 34;
+					if (fx_capsule.fx_object_id[i] == 0)
+					{
+						fx_capsule.particle_container[i].r = 255;
+						fx_capsule.particle_container[i].g = 222;
+						fx_capsule.particle_container[i].b = 34;
+					}
+					else
+					{
+						fx_capsule.particle_container[i].r = 24;
+						fx_capsule.particle_container[i].g = 208;
+						fx_capsule.particle_container[i].b = 255;
+					}
 
 					fx_capsule.particle_container[i].a = 180;
 
@@ -2291,7 +2327,7 @@ void FX::calculate_capsule_data(std::chrono::milliseconds delta, const Camera & 
 
 		if (fx_capsule.particle_container[i].life > 0.0f)
 		{
-			fx_capsule.particle_container[0].pos = build_position[0] + glm::vec3(-1.0f, 0.0f, -2.0f);
+			fx_capsule.particle_container[i].pos = build_info[i].build_positions[i] + glm::vec3(-1.0f, 0.0f, -2.0f);
 			fx_capsule.particle_container[i].camera_distance = glm::length(fx_capsule.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data

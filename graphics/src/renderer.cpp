@@ -354,7 +354,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	}
 
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
-	player_count = num_players - 1;
+	player_count = num_players;
 	game_state = new_game_state;
 	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
@@ -430,14 +430,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Lava Light
 		fx_emitter.calculate_lava_light_data(delta, game_camera);
 
-		//Furance Light
+		//Furnace Light
 		fx_emitter.calculate_furnace_light_data(delta, game_camera);
 
 		//Gust
 		fx_emitter.calculate_gust_data(delta, game_camera);
 
 		//Capsule
-		fx_emitter.calculate_capsule_data(delta, game_camera, build_infos[id].build_positions);
+		fx_emitter.calculate_capsule_data(delta, game_camera, build_infos);
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();
