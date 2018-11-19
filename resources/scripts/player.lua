@@ -14,45 +14,62 @@ function setup(entity)
 
 	--trigger
 
-	--oil platform
-	entity.friction = 0
-	entity.friction_slowrate = 0
-
-	--sticky_platform
-	entity.slow_speed = entity.max_speed / 2
-
 	--shock_trap
-	entity.shock_trap_timer = 0.0
-	entity.shock_trap_immun_timer = 0.0
-	entity.shock_trap_triggerd = false
-	entity.shock_trap_immun = false
+	entity.stun_trap_timer = 0.0
+	entity.stun_trap_immune_timer = 0.0
+	entity.stun_trap_triggered = false
+	entity.stun_trap_immune = false
 	entity.temp = 0
-
-	--treadmill
-	entity.treadmill_speed = entity.max_speed / 2
 
 	--speed boost
 	entity.speed_boost_timer = 0.0
-	entity.speed_boost_triggerd = false
-	entity.max_speed_boost = entity.max_speed * 1.5
+	entity.speed_boost_triggered = false
+	
 
-	--steam boost
-	entity.steam_boost_timer = 0.0
-	entity.steam_boost_timer_max = 5
-	entity.steam_boost_delay_timer = 0.0
-	entity.steam_boost_triggerd = false
+	--double jump
+	entity.double_jump_timer = 0.0	
+	entity.double_jump_delay_timer = 0.0
+	entity.double_jump_triggered = false
 	entity.have_doubble_jumpt = false
 	entity.can_dubbel_jump = false
-	entity.steam_boost_jump_impulse = 50
 	entity.jump_was_push = false
 	entity.have_wall_jumpt = false
 
-	--trampolin
-	entity.trampolin_jump = false
-	entity.trampolin_iterator = 0
-	entity.trampolin_jump_impulse = 22.5
+
+	--glide_trap
+	entity.glide_trap_triggered = false
+	entity.glide_trap_timer = 0.0
+	entity.friction = 0
+	entity.friction_slowrate = 0
+
+	--random_buff
+	entity.random_buff_triggered = false
+	entity.random_buff_timer = 0.0
+
 
 end
+
+--triggers
+
+--shock_trap
+local shock_trap_max_timer = 3
+local shock_trap_immune_max_timer = 5
+
+--speed boost
+local max_speed_boost = 16 * 1.5
+local speed_boost_max_timer = 5
+
+--double jump
+local double_jump_impulse = 50
+local double_jump_timer_max = 5
+local double_jump_delay_max_timer = 0.2
+
+--glide_trap
+local glide_trap_max_timer = 5
+
+--random_buff
+local random_buff_max_timer = 5
+
 
 local jump_speed = 0
 local gravity = 120
@@ -69,7 +86,7 @@ function update(delta_seconds, entity)
 
 	have_wall_jumpt = true
 
-	if entity.shock_trap_triggerd == false
+	if entity.stun_trap_triggered == false
 	then
 		update_controls(delta_seconds, entity)
 	end
@@ -171,10 +188,10 @@ function update_controls(delta_seconds, entity)
 			entity.anim.current = entity.anim.in_jump
 		end
 
-		if entity.steam_boost_triggerd and entity.can_dubbel_jump == false and entity.have_doubble_jumpt == false --trigger
+		if entity.double_jump_triggered and entity.can_dubbel_jump == false and entity.have_doubble_jumpt == false --trigger
 		then
 			entity.can_dubbel_jump = true
-			entity.steam_boost_delay_timer = 0.0
+			entity.double_jump_delay_timer = 0.0
 		end
 
 	end
@@ -222,7 +239,7 @@ function update_controls(delta_seconds, entity)
 		entity.can_walljump = true
 
 
-		if entity.steam_boost_triggerd --trigger
+		if entity.double_jump_triggered --trigger
 		then
 			entity.have_doubble_jumpt = false
 			entity.can_dubbel_jump = false
@@ -277,7 +294,7 @@ function update_controls(delta_seconds, entity)
 	if entity.anim.current == entity.anim.hanging_right
 	then
 		
-		if entity.steam_boost_triggerd--trigger
+		if entity.double_jump_triggered--trigger
 		then
 			entity.have_wall_jumpt = true
 		end
@@ -310,7 +327,7 @@ function update_controls(delta_seconds, entity)
 	if entity.anim.current == entity.anim.hanging_left
 	then
 
-		if entity.steam_boost_triggerd --trigger
+		if entity.double_jump_triggered --trigger
 		then
 			entity.have_wall_jumpt = true
 		end
@@ -354,214 +371,198 @@ function update_triggers(delta_seconds, entity)
 	--trigger
 	if entity.triggered >= 4
 	then
-		--platform_oil
-		if entity.triggered_type == 2
+		--stun trap
+		if entity.triggered_type == 4 and entity.stun_trap_triggered == false and entity.stun_trap_immune == false
 		then
-
-			if entity.button.right or entity.button.left or entity.anim.current == entity.anim.falling
-			then
-				entity.friction = entity.velocity.x
-				entity.friction_slowrate = entity.velocity.x * 0.0125
-			end
-
-			if entity.button.right == false and entity.button.left == false
-			then
-				if entity.velocity.x > 0.1
-				then
-					entity.friction = entity.friction - entity.friction_slowrate
-					entity.velocity.x = entity.friction
-
-				elseif entity.velocity.x < -0.1
-				then
-					entity.friction = entity.friction - entity.friction_slowrate
-					entity.velocity.x = entity.friction
-				
-				elseif entity.velocity.x > -0.1 and entity.velocity.x < 0.1
-				then
-					entity.velocity.x = 0
-					entity.friction = 0
-				end
-			end
-			--print("platform_oil")
-		else
-			entity.friction = 0
-			entity.friction_slowrate = 0
-		end
-
-
-
-		--sticky_platform
-		if entity.triggered_type == 3
-		then
-			
-			if entity.button.right --right
-			then
-				--entity.velocity.x = 1
-				entity.velocity.x = entity.slow_speed
-			
-			elseif entity.button.left --left
-			then
-				--entity.velocity.x = -1
-				entity.velocity.x = -entity.slow_speed
-			end
-
-			if entity.button.jump
-			then
-				entity.impulse.y = entity.impulse.y * 0.675
-			end
-		end
-
-
-
-		--shock_trap
-		if entity.triggered_type == 4 and entity.shock_trap_triggerd == false and entity.shock_trap_immun == false
-		then
-			entity.shock_trap_triggerd = true
+			entity.stun_trap_triggered = true
 			entity.is_stund = true
-			entity.shock_trap_timer = 0.0
+			entity.stun_trap_timer = 0.0
+
+			if entity.speed_boost_triggered or entity.double_jump_triggered or entity.glide_trap_triggered
+			then
+				entity.speed_boost_triggered = false
+				entity.double_jump_triggered = false
+				entity.glide_trap_triggered = false
+			end
 
 			--print("shock_trap")
 		end
 
-
-
-		--treadmill
-		if entity.triggered_type == 5
-		then
-			if entity.button.right or entity.button.left
-			then
-				entity.velocity.x = entity.velocity.x + entity.treadmill_speed
-			
-			else
-				entity.velocity.x = entity.treadmill_speed
-			end
-
-			--print("treadmill")
-		end
-
 		--speed_boost
-		if entity.triggered_type == 7 and entity.speed_boost_triggerd == false
+		if entity.triggered_type == 7 and entity.speed_boost_triggered == false
 		then
-			entity.speed_boost_triggerd = true
+			entity.speed_boost_triggered = true
 			entity.speed_boost_timer = 0.0
+
+			if entity.stun_trap_triggered or entity.double_jump_triggered or entity.glide_trap_triggered
+			then
+				entity.stun_trap_triggered = false
+				entity.double_jump_triggered = false
+				entity.glide_trap_triggered = false
+			end
 
 			--print("Sprint_boost")
 		end
 
-		--steam_boost
-		if entity.triggered_type == 8 and entity.steam_boost_triggerd == false
+		--double_jump
+		if entity.triggered_type == 8 and entity.double_jump_triggered == false
 		then
-			entity.steam_boost_triggerd = true
-			entity.steam_boost_timer = 0.0
+			entity.double_jump_triggered = true
+			entity.double_jump_timer = 0.0
 			entity.steam_boost_delay_timer = 0.0
+
+			if entity.stun_trap_triggered or entity.speed_boost_triggered or entity.glide_trap_triggered
+			then
+				entity.stun_trap_triggered = false
+				entity.speed_boost_triggered = false
+				entity.glide_trap_triggered = false
+			end
 
 			--print("steam_boost")
 		end
 
-		--trampolin
-		if entity.triggered_type == 9 --and entity.velocity.y <= -10
+		--glide_trap
+		if entity.triggered_type == 3 and entity.glide_trap_triggered == false
 		then
-			entity.trampolin_jump = true
-			entity.anim.current = entity.anim.falling
-			entity.can_jump = false
-			--print("trampolin")
+			entity.glide_trap_triggered = true
+			entity.glide_trap_timer = 0.0
+
+			if entity.stun_trap_triggered or entity.speed_boost_triggered or entity.double_jump_triggered
+			then
+				entity.stun_trap_triggered = false
+				entity.speed_boost_triggered = false
+				entity.double_jump_triggered = false				
+			end
+
+		end
+
+		--random_buff
+		if entity.triggered_type == 2 and entity.random_buff_triggered == false
+		then
+			entity.random_buff_triggered = true
+
 		end
 	end
 
-	--shock_trap
+	--trap and boost "functions"
 
-	if	entity.shock_trap_timer <= 3.0 and entity.shock_trap_triggerd == true
+	--stun trap
+	if	entity.stun_trap_triggered == true and entity.stun_trap_timer <= shock_trap_max_timer --stun timer
 	then
-		entity.shock_trap_timer = entity.shock_trap_timer + delta_seconds
-		if entity.anim.current ~= entity.anim.Falling and entity.anim.current ~= entity.anim.in_jump
-		then
-			--entity.velocity.x = 0
-			--entity.velocity.y = 0
-		end
+		entity.stun_trap_timer = entity.stun_trap_timer + delta_seconds
 
-	elseif	entity.shock_trap_timer >= 3.0 and entity.shock_trap_triggerd == true
+	elseif	entity.stun_trap_triggered == true
 	then
-		entity.shock_trap_triggerd = false
+		entity.stun_trap_triggered = false
 		entity.is_stund = false
 
-		entity.shock_trap_immun_timer = 0
-		entity.shock_trap_immun = true
+		entity.stun_trap_immune_timer = 0.0
+		entity.stun_trap_immune = true
 	end
 
-	if	entity.shock_trap_immun_timer <= 5.0 and entity.shock_trap_immun == true
+	if	entity.stun_trap_immune_timer <= shock_trap_immune_max_timer and entity.stun_trap_immune == true --immune timer
 	then
-		entity.shock_trap_immun_timer = entity.shock_trap_immun_timer + delta_seconds
+		entity.stun_trap_immune_timer = entity.stun_trap_immune_timer + delta_seconds
 
-	elseif	entity.shock_trap_immun_timer >= 5.0 and entity.shock_trap_immun == true
+	elseif entity.stun_trap_immune == true
 	then
-		entity.shock_trap_immun = false
+		entity.stun_trap_immune = false
+	end
+
+
+	--glide_trap
+	if entity.glide_trap_triggered == true and entity.glide_trap_timer <= glide_trap_max_timer
+	then
+		entity.glide_trap_timer = entity.glide_trap_timer + delta_seconds
+
+
+
+		if entity.button.right or entity.button.left or entity.anim.current == entity.anim.falling
+		then
+			entity.friction = entity.velocity.x
+			entity.friction_slowrate = entity.velocity.x * 0.005
+		end
+	
+		if entity.button.right == false and entity.button.left == false
+		then
+			if entity.velocity.x > 0.1
+			then
+				entity.friction = entity.friction - entity.friction_slowrate
+				entity.velocity.x = entity.friction
+	
+			elseif entity.velocity.x < -0.1
+			then
+				entity.friction = entity.friction - entity.friction_slowrate
+				entity.velocity.x = entity.friction
+			
+			elseif entity.velocity.x > -0.1 and entity.velocity.x < 0.1
+			then
+				entity.velocity.x = 0
+				entity.friction = 0
+			end
+		end
+
+
+
+	elseif entity.glide_trap_triggered == true
+	then
+		entity.glide_trap_triggered = false
 	end
 
 
 	--speed_boost
-	if	entity.speed_boost_triggerd == true and entity.speed_boost_timer <= 5.0
-	then
-		if entity.button.right
-		then
-			entity.velocity.x = entity.max_speed_boost--right
-
-		elseif entity.button.left
-		then 
-			entity.velocity.x = -entity.max_speed_boost --left
-		end
-	end
-
-	if	entity.speed_boost_timer <= 5.0
+	if entity.speed_boost_triggered == true and entity.speed_boost_timer <= speed_boost_max_timer
 	then
 		entity.speed_boost_timer = entity.speed_boost_timer + delta_seconds
 
-	elseif	entity.speed_boost_timer >= 5.0
+		if entity.button.right
+		then
+			entity.velocity.x = max_speed_boost--right
+			print(max_speed_boost)
+
+		elseif entity.button.left
+		then 
+			entity.velocity.x = -max_speed_boost --left
+			print(max_speed_boost)
+		end
+
+	elseif entity.speed_boost_triggered == true
 	then
-		entity.speed_boost_triggerd = false
+		entity.speed_boost_triggered = false
 	end
 
 
-	--steam_boost
-	if	entity.steam_boost_triggerd and entity.can_dubbel_jump and entity.steam_boost_timer <= entity.steam_boost_timer_max
+	--double_jump
+	if entity.double_jump_triggered == true and entity.can_dubbel_jump and entity.double_jump_timer <= double_jump_timer_max
 	then
-		if entity.button.jump and not entity.jump_was_push and entity.have_wall_jumpt == false and entity.steam_boost_delay_timer > 0.2
+		entity.double_jump_timer = entity.double_jump_timer + delta_seconds
+		entity.double_jump_delay_timer = entity.double_jump_delay_timer + delta_seconds
+
+		print("1")
+
+		if entity.button.jump and not entity.jump_was_push and entity.have_wall_jumpt == false and entity.double_jump_delay_timer > double_jump_delay_max_timer
 		then
 			
-			entity.velocity.y = entity.steam_boost_jump_impulse
+			entity.velocity.y = double_jump_impulse
 
 			entity.can_dubbel_jump = false
 			entity.have_doubble_jumpt = true
 
 		end
+	elseif entity.double_jump_triggered == true
+	then
+		entity.double_jump_triggered = false
 	end
 
-	if	entity.steam_boost_timer <= entity.steam_boost_timer_max
-	then
-		entity.steam_boost_timer = entity.steam_boost_timer + delta_seconds
-		entity.steam_boost_delay_timer = entity.steam_boost_delay_timer + delta_seconds
 
-	elseif	entity.steam_boost_timer >= entity.steam_boost_timer_max
+	--random_buff
+	if entity.random_buff_triggered == true and entity.random_buff_timer <= random_buff_max_timer
 	then
-		entity.steam_boost_triggerd = false
-	end
+		entity.random_buff_timer = entity.random_buff_timer + delta_seconds
 
-	--trampolin
-	if entity.trampolin_jump
+	elseif entity.random_buff_triggered == true
 	then
-		entity.can_jump = false
-		if entity.trampolin_iterator < 3
-		then
-			if entity.velocity.y <= -4
-			then
-				entity.impulse.y = (entity.velocity.y * -1)
-			end
-			
-			entity.impulse.y = entity.impulse.y + entity.trampolin_jump_impulse;
-			entity.trampolin_iterator = entity.trampolin_iterator + 1
-		else
-			entity.trampolin_jump = false
-			entity.trampolin_iterator = 0
-		end
+		entity.random_buff_triggered = false
 	end
 end
 

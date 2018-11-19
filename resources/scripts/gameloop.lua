@@ -5,17 +5,17 @@ function setup(game)
 	--4 playerscores:
 	game.names = {"p1", "p2", "p3", "p4"}
 	game.scores = { 0, 0, 0, 0 }
-	game.finished = { false, false, false, false }
+	game.finished = {false, false, false, false}
 	game.died = {false, false, false, false}
 	game.clock = 0.0
 	game.winner = false
 
-	--game.speed_boost_timer = {0.0, 0.0, 0.0, 0.0}
-	--game.speed_boost_triggerd = { false, false, false, false }
-	--game.max_speed = 8700
-	--game.max_speed_boost = game.max_speed * 2
-	--game.max_velocity = 16
-	--game.max_velocity_boost = game.max_velocity * 1.3
+
+	--shield
+	game.shield_triggered = {false, false, false, false}
+	game.shield_protection = {false, false, false, false}
+	game.is_spike = {false, false, false, false}
+	
 
 	game.time = 0.0
 	game.max_time = 90.0
@@ -113,7 +113,7 @@ function update(delta_seconds, game, entities)
 		then
 
 			--spike_trap
-			if entities[i].triggered_type == 0
+			if entities[i].triggered_type == 0 and game.shield_triggered[i] == false
 			then
 				game.finished[i] = true
 				game.died[i] = true
@@ -122,20 +122,31 @@ function update(delta_seconds, game, entities)
 
 				game.points = game.points - 1
 
-			end
-
-			--saw
-			if entities[i].triggered_type == 1
+			elseif entities[i].triggered_type == 0 and game.shield_triggered[i] == true
 			then
-				game.finished[i] = true
-				game.died[i] = true
-				entities[i].position.y = -2000
-				entities[i].position.x = -2000
-
-				game.points = game.points - 1
-
+				game.is_spike[i] = true
+				print("protected")
 			end
+
+
+
+			--shield
+			if entities[i].triggered_type == 6 and game.shield_triggered[i] == false
+			then
+				game.shield_triggered[i] = true
+				print("shield")
+			end
+
+		elseif game.shield_triggered[i] == true and game.is_spike[i] == true
+		then
+			game.shield_triggered[i] = false
+			game.is_spike[i] = false
+			print("removed")
+
 		end
+
+
+
 	end
 
 	for i = 1, 4, 1
@@ -154,6 +165,8 @@ function update(delta_seconds, game, entities)
 			--print(entities[i].position.y)
 		end
 	end
+
+	--game.is_spike[i] = false
 end
 
 function reset_time(game)

@@ -264,12 +264,17 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		if (!give_players_objects)
 		{
+
 			players_placed_objects_id.fill({ 0, 0, 0 });
 			std::array<int, 4> random_index = random_indexes();
 			for (int i = 0; i < 4; i++)
 			{
-				glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
-				placed_objects_list_id = random_picked_object(); //placed_objects_array[0];
+				glm::vec2 start_position = { 7 * (i - 2), (20 + i * 2) /*+ (random_index[i] * 64)*/ };
+				placed_objects_list_id = placed_objects_array[i]; //3;//random_picked_object(); //placed_objects_array[0];
+
+				//glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
+				//placed_objects_list_id = random_picked_object(); //placed_objects_array[0];
+
 
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);
@@ -308,17 +313,17 @@ void Game::update(std::chrono::milliseconds delta)
 		give_players_objects = false;
 		for (auto& ppoi : players_placed_objects_id)
 		{
-			if (ppoi.place_state == 0 || ppoi.place_state == 1)			{
-				//Remove object
-				dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
-				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
-				
-				std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
-				std::swap(ppoi, players_placed_objects_id[players_placed_objects_id.size() - 1]);
+			//if (ppoi.place_state == 0 || ppoi.place_state == 1)			{
+			//	//Remove object
+			//	dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
+			//	level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
+			//	
+			//	std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
+			//	std::swap(ppoi, players_placed_objects_id[players_placed_objects_id.size() - 1]);
 
-				level.moving_models.pop_back();
-				physics.remove_body(ppoi.dynamics_id);
-			}
+			//	level.moving_models.pop_back();
+			//	physics.remove_body(ppoi.dynamics_id);
+			//}
 		}
 	}
 
