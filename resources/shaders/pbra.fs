@@ -32,7 +32,9 @@ uniform samplerCube irradiance_map;
 uniform samplerCube prefilter_map;
 
 const int max_num_lights = 3;
-const int block_size = 24;
+const int block_size =  24;
+const int block_size_x = 1920 / block_size;
+const int block_size_y = 1080 / block_size;
 
 uniform int light_indices[block_size * block_size];
 
@@ -122,9 +124,10 @@ void main()
     vec3 Lo = vec3(0.0);
     //for(int j = 0; j < max_num_lights; ++j) 
     {
-		int x = int(gl_FragCoord.x / block_size);
-		int y = int(gl_FragCoord.y / block_size);
-		int i = light_indices[x + y * block_size];
+		int x = int(gl_FragCoord.x / block_size_x);
+		int y = int(gl_FragCoord.y / block_size_y);
+		light_grid_element elem = light_indices[x + y * block_size];
+		int i = elem.light_count;
 			
 		// calculate per-light radiance
 		vec3 L = normalize(light_pos[i] - fs_in.world_pos);
