@@ -162,10 +162,10 @@ bool sphere_inside_plane(const Sphere& sphere, const Plane& plane)
 bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum)
 {	
 	return 
-		!(sphere_inside_plane(sphere, frustum.left) &&
-		  sphere_inside_plane(sphere, frustum.right) &&
-		  sphere_inside_plane(sphere, frustum.top) &&
-		  sphere_inside_plane(sphere, frustum.bottom));
+		sphere_inside_plane(sphere, frustum.left) ||
+		sphere_inside_plane(sphere, frustum.right) ||
+		sphere_inside_plane(sphere, frustum.top) ||
+		sphere_inside_plane(sphere, frustum.bottom);
 
 }
 
