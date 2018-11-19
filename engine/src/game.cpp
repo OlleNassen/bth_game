@@ -317,21 +317,24 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::score);
 		static float score_timer = 3.5f;
 
-		//score_timer -= dt;
+		score_timer -= dt;
 
 		//If winner found
 			//Set State -> game_over
 		if (lua_data.game_over)
 		{
-			//net_state.state = network::SessionState::game_over;
-			//game_state = (game_state | state::game_over);
+			net_state.state = network::SessionState::game_over;
+			game_state = (game_state | state::game_over);
 		}
 		else //Otherwise distribute score and //Set State -> pre_building
 		{
-			//if (score_timer <= 0.0f)
-			//{
-			//	score_timer = 3.5f;
-			//}
+			if (score_timer <= 0.0f)
+			{
+				score_timer = 3.5f; 
+				net_state.state = network::SessionState::pre_building;
+				game_state = (game_state | state::pre_building);
+				gameplay.new_round();
+			}
 		}
 	}
 	else if (net_state.state == network::SessionState::game_over)
