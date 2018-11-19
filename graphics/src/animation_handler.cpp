@@ -393,6 +393,10 @@ float Animation_handler::animation_logic(anim state)
 	{
 		if (state == anim::connect_wall)
 			time = 0.1f;
+		else if (state == anim::landing)//Test controls
+			time = 0.1f;
+		else if (state == anim::idle)//Test controls
+			time = 0.1f;
 		else if (state == anim::falling)
 			time = 0.1f;
 		else if (state == anim::hanging_left || state == anim::hanging_right)

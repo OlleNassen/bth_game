@@ -186,11 +186,9 @@ function update_controls(delta_seconds, entity)
 	--Start jump
 	if entity.anim.current == entity.anim.start_jump
 	then
-		--entity.jump_timer = 0
 
 		if entity.can_jump and entity.button.jump == true
 		then
-			print("au")
 			jump_speed = 8
 			entity.jump_timer = entity.jump_timer + delta_seconds
 			entity.anim.current = entity.anim.in_jump
@@ -207,7 +205,6 @@ function update_controls(delta_seconds, entity)
 			jump_speed = jump_speed + 2
 			entity.jump_timer = entity.jump_timer + delta_seconds
 			entity.impulse.y = jump_speed
-			print(entity.jump_timer)
 		elseif  entity.jump_timer >= 0.15 or entity.button.jump == false
 		then
 			entity.can_jump = false
@@ -227,10 +224,19 @@ function update_controls(delta_seconds, entity)
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 
-		if entity.velocity.y < -0.20
+		--[[if entity.velocity.y < -1.50
 		then 
 			entity.anim.current = entity.anim.falling
+		end]]--
+
+		
+		if entity.velocity.y < 0.0 and entity.velocity.y >= -0.1
+		then
+			print("Pannkakor")
+			entity.anim.current = entity.anim.falling
 		end
+
+		print(entity.velocity.y)
 	end
 
 	--Landing
@@ -275,25 +281,24 @@ function update_controls(delta_seconds, entity)
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 
-		
-		--[[if entity.velocity.y <= -0.1 and entity.velocity.y > -1.0
-		then 
-			print("asdau")
-			entity.velocity.y = 0
-			entity.anim.current = entity.anim.idle
-		end]]--
+		print(entity.velocity.y)
 
+		if entity.velocity.y <= 0.1 and entity.velocity.y >= -0.1
+		then
+			print("Pannkakor")
+			entity.anim.current = entity.anim.landing
+		end
 
 		--print(entity.velocity.x)
 		--[[Test of jumpforgiveness
 		if entity.can_jump == false
 		then
-		entity.ungrounded_time = entity.ungrounded_time + delta_seconds
+			entity.ungrounded_time = entity.ungrounded_time + delta_seconds
 			if entity.button.jump and entity.ungrounded_time <= 0.5
 			then
-			entity.can_jump = true
-			entity.anim.current = entity.anim.start_jump
-			--entity.impulse.y = 35
+				entity.can_jump = true
+				entity.anim.current = entity.anim.start_jump
+				--entity.impulse.y = 35
 			end
 		end]]--
 	end
@@ -371,6 +376,8 @@ function update_controls(delta_seconds, entity)
 	 then 
 		print("landing")
 	end
+
+
 	--Cap the velocity/entity.forces.x
 	--[[if entity.forces.x > entity.maxSpeed
 		then
