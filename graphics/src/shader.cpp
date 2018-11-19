@@ -186,8 +186,16 @@ void Shader::uniform(const std::string& name,
 
 void Shader::uniform(const std::string& name, const LightGrid& value) const
 {
-	glUniform1iv(glGetUniformLocation(id, name.c_str()),
-		value.size(), (const GLint*)value.data());
+	for (int i = 0; i < value.size(); ++i)
+	{
+		std::string count = name + "[" + std::to_string(i) + "].count";
+		glUniform1iv(glGetUniformLocation(id, count.c_str()),
+			1, &value.data()[i].count);
+
+		std::string indices = name + "[" + std::to_string(i) + "].indices";
+		glUniform1iv(glGetUniformLocation(id, indices.c_str()),
+			5, value.data()[i].indices);
+	}
 }
 
 std::string Shader::load(const std::string& path) const

@@ -29,8 +29,8 @@ struct Frustum
 
 struct light_grid_element
 {
-	int count = 0;
-	int indices[5] = {};
+	int count;
+	int indices[5];
 };
 
 class LightGrid
@@ -46,8 +46,6 @@ public:
 
 	std::array<PointLight, 32> lights;
 private:
-	
-	static constexpr int max_num_lights = 3;
 	static constexpr int block_size = 24;
 
 	light_grid_element indices[block_size * block_size];

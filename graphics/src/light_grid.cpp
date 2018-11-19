@@ -48,7 +48,7 @@ LightGrid::LightGrid()
 
 	for (int i = 0; i < 32; ++i)
 	{
-		lights[i].radius = 1.0f;
+		lights[i].radius = 100.0f;
 	}
 }
 
@@ -56,9 +56,10 @@ const light_grid_element* LightGrid::data() const
 {
 	return indices;
 }
-int LightGrid::size()const
+
+int LightGrid::size() const
 {
-	return block_size * block_size * 6;
+	return block_size * block_size;
 }
 
 void LightGrid::calculate_grid(const Camera& camera)
@@ -76,6 +77,14 @@ void LightGrid::calculate_grid(const Camera& camera)
 
 void LightGrid::update(const Camera& camera)
 {
+	for (int j = 0; j < block_size; ++j)
+	{
+		for (int i = 0; i < block_size; ++i)
+		{
+			indices[i + j * block_size].count = 0;
+		}
+	}
+	
 	for (int light_id = 0; light_id < lights.size(); ++light_id)
 	{
 		glm::vec3 p{lights[light_id].position};
@@ -88,8 +97,14 @@ void LightGrid::update(const Camera& camera)
 		{
 			for (int i = 0; i < block_size; ++i)
 			{
-				if (sphere_inside_frustum(sphere, grid[i][j]) && indices[i + j * block_size].count < 5)
-					indices[i + j * block_size].indices[indices[i + j * block_size].count++] = light_id;
+				light_grid_element& elem = indices[i + j * block_size];
+				//if (sphere_inside_frustum(sphere, grid[i][j]) && elem.count < 5)		
+					elem.count = 4;
+					elem.indices[0] = 0;
+					elem.indices[1] = 1;
+					elem.indices[2] = 2;
+					elem.indices[3] = 3;
+					elem.indices[4] = 0;
 			}
 		}
 	}
@@ -151,18 +166,12 @@ bool sphere_inside_plane(const Sphere& sphere, const Plane& plane)
 
 bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum)
 {	
-	bool result = true;
+	return 
+		!(sphere_inside_plane(sphere, frustum.left) &&
+		  sphere_inside_plane(sphere, frustum.right) &&
+		  sphere_inside_plane(sphere, frustum.top) &&
+		  sphere_inside_plane(sphere, frustum.bottom));
 
-	if (sphere_inside_plane(sphere, frustum.left))
-		result = false;
-	if (sphere_inside_plane(sphere, frustum.right))
-		result = false;
-	if (sphere_inside_plane(sphere, frustum.top))
-		result = false;
-	if (sphere_inside_plane(sphere, frustum.bottom))
-		result = false;
-
-	return result;
 }
 
 }
