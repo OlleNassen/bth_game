@@ -359,6 +359,10 @@ function accelerate(delta_seconds, entity, top_speed, acceleration)
 
 	if top_speed > 0
 	then
+		if entity.velocity.x > 0 and entity.velocity.x < 1
+		then 
+			entity.velocity.x = 1
+		end
 		if entity.velocity.x < top_speed	
 		then
 			entity.velocity.x = entity.velocity.x +(acceleration*delta_seconds )
@@ -367,6 +371,10 @@ function accelerate(delta_seconds, entity, top_speed, acceleration)
 		end
 	elseif top_speed < 0
 	then
+		if entity.velocity.x > -1 and entity.velocity.x < 0
+		then 
+			entity.velocity.x = -1
+		end
 		if entity.velocity.x > top_speed
 		then
 			entity.velocity.x = entity.velocity.x -(acceleration*delta_seconds )
