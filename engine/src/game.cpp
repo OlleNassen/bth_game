@@ -277,7 +277,7 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 		}
 
-		level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
+		//level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
 
 		//Set State -> pre_playing
 		if (!gameplay.build_stage(static_cast<int>(player_count)))
@@ -594,6 +594,11 @@ void Game::update(std::chrono::milliseconds delta)
 				level.moving_models[i].set_position(pos);
 			}
 		}
+	}
+
+	if (game_state & state::building)
+	{
+		level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
 	}
 
 	anim idle = anim::falling;
