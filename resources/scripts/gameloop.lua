@@ -145,8 +145,9 @@ function update(delta_seconds, game, entities)
 			then
 				game.finished[i] = true
 				game.died[i] = true
-				entities[i].position.y = -2000
-				entities[i].position.x = -2000
+
+				death_height[i] = entities[i].position.y;
+				entities[i].position.x = -40
 
 				game.points = game.points - 1
 

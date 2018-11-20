@@ -596,12 +596,6 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
-	/*if (game_state & state::building)
-	{
-		level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3};
-	}*/
-
-
 	anim idle = anim::falling;
 
 	for (auto& model : level.animated_models)
@@ -710,8 +704,6 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		window.toggle_screen_mode(settings);
 	}
-
-	std::cout << static_cast<int>(player_count) << "\n";
 }
 
 void Game::pack_data()
