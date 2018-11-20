@@ -3,16 +3,11 @@ local  start_jump
 local  in_jump
 local  falling
 local  landing
-local  hanging_wall
-local  connect_wall
-local  jump_from_wall
 local  idle
 local  running
-local  turning
 local  sliding
 local  hanging_left
 local  hanging_right
-local  independent
 
 function setup(entity)
 	entity.jump_timer = 0.0
@@ -53,23 +48,24 @@ local move = function(entity, force)
 	end
 end
 
-local jump = function(entity, impulse) 
+local jump = function(entity, x, y) 
 	if entity.button.jump then
 		entity.update = start_jump
-		entity.anim.current = entity.anim.start_jump
-		entity.impulse.y = impulse
+		entity.anim.current = entity.anim.start_jump				
+		entity.impulse.x = x
+		entity.impulse.y = y
 	end
 end
 
 
 start_jump = function(delta_seconds, entity) 
-	move(entity, 7000 * 0.8)
+	move(entity, 8000 * 0.8)
 	entity.update = in_jump
 	entity.anim.current = entity.anim.in_jump
 end
 
 in_jump = function(delta_seconds, entity) 
-	move(entity, 7000 * 0.8)
+	move(entity, 8000 * 0.8)
 
 	if entity.velocity.y < 5.0 then
 		entity.update = falling
@@ -78,9 +74,18 @@ in_jump = function(delta_seconds, entity)
 end
 
 falling = function(delta_seconds, entity) 	
-	move(entity, 7000 * 0.8)
+	move(entity, 8000 * 0.8)
+	
+	if entity.anim.current == entity.anim.hanging_left then
+		entity.update = hanging_left
+		entity.anim.current = entity.anim.hanging_left
+	end
 
-	print("here")
+	if entity.anim.current == entity.anim.hanging_right then
+		entity.update = hanging_right
+		entity.anim.current = entity.anim.hanging_right
+	end
+	
 	if entity.anim.current == entity.anim.landing then
 		entity.update = idle
 		entity.anim.current = entity.anim.idle
@@ -88,34 +93,16 @@ falling = function(delta_seconds, entity)
 end
 
 landing = function(delta_seconds, entity) 
-	move(entity, 7000 * 0.8)
-
-end
-
-hanging_wall = function(delta_seconds, entity) 
-
-end
-
-connect_wall = function(delta_seconds, entity) 
-
-end
-
-jump_from_wall = function(delta_seconds, entity) 
-
+	move(entity, 8000 * 0.8)
 end
 
 idle = function(delta_seconds, entity) 
-	move(entity, 7000)
-	jump(entity, 15000)
-	
+	move(entity, 8000)
+	jump(entity, 0, 15000)
 end
 
 running = function(delta_seconds, entity) 
-	jump(entity, 15000)
-end
-
-turning = function(delta_seconds, entity) 
-	jump(entity, 15000)
+	jump(entity, 0, 15000)
 end
 
 sliding = function(delta_seconds, entity) 
@@ -123,13 +110,9 @@ sliding = function(delta_seconds, entity)
 end
 
 hanging_left = function(delta_seconds, entity) 
-
+	jump(entity, 2000, 2000)
 end
 
 hanging_right = function(delta_seconds, entity) 
-
-end
-
-independent = function(delta_seconds, entity) 
-
+	jump(entity, -2000, 2000)
 end
