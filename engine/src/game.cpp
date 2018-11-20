@@ -307,9 +307,28 @@ void Game::update(std::chrono::milliseconds delta)
 		//RUN!
 		game_state = (game_state | state::playing);
 
+		static float all_finished_timer = 6.5f;
+
 		//Set State -> score
+
+		int total_finished = 0;
+		for (int i = 0; i < static_cast<int>(player_count); i++)
+		{
+			if (lua_data.finished[i])
+			{
+				total_finished++;
+			}
+		}
+
+		if (total_finished == static_cast<int>(player_count))
+		{
+			all_finished_timer -= dt;
+			lua_data.time = all_finished_timer;
+		}
+
 		if (lua_data.time <= 0.0f)
 		{
+			all_finished_timer = 3.5f;
 			net_state.state = network::SessionState::score;
 			game_state = (game_state | state::score);
 		}
@@ -652,20 +671,20 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				watching = (watching - 1);
 				if (watching < 0)
-					watching = 3;
+					watching = static_cast<int>(player_count) - 1;
 
 				if (watching == net.id())
 				{
 					watching = (watching - 1);
 					if (watching < 0)
-						watching = 3;
+						watching = static_cast<int>(player_count) - 1;
 				}
 
 				if (lua_data.died[watching] || lua_data.finished[watching])
 				{
 					watching = (watching - 1);
 					if (watching < 0)
-						watching = 3;
+						watching = static_cast<int>(player_count) - 1;
 				}
 			}
 		}

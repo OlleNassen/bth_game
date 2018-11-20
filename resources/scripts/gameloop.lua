@@ -22,6 +22,7 @@ function setup(game)
 end
 
 round = 0
+death_height = { 0.0, 0.0, 0.0, 0.0 }
 
 function update(delta_seconds, game, entities)
 
@@ -119,12 +120,14 @@ function update(delta_seconds, game, entities)
 		then
 
 			--spike_trap
-			if entities[i].triggered_type == 0
+			if entities[i].triggered_type == 0 and not game.died[i]
 			then
 				game.finished[i] = true
 				game.died[i] = true
 				
-				entities[i].position.y = entities[i].position.y
+				death_height[i] = entities[i].position.y;
+
+				--entities[i].position.y = entities[i].position.y
 				entities[i].position.x = -40
 
 				entities[i].impulse.x = 0
@@ -170,7 +173,7 @@ function update(delta_seconds, game, entities)
 	do
 		if game.died[i] and game.finished[i]
 		then
-			entities[i].position.y = entities[i].position.y
+			entities[i].position.y = death_height[i]
 			entities[i].position.x = -40
 
 			entities[i].impulse.x = 0
