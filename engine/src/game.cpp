@@ -291,6 +291,7 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::pre_playing)
 	{
+		
 		if (give_players_objects == true)
 		{
 			give_players_objects = false;
