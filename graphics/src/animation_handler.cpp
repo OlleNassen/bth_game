@@ -397,6 +397,8 @@ float Animation_handler::animation_logic(anim state)
 			time = 0.1f;
 		else if (state == anim::hanging_left || state == anim::hanging_right)
 			time = 0.1f;
+		else if (state == anim::landing)
+			time = 0.1f;
 		else if (state == anim::independent)
 			time = 0.0;
 	}
@@ -538,8 +540,8 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 			}
 			else if (current_state == anim::jump_from_wall)
 			{
-				//switch_animation(anim::in_jump);
-				//play_anim = current_state;
+				switch_animation(anim::in_jump);
+				play_anim = current_state;
 			}
 			else if (current_state == anim::start_jump) 
 			{
