@@ -68,8 +68,8 @@ function update(delta_seconds, game, entities)
 	if game.points == 0
 	then
 		-- Start positions
-		--entities[1].position.x = 0
-		--entities[1].position.y = 1.75
+		entities[1].position.x = 0
+		entities[1].position.y = 1.75
 
 		entities[2].position.x = 3
 		entities[2].position.y = 1.75

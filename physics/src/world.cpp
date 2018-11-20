@@ -404,11 +404,13 @@ void World::rotate_static_box(int id)
 
 void World::remove_body(int at)
 {
-	std::swap(bodies[at], bodies[bodies.size() - 1]);
+	//std::swap(bodies[at], bodies[bodies.size() - 1]);
 	//std::swap(dynamic_rigidbodies[at], dynamic_rigidbodies[dynamic_rigidbodies.size() - 1]);
 
-	dynamic_rigidbodies.pop_back();
-	bodies.pop_back();
+	bodies.erase(bodies.begin() + at, bodies.begin() + at);
+
+	//dynamic_rigidbodies.pop_back();
+	//bodies.pop_back();
 }
 
 void World::collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index)
