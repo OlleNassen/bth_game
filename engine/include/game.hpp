@@ -95,6 +95,7 @@ private:
 
 	//spectator
 	int watching = 0;
+	bool changed_player = false;
 
 	//New gameloop stuff
 	void load_map(const char* file_path);

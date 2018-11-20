@@ -290,7 +290,8 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		//Begin 3, 2, 1, GO! countdown.
 		game_state = (game_state | state::pre_playing);
-		
+		changed_player = false;
+
 		if (lua_data.time <= 0.5f)
 		{
 			net_state.state = network::SessionState::playing;
@@ -627,11 +628,13 @@ void Game::update(std::chrono::milliseconds delta)
 				<< lua_data.scores[i] << " | ";
 		}			
 		
-		if (lua_data.died[net.id()] || lua_data.finished[net.id()])
+		if ((lua_data.died[net.id()] || lua_data.finished[net.id()]) && game_state & state::playing)
 		{
 			//Spectator
-			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
+			if ((*local_input)[logic::button::right] == logic::button_state::pressed || !changed_player)
 			{
+				changed_player = true;
+
 				watching = (watching + 1) % static_cast<int>(player_count);
 
 				if (waiting == net.id())
