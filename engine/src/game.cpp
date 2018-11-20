@@ -636,16 +636,16 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				changed_player = true;
 
-				watching = (watching + 1) % static_cast<int>(player_count);
+				watching = (watching + 1) % 4;
 
 				if (watching == net.id())
 				{
-					watching = (watching + 1) % static_cast<int>(player_count);
+					watching = (watching + 1) % 4;
 				}
 
 				if (lua_data.died[watching] || lua_data.finished[watching])
 				{
-					watching = (watching + 1) % static_cast<int>(player_count);
+					watching = (watching + 1) % 4;
 				}
 			}
 
@@ -653,20 +653,20 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				watching = (watching - 1);
 				if (watching < 0)
-					watching = static_cast<int>(player_count) - 1;
+					watching = 3;
 
 				if (watching == net.id())
 				{
 					watching = (watching - 1);
 					if (watching < 0)
-						watching = static_cast<int>(player_count) - 1;
+						watching = 3;
 				}
 
 				if (lua_data.died[watching] || lua_data.finished[watching])
 				{
 					watching = (watching - 1);
 					if (watching < 0)
-						watching = static_cast<int>(player_count) - 1;
+						watching = 3;
 				}
 			}
 		}
