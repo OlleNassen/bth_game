@@ -142,25 +142,10 @@ function update_controls(delta_seconds, entity)
 	then
 		if entity.can_jump and entity.button.jump == true and entity.jump_timer < 0.17
 		then
-			--jump_speed = jump_speed + 7
-			jump_speed = 9
+			jump_speed = 10
 			entity.jump_timer = entity.jump_timer + delta_seconds
 			entity.impulse.y = jump_speed 
 		end
-		
-		--[[if entity.can_jump and entity.button.jump == true and entity.button.right == true and entity.jump_timer < 0.17
-		then
-			jump_speed = jump_speed + 7
-			entity.jump_timer = entity.jump_timer + delta_seconds
-			entity.impulse.y = jump_speed * 0.28
-			entity.velocity.x = jump_speed
-		elseif	entity.can_jump and entity.button.jump == true and entity.button.left == true and entity.jump_timer < 0.17
-		then
-			jump_speed = jump_speed + 7
-			entity.jump_timer = entity.jump_timer + delta_seconds
-			entity.impulse.y = jump_speed * 0.28
-			entity.velocity.x = -jump_speed
-		end--]]
 		
 		
 		if jump_speed > 0 and entity.button.jump == false and entity.jump_timer > 0.016 or entity.jump_timer > 0.17  and entity.jump_timer > 0.016
@@ -240,6 +225,13 @@ function update_controls(delta_seconds, entity)
 	--Falling
 	if entity.anim.current == entity.anim.falling
 	then
+
+		entity.ungrounded_time = entity.ungrounded_time + delta_seconds
+		if entity.ungrounded_time < 3 * delta_seconds and entity.velocity.y < 0 and entity.button.jump == true
+		then
+			entity.impulse.y = 10
+		end
+
 		if entity.button.right 
 		then
 			entity.velocity.x = 0
@@ -288,8 +280,8 @@ function update_controls(delta_seconds, entity)
 
 
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 45
-			entity.impulse.x = -28
+			entity.impulse.y = 55
+			entity.impulse.x = -20
 			entity.can_walljump = true
 			entity.jump_timer = 0
 		end
@@ -318,8 +310,8 @@ function update_controls(delta_seconds, entity)
 			
 
 		entity.anim.current = entity.anim.jump_from_wall
-		entity.impulse.y = 45
-		entity.impulse.x = 28
+		entity.impulse.y = 55
+		entity.impulse.x = 20
 		entity.can_walljump = true
 		entity.jump_timer = 0
 		end
