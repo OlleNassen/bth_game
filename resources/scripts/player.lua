@@ -62,34 +62,7 @@ local fall = function(entity)
 	end
 end
 
--- states --
-local speed = 8000
-
-idle = function(entity) 	
-	move(entity, speed)
-	
-	local x_impulse = 0
-	
-	if entity.forces.x > speed * 0.5 then
-		x_impulse = 10
-	end
-
-	if entity.forces.x < -speed * 0.5 then
-		x_impulse = -10
-	end
-
-	jump(entity, x_impulse, 75, entity.anim.start_jump)
-	fall(entity)
-end
-
-jumping = function(entity) 
-	move(entity, speed * 0.8)
-	fall(entity)
-end
-
-falling = function(entity) 	
-	move(entity, speed * 0.8)
-	
+local hang = function(entity)
 	if entity.anim.current == entity.anim.hanging_left then
 		entity.update = hanging_left
 	end
@@ -97,6 +70,37 @@ falling = function(entity)
 	if entity.anim.current == entity.anim.hanging_right then
 		entity.update = hanging_right
 	end
+end
+
+-- states --
+local speed = 8000
+
+idle = function(entity) 	
+	move(entity, speed)
+	
+	local x = 0
+	
+	if entity.forces.x > speed * 0.5 then
+		x = 10
+	end
+
+	if entity.forces.x < -speed * 0.5 then
+		x = -10
+	end
+
+	jump(entity, x, 65, entity.anim.start_jump)
+	fall(entity)
+end
+
+jumping = function(entity) 
+	move(entity, speed * 0.8)
+	hang(entity)
+	fall(entity)
+end
+
+falling = function(entity) 	
+	move(entity, speed * 0.8)	
+	hang(entity)
 	
 	if entity.anim.current == entity.anim.landing then
 		entity.update = idle
