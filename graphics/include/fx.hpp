@@ -53,6 +53,7 @@ public:
 	Texture godray;
 	Texture furnace;
 	Texture gust;
+
 	
 	unsigned int randomizer = 0;
 	std::chrono::milliseconds timer;
@@ -76,6 +77,7 @@ public:
 	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
+	void update_build_position(glm::vec3 build_position);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
@@ -97,6 +99,7 @@ private:
 	void steam_back(glm::vec3 pos_vec);
 	void steam_left(glm::vec3 pos_vec);
 
+	glm::vec3 build_position;
 };
 
 }
