@@ -294,18 +294,18 @@ void Game::update(std::chrono::milliseconds delta)
 		if (give_players_objects == true)
 		{
 			give_players_objects = false;
-			for (auto& ppoi : players_placed_objects_id)
+			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
-				if (ppoi.place_state == 0 || ppoi.place_state == 1) {
+				if (players_placed_objects_id[i].place_state == 0 || players_placed_objects_id[i].place_state == 1) {
 					//Remove object
-					dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
-					level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
+					dynamics[players_placed_objects_id[i].dynamics_id].position = glm::vec3{ 3000, 0, 0 };
+					level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
 
-					std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
-					std::swap(ppoi, players_placed_objects_id[players_placed_objects_id.size() - 1]);
+					std::swap(level.moving_models[players_placed_objects_id[i].model_id], level.moving_models[level.moving_models.size() - 1]);
+					std::swap(players_placed_objects_id[i], players_placed_objects_id[players_placed_objects_id.size() - 1]);
 
 					level.moving_models.pop_back();
-					physics.remove_body(ppoi.dynamics_id);
+					physics.remove_body(players_placed_objects_id[i].dynamics_id);
 				}
 			}
 		}
