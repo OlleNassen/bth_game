@@ -285,8 +285,6 @@ void Game::update(std::chrono::milliseconds delta)
 		//Set State -> pre_playing
 		if (!gameplay.build_stage(static_cast<int>(player_count)))
 		{
-			give_players_objects = false;
-
 			net_state.state = network::SessionState::pre_playing;
 			game_state = (game_state | state::pre_playing);
 		}
@@ -294,6 +292,7 @@ void Game::update(std::chrono::milliseconds delta)
 	else if (net_state.state == network::SessionState::pre_playing)
 	{
 		//Begin 3, 2, 1, GO! countdown.
+		give_players_objects = false;
 		game_state = (game_state | state::pre_playing);
 
 		if (lua_data.time <= 0.5f)
