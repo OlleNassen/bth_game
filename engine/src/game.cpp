@@ -292,7 +292,7 @@ void Game::update(std::chrono::milliseconds delta)
 	else if (net_state.state == network::SessionState::pre_playing)
 	{
 		
-		if (give_players_objects == true)
+		/*if (give_players_objects == true)
 		{
 			give_players_objects = false;
 			for (int i = 0; i < static_cast<int>(player_count); i++)
@@ -310,7 +310,7 @@ void Game::update(std::chrono::milliseconds delta)
 					physics.remove_body(players_placed_objects_id[i].dynamics_id);
 				}
 			}
-		}
+		}*/
 
 		//Begin 3, 2, 1, GO! countdown.
 		game_state = (game_state | state::pre_playing);
