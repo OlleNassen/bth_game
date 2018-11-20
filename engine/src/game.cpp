@@ -198,7 +198,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu))
 		{
-			net_state.state = network::SessionState::loading;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::loading;
 			game_state = (game_state | state::loading);
 		}
 	}
@@ -211,7 +212,8 @@ void Game::update(std::chrono::milliseconds delta)
 		/*for (int i = 0; i < 4; ++i)
 			dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
 
-		net_state.state = network::SessionState::pre_building;
+		if (net.id() == 0)
+			net_state.state = network::SessionState::pre_building;
 		game_state = (game_state | state::pre_building);
 	}
 	else if (net_state.state == network::SessionState::pre_building)
@@ -225,7 +227,8 @@ void Game::update(std::chrono::milliseconds delta)
 		if (pre_build_timer <= 0.0f)
 		{
 			pre_build_timer = 3.5f;
-			net_state.state = network::SessionState::building;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::building;
 			game_state = (game_state | state::building);
 		}
 	}
@@ -285,7 +288,8 @@ void Game::update(std::chrono::milliseconds delta)
 		//Set State -> pre_playing
 		if (!gameplay.build_stage(static_cast<int>(player_count)))
 		{
-			net_state.state = network::SessionState::pre_playing;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::pre_playing;
 			game_state = (game_state | state::pre_playing);
 		}
 	}
@@ -313,7 +317,8 @@ void Game::update(std::chrono::milliseconds delta)
 		if (lua_data.time <= 0.5f)
 		{
 			watching = net.id();
-			net_state.state = network::SessionState::playing;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::playing;
 			game_state = (game_state | state::playing);
 		}
 
@@ -346,7 +351,8 @@ void Game::update(std::chrono::milliseconds delta)
 		if (lua_data.time <= 0.0f)
 		{
 			all_finished_timer = 3.5f;
-			net_state.state = network::SessionState::score;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::score;
 			game_state = (game_state | state::score);
 		}
 	}
@@ -362,7 +368,8 @@ void Game::update(std::chrono::milliseconds delta)
 			//Set State -> game_over
 		if (lua_data.game_over)
 		{
-			net_state.state = network::SessionState::game_over;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::game_over;
 			game_state = (game_state | state::game_over);
 		}
 		else //Otherwise distribute score and //Set State -> pre_building
@@ -370,7 +377,8 @@ void Game::update(std::chrono::milliseconds delta)
 			if (score_timer <= 0.0f)
 			{
 				score_timer = 3.5f; 
-				net_state.state = network::SessionState::pre_building;
+				if (net.id() == 0)
+					net_state.state = network::SessionState::pre_building;
 				game_state = (game_state | state::pre_building);
 				//gameplay.new_round();
 			}
