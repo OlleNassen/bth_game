@@ -56,7 +56,7 @@ local jump = function(entity, x, y, anim)
 	end
 end
 
-local fall  = function(entity) 
+local fall = function(entity) 
 	if entity.velocity.y < -2.0 then
 		entity.update = falling
 		entity.anim.current = entity.anim.falling
