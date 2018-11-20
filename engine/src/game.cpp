@@ -234,6 +234,8 @@ void Game::update(std::chrono::milliseconds delta)
 		//Inititate player objects and move it.
 		game_state = (game_state | state::building);
 
+		watching = net.id();
+
 		if (!give_players_objects)
 		{
 			players_placed_objects_id.fill({ -1, -1, -1, -1 });
@@ -693,7 +695,7 @@ void Game::update(std::chrono::milliseconds delta)
 		window.toggle_screen_mode(settings);
 	}
 
-	std::cout << static_cast<int>(player_count) << "\n";
+	std::cout << watching << "\n";
 }
 
 void Game::pack_data()
