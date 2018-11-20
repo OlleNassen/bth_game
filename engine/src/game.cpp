@@ -139,7 +139,7 @@ void Game::update(std::chrono::milliseconds delta)
 		for (int i = 4; i < dynamics.size(); ++i)
 			dynamics[i].position = glm::vec2(-2000000.f, -2000000.f);
 		give_players_objects = false;
-	}	
+	}
 
 	if (menu.on())
 		game_state = (game_state | state::menu);
@@ -158,8 +158,8 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		game_state = (game_state | state::playing);
 	}
-		
-	
+
+
 
 	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
 	{
@@ -207,7 +207,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < 4; i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
-				placed_objects_list_id = placed_objects_array[0]; //random_picked_object();
+				placed_objects_list_id = 1; //placed_objects_array[0]; //random_picked_object();
 
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);
@@ -265,7 +265,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 		lua_data = gameplay.update(
 			{ delta, obj, triggers,
-			player_inputs, 
+			player_inputs,
 			anim_states,
 			players_placed_objects_id,
 			triggers_types },
@@ -281,64 +281,67 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
-		if (net.connected())
+	if (net.connected())
+	{
+		for (int i = 0; i < 4; ++i)
 		{
-			for (int i = 0; i < 4; ++i)
+
+			if (level.moving_models[i].is_animated)
 			{
+				level.moving_models[i].update_animation((float)delta.count(), anim_states[i]);
+			}
 
-				if (level.moving_models[i].is_animated)
-				{
-					level.moving_models[i].update_animation((float)delta.count(), anim_states[i]);
-				}
+			if (physics.rw[i] == true)
+				level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+			else if (physics.lw[i] == true)
+				level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 
-				if (physics.rw[i] == true)
+
+			if (player_inputs[i][logic::button::right] == logic::button_state::held)
+			{
+				if (level.moving_models[i].get_state() != anim::hanging_right &&
+					level.moving_models[i].get_state() != anim::hanging_left &&
+					level.moving_models[i].get_state() != anim::turning &&
+					level.moving_models[i].get_state() != anim::connect_wall &&
+					level.moving_models[i].get_state() != anim::jump_from_wall)
 					level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
-				else if (physics.lw[i] == true)
+			}
+			else if (player_inputs[i][logic::button::left] == logic::button_state::held)
+			{
+				if (level.moving_models[i].get_state() != anim::hanging_right &&
+					level.moving_models[i].get_state() != anim::hanging_left &&
+					level.moving_models[i].get_state() != anim::turning &&
+					level.moving_models[i].get_state() != anim::connect_wall  &&
+					level.moving_models[i].get_state() != anim::jump_from_wall)
 					level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
+			}
 
 
-				if (player_inputs[i][logic::button::right] == logic::button_state::held)
-				{
-					if (level.moving_models[i].get_state() != anim::hanging_right && 
-						level.moving_models[i].get_state() != anim::hanging_left && 
-						level.moving_models[i].get_state() != anim::turning && 
-						level.moving_models[i].get_state() != anim::connect_wall && 
-						level.moving_models[i].get_state() != anim::jump_from_wall)
-						level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
-				}
-				else if (player_inputs[i][logic::button::left] == logic::button_state::held)
-				{
-					if (level.moving_models[i].get_state() != anim::hanging_right && 
-						level.moving_models[i].get_state() != anim::hanging_left && 
-						level.moving_models[i].get_state() != anim::turning && 
-						level.moving_models[i].get_state() != anim::connect_wall  && 
-						level.moving_models[i].get_state() != anim::jump_from_wall)
-						level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
-				}
+			glm::vec2 pos
+			{
+				dynamics[i].position.x,
+				dynamics[i].position.y - dynamics[i].size.y
+			};
 
-
-				glm::vec2 pos
-				{
-					dynamics[i].position.x,
-					dynamics[i].position.y - dynamics[i].size.y
-				};
-					
-				level.v[i] = pos;
-				level.moving_models[i].set_position(pos);
+			level.v[i] = pos;
+			level.moving_models[i].set_position(pos);
 		}
 	}
 
 	if (game_state & state::building)
 	{
-		level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3};
+		level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
 	}
 
 
 	anim idle = anim::falling;
 
 	for (auto& model : level.animated_models)
-			model.update_animation((float)delta.count(), idle);
+		model.update_animation((float)delta.count(), idle);
 
+	for (int i = 4; i < level.moving_models.size(); i++)
+		if(level.moving_models[i].is_animated)
+			level.moving_models[i].update_animation((float)delta.count(), idle);
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 

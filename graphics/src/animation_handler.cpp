@@ -157,6 +157,7 @@ glm::vec3 Animation_handler::calc_interpolated_scale(float time, int index)
 	glm::vec3 s1(animations[current_animation]->joints[index].keyFrames[scaleIndex].scaling[0],
 		animations[current_animation]->joints[index].keyFrames[scaleIndex].scaling[1],
 		animations[current_animation]->joints[index].keyFrames[scaleIndex].scaling[2]);
+
 	glm::vec3 s2(animations[current_animation]->joints[index].keyFrames[nextScale].scaling[0],
 		animations[current_animation]->joints[index].keyFrames[nextScale].scaling[1],
 		animations[current_animation]->joints[index].keyFrames[nextScale].scaling[2]);
@@ -199,7 +200,7 @@ void Animation_handler::update_keyframe_transform(float time, int index)
 	if (this->animations[current_animation]->nr_of_keyframes != 0)
 	{
 		glm::quat temp = calc_interpolated_quaternion(time, index);
-		//glm::vec3 temp2 = calc_interpolated_scale(time, index);
+		glm::vec3 temp2 = calc_interpolated_scale(time, index);
 		glm::vec3 temp3 = calc_interpolated_translation(time, index);
 		//glm::vec3 temp2 = glm::vec3(1);
 		glm::mat4 temp_mat = glm::mat4(1);
@@ -212,14 +213,14 @@ void Animation_handler::update_keyframe_transform(float time, int index)
 		
 	
 			temp = glm::slerp(switch_quat[index], temp, delta);
-			//temp2 = glm::mix(temp2, switch_scales, delta);
+			temp2 = glm::mix(switch_scales[index], temp2, delta);
 			temp3 = glm::mix(switch_translations[index], temp3, delta);
 		}
 
 
 		temp_mat *= glm::translate(glm::mat4(1), glm::vec3(temp3));
 		temp_mat *= mat4_cast(temp);
-		//temp_mat *= glm::scale(glm::mat4(1), glm::vec3(1));
+		temp_mat *= glm::scale(glm::mat4(1), glm::vec3(temp2));
 		
 
 		set_local_matrix(temp_mat, index);
@@ -336,12 +337,13 @@ bool Animation_handler::switch_animation(anim state)
 
 					switch_quat.clear();
 					switch_translations.clear();
-
+					switch_scales.clear();
 					switch_time = interpolation_time;
 					for (int i = 0; i < this->joints.size(); i++)
 					{
 						switch_quat.push_back(calc_interpolated_quaternion(this->time_seconds, i));
 						switch_translations.push_back(calc_interpolated_translation(this->time_seconds, i));
+						switch_scales.push_back(calc_interpolated_scale(this->time_seconds, i));
 					}
 					time_seconds = 0.0f;
 					current_keyframe = 0;

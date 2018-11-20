@@ -41,14 +41,12 @@ public:
 	std::vector<Model> animated_models;
 	std::vector<collision_data> coll_data;
 
-
-
 // Lucas/Vincet Test för placering av object.
 	std::vector<placeableObjectInfo> objects;
 	bool build_mode_active = false;
 
 //Placed Objects // lucas test
-	std::vector<int> placed_objects_model_index;
+	std::vector<int> placed_objects_model_index; 
 
 	void inititate_object(CustomLevel& objects, MeshLib* object_lib);
 	int add_object(collision_data& physics_data, int id);

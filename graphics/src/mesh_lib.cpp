@@ -71,7 +71,7 @@ void MeshLib::create_mesh_list()
 		"hatch.ssp",						//43
 		"wall_single.ssp",					//44
 		"Shit_robot.ssp",					//45
-		"big_propeller.ssp",				//46
+		"big_prop.ssp",						//46
 		"big_fan_shell.ssp",				//47
 		"platform_fence.ssp",               //48
 		"melting_pot.ssp",                  //49
@@ -99,16 +99,13 @@ void MeshLib::create_object_list()
 	std::string meshLoader[] =
 	{
 		"spike_trap.ssp",					//0
-		"saw.ssp",							//1
-		"platform_oil.ssp",					//2
-		"sticky_platform.ssp",				//3
-		"shock_trap.ssp",					//4
-		"treadmill.ssp",					//5
-		"standard_platform.ssp",			//6
-		"speed_boost.ssp",					//7
-		"steam_boost.ssp",					//8
-		"trampolin.ssp",					//9
-		"turret.ssp"						//10
+		"turret.ssp",						//1
+		"stun_trap.ssp",					//2
+		"glide_trap.ssp",					//3
+		"speed_boost.ssp",					//4
+		"double_jump.ssp",					//5
+		"shield.ssp",						//6
+		"random_buff.ssp"					//7
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)

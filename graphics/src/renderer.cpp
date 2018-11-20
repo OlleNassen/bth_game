@@ -118,7 +118,7 @@ void Renderer::render(
 		render_character(robot_shader, game_camera, scene->moving_models, player_count); 
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
+			render_type(pbra, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
 
 		render_type(pbra, game_camera,a_to_render.first, a_to_render.last);
 		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
@@ -425,7 +425,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		//Godray
 		fx_emitter.calculate_godray_data(delta, game_camera);
-
+ 
 		//Lava Light
 		fx_emitter.calculate_lava_light_data(delta, game_camera);
 
