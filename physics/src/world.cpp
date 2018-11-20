@@ -166,14 +166,9 @@ void World::update(
 	int index = 0;
 	for (auto& body : bodies)
 	{	
-		/*body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
+		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
 		body.forces.x = dynamics[index].forces.x;
 		body.forces.y = dynamics[index].forces.y;
-		++index;*/
-		
-		body.velocity.x = dynamics[index].velocity.x;
-		body.velocity.y = dynamics[index].velocity.y;
-		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
 		++index;
 	}
 
@@ -250,7 +245,9 @@ void World::update(
 		points[4].y -= bodies[i].box.size.y * 1.01f;
 		points[4].x -= bodies[i].box.size.x * 0.90f;
 		
-		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || anim_states[i] == anim::hanging_right)
+		if(
+			anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || 
+			anim_states[i] == anim::hanging_right || anim_states[i] == anim::in_jump)
 			for (auto& walls : statics)
 			{
 				if (point_in_obb(points[0], walls.box))// || point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box))

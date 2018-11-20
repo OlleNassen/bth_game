@@ -388,9 +388,7 @@ void Game::update(std::chrono::milliseconds delta)
 							level.moving_models[i].get_state() != anim::jump_from_wall)
 							level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 					}
-
 				}
-
 
 				glm::vec2 pos
 				{

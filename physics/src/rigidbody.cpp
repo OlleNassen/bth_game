@@ -7,11 +7,12 @@ namespace physics
 
 void Rigidbody::update(float delta_seconds)
 {
-	const float damping = 0.99f;
+	const float damping = 0.9f;
+	const float max_velocity = 75.0f;
 	glm::vec3 acceleration = forces * inverse_mass;
 	velocity += acceleration * delta_seconds;
-	velocity *= damping;
-
+	velocity.x = glm::clamp(velocity.x * damping, -max_velocity, max_velocity);
+	velocity.y = glm::clamp(velocity.y * damping, -max_velocity, max_velocity);
 	position += velocity * delta_seconds;
 	synch_collision_volumes();
 }
