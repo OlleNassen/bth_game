@@ -1,16 +1,14 @@
 
+local  idle
 local  start_jump
 local  in_jump
 local  falling
 local  landing
-local  idle
-local  running
-local  sliding
 local  hanging_left
 local  hanging_right
+local  sliding
 
 function setup(entity)
-	entity.jump_timer = 0.0
 	entity.update = idle
 end
 
@@ -20,6 +18,8 @@ function update(delta_seconds, entity)
 	entity.update(delta_seconds, entity)
 	entity.forces.y = entity.forces.y - gravity
 end
+
+-- helpers --
 
 local move = function(entity, force) 
 		
@@ -41,11 +41,9 @@ local move = function(entity, force)
 	entity.forces.x = result
 	if result < -0.1 or result > 0.1 then
 		if entity.anim.current == entity.anim.idle then
-			entity.update = running
 			entity.anim.current = entity.anim.running
 		end
 	elseif entity.anim.current == entity.anim.running then
-		entity.update = idle
 		entity.anim.current = entity.anim.idle
 	end
 end
@@ -66,19 +64,28 @@ local fall  = function(entity)
 	end
 end
 
+-- states --
+local speed = 8000
+
+idle = function(delta_seconds, entity) 
+	move(entity, speed)
+	jump(entity, 0, 15000, entity.anim.start_jump)
+	fall(entity)
+end
+
 start_jump = function(delta_seconds, entity) 
-	move(entity, 8000 * 0.8)
+	move(entity, speed * 0.8)
 	entity.update = in_jump
 	entity.anim.current = entity.anim.in_jump
 end
 
 in_jump = function(delta_seconds, entity) 
-	move(entity, 8000 * 0.8)
+	move(entity, speed * 0.8)
 	fall(entity)
 end
 
 falling = function(delta_seconds, entity) 	
-	move(entity, 8000 * 0.8)
+	move(entity, speed * 0.8)
 	
 	if entity.anim.current == entity.anim.hanging_left then
 		entity.update = hanging_left
@@ -95,23 +102,7 @@ falling = function(delta_seconds, entity)
 end
 
 landing = function(delta_seconds, entity) 
-	move(entity, 8000 * 0.8)
-end
-
-idle = function(delta_seconds, entity) 
-	move(entity, 8000)
-	jump(entity, 0, 15000, entity.anim.start_jump)
-	fall(entity)
-end
-
-running = function(delta_seconds, entity) 
-	move(entity, 8000)
-	jump(entity, 0, 15000, entity.anim.start_jump)
-	fall(entity)
-end
-
-sliding = function(delta_seconds, entity) 
-
+	move(entity, speed * 0.8)
 end
 
 hanging_left = function(delta_seconds, entity) 
@@ -128,4 +119,8 @@ hanging_right = function(delta_seconds, entity)
 	if entity.anim.current == entity.anim.idle then
 		entity.update = idle
 	end
+end
+
+sliding = function(delta_seconds, entity) 
+
 end
