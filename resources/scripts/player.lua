@@ -22,6 +22,29 @@ function update(delta_seconds, entity)
 	entity.update(delta_seconds, entity)
 end
 
+local move = function(entity, force) 
+	local result = 0
+
+	if entity.button.left then
+		result = result - force
+	end
+	
+	if entity.button.right then
+		result = result + force
+	end
+
+	if entity.velocity.x < 0 then
+		result = result * 2
+	end
+	
+	if entity.velocity.x > 0 then
+		result = result * 2
+	end
+
+
+	entity.forces.x = result
+end
+
 
 start_jump = function(delta_seconds, entity) 
 
@@ -53,15 +76,7 @@ end
 
 idle = function(delta_seconds, entity) 
 	
-	if entity.button.left then
-		entity.forces.x = entity.forces.x - 300
-	end
-	
-	if entity.button.right then
-		entity.forces.x = entity.forces.x + 300
-	end
-
-	print (entity.forces.x)
+	move(entity, 300)
 end
 
 running = function(delta_seconds, entity) 
