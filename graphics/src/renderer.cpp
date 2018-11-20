@@ -366,10 +366,6 @@ void Renderer::render(
 
 			build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
 
-			//float width = timer_text.get_text_width(out_text.str(), 0.02f);
-
-			
-
 			for (int i = 0; i < player_count; i++)
 			{
 				out_text.str("");
@@ -648,6 +644,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 			a_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->animated_models.front(), &scene->animated_models.back() };
 	}
 	
+	if (game_state & state::score)
+	{
+		build_stage_screen.timer = 0ms;
+		build_stage_screen.transparency = 1.0f;
+	}
+
 	if (!(game_state & state::playing))
 	{
 		post_processing_effects.glow_value = 0.0f;
