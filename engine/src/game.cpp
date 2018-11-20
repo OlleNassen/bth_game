@@ -206,7 +206,7 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		game_state = (game_state | state::loading);
 
-		load_map("../resources/level/level_1_testing.ssp");
+		load_map("../resources/level/level_1.ssp");
 
 		/*for (int i = 0; i < 4; ++i)
 			dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
