@@ -4,10 +4,10 @@ function setup(entity)
 	entity.can_walljump = true
 	entity.can_move = true -- instead of playable
 	entity.max_speed = 16
-	entity.max_air_speed = 14
- 	entity.ground_acceleration = 100
+	entity.max_air_speed = 16
+ 	entity.ground_acceleration = 120
 	entity.air_acceleration = 80
-	entity.deceleration = 40
+	entity.deceleration = 50
 	entity.jump_timer = 0
 	entity.jump_impulse_x = 0
 
@@ -168,7 +168,7 @@ function update_controls(delta_seconds, entity)
 	then
 		if entity.can_jump and entity.button.jump == true and entity.jump_timer < 0.17
 		then
-			jump_speed = jump_speed + 6.3
+			jump_speed = jump_speed + 6
 			entity.jump_timer = entity.jump_timer + delta_seconds
 
 		elseif jump_speed > 0 and entity.button.jump == false and entity.jump_timer > 0.016 or entity.jump_timer > 0.17  and entity.jump_timer > 0.016
