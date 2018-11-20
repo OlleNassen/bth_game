@@ -70,7 +70,7 @@ function update(delta_seconds, game, entities)
 	then
 		reset = false
 
-		print("IM HERE!!!!!")
+		print("In Game.points == 0")
 		-- Start positions
 		entities[1].position.x = 0
 		entities[1].position.y = 1.75
@@ -195,6 +195,7 @@ function update(delta_seconds, game, entities)
 end
 
 function reset_time(game)
+	print("In Reset_time")
 	reset = true
 	game.time = game.max_time
 	--4 playerscores:
