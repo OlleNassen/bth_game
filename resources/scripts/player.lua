@@ -54,11 +54,11 @@ end
 idle = function(delta_seconds, entity) 
 	
 	if entity.button.left then
-		entity.forces.x = entity.forces.x - 10000 * delta_seconds
+		entity.forces.x = entity.forces.x - 300
 	end
 	
 	if entity.button.right then
-		entity.forces.x = entity.forces.x + 10000 * delta_seconds
+		entity.forces.x = entity.forces.x + 300
 	end
 
 	print (entity.forces.x)
