@@ -59,8 +59,6 @@ end
 
 start_jump = function(delta_seconds, entity) 
 	move(entity, 7000 * 0.8)
-
-	entity.impulse.y = 15000
 	entity.update = in_jump
 	entity.anim.current = entity.anim.in_jump
 end
