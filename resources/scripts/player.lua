@@ -27,25 +27,30 @@ function update(delta_seconds, entity)
 end
 
 local move = function(entity, force) 
-	
+		
 	local result = 0
 	local vel = 5
 	
 	if entity.button.left then
 		result = result - force
-		if entity.velocity.x > -vel  then
-			result = result * 2
-		end
 	end
 	
 	if entity.button.right then
-		result = result + force
-		if entity.velocity.x < vel  then
-			result = result * 2
-		end
+		result = result + force	
+	end
+	
+	if entity.velocity.x < vel or entity.velocity.x > -vel  then
+		result = result * 2
 	end
 
 	entity.forces.x = result
+	if result < -0.1 or result > 0.1 then
+		if entity.anim.current == entity.anim.idle then
+			entity.anim.current = entity.anim.running
+		end
+	elseif entity.anim.current == entity.anim.running then
+		entity.anim.current = entity.anim.idle
+	end
 end
 
 local jump = function(entity, impulse) 
