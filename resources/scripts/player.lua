@@ -143,6 +143,8 @@ function update_controls(delta_seconds, entity)
 	then
 		print("In_running")
 		entity.anim.current = entity.anim.idle
+	
+	
 		if entity.button.right 
 		then
 			entity.velocity.x = entity.max_speed
@@ -233,7 +235,7 @@ function update_controls(delta_seconds, entity)
 			entity.anim.current = entity.anim.falling
 		end]]--
 
-		
+		--fix
 		if entity.velocity.y < 0.0 and entity.velocity.y >= -0.1
 		then
 			entity.anim.current = entity.anim.landing
