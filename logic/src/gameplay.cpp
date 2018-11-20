@@ -83,7 +83,7 @@ LuaExport Gameplay::update(Input inputs,
 					inputs.player_inputs[i],
 					d_id, inputs.anim_states[i]);
 
-				inputs.dynamics[i].position = { i * 3.f, 1.75f };
+				//inputs.dynamics[i].position = { i * 3.f, 1.75f };
 			}
 
 			players_done = 0;
@@ -114,10 +114,10 @@ LuaExport Gameplay::update(Input inputs,
 		pre_starter_time -= dt;
 		time = pre_starter_time;
 
-		for (int i = 0; i < inputs.player_count; i++)
+	/*	for (int i = 0; i < inputs.player_count; i++)
 		{
 			inputs.dynamics[i].position = { i * 3.f, 1.75f };
-		}
+		}*/
 	}
 	
 	if (current_state & state::playing)

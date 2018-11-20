@@ -208,8 +208,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 		load_map("../resources/level/level_1_testing.ssp");
 
-		for (int i = 0; i < 4; ++i)
-			dynamics[i].position = glm::vec2(3.f * i, 2.5f);
+		/*for (int i = 0; i < 4; ++i)
+			dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
 
 		net_state.state = network::SessionState::pre_building;
 		game_state = (game_state | state::pre_building);
