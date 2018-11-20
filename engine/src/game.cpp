@@ -192,11 +192,11 @@ void Game::update(std::chrono::milliseconds delta)
 	
 	
 
-	if ((net_state.state == network::SessionState::lobby) && !(game_state & state::menu))
+	if ((net_state.state == network::SessionState::lobby))
 	{
 		game_state = (game_state | state::lobby);
 
-		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed)
+		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu))
 		{
 			net_state.state = network::SessionState::loading;
 			game_state = (game_state | state::loading);
@@ -297,7 +297,8 @@ void Game::update(std::chrono::milliseconds delta)
 			give_players_objects = false;
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
-				if (players_placed_objects_id[i].place_state == 0 || players_placed_objects_id[i].place_state == 1) {
+				if (players_placed_objects_id[i].place_state == 0 || players_placed_objects_id[i].place_state == 1) 
+				{
 					//Remove object
 					dynamics[players_placed_objects_id[i].dynamics_id].position = glm::vec3{ 3000, 0, 0 };
 					level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
