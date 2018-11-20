@@ -1,7 +1,6 @@
 
 local  idle
-local  start_jump
-local  in_jump
+local  jumping
 local  falling
 local  landing
 local  hanging_left
@@ -50,7 +49,7 @@ end
 
 local jump = function(entity, x, y, anim) 
 	if entity.button.jump then
-		entity.update = start_jump
+		entity.update = jumping
 		entity.anim.current = anim				
 		entity.impulse.x = x
 		entity.impulse.y = y
@@ -73,13 +72,7 @@ idle = function(delta_seconds, entity)
 	fall(entity)
 end
 
-start_jump = function(delta_seconds, entity) 
-	move(entity, speed * 0.8)
-	entity.update = in_jump
-	entity.anim.current = entity.anim.in_jump
-end
-
-in_jump = function(delta_seconds, entity) 
+jumping = function(delta_seconds, entity) 
 	move(entity, speed * 0.8)
 	fall(entity)
 end
