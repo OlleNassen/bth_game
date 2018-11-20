@@ -2,7 +2,6 @@
 local  idle
 local  jumping
 local  falling
-local  landing
 local  hanging_left
 local  hanging_right
 local  sliding
@@ -90,12 +89,7 @@ falling = function(entity)
 	
 	if entity.anim.current == entity.anim.landing then
 		entity.update = idle
-		entity.anim.current = entity.anim.idle
 	end
-end
-
-landing = function(entity) 
-	move(entity, speed * 0.8)
 end
 
 hanging_left = function(entity) 
