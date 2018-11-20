@@ -81,11 +81,11 @@ idle = function(entity)
 	local x = 0
 	
 	if entity.forces.x > speed * 0.5 then
-		x = 10
+		x = 5
 	end
 
 	if entity.forces.x < -speed * 0.5 then
-		x = -10
+		x = -5
 	end
 
 	jump(entity, x, 65, entity.anim.start_jump)
