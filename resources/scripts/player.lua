@@ -68,7 +68,7 @@ local speed = 8000
 
 idle = function(entity) 
 	move(entity, speed)
-	jump(entity, 0, 15000, entity.anim.start_jump)
+	jump(entity, 0, 75, entity.anim.start_jump)
 	fall(entity)
 end
 
@@ -99,7 +99,7 @@ landing = function(entity)
 end
 
 hanging_left = function(entity) 
-	jump(entity, 2000, 2000, entity.anim.jump_from_wall)
+	jump(entity, 75, 75, entity.anim.jump_from_wall)
 
 	if entity.anim.current == entity.anim.idle then
 		entity.update = idle
@@ -107,7 +107,7 @@ hanging_left = function(entity)
 end
 
 hanging_right = function(entity) 
-	jump(entity, -2000, 2000, entity.anim.jump_from_wall)
+	jump(entity, -75, 75, entity.anim.jump_from_wall)
 
 	if entity.anim.current == entity.anim.idle then
 		entity.update = idle
