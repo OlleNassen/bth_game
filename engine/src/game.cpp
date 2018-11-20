@@ -335,7 +335,7 @@ void Game::update(std::chrono::milliseconds delta)
 				score_timer = 3.5f; 
 				net_state.state = network::SessionState::pre_building;
 				game_state = (game_state | state::pre_building);
-				gameplay.new_round();
+				//gameplay.new_round();
 			}
 		}
 	}

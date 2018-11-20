@@ -63,6 +63,8 @@ LuaExport Gameplay::update(Input inputs,
 
 	if (current_state & state::pre_building)
 	{
+		new_round();
+
 		for (int i = 0; i < 4; ++i)
 			inputs.dynamics[i].position = glm::vec2(3.f * i, 2.5f);
 	}
