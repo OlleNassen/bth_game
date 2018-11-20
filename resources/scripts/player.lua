@@ -65,9 +65,20 @@ end
 -- states --
 local speed = 8000
 
-idle = function(entity) 
+idle = function(entity) 	
 	move(entity, speed)
-	jump(entity, 0, 75, entity.anim.start_jump)
+	
+	local x_impulse = 0
+	
+	if entity.forces.x > speed * 0.5 then
+		x_impulse = 10
+	end
+
+	if entity.forces.x < -speed * 0.5 then
+		x_impulse = -10
+	end
+
+	jump(entity, x_impulse, 75, entity.anim.start_jump)
 	fall(entity)
 end
 
