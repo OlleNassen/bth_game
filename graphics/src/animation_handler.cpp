@@ -549,7 +549,7 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 			}
 			else if (current_state == anim::landing)
 			{
-				switch_animation(anim::idle);
+				switch_animation(anim::running);
 				play_anim = current_state;
 			}
 			else
