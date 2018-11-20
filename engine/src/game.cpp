@@ -290,10 +290,11 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		//Begin 3, 2, 1, GO! countdown.
 		game_state = (game_state | state::pre_playing);
-		changed_player = false;
 
 		if (lua_data.time <= 0.5f)
 		{
+			changed_player = false;
+			watching = net.id();
 			net_state.state = network::SessionState::playing;
 			game_state = (game_state | state::playing);
 		}
@@ -637,7 +638,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 				watching = (watching + 1) % static_cast<int>(player_count);
 
-				if (waiting == net.id())
+				if (watching == net.id())
 				{
 					watching = (watching + 1) % static_cast<int>(player_count);
 				}
@@ -654,7 +655,7 @@ void Game::update(std::chrono::milliseconds delta)
 				if (watching < 0)
 					watching = static_cast<int>(player_count) - 1;
 
-				if (waiting == net.id())
+				if (watching == net.id())
 				{
 					watching = (watching - 1);
 					if (watching < 0)
