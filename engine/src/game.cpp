@@ -254,6 +254,9 @@ void Game::update(std::chrono::milliseconds delta)
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
 				players_placed_objects_id[i].model_type_id = data.model_id;
 
+				std::cout << "Model ID:\t" << model_id <<
+					"\nDynamic ID:\t" << dynamic_id << std::endl << std::endl;
+
 				dynamics[dynamic_id].position = start_position;
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 				dynamics[dynamic_id].size = { data.width, data.height };
@@ -606,7 +609,7 @@ void Game::update(std::chrono::milliseconds delta)
 	for (auto& model : level.animated_models)
 			model.update_animation((float)delta.count(), idle);
 
-	std::cout << dynamics[players_placed_objects_id[net.id()].dynamics_id].position.x << " : " << dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y << "\n";
+	//std::cout << dynamics[players_placed_objects_id[net.id()].dynamics_id].position.x << " : " << dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y << "\n";
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 
