@@ -84,13 +84,10 @@ function update(delta_seconds, entity)
 
 
 	entity.jump_was_push = entity.button.jump
-
-
 end
 
 
 function update_controls(delta_seconds, entity)
-	
 	
 	--Running
 	if entity.anim.current == entity.anim.running
@@ -137,7 +134,7 @@ function update_controls(delta_seconds, entity)
 		end
 	end
 
-		--Start jump
+	--Start jump
 	if entity.anim.current == entity.anim.start_jump
 	then
 		if entity.can_jump and entity.button.jump == true and entity.jump_timer < 0.17
@@ -158,7 +155,6 @@ function update_controls(delta_seconds, entity)
 			entity.can_dubbel_jump = true
 			entity.steam_boost_delay_timer = 0.0
 		end
-
 	end
 
 	--In Jump
@@ -166,8 +162,21 @@ function update_controls(delta_seconds, entity)
 	then 
 		if entity.can_jump
 		then
-			entity.impulse.y = jump_speed
-			entity.can_jump = false
+			if entity.button.right
+			then	
+				entity.impulse.y = jump_speed
+				entity.impulse.x = 45
+				entity.can_jump = false
+			elseif entity.button.left
+			then
+				entity.impulse.y = jump_speed
+				entity.impulse.x = -45
+				entity.can_jump = false
+			else
+				entity.impulse.y = jump_speed
+				entity.can_jump = false
+			end
+
 		end
 
 		if entity.button.right 
@@ -226,11 +235,6 @@ function update_controls(delta_seconds, entity)
 	if entity.anim.current == entity.anim.falling
 	then
 
-		entity.ungrounded_time = entity.ungrounded_time + delta_seconds
-		if entity.ungrounded_time < 3 * delta_seconds and entity.velocity.y < 0 and entity.button.jump == true
-		then
-			entity.impulse.y = 10
-		end
 
 		if entity.button.right 
 		then
@@ -253,7 +257,6 @@ function update_controls(delta_seconds, entity)
 		then
 			entity.can_dubbel_jump = true
 		end
-
 	end
 
 	--Hanging_Right
