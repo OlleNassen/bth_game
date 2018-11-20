@@ -124,7 +124,7 @@ LuaExport Gameplay::update(Input inputs,
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			if (!game_script.data.finished[i])
+			if (!game_script.data.finished[i] && !game_script.data.died[i])
 			{
 				player_script.update(
 					inputs.delta,

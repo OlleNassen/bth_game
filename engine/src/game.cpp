@@ -291,7 +291,8 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::pre_playing)
 	{
-		
+		give_players_objects = false;
+
 		/*if (give_players_objects == true)
 		{
 			give_players_objects = false;
@@ -389,11 +390,11 @@ void Game::update(std::chrono::milliseconds delta)
 		//Set State -> lobby
 	}
 
-	for (int i = 0; i < 4; i++)
+	/*for (int i = 0; i < 4; i++)
 	{
 		std::cout << "Player " << i << " is " << lua_data.died[i] << "\n";
 	}
-	std::cout << "-----\n";
+	std::cout << "-----\n";*/
 
 	/*if (lua_data.game_over || net_state.state == network::SessionState::game_over)
 	{
