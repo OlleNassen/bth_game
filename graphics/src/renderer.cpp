@@ -134,9 +134,11 @@ void Renderer::render(
 		render_type(pbra, game_camera,a_to_render.first, a_to_render.last);
 		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
-
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
 		
+		if (!(game_state & state::lobby))
+		{
+			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
+		}
 		if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
@@ -162,7 +164,10 @@ void Renderer::render(
 		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, db_camera, &scene->models[0], &scene->models[9]);
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
+		if (!(game_state & state::lobby))
+		{
+			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
+		}
 
 		if (debug_active)
 		{
@@ -197,9 +202,9 @@ void Renderer::render(
 			post_processing_effects.render();
 
 			glDisable(GL_DEPTH_TEST);
-			if (game_state & state::building)
+			if (game_state & state::pre_building)
 			{
-				if (!(build_stage_screen.transparency < 0.0005f))
+				if (build_stage_screen.transparency > 0.0f) // (!build_stage_screen.transparency < 0.0005f)
 				{
 					build_stage_screen.render(build_stage_screen_shader);
 				}
@@ -227,15 +232,7 @@ void Renderer::render(
 
 		if (game_state & state::pre_building)
 		{
-			std::string text = "Build Mode etc";
-
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-
-			float width = build_text.get_text_width(text, 2.f);
-
-			build_text.render_text(text, (screen_width * 0.5f) - (width * 0.5f), screen_height * 0.45f, 2.f);
+			
 		}
 
 		if (game_state & state::building)
@@ -322,7 +319,7 @@ void Renderer::render(
 				build_text.render_text("GO!", (screen_width * 0.5f) - (width * 0.5f), screen_height * 0.45f, 2.f);
 			}
 			
-			if (print_time > 15.f)
+			if (print_time > 15.f || died[player_id] || finish[player_id])
 			{
 				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 				timer_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
@@ -355,7 +352,7 @@ void Renderer::render(
 				timer_text.render_text(out_text.str(), current.x - (width * 0.5f), current.y, current_size);
 			}
 
-			if (died[player_id] || finish[player_id])
+			if ((died[player_id] || finish[player_id]) && (overlays.finished_timer >= 5000ms || overlays.death_timer <= 2000ms))
 			{				
 				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 			}

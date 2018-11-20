@@ -237,12 +237,12 @@ void Game::update(std::chrono::milliseconds delta)
 		if (!give_players_objects)
 		{
 			players_placed_objects_id.fill({ -1, -1, -1, -1 });
-			std::array<int, 4> random_position = random_indexes();
+			std::array<int, 4> random_position = { 0,0,0,0 }; // random_indexes();
 
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-				placed_objects_list_id = random_picked_object(); //placed_objects_array[0];
+				placed_objects_list_id = 0; // random_picked_object(); //placed_objects_array[0];
 
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);
@@ -389,8 +389,6 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		game_state = (game_state | state::playing);
 	}*/
-
-	
 
 	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
 	{
@@ -629,21 +627,21 @@ void Game::update(std::chrono::milliseconds delta)
 				<< lua_data.scores[i] << " | ";
 		}			
 		
-		/*if (lua_data.died[net.id()] || lua_data.finished[net.id()])
+		if (lua_data.died[net.id()] || lua_data.finished[net.id()])
 		{
 			//Spectator
 			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
 			{
-				watching = (watching + 1) % 4;
+				watching = (watching + 1) % static_cast<int>(player_count);
 
 				if (waiting == net.id())
 				{
-					watching = (watching + 1) % 4;
+					watching = (watching + 1) % static_cast<int>(player_count);
 				}
 
 				if (lua_data.died[watching] || lua_data.finished[watching])
 				{
-					watching = (watching + 1) % 4;
+					watching = (watching + 1) % static_cast<int>(player_count);
 				}
 			}
 
@@ -651,23 +649,23 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				watching = (watching - 1);
 				if (watching < 0)
-					watching = 3;
+					watching = static_cast<int>(player_count) - 1;
 
 				if (waiting == net.id())
 				{
 					watching = (watching - 1);
 					if (watching < 0)
-						watching = 3;
+						watching = static_cast<int>(player_count) - 1;
 				}
 
 				if (lua_data.died[watching] || lua_data.finished[watching])
 				{
 					watching = (watching - 1);
 					if (watching < 0)
-						watching = 3;
+						watching = static_cast<int>(player_count) - 1;
 				}
 			}
-		}*/
+		}
 
 		std::array<int, 4> moving_objects_id = { players_placed_objects_id[0].model_id,
 			players_placed_objects_id[1].model_id,

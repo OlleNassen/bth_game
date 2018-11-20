@@ -45,6 +45,7 @@ Overlays::Overlays(int player_id)
 {
 
 }
+
 void Overlays::update(
 	std::chrono::milliseconds delta,
 	bool died,
@@ -54,60 +55,60 @@ void Overlays::update(
 	int player
 )	
 {
-using namespace std::chrono_literals;
-current_state = game_state;
-is_dead = died;
-has_finished = finish;
-player_id = player;
+	using namespace std::chrono_literals;
+	current_state = game_state;
+	is_dead = died;
+	has_finished = finish;
+	player_id = player;
 
-//Death screen update
-if (current_state & state::playing)
-{
-	if (is_dead && has_finished)
+	//Death screen update
+	if (current_state & state::playing)
 	{
-		death_timer += delta;
-	}
-	else
-	{
-		death_timer = 0ms;
-	}
-	//Finish screen update
+		if (is_dead && has_finished)
+		{
+			death_timer += delta;
+		}
+		else
+		{
+			death_timer = 0ms;
+		}
+		//Finish screen update
 
-	if (has_finished && !is_dead)
-	{
-		finished_timer += delta;
+		if (has_finished && !is_dead)
+		{
+			finished_timer += delta;
+		}
+		else
+		{
+			finished_timer = 0ms;
+		}
 	}
-	else
-	{
-		finished_timer = 0ms;
-	}
-}
 
-//Loading screen update
-if (current_state & state::waiting)
-{
-	if (loading_timer > 4000ms)
+	//Loading screen update
+	if (current_state & state::waiting)
 	{
-		loading_timer = 0ms;
+		if (loading_timer > 4000ms)
+		{
+			loading_timer = 0ms;
+		}
+		else
+		{
+			loading_timer += delta;
+		}
 	}
-	else
-	{
-		loading_timer += delta;
-	}
-}
 
-//Main menu update
-if (current_state & state::menu)
-{
-	if (main_menu_timer > 1600ms)
+	//Main menu update
+	if (current_state & state::menu)
 	{
-		main_menu_timer = 0ms;
+		if (main_menu_timer > 1600ms)
+		{
+			main_menu_timer = 0ms;
+		}
+		else
+		{
+			main_menu_timer += delta;
+		}
 	}
-	else
-	{
-		main_menu_timer += delta;
-	}
-}
 }
 
 void Overlays::render(const Shader & shader) const
@@ -116,10 +117,10 @@ void Overlays::render(const Shader & shader) const
 	shader.use();
 	shader.uniform("overlay_texture", 0);
 
-	if (!(current_state & state::menu))
+	if (current_state & state::playing)
 	{
 		//Render death screen
-		if (is_dead && has_finished)
+		if (is_dead && has_finished && death_timer <= 2000ms)
 		{
 			if (death_timer <= 50ms)
 			{
@@ -147,7 +148,7 @@ void Overlays::render(const Shader & shader) const
 			}
 		}
 		//Render finished screen
-		if (!is_dead && has_finished)
+		if (!is_dead && has_finished && finished_timer <= 5000ms)
 		{
 			if (finished_timer <= 1500ms)
 			{

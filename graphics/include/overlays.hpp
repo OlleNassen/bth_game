@@ -41,15 +41,16 @@ public:
 
 	void render(const Shader& shader) const;
 	//void render_death_screen(const Shader& shader) const;
-
-private:
-	OverlayScreen overlay;
 	
 	std::chrono::milliseconds main_menu_timer{0};
 	std::chrono::milliseconds finished_timer{0};
 	std::chrono::milliseconds waiting_timer{0};
 	std::chrono::milliseconds death_timer{0};
 	std::chrono::milliseconds loading_timer{0};
+
+private:
+	OverlayScreen overlay;
+	
 	std::vector<Texture> main_menu;
 	std::vector<Texture> finish;
 	std::vector<Texture> waiting;

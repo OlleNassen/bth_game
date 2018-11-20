@@ -18,7 +18,7 @@ function setup(game)
 	--game.max_velocity_boost = game.max_velocity * 1.3
 
 	game.time = 0.0
-	game.max_time = 10.0
+	game.max_time = 20.0
 end
 
 round = 0
@@ -94,21 +94,27 @@ function update(delta_seconds, game, entities)
 	--Check if players finished
 	for i = 1, 4, 1
 	do
-		if entities[i].position.y > game.goal and not game.finished[i]
+		if entities[i].position.y > game.goal and not game.finished[i] and not game.died[i]
 		then
 			game.scores[i] = game.scores[i] + game.points
 			game.points = game.points - 1
 
 			game.finished[i] = true
 
-			entities[i].position.x = -2000
-			entities[i].position.y = -2000
+			entities[i].position.y = 270
+			entities[i].position.x = 0
+
+			entities[i].impulse.x = 0
+			entities[i].impulse.y = 0
+
+			entities[i].velocity.x = 0
+			entities[i].velocity.y = 0
 		end
 	end
-		--Check if players dead
+	
+	--Check if players dead
 	for i = 1, 4, 1
 	do
-
 		if entities[i].triggered >= 4 and not game.finished[i]
 		then
 
@@ -117,8 +123,15 @@ function update(delta_seconds, game, entities)
 			then
 				game.finished[i] = true
 				game.died[i] = true
-				entities[i].position.y = -2000
-				entities[i].position.x = -2000
+				
+				entities[i].position.y = -200
+				entities[i].position.x = 0
+
+				entities[i].impulse.x = 0
+				entities[i].impulse.y = 0
+
+				entities[i].velocity.x = 0
+				entities[i].velocity.y = 0
 
 				game.points = game.points - 1
 
@@ -140,20 +153,51 @@ function update(delta_seconds, game, entities)
 
 	for i = 1, 4, 1
 	do
+		if game.finished[i] and not game.died[i]
+		then
+			entities[i].position.y = 270
+			entities[i].position.x = 0
+
+			entities[i].impulse.x = 0
+			entities[i].impulse.y = 0
+
+			entities[i].velocity.x = 0
+			entities[i].velocity.y = 0
+		end
+	end
+
+	for i = 1, 4, 1
+	do
+		if game.died[i] and game.finished[i]
+		then
+			entities[i].position.y = -200
+			entities[i].position.x = 0
+
+			entities[i].impulse.x = 0
+			entities[i].impulse.y = 0
+
+			entities[i].velocity.x = 0
+			entities[i].velocity.y = 0
+		end
+	end
+
+	for i = 1, 4, 1
+	do
 		if game.scores[i] > game.max_points
 		then
 			game.winner = true
 		end
 	end
 
-	for i = 1, 4, 1
-	do
-		if game.died[i] == true or game.finished[i]
-		then
-			entities[i].impulse.y = -entities[i].velocity.y
-			--print(entities[i].position.y)
-		end
-	end
+	--for i = 1, 4, 1
+	--do
+	--	if game.died[i] == true or game.finished[i]
+	--	then
+	--
+	--		--entities[i].impulse.y = -entities[i].velocity.y
+	--		--print(entities[i].position.y)
+	--	end
+	--end
 end
 
 function reset_time(game)
