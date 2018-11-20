@@ -124,8 +124,8 @@ function update(delta_seconds, game, entities)
 				game.finished[i] = true
 				game.died[i] = true
 				
-				entities[i].position.y = -200
-				entities[i].position.x = 0
+				--entities[i].position.y = 0
+				entities[i].position.x = -40
 
 				entities[i].impulse.x = 0
 				entities[i].impulse.y = 0
@@ -170,8 +170,8 @@ function update(delta_seconds, game, entities)
 	do
 		if game.died[i] and game.finished[i]
 		then
-			entities[i].position.y = -200
-			entities[i].position.x = 0
+			--entities[i].position.y = 0
+			entities[i].position.x = -40
 
 			entities[i].impulse.x = 0
 			entities[i].impulse.y = 0

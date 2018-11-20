@@ -295,7 +295,6 @@ void Game::update(std::chrono::milliseconds delta)
 
 		if (lua_data.time <= 0.5f)
 		{
-			changed_player = false;
 			watching = net.id();
 			net_state.state = network::SessionState::playing;
 			game_state = (game_state | state::playing);
@@ -634,20 +633,18 @@ void Game::update(std::chrono::milliseconds delta)
 		if ((lua_data.died[net.id()] || lua_data.finished[net.id()]) && (net_state.state == network::SessionState::playing))
 		{
 			//Spectator
-			if ((*local_input)[logic::button::right] == logic::button_state::pressed || !changed_player)
+			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
 			{
-				changed_player = true;
-
-				watching = (watching + 1) % 4;
+				watching = (watching + 1) % (static_cast<int>(player_count));
 
 				if (watching == net.id())
 				{
-					watching = (watching + 1) % 4;
+					watching = (watching + 1) % (static_cast<int>(player_count);
 				}
 
 				if (lua_data.died[watching] || lua_data.finished[watching])
 				{
-					watching = (watching + 1) % 4;
+					watching = (watching + 1) % (static_cast<int>(player_count);
 				}
 			}
 
@@ -695,7 +692,7 @@ void Game::update(std::chrono::milliseconds delta)
 		window.toggle_screen_mode(settings);
 	}
 
-	std::cout << watching << "\n";
+	std::cout << player_count << "\n";
 }
 
 void Game::pack_data()
