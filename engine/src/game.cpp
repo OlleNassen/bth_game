@@ -291,8 +291,26 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::pre_playing)
 	{
+		if (give_players_objects == true)
+		{
+			give_players_objects = false;
+			for (auto& ppoi : players_placed_objects_id)
+			{
+				if (ppoi.place_state == 0 || ppoi.place_state == 1) {
+					//Remove object
+					dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
+					level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
+
+					std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
+					std::swap(ppoi, players_placed_objects_id[players_placed_objects_id.size() - 1]);
+
+					level.moving_models.pop_back();
+					physics.remove_body(ppoi.dynamics_id);
+				}
+			}
+		}
+
 		//Begin 3, 2, 1, GO! countdown.
-		give_players_objects = false;
 		game_state = (game_state | state::pre_playing);
 
 		if (lua_data.time <= 0.5f)
