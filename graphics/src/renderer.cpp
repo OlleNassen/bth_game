@@ -713,8 +713,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	else
 		game_camera.update(delta, &scene->v[spectator_id], &scene->v[spectator_id + 1]);
-	
-	std::cout << "My ID: " << id << "\nSpectator ID: " << spectator_id << "\nBlock ID: " << moving_objects_id[id] << "\n";
 
 	ui.update(scene->moving_models, 
 		player_count, 

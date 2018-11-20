@@ -601,6 +601,7 @@ void Game::update(std::chrono::milliseconds delta)
 	for (auto& model : level.animated_models)
 			model.update_animation((float)delta.count(), idle);
 
+	std::cout << dynamics[net.id()].position.x << " : " << dynamics[net.id()].position.y << "\n";
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 
