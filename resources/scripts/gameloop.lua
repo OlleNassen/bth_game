@@ -25,7 +25,9 @@ round = 0
 death_height = { 0.0, 0.0, 0.0, 0.0 }
 reset = true
 
-function update(delta_seconds, game, entities)
+function update(delta_seconds, game, entities, player_count)
+
+	print(player_count)
 
 	game.clock = game.clock + delta_seconds
 	game.time = game.max_time - game.clock

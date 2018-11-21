@@ -120,7 +120,7 @@ LuaExport Gameplay::update(Input inputs,
 	
 	if (current_state & state::playing)
 	{
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < inputs.player_count; i++)
 		{
 			if (!game_script.data.finished[i] && !game_script.data.died[i])
 			{
@@ -135,16 +135,9 @@ LuaExport Gameplay::update(Input inputs,
 			}
 		}
 		
-		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0]);
+		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0], inputs.player_count);
 
 		time = game_script.get_time();
-
-		//if (time < 0.0f)
-		//{
-		//	//new round
-		//	is_new_round = true;
-		//	new_round();
-		//}
 	}
 
 	if (current_state & state::score)
