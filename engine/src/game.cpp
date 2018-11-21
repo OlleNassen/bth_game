@@ -280,13 +280,13 @@ void Game::update(std::chrono::milliseconds delta)
 		//For clients only //Fetch objects
 		if (net.id() != 0 && !give_players_objects)
 		{
+			players_placed_objects_id.fill({ -1, -1, -1, -1 });
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				int obj_id = dynamics[i].player_moving_object_id;
-				if (obj_id != -1)
+				int obj_type_id = dynamics[i].objects_type_id;
+				if (obj_id != -1 && obj_type_id != -1)
 				{
-					//glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-					//placed_objects_list_id = random_picked_object();
 					collision_data data;
 					int m_id = level.add_object(data, dynamics[i].objects_type_id);
 					int d_id = physics.add_dynamic_body(dynamics[obj_id].position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
@@ -878,7 +878,7 @@ void Game::unpack_data()
 
 				//Vincent
 				dynamics[i].objects_type_id = net_state.game_objects[i].objects_type_id;
-				net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
+				dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
 			}
 		}
 
