@@ -92,21 +92,24 @@ void FX::render_particles(const Shader& dust,
 	glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
 
 	using namespace std::chrono_literals;
-	float temp_timer;
+	float temp_timer_stun;
+	float temp_timer_gust;
 	static bool timer_type = 0;
+
+	temp_timer_gust = ((int)delta.count() % 10000) / 10000.0f;
 
 	if (timer_type == 0)
 	{
-		temp_timer = ((int)delta.count() % 500) / 500.0f;
-		if (temp_timer <= 0.001f)
+		temp_timer_stun = ((int)delta.count() % 500) / 500.0f;
+		if (temp_timer_stun <= 0.001f)
 		{
 			timer_type = 1;
 		}
 	}
 	else
 	{
-		temp_timer = ((int)delta.count() % 750) / 750.0f;
-		if (temp_timer <= 0.001f)
+		temp_timer_stun = ((int)delta.count() % 750) / 750.0f;
+		if (temp_timer_stun <= 0.001f)
 		{
 			timer_type = 0;
 		}
@@ -144,7 +147,6 @@ void FX::render_particles(const Shader& dust,
 	fire.uniform("camera_up_worldspace", camera_up_vector);
 	fire.uniform("view", camera.view());
 	fire.uniform("projection", camera.projection);
-	fire.uniform("paning", temp_timer);
 	//steam.uniform("view_position", scene->v[0]);
 	fire.uniform("particle_pivot", start_point);
 	render_particles(fx_fire);
@@ -157,7 +159,6 @@ void FX::render_particles(const Shader& dust,
 	godray.uniform("camera_up_worldspace", camera_up_vector);
 	godray.uniform("view", camera.view());
 	godray.uniform("projection", camera.projection);
-	godray.uniform("paning", temp_timer);
 	//steam.uniform("view_position", scene->v[0]);
 	godray.uniform("particle_pivot", start_point);
 	godray.uniform("type", 0);
@@ -171,7 +172,6 @@ void FX::render_particles(const Shader& dust,
 	godray.uniform("camera_up_worldspace", camera_up_vector);
 	godray.uniform("view", camera.view());
 	godray.uniform("projection", camera.projection);
-	godray.uniform("paning", temp_timer);
 	//steam.uniform("view_position", scene->v[0]);
 	godray.uniform("particle_pivot", start_point);
 	godray.uniform("type", 1);
@@ -185,7 +185,6 @@ void FX::render_particles(const Shader& dust,
 	godray.uniform("camera_up_worldspace", camera_up_vector);
 	godray.uniform("view", camera.view());
 	godray.uniform("projection", camera.projection);
-	godray.uniform("paning", temp_timer);
 	//steam.uniform("view_position", scene->v[0]);
 	godray.uniform("particle_pivot", start_point);
 	godray.uniform("type", 0);
@@ -199,7 +198,7 @@ void FX::render_particles(const Shader& dust,
 	gust.uniform("camera_up_worldspace", camera_up_vector);
 	gust.uniform("view", camera.view());
 	gust.uniform("projection", camera.projection);
-	gust.uniform("paning", temp_timer);
+	gust.uniform("paning", temp_timer_gust);
 	//steam.uniform("view_position", scene->v[0]);
 	gust.uniform("particle_pivot", start_point);
 	render_particles(fx_gust);
@@ -226,8 +225,8 @@ void FX::render_particles(const Shader& dust,
 	stun.uniform("projection", camera.projection);
 	stun.uniform("view_position", camera.position);
 	stun.uniform("particle_pivot", start_point);
-	stun.uniform("paning", temp_timer);
-	if (temp_timer <= 0.5f)
+	stun.uniform("paning", temp_timer_stun);
+	if (temp_timer_stun <= 0.5f)
 		stun.uniform("type", 0);
 	else
 		stun.uniform("type", 1);
