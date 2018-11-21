@@ -48,7 +48,7 @@ LightGrid::LightGrid()
 
 	for (int i = 0; i < 32; ++i)
 	{
-		lights[i].radius = 3.0f;
+		lights[i].radius = 8.0f;
 	}
 }
 
