@@ -228,6 +228,19 @@ void Renderer::render(
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 			build_text.render_text("Lobby Stage, Host press 'R' to start", screen_width * 0.33f, screen_height - 35.f, 0.75f);
+
+			if (scores[0] > 0)
+			{
+				build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
+
+				for (int i = 0; i < player_count; i++)
+				{
+					out_text.str("");
+					out_text << players[i] << " : " << scores[i];
+					text_shader.uniform("text_color", players_colors[i]);
+					build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
+				}
+			}
 		}
 
 		if (game_state & state::pre_building)
@@ -352,7 +365,7 @@ void Renderer::render(
 				timer_text.render_text(out_text.str(), current.x - (width * 0.5f), current.y, current_size);
 			}
 
-			if ((died[player_id] || finish[player_id]) && (overlays.finished_timer >= 5000ms || overlays.death_timer <= 2000ms))
+			if ((died[player_id] || finish[player_id]) && (overlays.finished_timer <= 5000ms || overlays.death_timer >= 2000ms))
 			{				
 				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 			}

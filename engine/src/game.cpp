@@ -207,6 +207,7 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		game_state = (game_state | state::loading);
 
+		gameplay.refresh();
 		load_map("../resources/level/level_1.ssp");
 
 		/*for (int i = 0; i < 4; ++i)
@@ -247,7 +248,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-				placed_objects_list_id = 0; // random_picked_object(); //placed_objects_array[0];
+				placed_objects_list_id = random_picked_object(); //placed_objects_array[0];
 
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);
@@ -257,8 +258,8 @@ void Game::update(std::chrono::milliseconds delta)
 				players_placed_objects_id[i].dynamics_id = dynamic_id;
 				players_placed_objects_id[i].model_type_id = data.model_id;
 
-				std::cout << "Model ID:\t" << model_id <<
-					"\nDynamic ID:\t" << dynamic_id << std::endl << std::endl;
+				/*std::cout << "Model ID:\t" << model_id <<
+					"\nDynamic ID:\t" << dynamic_id << std::endl << std::endl;*/
 
 				dynamics[dynamic_id].position = start_position;
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
@@ -283,8 +284,6 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 		}
 
-		//level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
-
 		//Set State -> pre_playing
 		if (!gameplay.build_stage(static_cast<int>(player_count)))
 		{
@@ -296,20 +295,6 @@ void Game::update(std::chrono::milliseconds delta)
 	else if (net_state.state == network::SessionState::pre_playing)
 	{
 		give_players_objects = false;
-		//for (auto& ppoi : players_placed_objects_id)
-		//{
-		//	if (ppoi.place_state == 0 || ppoi.place_state == 1) {
-		//		//Remove object
-		//		dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
-		//		level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
-
-		//		std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
-		//		std::swap(ppoi, players_placed_objects_id[players_placed_objects_id.size() - 1]);
-
-		//		level.moving_models.pop_back();
-		//		physics.remove_body(ppoi.dynamics_id);
-		//	}
-		//}
 
 		//Begin 3, 2, 1, GO! countdown.
 		game_state = (game_state | state::pre_playing);
@@ -389,6 +374,12 @@ void Game::update(std::chrono::milliseconds delta)
 		//Announs winner and return to lobby.
 		game_state = (game_state | state::game_over);
 
+
+		if (net.id() == 0)
+			net_state.state = network::SessionState::lobby;
+		game_state = (game_state | state::lobby);
+
+		load_map("../resources/level/lobby.ssp");
 		//Set State -> lobby
 	}
 
@@ -930,7 +921,6 @@ void Game::load_map(const char*  file_path)
 {
 	physics.clear_object();
 	level.clear_object();
-	gameplay.refresh();
 
 	for (int i = 0; i < 4; ++i)
 		dynamics[i].position = glm::vec2(3.f * i, 2.5f);
