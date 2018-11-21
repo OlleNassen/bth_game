@@ -266,13 +266,12 @@ void Game::update(std::chrono::milliseconds delta)
 				dynamics[d_id].dynamic_id = d_id;
 				dynamics[d_id].model_id = m_id;
 				dynamics[d_id].objects_type_id = placed_objects_list_id;
-				dynamics[d_id].place_state = 0;
 
 				dynamics[i].player_moving_object_id = d_id;
-				dynamics[i].player_moving_object_type_id = data.objects_type_id;
+				dynamics[i].player_moving_object_type_id = placed_objects_list_id;
 
 				players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
-							dynamics[d_id].place_state, dynamics[d_id].objects_type_id };
+							0, dynamics[d_id].objects_type_id };
 			}
 
 			give_players_objects = true;
@@ -286,6 +285,7 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				int obj_id = dynamics[i].player_moving_object_id;
 				int obj_type_id = dynamics[i].player_moving_object_type_id;
+
 				if (obj_id != -1 && obj_type_id != -1)
 				{
 					dynamics[i].player_moving_object_id = -1;
@@ -293,9 +293,9 @@ void Game::update(std::chrono::milliseconds delta)
 
 					collision_data data;
 					int m_id = level.add_object(data, obj_type_id);
-					int d_id = physics.add_dynamic_body(dynamics[obj_id].position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
+					int d_id = physics.add_dynamic_body(dynamics[obj_id].position, { 0, 0 }, data.width, data.height, { 0, 0 }, obj_type_id);
 
-					std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "Type ID:\t" << obj_type_id << std::endl << std::endl;
+					std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "\nType ID:\t" << obj_type_id << std::endl << std::endl;
 
 					//dynamics[d_id].position = start_position;
 					//dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -305,39 +305,27 @@ void Game::update(std::chrono::milliseconds delta)
 					dynamics[d_id].dynamic_id = d_id;
 					dynamics[d_id].model_id = m_id;
 					dynamics[d_id].objects_type_id = obj_type_id;
-					dynamics[d_id].place_state = 0;
 
 					players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
-								dynamics[d_id].place_state, dynamics[d_id].objects_type_id };
+								0, dynamics[d_id].objects_type_id };
 
 					give_players_objects = true;
 				}
 			}
 		}
-
+		
 		for (int i = 0; i < static_cast<int>(player_count); i++)
-		{
-			level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
-		}
-
-		/*for (int i = 0; i < static_cast<int>(player_count); i++)
 		{
 			if (players_placed_objects_id[i].place_state != 2 || dynamics[players_placed_objects_id[i].dynamics_id].place_state != 2)
 			{
 				level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
 
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id))
-				{
 					players_placed_objects_id[i].place_state = 1;
-					dynamics[players_placed_objects_id[i].dynamics_id].place_state = 1;
-				}
 				else
-				{
 					players_placed_objects_id[i].place_state = 0;
-					dynamics[players_placed_objects_id[i].dynamics_id].place_state = 0;
-				}
 			}
-		}*/
+		}
 
 		//Set State -> pre_playing
 		if (!gameplay.build_stage(static_cast<int>(player_count)))
