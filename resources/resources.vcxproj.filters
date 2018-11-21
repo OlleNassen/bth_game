@@ -61,5 +61,6 @@
     <None Include="shaders\overlay.vs" />
     <None Include="shaders\build_stage.fs" />
     <None Include="shaders\build_stage.vs" />
+    <None Include="scripts\projectile.lua" />
   </ItemGroup>
 </Project>

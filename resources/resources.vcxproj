@@ -121,6 +121,7 @@
     <None Include="scripts\gameloop.lua" />
     <None Include="scripts\placing_objects.lua" />
     <None Include="scripts\player.lua" />
+    <None Include="scripts\projectile.lua" />
     <None Include="shaders\box.fs" />
     <None Include="shaders\box.vs" />
     <None Include="shaders\brdf.fs" />

@@ -12,8 +12,8 @@ function setup(game)
 
 
 	--shield
+	--game.shield_triggered = {false, false, false, false}
 	game.shield_triggered = {false, false, false, false}
-	game.shield_protection = {false, false, false, false}
 	game.is_spike = {false, false, false, false}
 	
 
@@ -108,9 +108,13 @@ function update(delta_seconds, game, entities)
 		--Check if players dead
 	for i = 1, 4, 1
 	do
-
 		if entities[i].triggered >= 4 and not game.finished[i]
 		then
+			if entities[i].triggered_type == 2 or entities[i].triggered_type == 6
+			then
+				--print(entities[i].shield_active)
+				game.shield_triggered[i] = entities[i].shield_active
+			end
 
 			--spike_trap
 			if entities[i].triggered_type == 0 and game.shield_triggered[i] == false
@@ -125,7 +129,7 @@ function update(delta_seconds, game, entities)
 			elseif entities[i].triggered_type == 0 and game.shield_triggered[i] == true
 			then
 				game.is_spike[i] = true
-				print("protected")
+				--print("protected")
 			end
 
 
@@ -134,20 +138,20 @@ function update(delta_seconds, game, entities)
 			if entities[i].triggered_type == 6 and game.shield_triggered[i] == false
 			then
 				game.shield_triggered[i] = true
-				print("shield")
+				entities[i].shield_active = true
 			end
 
 		elseif game.shield_triggered[i] == true and game.is_spike[i] == true
 		then
 			game.shield_triggered[i] = false
 			game.is_spike[i] = false
-			print("removed")
+			entities[i].shield_active = false
+			--print("removed")
 
 		end
-
-
-
 	end
+
+
 
 	for i = 1, 4, 1
 	do

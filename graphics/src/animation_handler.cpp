@@ -544,7 +544,7 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 			else if (current_state == anim::start_jump) 
 			{
 				//Test for new controls, might be removed later
-				//switch_animation(anim::in_jump);
+				switch_animation(anim::in_jump);
 				play_anim = current_state;
 			}
 			else if (current_state == anim::landing)

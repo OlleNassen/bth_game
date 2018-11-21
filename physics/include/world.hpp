@@ -38,6 +38,8 @@ public:
 	glm::vec2 forces;
 	glm::vec2 impulse;
 	bool is_stund;
+	bool shield_active = false;
+	//bool spike_active = false;
 };
 
 using objects_array = std::array<objects, 100>;
