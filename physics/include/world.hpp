@@ -43,6 +43,7 @@ public:
 	int place_state = 0;
 	bool is_stund;
 
+	int player_moving_object_type_id = -1;
 	int player_moving_object_id = -1;
 };
 

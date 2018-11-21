@@ -303,6 +303,7 @@ void Game::update(std::chrono::milliseconds delta)
 					dynamics[d_id].objects_type_id = data.objects_type_id;
 					dynamics[d_id].place_state = 0;
 
+					dynamics[i].player_moving_object_type_id = data.objects_type_id;
 					dynamics[i].player_moving_object_id = d_id;
 
 					players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
@@ -846,7 +847,7 @@ void Game::pack_data()
 		net_state.game_objects[i].velocity = dynamics[i].velocity;
 
 		//Vincent
-		net_state.game_objects[i].objects_type_id =	dynamics[i].objects_type_id;
+		net_state.game_objects[i].player_moving_object_type_id = dynamics[i].player_moving_object_type_id;
 		net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
 	}
 
@@ -877,8 +878,11 @@ void Game::unpack_data()
 				dynamics[i].velocity = net_state.game_objects[i].velocity;
 
 				//Vincent
-				dynamics[i].objects_type_id = net_state.game_objects[i].objects_type_id;
-				dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
+				if (i < 4)
+				{
+					dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
+					dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
+				}
 			}
 		}
 
