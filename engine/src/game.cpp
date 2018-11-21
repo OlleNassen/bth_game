@@ -256,7 +256,7 @@ void Game::update(std::chrono::milliseconds delta)
 				int m_id = level.add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
 				
-				//std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << std::endl << std::endl;
+				std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << std::endl << std::endl;
 
 				dynamics[d_id].position = start_position;
 				dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -283,9 +283,8 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				int d_id = dynamics[i].player_moving_object_id;
-				if (d_id != 0)
+				if (d_id != -1)
 				{
-
 					collision_data data;
 					int m_id = level.add_object(data, dynamics[d_id].objects_type_id);
 					physics.add_dynamic_body(dynamics[d_id].position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
@@ -829,6 +828,13 @@ void Game::pack_data()
 	{
 		net_state.game_objects[i].position = dynamics[i].position;
 		net_state.game_objects[i].velocity = dynamics[i].velocity;
+
+		//Vincent
+		net_state.game_objects[i].dynamic_id =				dynamics[i].dynamic_id;
+		net_state.game_objects[i].model_id =				dynamics[i].model_id;
+		net_state.game_objects[i].objects_type_id =			dynamics[i].objects_type_id;
+		net_state.game_objects[i].place_state =				dynamics[i].place_state;
+		net_state.game_objects[i].player_moving_object_id =	dynamics[i].player_moving_object_id;
 	}
 
 	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0)
@@ -856,6 +862,13 @@ void Game::unpack_data()
 			{
 				dynamics[i].position = net_state.game_objects[i].position;
 				dynamics[i].velocity = net_state.game_objects[i].velocity;
+
+				//Vincent
+				dynamics[i].dynamic_id = net_state.game_objects[i].dynamic_id;
+				dynamics[i].model_id = net_state.game_objects[i].model_id;
+				dynamics[i].objects_type_id = net_state.game_objects[i].objects_type_id;
+				dynamics[i].place_state = net_state.game_objects[i].place_state;
+				dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
 			}
 		}
 
