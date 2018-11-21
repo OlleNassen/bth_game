@@ -392,6 +392,54 @@ void Game::update(std::chrono::milliseconds delta)
 		//Set State -> lobby
 	}
 
+	static bool printed = false;
+	static int old_state = state::lobby;
+
+	if (old_state != game_state)
+	{
+		printed = false;
+		old_state = game_state;
+	}
+
+	if (!printed)
+	{
+		if (game_state & state::lobby)
+		{
+			std::cout << "Lobby State\n";
+			printed = true;
+		}
+		else if (game_state & state::pre_building)
+		{
+			std::cout << "Pre_building State\n";
+			printed = true;
+		}
+		else if (game_state & state::building)
+		{
+			std::cout << "Building State\n";
+			printed = true;
+		}
+		else if (game_state & state::pre_playing)
+		{
+			std::cout << "Pre_playing State\n";
+			printed = true;
+		}
+		else if (game_state & state::playing)
+		{
+			std::cout << "Playing State\n";
+			printed = true;
+		}
+		else if (game_state & state::score)
+		{
+			std::cout << "Score State\n";
+			printed = true;
+		}
+		else if (game_state & state::game_over)
+		{
+			std::cout << "Game_over State\n";
+			printed = true;
+		}
+	}
+
 	//for (int i = 0; i < 4; i++)
 	//{
 	//	std::cout << "Player " << i << " is " << lua_data.died[i] << "\n";

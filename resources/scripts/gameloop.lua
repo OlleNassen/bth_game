@@ -195,7 +195,6 @@ function update(delta_seconds, game, entities)
 end
 
 function reset_time(game)
-	print("In Reset_time")
 	reset = true
 	game.time = game.max_time
 	--4 playerscores:
