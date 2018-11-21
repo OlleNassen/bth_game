@@ -109,16 +109,16 @@ void Game::render()
 {	
 	std::vector<glm::vec3> db_coll = physics.get_all_debug();
 
-	std::vector<build_information> build_info;
+	build_info.clear();
 	for (int i = 0; i < static_cast<int>(player_count); i++)
 	{
 		int d_id = players_placed_objects_id[i].dynamics_id;
 		build_information info;
 		
-		info.world_position = dynamics[d_id].position;
+		info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
 		info.debug_positions = physics.get_debug_for(d_id);
 		info.place_state = players_placed_objects_id[i].place_state;
-		info.object_id = players_placed_objects_id[i].object_type_id;
+		info.object_id = players_placed_objects_id[i].model_type_id;
 
 		build_info.push_back(info);
 	}

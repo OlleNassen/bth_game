@@ -59,28 +59,26 @@ Renderer::Renderer(GameScene* scene)
 	lights[3].intensity = 30;
 
 	//Map Light
-	lights[4].position = glm::vec3{ -0.145, -4.289, 8.929 };
+	lights[4].position = glm::vec3{ -0.145,-6.289,8.929 };
 	lights[4].color = glm::vec3{ 1,0.2,0 };
-	lights[5].position = glm::vec3{ -7.73, 23.368, -22.735 };
+	lights[5].position = glm::vec3{ -7.73,23.368,-22.735 };
 	lights[5].color = glm::vec3{ 1,0.2,0 };
-	lights[6].position = glm::vec3{ -7.74, 44, -22.984 };
+	lights[6].position = glm::vec3{ -7.74,44,-22.984 };
 	lights[6].color = glm::vec3{ 1,0.2,0 };
-	lights[7].position = glm::vec3{ 0, 123.035, -23.725 };
-	lights[7].color = glm::vec3{ 0, 0.82, 1 };
-	lights[8].position = glm::vec3{ 0, 187.484, -18.185 };
-	lights[8].color = glm::vec3{ 1, 0.2, 0 };
-	lights[9].position = glm::vec3{ 0, 208.400, -34.226 };
-	lights[9].color = glm::vec3{ 1, 0.2, 0 };
-	lights[10].position = glm::vec3{ 0, 260.169, 5.0 };
-	lights[10].color = glm::vec3{ 1, 1, 1 };
-	lights[11].position = glm::vec3{ 0, 88.553, -29.053 };
-	lights[11].color = glm::vec3{ 1, 0.2, 0 };
+	lights[7].position = glm::vec3{ -11.853,120,-20 };
+	lights[7].color = glm::vec3{ 0,0.82,1 };
+	lights[8].position = glm::vec3{ 13.34,160,-20 };
+	lights[8].color = glm::vec3{ 1,0.48,0 };
+	lights[9].position = glm::vec3{ -11.853,200,-20 };
+	lights[9].color = glm::vec3{ 0,0.82,1 };
+	lights[10].position = glm::vec3{ 13.34,240,-20 };
+	lights[10].color = glm::vec3{ 1,0.48,0 };
 
 	for (int i = 4; i < 12; i++)
 	{
 		lights[i].intensity = 400;
 	}
-	lights[4].intensity = 400;
+	lights[4].intensity = 100;
 	lights[5].intensity = 700;
 	lights[6].intensity = 1000;
 
@@ -136,8 +134,6 @@ void Renderer::render(
 		render_type(pbra, game_camera,a_to_render.first, a_to_render.last);
 		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
-
-			
 		
 		if (!(game_state & state::lobby))
 		{
@@ -170,7 +166,7 @@ void Renderer::render(
 
 		if (!(game_state & state::lobby))
 		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
+			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, game_camera, fx_emitter.timer);
 		}
 
 		if (debug_active)
@@ -276,7 +272,7 @@ void Renderer::render(
 
 			float width = timer_text.get_text_width(out_text.str(), 0.02f);
 
-			timer_text.render_text(out_text.str(), build_info[player_id].world_position.x - (width * 0.5f), build_info[player_id].world_position.y + 1.f, 0.02f);
+			timer_text.render_text(out_text.str(), build_info[player_id].local_position.x - (width * 0.5f), build_info[player_id].local_position.y + 1.f, 0.02f);
 
 			//Build area
 			for (int i = 0; i < player_count; i++)
@@ -400,73 +396,6 @@ void Renderer::render(
 		glEnable(GL_DEPTH_TEST);
 	}
 
-		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, game_camera);
-
-		if (debug_active)
-		{
-			glDisable(GL_DEPTH_TEST);
-			//lines.use();
-			lines.uniform("projection", db_camera.projection);
-			lines.uniform("view", db_camera.view());
-			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
-			line_debug(debug_positions);
-			glEnable(GL_DEPTH_TEST);
-		}
-
-	}
-
-	// Post Processing Effects
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	if (player_count > 0)
-	{
-		if (!is_menu)
-		{
-			post_proccessing.use();
-			post_proccessing.uniform("scene_texture", 0);
-			post_proccessing.uniform("depth_texture", 1);
-			post_proccessing.uniform("screen_warning", 2);
-
-			scene_texture.bind_texture(0);
-			scene_texture.bind_texture(1);
-			post_processing_effects.texture.bind(2);
-
-			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
-			post_processing_effects.render();
-
-			glDisable(GL_DEPTH_TEST);
-
-			if (finish[player_id] && died[player_id])
-			{
-				death_screen.render(overlay_shader);
-			}
-			if (finish[player_id] && !died[player_id])
-			{
-				finish_screen.render(overlay_shader, finish);
-			}
-			/*if (!build_stage_screen.transparency < 0.0005f)
-			{
-				build_stage_screen.render(build_stage_screen_shader);
-			}*/
-			glEnable(GL_DEPTH_TEST);
-		}
-	}
-	else
-	{
-		if (!is_menu)
-		{
-			loading_screen.render(overlay_shader);
-		}
-	}
-
-	{
-		glDisable(GL_DEPTH_TEST);
-
-		if (is_menu)
-		{
-			main_menu_screen.render(overlay_shader);
-		}
-
 	{
 		glDisable(GL_DEPTH_TEST);
 
@@ -524,14 +453,39 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
 	float print_time,
-	float goal_height)
-
+	float goal_height,
+	std::vector<build_information>& build_infos,
+	int spectator_id,
+	std::array<int, 4> moving_objects_id)
 {
-	bool is_menu = (game_state & state::menu);
-	s_to_render = ModelsToRender{scene->moving_models[id],&scene->models[9], &scene->models.back()};
-	a_to_render = ModelsToRender{scene->moving_models[id],&scene->animated_models.front(), &scene->animated_models.back()};
+	bool is_menu = (new_game_state & state::menu);
 	
 	if (game_state & state::building)
+	{
+		s_to_render = ModelsToRender{ scene->moving_models[moving_objects_id[id]], &scene->models[9], &scene->models.back() };
+		if (scene->animated_models.size() > 0)
+			a_to_render = ModelsToRender{ scene->moving_models[moving_objects_id[id]], &scene->animated_models.front(), &scene->animated_models.back() };
+	}
+	else if (!died[id] && !finish[id])
+	{
+		s_to_render = ModelsToRender{ scene->moving_models[id], &scene->models[9], &scene->models.back() };
+		if (scene->animated_models.size() > 0)
+			a_to_render = ModelsToRender{ scene->moving_models[id], &scene->animated_models.front(), &scene->animated_models.back() };
+	}
+	else
+	{
+		s_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->models[9], &scene->models.back() };
+		if (scene->animated_models.size() > 0)
+			a_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->animated_models.front(), &scene->animated_models.back() };
+	}
+	
+	if (game_state & state::score)
+	{
+		build_stage_screen.timer = 0ms;
+		build_stage_screen.transparency = 1.0f;
+	}
+
+	if (!(game_state & state::playing))
 	{
 		post_processing_effects.glow_value = 0.0f;
 		if (!is_menu && game_state & state::pre_building)
@@ -553,7 +507,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 	game_state = new_game_state;
 	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
-	fx_emitter.timer += delta;
 
 	using namespace std::chrono_literals;
 
@@ -561,46 +514,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	log = data;
 	is_chat_visible = is_chat_on || time < 3s;
 
-	//Death screen update
-	if (died[id] && finish[id])
-	{
-		death_screen.timer += delta;
-	}
-	else
-	{
-		death_screen.timer = 0ms;
-	}
-
-	//Loading screen update
-	if (loading_screen.timer > 4000ms)
-	{
-		loading_screen.timer = 0ms;
-	}
-	else
-	{
-		loading_screen.timer += delta;
-	}
-
-	//Main menu update
-	if (main_menu_screen.timer > 1600ms)
-	{
-		main_menu_screen.timer = 0ms;
-	}
-	else
-	{
-		main_menu_screen.timer += delta;
-	}
-
-	//Finish screen update
-	if (finish[id] && !died[id])
-	{
-		finish_screen.timer += delta;
-	}
-	else
-	{
-		finish_screen.timer = 0ms;
-	}
-
+	//--FX Calculations--
 	if (!is_chat_on)
 	{
 		//Dust
@@ -630,15 +544,21 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Gust
 		fx_emitter.calculate_gust_data(delta, game_camera);
 
-		//Object 1
-		fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[0]);
-		//Object 2
-		fx_emitter.calculate_object_2_data(delta, game_camera, build_infos[1]);
-		//Object 3
-		fx_emitter.calculate_object_3_data(delta, game_camera, build_infos[2]);
-		//Object 4
-		fx_emitter.calculate_object_4_data(delta, game_camera, build_infos[3]);
-		
+		if (build_infos.size() > 0)
+		{
+			//Object 1
+			if (build_infos.size() >= 1)
+				fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[0]);
+			//Object 2
+			if (build_infos.size() >= 2)
+				fx_emitter.calculate_object_2_data(delta, game_camera, build_infos[1]);
+			//Object 3
+			if (build_infos.size() >= 3)
+				fx_emitter.calculate_object_3_data(delta, game_camera, build_infos[2]);
+			//Object 4
+			if (build_infos.size() == 4)
+				fx_emitter.calculate_object_4_data(delta, game_camera, build_infos[3]);
+		}
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();
@@ -707,7 +627,7 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 
 	int light_count = 0;
 
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{
@@ -747,7 +667,7 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 
 	int light_count = 0;
 
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{
