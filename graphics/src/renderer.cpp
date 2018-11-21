@@ -137,7 +137,7 @@ void Renderer::render(
 		
 		if (!(game_state & state::lobby))
 		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, game_camera, fx_emitter.timer);
+			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer);
 		}
 		if (debug_active)
 		{
@@ -166,7 +166,7 @@ void Renderer::render(
 
 		if (!(game_state & state::lobby))
 		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, game_camera, fx_emitter.timer);
+			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer);
 		}
 
 		if (debug_active)
@@ -507,6 +507,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	game_state = new_game_state;
 	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
+	fx_emitter.timer += delta;
 
 	using namespace std::chrono_literals;
 
@@ -546,18 +547,26 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		if (build_infos.size() > 0)
 		{
-			//Object 1
+			//Object 1 && Stun
 			if (build_infos.size() >= 1)
+			{
 				fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[0]);
+			}
 			//Object 2
 			if (build_infos.size() >= 2)
-				fx_emitter.calculate_object_2_data(delta, game_camera, build_infos[1]);
+			{
+				fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[1]);
+			}
 			//Object 3
 			if (build_infos.size() >= 3)
-				fx_emitter.calculate_object_3_data(delta, game_camera, build_infos[2]);
+			{
+				fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[2]);
+			}
 			//Object 4
 			if (build_infos.size() == 4)
-				fx_emitter.calculate_object_4_data(delta, game_camera, build_infos[3]);
+			{
+				fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[3]);
+			}
 		}
 
 		db_camera.update(delta, directions[0], cursor);

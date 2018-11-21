@@ -145,6 +145,8 @@
     <None Include="shaders\fx_spark.vs" />
     <None Include="shaders\fx_steam.fs" />
     <None Include="shaders\fx_steam.vs" />
+    <None Include="shaders\fx_stun.fs" />
+    <None Include="shaders\fx_stun.vs" />
     <None Include="shaders\gui.fs" />
     <None Include="shaders\gui.vs" />
     <None Include="shaders\loading_screen.fs" />

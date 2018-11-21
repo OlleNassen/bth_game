@@ -249,7 +249,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-				placed_objects_list_id = random_picked_object(); //placed_objects_array[0];
+				placed_objects_list_id = 2;// random_picked_object(); //placed_objects_array[0];
 
 				collision_data data;
 				int model_id = level.add_object(data, placed_objects_list_id);

@@ -83,6 +83,7 @@ public:
 	Texture godray;
 	Texture furnace;
 	Texture gust;
+	Texture stun;
 	
 	unsigned int randomizer = 0;
 	unsigned int color_picker[4];
@@ -100,6 +101,7 @@ public:
 		const Shader& fire,
 		const Shader& godray,
 		const Shader& gust,
+		const Shader& stun,
 		const Camera& camera,
 		std::chrono::milliseconds delta) const;
 	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
@@ -111,6 +113,7 @@ public:
 	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_stun_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 	void calculate_object_1_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 	void calculate_object_2_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 	void calculate_object_3_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
@@ -125,6 +128,7 @@ public:
 	FXdata* fx_lava_light_ptr = new FXdata{};
 	FXdata* fx_furnace_light_ptr = new FXdata{};
 	FXdata* fx_gust_ptr = new FXdata{};
+	FXdata* fx_stun_ptr = new FXdata{};
 	FXdata* fx_object_1_ptr = new FXdata{};
 	FXdata* fx_object_2_ptr = new FXdata{};
 	FXdata* fx_object_3_ptr = new FXdata{};
@@ -140,8 +144,8 @@ private:
 	void steam_back(glm::vec3 pos_vec);
 	void steam_left(glm::vec3 pos_vec);
 
-};
+	int stun_type = 0;
 
-void object_render();
+};
 
 }

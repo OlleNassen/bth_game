@@ -176,6 +176,9 @@ private:
 	Shader fx_gust{
 		"../resources/shaders/fx_gust.vs",
 		"../resources/shaders/fx_gust.fs" };
+	Shader fx_stun{
+		"../resources/shaders/fx_stun.vs",
+		"../resources/shaders/fx_stun.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
