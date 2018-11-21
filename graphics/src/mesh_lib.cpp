@@ -80,7 +80,10 @@ void MeshLib::create_mesh_list()
 		"furnace.ssp",                      //52
 		"machine_arm.ssp",                  //53
 		"iron_chunk.ssp",                   //54
-		"scrap_robot.ssp"                   //55
+		"scrap_robot.ssp",				    //55
+		"furnace_in.ssp",					//56
+		"furnace_out.ssp",					//57
+		"smelt_bots.ssp"					//58
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
