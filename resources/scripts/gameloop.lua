@@ -27,8 +27,6 @@ reset = true
 
 function update(delta_seconds, game, entities, player_count)
 
-	print(player_count)
-
 	game.clock = game.clock + delta_seconds
 	game.time = game.max_time - game.clock
 
@@ -39,7 +37,7 @@ function update(delta_seconds, game, entities, player_count)
 		do
 			-- Find any unfinished player
 			highest_index = -1
-			for i = 1, 4, 1
+			for i = 1, player_count, 1
 			do
 				if game.finished[i] == false
 				then
@@ -86,7 +84,7 @@ function update(delta_seconds, game, entities, player_count)
 		entities[4].position.x = 9
 		entities[4].position.y = 1.75
 		
-		game.points = 4 -- Don't change unless you know what you're doing :)
+		game.points = player_count -- Don't change unless you know what you're doing :)
 		round = round + 1
 		--game.clock = 0
 
@@ -98,7 +96,7 @@ function update(delta_seconds, game, entities, player_count)
 	end
 
 	--Check if players finished
-	for i = 1, 4, 1
+	for i = 1, player_count, 1
 	do
 		if entities[i].position.y > game.goal and not game.finished[i] and not game.died[i]
 		then
@@ -119,7 +117,7 @@ function update(delta_seconds, game, entities, player_count)
 	end
 	
 	--Check if players dead
-	for i = 1, 4, 1
+	for i = 1, player_count, 1
 	do
 		if entities[i].triggered >= 4 and not game.finished[i]
 		then
@@ -177,7 +175,7 @@ function update(delta_seconds, game, entities, player_count)
 		end
 	end
 
-	for i = 1, 4, 1
+	for i = 1, player_count, 1
 	do
 		if game.scores[i] > game.max_points
 		then
