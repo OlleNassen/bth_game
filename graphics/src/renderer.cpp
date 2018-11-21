@@ -75,12 +75,14 @@ Renderer::Renderer(GameScene* scene)
 	lights[10].color = glm::vec3{ 1, 1, 1 };
 	lights[11].position = glm::vec3{ 0, 88.553, -29.053 };
 	lights[11].color = glm::vec3{ 1, 0.2, 0 };
+	lights[12].position = glm::vec3{ 0, 135.246, -11.474 };
+	lights[12].color = glm::vec3{ 1, 0.2, 0 };
 
-	for (int i = 4; i < 12; i++)
+	for (int i = 4; i < 13; i++)
 	{
 		lights[i].intensity = 400;
 	}
-	lights[4].intensity = 400;
+
 	lights[5].intensity = 700;
 	lights[6].intensity = 1000;
 
@@ -484,7 +486,7 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 
 	int light_count = 0;
 
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 13; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{
@@ -521,7 +523,7 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 
 	int light_count = 0;
 
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 13; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{

@@ -483,9 +483,9 @@ void FX::calculate_dust_data(std::chrono::milliseconds delta, const Camera& came
 					fx_dust.particle_container[particle_index].speed = (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
 
 				//Set colors, if you want color from texture, don't change the color
-				fx_dust.particle_container[particle_index].r = 200;
-				fx_dust.particle_container[particle_index].g = 200;
-				fx_dust.particle_container[particle_index].b = 200;
+				fx_dust.particle_container[particle_index].r = 250;
+				fx_dust.particle_container[particle_index].g = 150;
+				fx_dust.particle_container[particle_index].b = 0;
 
 				fx_dust.particle_container[particle_index].a = 200;
 				fx_dust.particle_container[particle_index].size = 0;
