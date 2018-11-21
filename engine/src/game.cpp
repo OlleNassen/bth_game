@@ -224,6 +224,12 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::pre_building);
 		static float pre_build_timer = 3.5f;
 
+		for (int i = 0; i < 4; i++)
+		{
+			dynamics[i].player_moving_object_id = -1;
+			dynamics[i].player_moving_object_type_id = -1;
+		}
+
 		//Set State -> building
 		pre_build_timer -= dt;
 		if (pre_build_timer <= 0.0f)
