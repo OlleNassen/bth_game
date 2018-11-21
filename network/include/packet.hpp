@@ -59,11 +59,8 @@ public:
 	Vec2 velocity;
 
 	//Vincent
-	int dynamic_id;
-	int model_id;
 	int objects_type_id;
-	int place_state;
-	int player_moving_object_id;
+	int player_moving_object_id = -1;
 };
 
 class GameState
