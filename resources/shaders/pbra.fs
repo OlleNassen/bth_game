@@ -36,15 +36,6 @@ uniform vec3 dir_light_dir;
 uniform vec3 dir_light_color;
 uniform float dir_light_intensity;
 
-uniform int light_count;
-
-//IBL
-uniform sampler2D   brdf_lut;
-uniform samplerCube irradiance_map;
-uniform samplerCube prefilter_map;
-
-
-
 const float PI = 3.14159265359;
 
 vec3 getNormalFromMap()
@@ -199,26 +190,8 @@ void main()
 		float NdotL = max(dot(N, L), 0.0);                
 		Lo += (kD * albedo / PI + specular) * radiance * NdotL;
     }
-    // ambient lighting (note that the next IBL tutorial will replace 
-    // this ambient lighting with environment lighting).
-	
-    // ambient lighting (we now use IBL as the ambient term)
-	
-    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
 
-    vec3 kS = F;
-    vec3 kD = 1.0 - kS;
-    kD *= 1.0 - metallic;	
-	
-    vec3 irradiance = texture(irradiance_map, N).rgb;
-    vec3 diffuse      = irradiance * albedo;
-
-	const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(prefilter_map, R,  roughness * MAX_REFLECTION_LOD).rgb;    
-    vec2 brdf  = texture(brdf_lut, vec2(max(dot(N, V), 0.0), roughness)).rg;
-    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
-
-    vec3 ambient = (kD * diffuse + specular) * ao;
+	vec3 ambient = vec3(0.03) * albedo * ao;
 
 	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
     

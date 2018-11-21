@@ -8,7 +8,7 @@ namespace graphics
 glm::vec4 screen_to_view(const glm::mat4& inv_proj, const glm::vec4& screen);
 glm::vec4 clip_to_view(const glm::mat4& inv_proj, const glm::vec4& clip);
 Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y);
-bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum);
+bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z_near, float z_far);
 
 LightGrid::LightGrid()
 {	
@@ -46,7 +46,12 @@ LightGrid::LightGrid()
 	lights[5].intensity = 700.0f;
 	lights[6].intensity = 1000.0f;
 
-	for (int i = 0; i < 32; ++i)
+	for (int i = 0; i < 4; ++i)
+	{
+		lights[i].radius = 0.0f;
+	}
+
+	for (int i = 4; i < 32; ++i)
 	{
 		lights[i].radius = 8.0f;
 	}
@@ -98,7 +103,7 @@ void LightGrid::update(const Camera& camera)
 			for (int i = 0; i < block_size; ++i)
 			{
 				light_grid_element& elem = indices[i + j * block_size];
-				if (sphere_inside_frustum(sphere, grid[i][j]) && elem.count < 5)		
+				if (!sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count < 5)		
 					elem.indices[elem.count++] = light_id;
 			}
 		}
@@ -159,14 +164,29 @@ bool sphere_inside_plane(const Sphere& sphere, const Plane& plane)
 	return glm::dot(plane.normal, sphere.center) - plane.distance < -sphere.radius;
 }
 
-bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum)
+bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z_near, float z_far)
 {	
-	return 
-		sphere_inside_plane(sphere, frustum.left) ||
-		sphere_inside_plane(sphere, frustum.right) ||
-		sphere_inside_plane(sphere, frustum.top) ||
-		sphere_inside_plane(sphere, frustum.bottom);
+	bool result = true;
 
+	if (sphere.center.z - sphere.radius > z_near ||
+		sphere.center.z + sphere.radius < z_far)
+	{
+		result = false;
+	}
+
+	if (sphere_inside_plane(sphere, frustum.left))
+		result = false;
+
+	if (sphere_inside_plane(sphere, frustum.right))
+		result = false;
+
+	if (sphere_inside_plane(sphere, frustum.top))
+		result = false;
+
+	if (sphere_inside_plane(sphere, frustum.bottom))
+		result = false;
+	
+	return result;
 }
 
 }
