@@ -283,10 +283,13 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				int d_id = dynamics[i].player_moving_object_id;
-				players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
-					dynamics[d_id].place_state, dynamics[d_id].objects_type_id };
+				if (d_id != 0)
+				{
+					players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
+						dynamics[d_id].place_state, dynamics[d_id].objects_type_id };
+					give_players_objects = true;
+				}
 			}
-			give_players_objects = true;
 		}
 
 		for (int i = 0; i < static_cast<int>(player_count); i++)
