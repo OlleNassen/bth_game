@@ -165,12 +165,12 @@ function update_controls(delta_seconds, entity)
 			if entity.button.right
 			then	
 				entity.impulse.y = jump_speed
-				entity.impulse.x = 45
+				--entity.impulse.x = 45
 				entity.can_jump = false
 			elseif entity.button.left
 			then
 				entity.impulse.y = jump_speed
-				entity.impulse.x = -45
+				--entity.impulse.x = -45
 				entity.can_jump = false
 			else
 				entity.impulse.y = jump_speed
