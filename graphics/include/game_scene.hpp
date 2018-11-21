@@ -12,7 +12,7 @@ struct collision_data
 	float width;
 	float height;
 	bool trigger;
-	int model_id;
+	int objects_type_id;
 };
 
 
