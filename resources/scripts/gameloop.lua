@@ -23,60 +23,25 @@ end
 
 round = 0
 death_height = { 0.0, 0.0, 0.0, 0.0 }
-reset = true
+start_round = true
 
 function update(delta_seconds, game, entities, player_count)
 
 	game.clock = game.clock + delta_seconds
 	game.time = game.max_time - game.clock
 
-	--should be as long as a play time
-	if game.clock > game.max_time -- Deal out points and reset if timer is too high
+	if start_round
 	then
-		while game.points > 0
-		do
-			-- Find any unfinished player
-			highest_index = -1
-			for i = 1, player_count, 1
-			do
-				if game.finished[i] == false
-				then
-					highest_index = i
-				end
-			end
-
-			-- Find player closest to goal
-			highest_y = entities[highest_index].position.y
-			for i = 1, 4, 1
-			do
-				if game.finished[i] == false
-				then
-					if entities[i].position.y > highest_y
-					then
-						highest_index = i
-						highest_y = entities[i].position.y
-					end
-				end
-			end
-
-			game.scores[highest_index] = game.scores[highest_index] + game.points
-			game.finished[highest_index] = true
-			game.points = game.points - 1
-		end
-	end
-
-	-- Reset
-	if game.points == 0 and reset
-	then
-		reset = false
+		start_round = false
 
 		print("In Game.points == 0")
+
 		-- Start positions
 		entities[1].position.x = 0
-		entities[1].position.y = 1.75
+		entities[1].position.y = 250
 
 		entities[2].position.x = 3
-		entities[2].position.y = 1.75
+		entities[2].position.y = 250
 
 		entities[3].position.x = 6
 		entities[3].position.y = 1.75
@@ -93,6 +58,43 @@ function update(delta_seconds, game, entities, player_count)
 			game.finished[i] = false
 			game.died[i] = false
 		end
+	end
+
+	--[[
+	-- Reset
+	if game.points == 0
+	then
+		print("In Game.points == 0")
+		-- Start positions
+		entities[1].position.x = 0
+		entities[1].position.y = 250
+
+		entities[2].position.x = 3
+		entities[2].position.y = 250
+
+		entities[3].position.x = 6
+		entities[3].position.y = 1.75
+
+		entities[4].position.x = 9
+		entities[4].position.y = 1.75
+		
+		game.points = player_count -- Don't change unless you know what you're doing :)
+		round = round + 1
+		--game.clock = 0
+
+		for i = 1, 4, 1
+		do
+			game.finished[i] = false
+			game.died[i] = false
+		end
+	end
+	--]]
+
+	--should be as long as a play time
+	if game.clock > game.max_time -- Deal out points and reset if timer is too high
+	then
+		--new round
+		game.points = 0 
 	end
 
 	--Check if players finished
@@ -145,6 +147,7 @@ function update(delta_seconds, game, entities, player_count)
 		end
 	end
 
+	--If player finished hold him up high
 	for i = 1, 4, 1
 	do
 		if game.finished[i] and not game.died[i]
@@ -195,7 +198,7 @@ function update(delta_seconds, game, entities, player_count)
 end
 
 function reset_time(game)
-	reset = true
+	start_round = true
 	game.time = game.max_time
 	--4 playerscores:
 	game.finished = { false, false, false, false }
