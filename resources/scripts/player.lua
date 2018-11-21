@@ -94,25 +94,6 @@ function update(delta_seconds, entity)
 
 	entity.jump_was_push = entity.button.jump
 
-	--[[if entity.anim.current == entity.anim.falling 
-		or entity.anim.current == entity.anim.in_jump 
-		or entity.anim.current == entity.anim.hanging_left 
-		or entity.anim.current == entity.anim.hanging_right
-		or entity.anim.current == entity.anim.jump_from_wall
-		or entity.anim.current == entity.anim.idle
-		or entity.anim.current == entity.anim.running
-		then
-		entity.velocity.y = entity.velocity.y - gravity * delta_seconds
-		if entity.velocity.y < -max_gravity * delta_seconds
-		then
-		entity.velocity.y = -max_gravity * delta_seconds
-		end
-		end
-
-		if entity.anim.current ~= entity.anim.in_jump 
-		then
-		entity.velocity.y = entity.velocity.y - (entity.velocity.y * delta_seconds)
-	end]]--
 end
 
 
@@ -171,13 +152,21 @@ function update_controls(delta_seconds, entity)
 	--Start jump
 	if entity.anim.current == entity.anim.start_jump
 	then
-		if entity.can_jump and entity.button.jump == true --and entity.jump_timer < 0.17
+		if entity.can_jump and entity.button.jump == true
 		then
 			jump_speed = jump_speed + 1.1
 			entity.jump_timer = entity.jump_timer + delta_seconds
-			entity.impulse.y = jump_speed
+			
+			if jump_speed < 2.2
+			then
+				entity.impulse.y = 29
+			elseif jump_speed > 2.2 and jump_speed < 6.6
+			then
+				
+				entity.impulse.y = jump_speed
+			end
 
-		elseif jump_speed > 0 and entity.button.jump == false or entity.jump_timer > 0.17  --and entity.jump_timer > 0.016  and entity.jump_timer > 0.016
+		elseif jump_speed > 0 and entity.button.jump == false or entity.jump_timer > 0.17 
 		then
 			entity.anim.current = entity.anim.in_jump
 		end
@@ -187,21 +176,6 @@ function update_controls(delta_seconds, entity)
 			entity.can_dubbel_jump = true
 			entity.steam_boost_delay_timer = 0.0
 		end
-
-		if entity.button.right 
-		then
-			
-			accelerate(delta_seconds, entity, entity.max_air_speed, entity.air_acceleration)
-			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
-		elseif entity.button.left
-		then
-			accelerate(delta_seconds, entity, -entity.max_air_speed, entity.air_acceleration)
-			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
-		else
-			decelerate(delta_seconds, entity)
-		end
-			
-
 	end
 
 	--In Jump
