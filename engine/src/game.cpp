@@ -128,7 +128,7 @@ void Game::render()
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
 		lua_data.finished, lua_data.scores, lua_data.time,
 		net.id(),
-		players_placed_objects_id[0].model_type_id,
+		players_placed_objects_id[net.id()].model_type_id,
 		remove_lines);
 }
 
@@ -265,7 +265,7 @@ void Game::update(std::chrono::milliseconds delta)
 				dynamics[d_id].impulse = { 0.0f, 0.0f };
 				dynamics[d_id].dynamic_id = d_id;
 				dynamics[d_id].model_id = m_id;
-				dynamics[d_id].objects_type_id = data.objects_type_id;
+				dynamics[d_id].objects_type_id = placed_objects_list_id;
 				dynamics[d_id].place_state = 0;
 
 				dynamics[i].player_moving_object_id = d_id;
@@ -304,7 +304,7 @@ void Game::update(std::chrono::milliseconds delta)
 					dynamics[d_id].impulse = { 0.0f, 0.0f };
 					dynamics[d_id].dynamic_id = d_id;
 					dynamics[d_id].model_id = m_id;
-					dynamics[d_id].objects_type_id = data.objects_type_id;
+					dynamics[d_id].objects_type_id = obj_type_id;
 					dynamics[d_id].place_state = 0;
 
 					players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
