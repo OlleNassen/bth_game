@@ -58,7 +58,7 @@ end
 
 local jump_speed = 0
 local gravity = 120
-local max_gravity = 2000
+local max_gravity = 1800
 local wall_jump_speed = 
 {
 	x = 150,
@@ -247,8 +247,8 @@ function update_controls(delta_seconds, entity)
 	--Falling
 	if entity.anim.current == entity.anim.falling
 	then
-		--print("falling")
-		if entity.button.right 
+		
+		--[[if entity.button.right 
 		then
 			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 			accelerate(delta_seconds, entity, entity.max_air_speed, entity.air_acceleration)
@@ -258,8 +258,10 @@ function update_controls(delta_seconds, entity)
 			accelerate(delta_seconds, entity, -entity.max_air_speed, entity.air_acceleration)
 		else
 			decelerate(delta_seconds, entity)
-		end
+		end]]--
 		
+		decelerate(delta_seconds, entity)
+
 		if entity.velocity.y == 0
 		then 
 			entity.anim.current = entity.anim.idle
