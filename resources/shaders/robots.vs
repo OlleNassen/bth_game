@@ -15,7 +15,7 @@ uniform vec3 light_pos[14];
 uniform vec3 light_color[14];
 uniform float light_intensity[14];
 
-const int JOINT_SIZE = 20;
+const int JOINT_SIZE = 40;
 uniform mat4 bone_mats[JOINT_SIZE];
 
 out VS_OUT{

@@ -24,13 +24,6 @@
 //test of new leaderboard
 #include <leaderboard.hpp>
 
-struct build_information
-{
-	glm::vec2 world_position;
-	std::vector<glm::vec3> debug_positions;
-	int place_state = 1;
-};
-
 namespace graphics
 {
 
@@ -92,6 +85,7 @@ public:
 		std::array<float, 4> scores,
 		float print_time,
 		float goal_height,
+		std::vector<build_information>& build_infos,
 		int spectator_id,
 		std::array<int, 4> moving_objects_id);
 
@@ -176,6 +170,12 @@ private:
 	Shader fx_fire{
 		"../resources/shaders/fx_fire.vs",
 		"../resources/shaders/fx_fire.fs" };
+	Shader fx_godray{
+		"../resources/shaders/fx_godray.vs",
+		"../resources/shaders/fx_godray.fs" };
+	Shader fx_gust{
+		"../resources/shaders/fx_gust.vs",
+		"../resources/shaders/fx_gust.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };

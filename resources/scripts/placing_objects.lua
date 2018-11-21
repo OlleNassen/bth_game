@@ -38,11 +38,6 @@ function update(delta_seconds, entity)
 			entity.position.y = entity.position.y - delta_place_speed
 		end
 
-		--if entity.button.rotate and not entity.rotate_was_pressed
-		--then
-		--	print("DO ROTATION!")
-		--end
-
 		if entity.button.jump
 		then
 			entity.done = true

@@ -15,6 +15,7 @@ uniform vec3 camera_up_worldspace;
 //uniform mat4 vp; // Model-View-Projection matrix, but without the Model (the position is in BillboardPos; the orientation depends on the camera)
 uniform mat4 view;
 uniform mat4 projection;
+uniform float paning;
 void main()
 {
 	float particle_size = center.w;
