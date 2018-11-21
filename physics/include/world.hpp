@@ -37,13 +37,13 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
-	int dynamic_id = 0;
-	int model_id = 0;
-	int objects_type_id = 0;
+	int dynamic_id = -1;
+	int model_id = -1;
+	int objects_type_id = -1;
 	int place_state = 0;
 	bool is_stund;
 
-	int player_moving_object_id = 0;
+	int player_moving_object_id = -1;
 };
 
 using objects_array = std::array<objects, 100>;

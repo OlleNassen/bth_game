@@ -243,7 +243,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 		std::array <physics::objects, 4> player_place_objects_info;
 
-		//For host only
+		//For host only //Send Objects
 		if (!give_players_objects && net.id() == 0)
 		{
 			players_placed_objects_id.fill({ -1, -1, -1, -1 });
@@ -277,7 +277,7 @@ void Game::update(std::chrono::milliseconds delta)
 			give_players_objects = true;
 		}
 
-		//For clients only
+		//For clients only //Fetch objects
 		if (net.id() != 0 && !give_players_objects)
 		{
 			for (int i = 0; i < static_cast<int>(player_count); i++)
@@ -285,14 +285,25 @@ void Game::update(std::chrono::milliseconds delta)
 				int d_id = dynamics[i].player_moving_object_id;
 				if (d_id != 0)
 				{
+
+					collision_data data;
+					int m_id = level.add_object(data, dynamics[d_id].objects_type_id);
+					physics.add_dynamic_body(dynamics[d_id].position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
+					
 					players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
 						dynamics[d_id].place_state, dynamics[d_id].objects_type_id };
+
 					give_players_objects = true;
 				}
 			}
 		}
 
 		for (int i = 0; i < static_cast<int>(player_count); i++)
+		{
+			level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
+		}
+
+		/*for (int i = 0; i < static_cast<int>(player_count); i++)
 		{
 			if (players_placed_objects_id[i].place_state != 2 || dynamics[players_placed_objects_id[i].dynamics_id].place_state != 2)
 			{
@@ -309,7 +320,7 @@ void Game::update(std::chrono::milliseconds delta)
 					dynamics[players_placed_objects_id[i].dynamics_id].place_state = 0;
 				}
 			}
-		}
+		}*/
 
 		//Set State -> pre_playing
 		if (!gameplay.build_stage(static_cast<int>(player_count)))
