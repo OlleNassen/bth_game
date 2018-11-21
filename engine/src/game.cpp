@@ -241,7 +241,9 @@ void Game::update(std::chrono::milliseconds delta)
 
 		watching = net.id();
 
-		if (!give_players_objects)
+		std::array <physics::objects, 4> player_place_objects_info;
+
+		if (!give_players_objects && net.id() == 0)
 		{
 			players_placed_objects_id.fill({ -1, -1, -1, -1 });
 			std::array<int, 4> random_position = { 0,0,0,0 }; // random_indexes();
@@ -255,9 +257,9 @@ void Game::update(std::chrono::milliseconds delta)
 				int model_id = level.add_object(data, placed_objects_list_id);
 				int dynamic_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
 
-				players_placed_objects_id[i].model_id = model_id;
-				players_placed_objects_id[i].dynamics_id = dynamic_id;
-				players_placed_objects_id[i].model_type_id = data.model_id;
+				//players_placed_objects_id[i].model_id = model_id;
+				//players_placed_objects_id[i].dynamics_id = dynamic_id;
+				//players_placed_objects_id[i].model_type_id = data.model_id;
 
 				/*std::cout << "Model ID:\t" << model_id <<
 					"\nDynamic ID:\t" << dynamic_id << std::endl << std::endl;*/
@@ -267,6 +269,13 @@ void Game::update(std::chrono::milliseconds delta)
 				dynamics[dynamic_id].size = { data.width, data.height };
 				dynamics[dynamic_id].forces = { 0.0f, 0.0f };
 				dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+				dynamics[dynamic_id].dynamic_id = dynamic_id;
+				dynamics[dynamic_id].model_id = model_id;
+				dynamics[dynamic_id].objects_type_id = data.model_id;
+				dynamics[dynamic_id].place_state = 0;
+
+				players_placed_objects_id[i] = { dynamics[dynamic_id].dynamic_id, dynamics[dynamic_id].model_id, 
+					dynamics[dynamic_id].place_state, dynamics[dynamic_id].objects_type_id };
 			}
 
 			give_players_objects = true;
@@ -274,14 +283,20 @@ void Game::update(std::chrono::milliseconds delta)
 
 		for (auto& ppoi : players_placed_objects_id)
 		{
-			if (ppoi.place_state != 2)
+			if (ppoi.place_state != 2 || dynamics[ppoi.dynamics_id].place_state != 2)
 			{
 				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
 
-				if (!physics.overlapping(ppoi.dynamics_id))
+				if (!physics.overlapping(ppoi.dynamics_id)) 
+				{
 					ppoi.place_state = 1;
+					dynamics[ppoi.dynamics_id].place_state = 1;
+				}
 				else
+				{
 					ppoi.place_state = 0;
+					dynamics[ppoi.dynamics_id].place_state = 0;
+				}
 			}
 		}
 

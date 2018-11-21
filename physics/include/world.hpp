@@ -37,6 +37,10 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+	int dynamic_id = 0;
+	int model_id = 0;
+	int objects_type_id = 0;
+	int place_state = 0;
 	bool is_stund;
 };
 
