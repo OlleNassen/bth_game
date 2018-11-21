@@ -264,6 +264,8 @@ void Game::update(std::chrono::milliseconds delta)
 				/*std::cout << "Model ID:\t" << model_id <<
 					"\nDynamic ID:\t" << dynamic_id << std::endl << std::endl;*/
 
+				dynamics[i].player_moving_object_id = dynamic_id;
+
 				dynamics[dynamic_id].position = start_position;
 				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 				dynamics[dynamic_id].size = { data.width, data.height };
@@ -279,6 +281,16 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 
 			give_players_objects = true;
+		}
+
+		if (net.id() != 0)
+		{
+			for (int i = 0; i < static_cast<int>(player_count); i++)
+			{
+				int d_id = dynamics[i].player_moving_object_id;
+				players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
+					dynamics[d_id].place_state, dynamics[d_id].objects_type_id };
+			}
 		}
 
 		for (auto& ppoi : players_placed_objects_id)

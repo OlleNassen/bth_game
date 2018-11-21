@@ -42,6 +42,8 @@ public:
 	int objects_type_id = 0;
 	int place_state = 0;
 	bool is_stund;
+
+	int player_moving_object_id = 0;
 };
 
 using objects_array = std::array<objects, 100>;
