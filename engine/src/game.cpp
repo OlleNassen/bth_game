@@ -106,7 +106,7 @@ void Game::run()
 }
 
 void Game::render()
-{	
+{
 	std::vector<glm::vec3> db_coll = physics.get_all_debug();
 
 	build_info.clear();
@@ -114,7 +114,7 @@ void Game::render()
 	{
 		int d_id = players_placed_objects_id[i].dynamics_id;
 		build_information info;
-		
+
 		info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
 		info.debug_positions = physics.get_debug_for(d_id);
 		info.place_state = players_placed_objects_id[i].place_state;
@@ -689,6 +689,18 @@ void Game::update(std::chrono::milliseconds delta)
 				}
 			}
 		}
+		
+		all_placed_objects.clear();
+
+		for (int i = 4; i < total_nr_objects + 4; i++)
+		{
+			build_information info;
+
+			info.local_position = glm::vec3(dynamics[i].position.x, dynamics[i].position.y, 0.0f);
+			info.object_id = dynamics[i].objects_type_id;
+
+			all_placed_objects.push_back(info);
+		}
 
 		std::array<int, 4> moving_objects_id = { players_placed_objects_id[0].model_id,
 			players_placed_objects_id[1].model_id,
@@ -702,7 +714,7 @@ void Game::update(std::chrono::milliseconds delta)
 			directions,
 			chat[1], static_cast<int>(player_count),
 			net.id(), game_state, temp, lua_data.died, 
-			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height, build_info,
+			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
 			moving_objects_id);
 	}

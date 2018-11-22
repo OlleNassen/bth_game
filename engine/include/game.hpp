@@ -83,6 +83,8 @@ private:
 	bool buildmode = true;
 	bool give_players_objects = false;
 	std::vector<glm::vec3> remove_lines;
+
+	std::vector<build_information> all_placed_objects;
 	int total_nr_objects = 0;
 
 	void remove_object(int id);
