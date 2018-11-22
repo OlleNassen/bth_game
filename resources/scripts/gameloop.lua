@@ -112,7 +112,6 @@ function update(delta_seconds, game, entities)
 		then
 			if entities[i].triggered_type == 2 or entities[i].triggered_type == 6
 			then
-				--print(entities[i].shield_active)
 				game.shield_triggered[i] = entities[i].shield_active
 			end
 

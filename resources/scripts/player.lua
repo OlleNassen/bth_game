@@ -28,15 +28,13 @@ function setup(entity)
 
 	--double jump
 	entity.double_jump_timer = 0.0
-	entity.wall_jump_timer = 0.0
 	entity.double_jump_triggered = false --triggered
 	entity.have_double_jumped = false
 	entity.can_double_jump = false --if have_double_jumped = false, can_double_jump = true
-	entity.jump_was_push = false --if jump button pressed last frame = pressed this frame, if released last frame, released now
-	entity.have_wall_jumped = false --not using atm
+	entity.jump_pushed_last_frame = false --if jump button pressed last frame = pressed this frame, if released last frame, released now
 	entity.now_you_can_jump = false --if was in jump last frame
-
-	entity.in_wall_jump = false --in air after hanging r/l anim
+	entity.in_wall_jump_state = false --in air after hanging r/l anim
+	entity.set_once = false
 
 
 	--glide_trap
@@ -53,10 +51,6 @@ function setup(entity)
 	entity.random_assigned = false
 	entity.random_last = 0
 	entity.random_buff_timer = 0.0
-
-	--projectile
-
-
 end
 
 --triggers
@@ -67,18 +61,19 @@ local shock_trap_immune_max_timer = 5
 
 --speed boost
 local max_speed_boost = 16 * 1.5
-local speed_boost_max_timer = 20
+local max_speed_boost_air = 14 * 1.5
+local speed_boost_max_timer = 10
 
 --double jump
 local double_jump_impulse = 50
-local double_jump_timer_max = 20
-local wall_jump_timer_max = 0.175
+local double_jump_timer_max = 10
 
 --glide_trap
-local glide_trap_max_timer = 20
+local glide_trap_max_timer = 10
+local glide_decrease = 0.0055
 
 --random_buff
-local random_buff_max_timer = 5
+local random_buff_max_timer = 10
 local buffs_id = { 3, 4, 5, 6 }
 
 
@@ -97,8 +92,6 @@ function update(delta_seconds, entity)
 
 	--update_anim_state(delta_seconds, entity)
 
-	have_wall_jumped = true
-
 	if entity.stun_trap_triggered == false
 	then
 		update_controls(delta_seconds, entity)
@@ -114,36 +107,17 @@ function update(delta_seconds, entity)
 		entity.velocity.y = -max_gravity * delta_seconds
 	end
 
-	entity.jump_was_push = entity.button.jump
+	entity.jump_pushed_last_frame = entity.button.jump
 
  
-	if entity.can_double_jump and entity.jump_was_push == false and entity.now_you_can_jump == false
+	if entity.can_double_jump and entity.jump_pushed_last_frame == false and entity.now_you_can_jump == false
 	then
 		entity.now_you_can_jump = true
+
 	elseif entity.can_double_jump == false
 	then
 		entity.now_you_can_jump = false
 	end
-
-	--[[if entity.anim.current == entity.anim.falling 
-		or entity.anim.current == entity.anim.in_jump 
-		or entity.anim.current == entity.anim.hanging_left 
-		or entity.anim.current == entity.anim.hanging_right
-		or entity.anim.current == entity.anim.jump_from_wall
-		or entity.anim.current == entity.anim.idle
-		or entity.anim.current == entity.anim.running
-		then
-		entity.velocity.y = entity.velocity.y - gravity * delta_seconds
-		if entity.velocity.y < -max_gravity * delta_seconds
-		then
-		entity.velocity.y = -max_gravity * delta_seconds
-		end
-	end
-	if entity.anim.current ~= entity.anim.in_jump 
-	then
-		entity.velocity.y = entity.velocity.y - (entity.velocity.y * delta_seconds)
-	end]]--
-
 end
 
 
@@ -218,7 +192,7 @@ function update_controls(delta_seconds, entity)
 			entity.can_jump = false
 		end
 
-		if entity.double_jump_triggered and entity.can_double_jump == false --and entity.have_double_jumped == false --trigger
+		if entity.double_jump_triggered and entity.can_double_jump == false --trigger
 		then
 			entity.can_double_jump = true
 		end
@@ -229,13 +203,11 @@ function update_controls(delta_seconds, entity)
 		then
 			entity.velocity.x = 0
 			entity.velocity.x = entity.max_air_speed
-			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 		if entity.button.left
 		then
 			entity.velocity.x = 0
 			entity.velocity.x = -entity.max_air_speed
-			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 
 		if entity.velocity.y < -0.0
@@ -263,7 +235,8 @@ function update_controls(delta_seconds, entity)
 		then
 			entity.have_double_jumped = false
 			entity.can_double_jump = false
-			entity.have_wall_jumped = false
+			entity.in_wall_jump_state = false
+			entity.set_once = false
 		end
 
 		
@@ -271,13 +244,11 @@ function update_controls(delta_seconds, entity)
 		then
 			entity.velocity.x = 0
 			entity.velocity.x = entity.max_air_speed
-			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 		if entity.button.left
 		then
 			entity.velocity.x = 0
 			entity.velocity.x = -entity.max_air_speed
-			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 	end
 
@@ -288,13 +259,11 @@ function update_controls(delta_seconds, entity)
 		then
 			entity.velocity.x = 0
 			entity.velocity.x =  entity.max_air_speed
-			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 		if entity.button.left
 		then
 			entity.velocity.x = 0
 			entity.velocity.x = -entity.max_air_speed
-			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 		end
 
 		if entity.velocity.y == 0
@@ -312,12 +281,13 @@ function update_controls(delta_seconds, entity)
 
 
 	--jump_from_wall
-	if entity.anim.current == entity.anim.jump_from_wall --and entity.wall_jump_timer >= wall_jump_timer_max
+	if entity.anim.current == entity.anim.jump_from_wall
 	then
-		entity.in_wall_jump = false
-		if entity.have_double_jumped == false
+		if entity.set_once == false
 		then
-			entity.can_double_jump = true
+			entity.now_you_can_jump = false
+			entity.in_wall_jump_state = false
+			entity.set_once = true
 		end
 	end
 
@@ -330,8 +300,7 @@ function update_controls(delta_seconds, entity)
 		entity.ungrounded_time = 0
 		entity.jump_timer = entity.jump_timer + delta_seconds
 		
-		entity.in_wall_jump = true
-		entity.wall_jump_timer = 0.0
+		entity.in_wall_jump_state = true
 
 		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
 		then
@@ -349,7 +318,6 @@ function update_controls(delta_seconds, entity)
 			entity.can_walljump = true
 			entity.jump_timer = 0
 		end
-		--entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
 	end
 
 	--Hanging_Left
@@ -358,8 +326,7 @@ function update_controls(delta_seconds, entity)
 		entity.ungrounded_time = 0
 		entity.jump_timer = entity.jump_timer + delta_seconds
 
-		entity.in_wall_jump = true
-		entity.wall_jump_timer = 0.0
+		entity.in_wall_jump_state = true
 
 		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
 		then
@@ -377,21 +344,7 @@ function update_controls(delta_seconds, entity)
 			entity.can_walljump = true
 			entity.jump_timer = 0
 		end
-		
-		--entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 40) 
 	end
-
-
-
-
-	--Cap the velocity/entity.forces.x
-	--[[if entity.forces.x > entity.maxSpeed
-		then
-		entity.forces.x = entity.maxSpeed
-	elseif entity.forces.x < -entity.maxSpeed
-	then 
-		entity.forces.x = -entity.maxSpeed
-	end]]--
 end
 
 
@@ -437,7 +390,6 @@ function update_triggers(delta_seconds, entity)
 			entity.double_jump_triggered = true
 			entity.can_double_jump = false
 			entity.double_jump_timer = 0.0
-			entity.steam_boost_delay_timer = 0.0
 
 			if entity.speed_boost_triggered or entity.glide_trap_triggered or entity.shield_active
 			then
@@ -446,7 +398,7 @@ function update_triggers(delta_seconds, entity)
 				entity.shield_active = false
 			end
 
-			print("steam_boost")
+			--print("double_jump")
 		end
 
 		--glide_trap
@@ -462,6 +414,8 @@ function update_triggers(delta_seconds, entity)
 				entity.shield_active = false
 			end
 
+			--print("glide_trap")
+
 		end
 
 		--random_buff
@@ -473,14 +427,15 @@ function update_triggers(delta_seconds, entity)
 
 			entity.shield_active = true;
 				
-				if entity.speed_boost_triggered or entity.glide_trap_triggered or entity.double_jump_triggered or entity.shield_active
-				then
-					entity.speed_boost_triggered = false
-					entity.glide_trap_triggered = false
-					entity.double_jump_triggered = false
-					entity.shield_active = false
-				end
+			if entity.speed_boost_triggered or entity.glide_trap_triggered or entity.double_jump_triggered or entity.shield_active
+			then
+				entity.speed_boost_triggered = false
+				entity.glide_trap_triggered = false
+				entity.double_jump_triggered = false
+				entity.shield_active = false
+			end
 
+			--print("random_buff")
 		end
 
 		--shield
@@ -536,7 +491,7 @@ function update_triggers(delta_seconds, entity)
 		if entity.button.right or entity.button.left or entity.anim.current == entity.anim.falling
 		then
 			entity.friction = entity.velocity.x
-			entity.friction_slowrate = entity.velocity.x * 0.0055
+			entity.friction_slowrate = entity.velocity.x * glide_decrease
 		end
 	
 		if entity.button.right == false and entity.button.left == false
@@ -568,13 +523,28 @@ function update_triggers(delta_seconds, entity)
 	then
 		entity.speed_boost_timer = entity.speed_boost_timer + delta_seconds
 
-		if entity.button.right
+		if entity.anim.current ~= entity.anim.jump_from_wall and entity.stun_trap_triggered == false
 		then
-			entity.velocity.x = max_speed_boost--right
-		
-		elseif entity.button.left
-		then 
-			entity.velocity.x = -max_speed_boost --left
+			if entity.anim.current == entity.anim.falling
+			then
+				if entity.button.right
+				then
+					entity.velocity.x = max_speed_boost_air--right
+				
+				elseif entity.button.left
+				then 
+					entity.velocity.x = -max_speed_boost_air --left
+				end
+			else
+				if entity.button.right
+				then
+					entity.velocity.x = max_speed_boost--right
+				
+				elseif entity.button.left
+				then 
+					entity.velocity.x = -max_speed_boost --left
+				end
+			end
 		end
 
 	elseif entity.speed_boost_triggered == true
@@ -584,31 +554,36 @@ function update_triggers(delta_seconds, entity)
 
 
 	--double_jump
-	if entity.double_jump_triggered == true and entity.can_double_jump and entity.double_jump_timer <= double_jump_timer_max
+	if entity.double_jump_triggered == true and entity.double_jump_timer <= double_jump_timer_max
 	then 
+
 		entity.double_jump_timer = entity.double_jump_timer + delta_seconds
-		entity.wall_jump_timer = entity.wall_jump_timer + delta_seconds
+		print(entity.double_jump_timer)
 
-		--if entity.button.jump
-		--then
-		--	print("1: jump		", entity.button.jump )
-		--	print("2: now you can jump", entity.now_you_can_jump)
-		--	print("3: have double jumped", entity.have_double_jumped)
-		--	print("4: in wall jump ",entity.in_wall_jump)
-		--	print("5: ", entity.wall_jump_timer)
-		--	print("")
-		--end
-
-		if entity.button.jump and entity.now_you_can_jump and entity.have_double_jumped == false and entity.in_wall_jump == false and entity.wall_jump_timer >= wall_jump_timer_max
+		if entity.can_double_jump
 		then
-			--print("WOOOOOOOOOW")
-			--print(entity.wall_jump_timer)
-			entity.velocity.y = double_jump_impulse
-			entity.can_double_jump = false
-			entity.have_double_jumped = true
+			if entity.button.jump and entity.now_you_can_jump and entity.have_double_jumped == false and entity.in_wall_jump_state == false 
+			then
+				entity.velocity.y = double_jump_impulse
+				entity.can_double_jump = false
+				entity.have_double_jumped = true
 
-			entity.now_you_can_jump = false
+				entity.now_you_can_jump = false
 
+			end
+
+			--if entity.button.jump and entity.anim.current == entity.anim.jump_from_wall
+			--then
+			--
+			--	if entity.now_you_can_jump
+			--	then
+			--		entity.velocity.y = double_jump_impulse
+			--		entity.can_double_jump = false
+			--		entity.have_double_jumped = true
+			--
+			--		entity.now_you_can_jump = false
+			--	end
+			--end
 		end
 	end
 
@@ -651,9 +626,9 @@ function update_triggers(delta_seconds, entity)
 				print("double jump")
 				entity.double_jump_triggered = true
 				entity.double_jump_timer = 0.0
-				entity.steam_boost_delay_timer = 0.0
+				entity.can_double_jump = false
 
-			elseif id == buffs_id[4] --shield?
+			elseif id == buffs_id[4] --shield
 			then
 				print("shield player")
 				entity.shield_active = true;
