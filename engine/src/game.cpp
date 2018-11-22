@@ -109,6 +109,7 @@ void Game::render()
 	std::vector<glm::vec3> db_coll = physics.get_all_debug();
 
 	build_info.clear();
+
 	for (int i = 0; i < static_cast<int>(player_count); i++)
 	{
 		int d_id = players_placed_objects_id[i].dynamics_id;
@@ -121,6 +122,21 @@ void Game::render()
 
 		build_info.push_back(info);
 	}
+
+	//for (int i = 0; i < static_cast<int>(player_count); i++)
+	//{
+	//	int d_id = players_placed_objects_id[i].dynamics_id;
+	//	build_information info;
+	//
+	//	glm::vec3 pos = physics.get_closest_wall_point(d_id);
+	//
+	//	//info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
+	//	info.debug_positions.emplace_back(pos); //physics.get_debug_for(d_id);
+	//	info.place_state = players_placed_objects_id[i].place_state;
+	//	info.object_id = players_placed_objects_id[i].model_type_id;
+	//
+	//	build_info.push_back(info);
+	//}
 
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
@@ -327,12 +343,24 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			if (players_placed_objects_id[i].place_state != 2)
 			{
-				level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
+				//level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
+							   
+				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
+								
+				level.moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 
-				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id))
+				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
 					players_placed_objects_id[i].place_state = 1;
 				else
 					players_placed_objects_id[i].place_state = 0;
+
+
+			}
+			else
+			{
+				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
+				dynamics[players_placed_objects_id[i].dynamics_id].position = { pos.x, pos.y };
+				level.moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 			}
 		}
 

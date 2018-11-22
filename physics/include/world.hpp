@@ -94,6 +94,8 @@ public:
 	bool lw[4];
 
 	void remove_body(int at);
+
+	glm::vec3 get_closest_wall_point(int player_id);
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 
