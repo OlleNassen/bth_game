@@ -193,19 +193,8 @@ void Renderer::render(
 	{
 		if (!is_menu)
 		{
-			post_proccessing.use();
-			post_proccessing.uniform("scene_texture", 0);
-			post_proccessing.uniform("depth_texture", 1);
-			post_proccessing.uniform("screen_warning", 2);
-
-			scene_texture.bind_texture(0);
-			scene_texture.bind_texture(1);
-			post_processing_effects.texture.bind(2);
-
-			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
-			post_processing_effects.render();
-
 			glDisable(GL_DEPTH_TEST);
+
 			if (game_state & state::pre_building)
 			{
 				if (build_stage_screen.transparency > 0.0f) // (!build_stage_screen.transparency < 0.0005f)
@@ -222,6 +211,18 @@ void Renderer::render(
 	//Text rendering
 	if (!is_menu)
 	{ 
+		post_proccessing.use();
+		post_proccessing.uniform("scene_texture", 0);
+		post_proccessing.uniform("depth_texture", 1);
+		post_proccessing.uniform("screen_warning", 2);
+
+		scene_texture.bind_texture(0);
+		scene_texture.bind_texture(1);
+		post_processing_effects.texture.bind(2);
+
+		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
+		post_processing_effects.render();
+
 		glDisable(GL_DEPTH_TEST);
 		std::stringstream out_text;
 		out_text << std::fixed << std::setprecision(1) << print_time;
