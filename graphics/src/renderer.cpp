@@ -515,6 +515,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	is_chat_visible = is_chat_on || time < 3s;
 
 	//--FX Calculations--
+	fx_emitter.timer += delta;
 	if (!is_chat_on)
 	{
 		//Dust

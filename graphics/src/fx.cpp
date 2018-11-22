@@ -23,6 +23,11 @@ FX::FX()
 	auto& fx_furnace_light = *fx_furnace_light_ptr;
 	auto& fx_gust = *fx_gust_ptr;
 	auto& fx_stun = *fx_stun_ptr;
+	auto& fx_glide = *fx_glide_ptr;
+	auto& fx_speedboost = *fx_speedboost_ptr;
+	auto& fx_doublejump = *fx_doublejump_ptr;
+	auto& fx_shield = *fx_shield_ptr;
+	auto& fx_random = *fx_random_ptr;
 	//auto& fx_object_1 = *fx_object_1_ptr;
 	//auto& fx_object_2 = *fx_object_2_ptr;
 	//auto& fx_object_3 = *fx_object_3_ptr;
@@ -37,16 +42,15 @@ FX::FX()
 	gen_particle_buffer(fx_furnace_light);
 	gen_particle_buffer(fx_gust);
 	gen_particle_buffer(fx_stun);
+	gen_particle_buffer(fx_glide);
+	gen_particle_buffer(fx_speedboost);
+	gen_particle_buffer(fx_doublejump);
+	gen_particle_buffer(fx_shield);
+	gen_particle_buffer(fx_random);
 	//gen_particle_buffer(fx_object_1);
 	//gen_particle_buffer(fx_object_2);
 	//gen_particle_buffer(fx_object_3);
 	//gen_particle_buffer(fx_object_4);
-	//for (int i = 0; i < 32; i++)
-	//{
-	//	fx_objects.push_back(FXdata());
-	//	auto& fx_object = fx_objects[i];
-	//	gen_particle_buffer(fx_object);
-	//}
 }
 
 void FX::gen_particle_buffer(FXdata & particle)
@@ -87,11 +91,15 @@ void FX::render_particles(const Shader& dust,
 	auto& fx_furnace_light = *fx_furnace_light_ptr;
 	auto& fx_gust = *fx_gust_ptr;
 	auto& fx_stun = *fx_stun_ptr;
+	auto& fx_glide = *fx_glide_ptr;
+	auto& fx_speedboost = *fx_speedboost_ptr;
+	auto& fx_doublejump = *fx_doublejump_ptr;
+	auto& fx_shield = *fx_shield_ptr;
+	auto& fx_random = *fx_random_ptr;
 	//auto& fx_object_1 = *fx_object_1_ptr;
 	//auto& fx_object_2 = *fx_object_2_ptr;
 	//auto& fx_object_3 = *fx_object_3_ptr;
 	//auto& fx_object_4 = *fx_object_4_ptr;
-	auto&fx_object = *fx_object_ptr;
 
 	glm::vec3 start_point = glm::vec3(0, 0, 0);
 	glm::mat4 view_matrix = camera.view();
@@ -240,7 +248,7 @@ void FX::render_particles(const Shader& dust,
 
 	render_particles(fx_stun);
 
-	//FX Dust
+	//FX Dust & all objects
 	dust.use();
 	dust.uniform("particle_texture", 0);
 	this->dust.bind(0);
@@ -251,25 +259,26 @@ void FX::render_particles(const Shader& dust,
 	dust.uniform("view_position", camera.position);
 	dust.uniform("particle_pivot", start_point);
 	render_particles(fx_dust);
+	render_particles(fx_glide);
+	render_particles(fx_speedboost);
+	render_particles(fx_doublejump);
+	render_particles(fx_shield);
+	render_particles(fx_random);
 	
-	//FX - Objects
-	dust.use();
-	this->dust.bind(0);
-	dust.uniform("particle_texture", 0);
-	dust.uniform("camera_right_worldspace", camera_right_vector);
-	dust.uniform("camera_up_worldspace", camera_up_vector);
-	dust.uniform("view", camera.view());
-	dust.uniform("projection", camera.projection);
-	dust.uniform("view_position", camera.position);
-	dust.uniform("particle_pivot", start_point);
+	///FX - Objects
+	//dust.use();
+	//this->dust.bind(0);
+	//dust.uniform("particle_texture", 0);
+	//dust.uniform("camera_right_worldspace", camera_right_vector);
+	//dust.uniform("camera_up_worldspace", camera_up_vector);
+	//dust.uniform("view", camera.view());
+	//dust.uniform("projection", camera.projection);
+	//dust.uniform("view_position", camera.position);
+	//dust.uniform("particle_pivot", start_point);
 	//render_particles(fx_object_1);
 	//render_particles(fx_object_2);
 	//render_particles(fx_object_3);
 	//render_particles(fx_object_4);
-	render_particles(fx_object);
-	
-	
-	
 }
 
 void FX::render_particles(const FXdata& data) const
@@ -497,7 +506,6 @@ void FX::particle_linear_sort(Particle * arr, int size)
 
 void FX::calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera)
 {
-
 	std::chrono::duration<float> seconds = delta;
 	auto& fx_dust = *fx_dust_ptr;
 
@@ -2298,7 +2306,7 @@ void FX::calculate_gust_data(std::chrono::milliseconds delta, const Camera & cam
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_gust.total_particle_count * 4 * sizeof(GLubyte), fx_gust.color_data);
 }
 
-void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & camera, build_information build_info)
+void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & camera)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2307,7 +2315,7 @@ void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & cam
 	fx_stun.default_x = 0.0f;
 	fx_stun.default_y = 0.0f;
 	fx_stun.default_z = 0.0f;
-	fx_stun.nr_of_particles = 1;
+	fx_stun.nr_of_particles = nr_of_stun;
 	randomizer = rand() % 100;
 
 	//Update data for particles
@@ -2315,7 +2323,7 @@ void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & cam
 	{
 		if (randomizer <= 100)
 		{
-			for (auto i = 0u; i < 1; i++)
+			for (auto i = 0u; i < fx_stun.nr_of_particles; i++)
 			{
 				if (fx_stun.particle_container[i].life <= 0.1f)
 				{
@@ -2344,11 +2352,11 @@ void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & cam
 	for (int i = 0; i < fx_stun.nr_of_particles; i++)
 	{
 		//Update life with delta time
-		fx_stun.particle_container[i].life -= (seconds.count() * 3.0f);
+		fx_stun.particle_container[i].life -= (seconds.count() / 3.0f);
 
 		if (fx_stun.particle_container[i].life > 0.0f)
 		{
-			fx_stun.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0.75f, 0);
+			fx_stun.particle_container[i].pos = stun_loc[i] + glm::vec3(0, 0.75f, 0);
 			fx_stun.particle_container[i].camera_distance = glm::length(fx_stun.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
@@ -2386,6 +2394,564 @@ void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & cam
 	glBindBuffer(GL_ARRAY_BUFFER, fx_stun.color_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_stun.total_particle_count * 4 * sizeof(GLubyte), fx_stun.color_data);
+}
+void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & camera)
+{
+	using namespace std::chrono_literals;
+	std::chrono::duration<float> seconds = delta;
+	auto& fx_glide = *fx_glide_ptr;
+
+	fx_glide.default_x = 0.0f;
+	fx_glide.default_y = 0.0f;
+	fx_glide.default_z = 0.0f;
+	fx_glide.nr_of_particles = nr_of_glide;
+	randomizer = rand() % 100;
+
+	//Update data for particles
+	if (fx_glide.total_particle_count <= MAX_PARTICLES)
+	{
+		if (randomizer <= 100)
+		{
+			for (auto i = 0u; i < fx_glide.nr_of_particles; i++)
+			{
+				if (fx_glide.particle_container[i].life <= 0.1f)
+				{
+					//Find and update the last used particle
+					fx_glide.last_used_particle = find_unused_particle(fx_glide.particle_container, fx_glide.last_used_particle);
+					int particle_index = fx_glide.last_used_particle;
+
+					//Set default values for the particles, first off life and position.
+					fx_glide.particle_container[i].life = 1.0f;
+
+					//Set colors, if you want color from texture, don't change the color
+
+					fx_glide.particle_container[i].r = 151;
+					fx_glide.particle_container[i].g = 0;
+					fx_glide.particle_container[i].b = 255;
+					fx_glide.particle_container[i].a = 180;
+
+					fx_glide.particle_container[i].size = 4.0f;
+				}
+			}
+		}
+	}
+
+	fx_glide.total_particle_count = 0;
+	//Update movement
+	for (int i = 0; i < fx_glide.nr_of_particles; i++)
+	{
+		//Update life with delta time
+		fx_glide.particle_container[i].life -= (seconds.count() / 2.0f);
+
+		if (fx_glide.particle_container[i].life > 0.0f)
+		{
+			fx_glide.particle_container[i].pos = glide_loc[i] + glm::vec3(0, 0, -1.0f);
+			fx_glide.particle_container[i].camera_distance = glm::length(fx_glide.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 0] = fx_glide.particle_container[i].pos.x;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 1] = fx_glide.particle_container[i].pos.y;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 2] = fx_glide.particle_container[i].pos.z;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].size;
+
+			//Set colors in the color data
+			fx_glide.color_data[4 * fx_glide.total_particle_count + 0] = fx_glide.particle_container[i].r;
+			fx_glide.color_data[4 * fx_glide.total_particle_count + 1] = fx_glide.particle_container[i].g;
+			fx_glide.color_data[4 * fx_glide.total_particle_count + 2] = fx_glide.particle_container[i].b;
+
+			//Alpha
+			//Alpha
+			if (fx_glide.particle_container[i].life >= 0.5f)
+			{
+				fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].a * fx_glide.particle_container[i].life;
+			}
+			else
+			{
+				fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].a * abs(fx_glide.particle_container[i].life - 1);
+			}
+
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_glide.particle_container[i].camera_distance = -1.0f;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 0] = 0;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 1] = 0;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 2] = 0;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 3] = 0;
+		}
+		fx_glide.total_particle_count++;
+	}
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, fx_glide.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_glide.total_particle_count * 4 * sizeof(GLfloat), fx_glide.position_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, fx_glide.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_glide.total_particle_count * 4 * sizeof(GLubyte), fx_glide.color_data);
+}
+void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera & camera)
+{
+	using namespace std::chrono_literals;
+	std::chrono::duration<float> seconds = delta;
+	auto& fx_speedboost = *fx_speedboost_ptr;
+
+	fx_speedboost.default_x = 0.0f;
+	fx_speedboost.default_y = 0.0f;
+	fx_speedboost.default_z = 0.0f;
+	fx_speedboost.nr_of_particles = nr_of_speedboost;
+	randomizer = rand() % 100;
+
+	//Update data for particles
+	if (fx_speedboost.total_particle_count <= MAX_PARTICLES)
+	{
+		if (randomizer <= 100)
+		{
+			for (auto i = 0u; i < fx_speedboost.nr_of_particles; i++)
+			{
+				if (fx_speedboost.particle_container[i].life <= 0.1f)
+				{
+					//Find and update the last used particle
+					fx_speedboost.last_used_particle = find_unused_particle(fx_speedboost.particle_container, fx_speedboost.last_used_particle);
+					int particle_index = fx_speedboost.last_used_particle;
+
+					//Set default values for the particles, first off life and position.
+					fx_speedboost.particle_container[i].life = 1.0f;
+
+					//Set colors, if you want color from texture, don't change the color
+
+					fx_speedboost.particle_container[i].r = 255;
+					fx_speedboost.particle_container[i].g = 222;
+					fx_speedboost.particle_container[i].b = 34;
+					fx_speedboost.particle_container[i].a = 180;
+
+					fx_speedboost.particle_container[i].size = 4.0f;
+				}
+			}
+		}
+	}
+
+	fx_speedboost.total_particle_count = 0;
+	//Update movement
+	for (int i = 0; i < fx_speedboost.nr_of_particles; i++)
+	{
+		//Update life with delta time
+		fx_speedboost.particle_container[i].life -= (seconds.count() / 2.0f);
+
+		if (fx_speedboost.particle_container[i].life > 0.0f)
+		{
+			fx_speedboost.particle_container[i].pos = speedboost_loc[i] + glm::vec3(0, 0, -1.0f);
+			fx_speedboost.particle_container[i].camera_distance = glm::length(fx_speedboost.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 0] = fx_speedboost.particle_container[i].pos.x;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 1] = fx_speedboost.particle_container[i].pos.y;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 2] = fx_speedboost.particle_container[i].pos.z;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].size;
+
+			//Set colors in the color data
+			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 0] = fx_speedboost.particle_container[i].r;
+			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 1] = fx_speedboost.particle_container[i].g;
+			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 2] = fx_speedboost.particle_container[i].b;
+
+			//Alpha
+			//Alpha
+			if (fx_speedboost.particle_container[i].life >= 0.5f)
+			{
+				fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].a * fx_speedboost.particle_container[i].life;
+			}
+			else
+			{
+				fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].a * abs(fx_speedboost.particle_container[i].life - 1);
+			}
+
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_speedboost.particle_container[i].camera_distance = -1.0f;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 0] = 0;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 1] = 0;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 2] = 0;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 3] = 0;
+		}
+		fx_speedboost.total_particle_count++;
+	}
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, fx_speedboost.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_speedboost.total_particle_count * 4 * sizeof(GLfloat), fx_speedboost.position_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, fx_speedboost.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_speedboost.total_particle_count * 4 * sizeof(GLubyte), fx_speedboost.color_data);
+}
+void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera & camera)
+{
+	using namespace std::chrono_literals;
+	std::chrono::duration<float> seconds = delta;
+	auto& fx_doublejump = *fx_doublejump_ptr;
+
+	fx_doublejump.default_x = 0.0f;
+	fx_doublejump.default_y = 0.0f;
+	fx_doublejump.default_z = 0.0f;
+	fx_doublejump.nr_of_particles = nr_of_doublejump;
+	randomizer = rand() % 100;
+
+	//Update data for particles
+	if (fx_doublejump.total_particle_count <= MAX_PARTICLES)
+	{
+		if (randomizer <= 100)
+		{
+			for (auto i = 0u; i < fx_doublejump.nr_of_particles; i++)
+			{
+				if (fx_doublejump.particle_container[i].life <= 0.1f)
+				{
+					//Find and update the last used particle
+					fx_doublejump.last_used_particle = find_unused_particle(fx_doublejump.particle_container, fx_doublejump.last_used_particle);
+					int particle_index = fx_doublejump.last_used_particle;
+
+					//Set default values for the particles, first off life and position.
+					fx_doublejump.particle_container[i].life = 1.0f;
+
+					//Set colors, if you want color from texture, don't change the color
+
+					fx_doublejump.particle_container[i].r = 0;
+					fx_doublejump.particle_container[i].g = 255;
+					fx_doublejump.particle_container[i].b = 0;
+					fx_doublejump.particle_container[i].a = 180;
+
+					fx_doublejump.particle_container[i].size = 4.0f;
+				}
+			}
+		}
+	}
+
+	fx_doublejump.total_particle_count = 0;
+	//Update movement
+	for (int i = 0; i < fx_doublejump.nr_of_particles; i++)
+	{
+		//Update life with delta time
+		fx_doublejump.particle_container[i].life -= (seconds.count() / 2.0f);
+
+		if (fx_doublejump.particle_container[i].life > 0.0f)
+		{
+			fx_doublejump.particle_container[i].pos = doublejump_loc[i] + glm::vec3(0, 0, -1.0f);
+			fx_doublejump.particle_container[i].camera_distance = glm::length(fx_doublejump.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 0] = fx_doublejump.particle_container[i].pos.x;
+			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 1] = fx_doublejump.particle_container[i].pos.y;
+			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 2] = fx_doublejump.particle_container[i].pos.z;
+			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[i].size;
+
+			//Set colors in the color data
+			fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 0] = fx_doublejump.particle_container[i].r;
+			fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 1] = fx_doublejump.particle_container[i].g;
+			fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 2] = fx_doublejump.particle_container[i].b;
+
+			//Alpha
+			if (fx_doublejump.particle_container[i].life >= 0.5f)
+			{
+				fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[i].a * fx_doublejump.particle_container[i].life;
+			}
+			else
+			{
+				fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[i].a * abs(fx_doublejump.particle_container[i].life - 1);
+			}
+
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_doublejump.particle_container[i].camera_distance = -1.0f;
+			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 0] = 0;
+			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 1] = 0;
+			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 2] = 0;
+			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 3] = 0;
+		}
+		fx_doublejump.total_particle_count++;
+	}
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, fx_doublejump.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_doublejump.total_particle_count * 4 * sizeof(GLfloat), fx_doublejump.position_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, fx_doublejump.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_doublejump.total_particle_count * 4 * sizeof(GLubyte), fx_doublejump.color_data);
+}
+void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & camera)
+{
+	using namespace std::chrono_literals;
+	std::chrono::duration<float> seconds = delta;
+	auto& fx_shield = *fx_shield_ptr;
+
+	fx_shield.default_x = 0.0f;
+	fx_shield.default_y = 0.0f;
+	fx_shield.default_z = 0.0f;
+	fx_shield.nr_of_particles = nr_of_shield;
+	randomizer = rand() % 100;
+
+	//Update data for particles
+	if (fx_shield.total_particle_count <= MAX_PARTICLES)
+	{
+		if (randomizer <= 100)
+		{
+			for (auto i = 0u; i < fx_shield.nr_of_particles; i++)
+			{
+				if (fx_shield.particle_container[i].life <= 0.1f)
+				{
+					//Find and update the last used particle
+					fx_shield.last_used_particle = find_unused_particle(fx_shield.particle_container, fx_shield.last_used_particle);
+					int particle_index = fx_shield.last_used_particle;
+
+					//Set default values for the particles, first off life and position.
+					fx_shield.particle_container[i].life = 1.0f;
+
+					//Set colors, if you want color from texture, don't change the color
+
+					fx_shield.particle_container[i].r = 24;
+					fx_shield.particle_container[i].g = 208;
+					fx_shield.particle_container[i].b = 255;
+					fx_shield.particle_container[i].a = 180;
+
+					fx_shield.particle_container[i].size = 4.0f;
+				}
+			}
+		}
+	}
+
+	fx_shield.total_particle_count = 0;
+	//Update movement
+	for (int i = 0; i < fx_shield.nr_of_particles; i++)
+	{
+		//Update life with delta time
+		fx_shield.particle_container[i].life -= (seconds.count() / 2.0f);
+
+		if (fx_shield.particle_container[i].life > 0.0f)
+		{
+			fx_shield.particle_container[i].pos = shield_loc[i] + glm::vec3(0, 0, -1.0f);
+			fx_shield.particle_container[i].camera_distance = glm::length(fx_shield.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			fx_shield.position_data[4 * fx_shield.total_particle_count + 0] = fx_shield.particle_container[i].pos.x;
+			fx_shield.position_data[4 * fx_shield.total_particle_count + 1] = fx_shield.particle_container[i].pos.y;
+			fx_shield.position_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[i].pos.z;
+			fx_shield.position_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[i].size;
+
+			//Set colors in the color data
+			fx_shield.color_data[4 * fx_shield.total_particle_count + 0] = fx_shield.particle_container[i].r;
+			fx_shield.color_data[4 * fx_shield.total_particle_count + 1] = fx_shield.particle_container[i].g;
+			fx_shield.color_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[i].b;
+
+			//Alpha
+			if (fx_shield.particle_container[i].life >= 0.5f)
+			{
+				fx_shield.color_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[i].a * fx_shield.particle_container[i].life;
+			}
+			else
+			{
+				fx_shield.color_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[i].a * abs(fx_shield.particle_container[i].life - 1);
+			}
+
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_shield.particle_container[i].camera_distance = -1.0f;
+			fx_shield.position_data[4 * fx_shield.total_particle_count + 0] = 0;
+			fx_shield.position_data[4 * fx_shield.total_particle_count + 1] = 0;
+			fx_shield.position_data[4 * fx_shield.total_particle_count + 2] = 0;
+			fx_shield.position_data[4 * fx_shield.total_particle_count + 3] = 0;
+		}
+		fx_shield.total_particle_count++;
+	}
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, fx_shield.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_shield.total_particle_count * 4 * sizeof(GLfloat), fx_shield.position_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, fx_shield.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_shield.total_particle_count * 4 * sizeof(GLubyte), fx_shield.color_data);
+}
+void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & camera)
+{
+	using namespace std::chrono_literals;
+	std::chrono::duration<float> seconds = delta;
+	auto& fx_random = *fx_random_ptr;
+
+	fx_random.default_x = 0.0f;
+	fx_random.default_y = 0.0f;
+	fx_random.default_z = 0.0f;
+	fx_random.nr_of_particles = nr_of_random;
+	randomizer = rand() % 100;
+
+	//Update data for particles
+	if (fx_random.total_particle_count <= MAX_PARTICLES)
+	{
+		if (randomizer <= 100)
+		{
+			for (auto i = 0u; i < fx_random.nr_of_particles; i++)
+			{
+				if (fx_random.particle_container[i].life <= 0.1f)
+				{
+					//Find and update the last used particle
+					fx_random.last_used_particle = find_unused_particle(fx_random.particle_container, fx_random.last_used_particle);
+					int particle_index = fx_random.last_used_particle;
+
+					//Set default values for the particles, first off life and position.
+					fx_random.particle_container[i].life = 1.0f;
+
+					//Set colors, if you want color from texture, don't change the color
+
+					fx_random.particle_container[i].r = 0;
+					fx_random.particle_container[i].g = 0;
+					fx_random.particle_container[i].b = 0;
+					fx_random.particle_container[i].a = 180;
+
+					fx_random.particle_container[i].size = 4.0f;
+				}
+			}
+		}
+	}
+
+	fx_random.total_particle_count = 0;
+	//Update movement
+	for (int i = 0; i < fx_random.nr_of_particles; i++)
+	{
+		//Update life with delta time
+		fx_random.particle_container[i].life -= (seconds.count() / 2.0f);
+
+		if (fx_random.particle_container[i].life > 0.0f)
+		{
+			fx_random.particle_container[i].pos = random_loc[i] + glm::vec3(0, 0, -1.0f);
+			fx_random.particle_container[i].camera_distance = glm::length(fx_random.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			fx_random.position_data[4 * fx_random.total_particle_count + 0] = fx_random.particle_container[i].pos.x;
+			fx_random.position_data[4 * fx_random.total_particle_count + 1] = fx_random.particle_container[i].pos.y;
+			fx_random.position_data[4 * fx_random.total_particle_count + 2] = fx_random.particle_container[i].pos.z;
+			fx_random.position_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].size;
+
+			//Set colors in the color data
+			//RAINBOWS
+			if (random_color_r == 0 && random_color_g == 0 && random_color_b == 0)
+			{
+				random_color_r = 255;
+				color_picker = RED;
+			}
+
+			if (color_picker == RED)
+			{
+				random_color_b += seconds.count() * 200.0f;
+				fx_random.color_data[4 * fx_random.total_particle_count + 0] = random_color_r;
+				fx_random.color_data[4 * fx_random.total_particle_count + 1] = random_color_g;
+				fx_random.color_data[4 * fx_random.total_particle_count + 2] = random_color_b;
+				if (random_color_b >= 255)
+				{
+					random_color_b = 255;
+					color_picker = PURPLE;
+				}
+			}
+			else if (color_picker == PURPLE)
+			{
+				random_color_r -= seconds.count() * 200.0f;
+				fx_random.color_data[4 * fx_random.total_particle_count + 0] = random_color_r;
+				fx_random.color_data[4 * fx_random.total_particle_count + 1] = random_color_g;
+				fx_random.color_data[4 * fx_random.total_particle_count + 2] = random_color_b;
+				if (random_color_r <= 0)
+				{
+					random_color_r = 0;
+					color_picker = BLUE;
+				}
+			}
+			else if (color_picker == BLUE)
+			{
+				random_color_g += seconds.count() * 200.0f;
+				fx_random.color_data[4 * fx_random.total_particle_count + 0] = random_color_r;
+				fx_random.color_data[4 * fx_random.total_particle_count + 1] = random_color_g;
+				fx_random.color_data[4 * fx_random.total_particle_count + 2] = random_color_b;
+				if (random_color_g >= 255)
+				{
+					random_color_g = 255;
+					color_picker = TURQUOISE;
+				}
+			}
+			else if (color_picker == TURQUOISE)
+			{
+				random_color_b -= seconds.count() * 200.0f;
+				fx_random.color_data[4 * fx_random.total_particle_count + 0] = random_color_r;
+				fx_random.color_data[4 * fx_random.total_particle_count + 1] = random_color_g;
+				fx_random.color_data[4 * fx_random.total_particle_count + 2] = random_color_b;
+				if (random_color_b <= 0)
+				{
+					random_color_b = 0;
+					color_picker = GREEN;
+				}
+			}
+			else if (color_picker == GREEN)
+			{
+				random_color_r += seconds.count() * 200.0f;
+				fx_random.color_data[4 * fx_random.total_particle_count + 0] = random_color_r;
+				fx_random.color_data[4 * fx_random.total_particle_count + 1] = random_color_g;
+				fx_random.color_data[4 * fx_random.total_particle_count + 2] = random_color_b;
+				if (random_color_r >= 255)
+				{
+					random_color_r = 255;
+					color_picker = YELLOW;
+				}
+			}
+			else if (color_picker == YELLOW)
+			{
+				random_color_g -= seconds.count() * 200.0f;
+				fx_random.color_data[4 * fx_random.total_particle_count + 0] = random_color_r;
+				fx_random.color_data[4 * fx_random.total_particle_count + 1] = random_color_g;
+				fx_random.color_data[4 * fx_random.total_particle_count + 2] = random_color_b;
+				if (random_color_g <= 0)
+				{
+					random_color_g = 0;
+					color_picker = RED;
+				}
+			}
+
+			//Alpha
+			if (fx_random.particle_container[i].life >= 0.5f)
+			{
+				fx_random.color_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].a * fx_random.particle_container[i].life;
+			}
+			else
+			{
+				fx_random.color_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].a * abs(fx_random.particle_container[i].life - 1);
+			}
+
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_random.particle_container[i].camera_distance = -1.0f;
+			fx_random.position_data[4 * fx_random.total_particle_count + 0] = 0;
+			fx_random.position_data[4 * fx_random.total_particle_count + 1] = 0;
+			fx_random.position_data[4 * fx_random.total_particle_count + 2] = 0;
+			fx_random.position_data[4 * fx_random.total_particle_count + 3] = 0;
+		}
+		fx_random.total_particle_count++;
+	}
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, fx_random.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_random.total_particle_count * 4 * sizeof(GLfloat), fx_random.position_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, fx_random.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_random.total_particle_count * 4 * sizeof(GLubyte), fx_random.color_data);
 }
 /*
 void FX::object_data(std::chrono::milliseconds delta, const Camera & camera, build_information build_info)
@@ -3514,232 +4080,63 @@ void FX::calculate_object_4_data(std::chrono::milliseconds delta, const Camera &
 */
 
 void FX::calculate_object_data(std::chrono::milliseconds delta, const Camera & camera, std::vector<build_information> &build_info)
-{
-	/*
-	auto& fx_object = *fx_object_ptr;
-		
-	if (build_info[object].object_id == STUNTRAP)
+{	
+	//Reset object locations before iterator
+	nr_of_stun = 0;
+	nr_of_glide = 0;
+	nr_of_speedboost = 0;
+	nr_of_doublejump = 0;
+	nr_of_shield = 0;
+	nr_of_random = 0;
+	stun_loc.clear();
+	glide_loc.clear();
+	speedboost_loc.clear();
+	doublejump_loc.clear();
+	shield_loc.clear();
+	random_loc.clear();
+
+	//Iterate through all the objects and collect needed data
+	for (int object = 0; object < build_info.size(); object++)
 	{
-		calculate_stun_data(delta, camera, build_info[object]);
-	}
-	else
-	{
-		using namespace std::chrono_literals;
-		std::chrono::duration<float> seconds = delta;
-
-		fx_object.fx_object_id = build_info[object].object_id;
-
-		fx_object.default_x = 0.0f;
-		fx_object.default_y = 0.0f;
-		fx_object.default_z = 0.0f;
-		fx_object.nr_of_particles = build_info.size();
-		randomizer = rand() % 100;
-
-		//Update data for particles
-		if (fx_object.total_particle_count <= MAX_PARTICLES)
+		if (build_info[object].object_id == STUNTRAP)
 		{
-			if (randomizer <= 100)
-			{
-				for (auto i = 0u; i < fx_object.nr_of_particles; i++)
-				{
-					if (fx_object.particle_container[i].life <= 0.1f)
-					{
-						//Find and update the last used particle
-						fx_object.last_used_particle = find_unused_particle(fx_object.particle_container, fx_object.last_used_particle);
-						int particle_index = fx_object.last_used_particle;
-
-						//Set default values for the particles, first off life and position.
-						fx_object.particle_container[i].life = 1.0f;
-
-						//Set colors, if you want color from texture, don't change the color
-						if (fx_object.fx_object_id == SPEEDBOOST)
-						{
-							fx_object.particle_container[i].r = 255;
-							fx_object.particle_container[i].g = 222;
-							fx_object.particle_container[i].b = 34;
-							fx_object.particle_container[i].a = 180;
-						}
-						else if (fx_object.fx_object_id == JUMPBOOST)
-						{
-							fx_object.particle_container[i].r = 0;
-							fx_object.particle_container[i].g = 255;
-							fx_object.particle_container[i].b = 0;
-							fx_object.particle_container[i].a = 180;
-						}
-						else if (fx_object.fx_object_id == SHIELD)
-						{
-							fx_object.particle_container[i].r = 24;
-							fx_object.particle_container[i].g = 208;
-							fx_object.particle_container[i].b = 255;
-							fx_object.particle_container[i].a = 180;
-						}
-						else if (fx_object.fx_object_id == GLIDETRAP)
-						{
-							fx_object.particle_container[i].r = 151;
-							fx_object.particle_container[i].g = 0;
-							fx_object.particle_container[i].b = 255;
-							fx_object.particle_container[i].a = 180;
-						}
-						else if (fx_object.fx_object_id == RANDOM)
-						{
-							fx_object.particle_container[i].r = 0;
-							fx_object.particle_container[i].g = 0;
-							fx_object.particle_container[i].b = 0;
-							fx_object.particle_container[i].a = 180;
-						}
-						else
-						{
-							fx_object.particle_container[i].a = 0;
-						}
-
-						fx_object.particle_container[i].size = 4.0f;
-					}
-				}
-			}
+			nr_of_stun++;
+			stun_loc.push_back(build_info[object].local_position);
+		}
+		else if (build_info[object].object_id == GLIDETRAP)
+		{
+			nr_of_glide++;
+			glide_loc.push_back(build_info[object].local_position);
+		}
+		else if (build_info[object].object_id == SPEEDBOOST)
+		{
+			nr_of_speedboost++;
+			speedboost_loc.push_back(build_info[object].local_position);
+		}
+		else if (build_info[object].object_id == DOUBLEJUMP)
+		{
+			nr_of_doublejump++;
+			doublejump_loc.push_back(build_info[object].local_position);
+		}
+		else if (build_info[object].object_id == SHIELD)
+		{
+			nr_of_shield++;
+			shield_loc.push_back(build_info[object].local_position);
+		}
+		else if (build_info[object].object_id == RANDOM)
+		{
+			nr_of_random++;
+			random_loc.push_back(build_info[object].local_position);
 		}
 
-		fx_object.total_particle_count = 0;
-		//Update movement
-		for (int i = 0; i < fx_object.nr_of_particles; i++)
-		{
-			//Update life with delta time
-			fx_object.particle_container[i].life -= (seconds.count() / 2.0f);
-
-			if (fx_object.particle_container[i].life > 0.0f)
-			{
-				fx_object.particle_container[i].pos = build_info[object].local_position + glm::vec3(0, 0, -2.0f);
-				fx_object.particle_container[i].camera_distance = glm::length(fx_object.particle_container[i].pos - camera.position);
-
-				//Set positions in the position data
-				fx_object.position_data[4 * fx_object.total_particle_count + 0] = fx_object.particle_container[i].pos.x;
-				fx_object.position_data[4 * fx_object.total_particle_count + 1] = fx_object.particle_container[i].pos.y;
-				fx_object.position_data[4 * fx_object.total_particle_count + 2] = fx_object.particle_container[i].pos.z;
-				fx_object.position_data[4 * fx_object.total_particle_count + 3] = fx_object.particle_container[i].size;
-
-				//Set colors in the color data
-				if (fx_object.fx_object_id == RANDOM)
-				{
-					//RAINBOWS
-
-					if (random_color_r == 0 && random_color_g == 0 && random_color_b == 0)
-					{
-						random_color_r = 255;
-						color_picker = RED;
-					}
-
-					if (color_picker == RED)
-					{
-						random_color_b += seconds.count() * 200.0f;
-						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r;
-						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g;
-						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b;
-						if (random_color_b >= 255)
-						{
-							random_color_b = 255;
-							color_picker = PURPLE;
-						}
-					}
-					else if (color_picker == PURPLE)
-					{
-						random_color_r -= seconds.count() * 200.0f;
-						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r;
-						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g;
-						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b;
-						if (random_color_r <= 0)
-						{
-							random_color_r = 0;
-							color_picker = BLUE;
-						}
-					}
-					else if (color_picker == BLUE)
-					{
-						random_color_g += seconds.count() * 200.0f;
-						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r;
-						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g;
-						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b;
-						if (random_color_g >= 255)
-						{
-							random_color_g = 255;
-							color_picker = TURQUOISE;
-						}
-					}
-					else if (color_picker == TURQUOISE)
-					{
-						random_color_b -= seconds.count() * 200.0f;
-						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r;
-						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g;
-						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b;
-						if (random_color_b <= 0)
-						{
-							random_color_b = 0;
-							color_picker = GREEN;
-						}
-					}
-					else if (color_picker == GREEN)
-					{
-						random_color_r += seconds.count() * 200.0f;
-						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r;
-						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g;
-						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b;
-						if (random_color_r >= 255)
-						{
-							random_color_r = 255;
-							color_picker = YELLOW;
-						}
-					}
-					else if (color_picker == YELLOW)
-					{
-						random_color_g -= seconds.count() * 200.0f;
-						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r;
-						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g;
-						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b;
-						if (random_color_g <= 0)
-						{
-							random_color_g = 0;
-							color_picker = RED;
-						}
-					}
-				}
-				else
-				{
-					fx_object.color_data[4 * fx_object.total_particle_count + 0] = fx_object.particle_container[i].r;
-					fx_object.color_data[4 * fx_object.total_particle_count + 1] = fx_object.particle_container[i].g;
-					fx_object.color_data[4 * fx_object.total_particle_count + 2] = fx_object.particle_container[i].b;
-				}
-
-				//Alpha
-				if (fx_object.particle_container[i].life >= 0.5f)
-				{
-					fx_object.color_data[4 * fx_object.total_particle_count + 3] = fx_object.particle_container[i].a * fx_object.particle_container[i].life;
-				}
-				else
-				{
-					fx_object.color_data[4 * fx_object.total_particle_count + 3] = fx_object.particle_container[i].a * abs(fx_object.particle_container[i].life - 1);
-				}
-			}
-			else
-			{
-				//They ded, hide 'em
-				fx_object.particle_container[i].camera_distance = -1.0f;
-				fx_object.position_data[4 * fx_object.total_particle_count + 0] = 0;
-				fx_object.position_data[4 * fx_object.total_particle_count + 1] = 0;
-				fx_object.position_data[4 * fx_object.total_particle_count + 2] = 0;
-				fx_object.position_data[4 * fx_object.total_particle_count + 3] = 0;
-			}
-			fx_object.total_particle_count++;
-		}
-
-		//Update particle information
-		glBindBuffer(GL_ARRAY_BUFFER, fx_object.position_buffer);
-		glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object.total_particle_count * 4 * sizeof(GLfloat), fx_object.position_data);
-
-		glBindBuffer(GL_ARRAY_BUFFER, fx_object.color_buffer);
-		glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object.total_particle_count * 4 * sizeof(GLubyte), fx_object.color_data);
+		//Calculate the objects' particles
+		calculate_stun_data(delta, camera);
+		calculate_glide_data(delta, camera);
+		calculate_speedboost_data(delta, camera);
+		calculate_doublejump_data(delta, camera);
+		calculate_shield_data(delta, camera);
+		calculate_random_data(delta, camera);
 	}
-	
-	*/
 }
 
 }
