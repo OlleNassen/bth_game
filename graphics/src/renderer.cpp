@@ -65,20 +65,24 @@ Renderer::Renderer(GameScene* scene)
 	lights[5].color = glm::vec3{ 1,0.2,0 };
 	lights[6].position = glm::vec3{ -7.74,44,-22.984 };
 	lights[6].color = glm::vec3{ 1,0.2,0 };
-	lights[7].position = glm::vec3{ -11.853,120,-20 };
-	lights[7].color = glm::vec3{ 0,0.82,1 };
-	lights[8].position = glm::vec3{ 13.34,160,-20 };
-	lights[8].color = glm::vec3{ 1,0.48,0 };
-	lights[9].position = glm::vec3{ -11.853,200,-20 };
-	lights[9].color = glm::vec3{ 0,0.82,1 };
-	lights[10].position = glm::vec3{ 13.34,240,-20 };
-	lights[10].color = glm::vec3{ 1,0.48,0 };
+	lights[7].position = glm::vec3{ 0, 123.035, -23.725 };
+	lights[7].color = glm::vec3{ 0, 0.82, 1 };
+	lights[8].position = glm::vec3{ 0, 187.484, -18.185 };
+	lights[8].color = glm::vec3{ 1, 0.2, 0 };
+	lights[9].position = glm::vec3{ 0, 208.400, -34.226 };
+	lights[9].color = glm::vec3{ 1, 0.2, 0 };
+	lights[10].position = glm::vec3{ 0, 260.169, 5.0 };
+	lights[10].color = glm::vec3{ 1, 1, 1 };
+	lights[11].position = glm::vec3{ 0, 88.553, -29.053 };
+	lights[11].color = glm::vec3{ 1, 0.2, 0 };
+	lights[12].position = glm::vec3{ 0, 135.246, -11.474 };
+	lights[12].color = glm::vec3{ 1, 0.2, 0 };
 
-	for (int i = 4; i < 12; i++)
+	for (int i = 4; i < 13; i++)
 	{
 		lights[i].intensity = 400;
 	}
-	lights[4].intensity = 100;
+
 	lights[5].intensity = 700;
 	lights[6].intensity = 1000;
 
@@ -129,7 +133,7 @@ void Renderer::render(
 		render_character(robot_shader, game_camera, scene->moving_models, player_count); 
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
+			render_type(pbra, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
 
 		render_type(pbra, game_camera,a_to_render.first, a_to_render.last);
 		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
@@ -535,7 +539,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		//Godray
 		fx_emitter.calculate_godray_data(delta, game_camera);
-
+ 
 		//Lava Light
 		fx_emitter.calculate_lava_light_data(delta, game_camera);
 
@@ -545,21 +549,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Gust
 		fx_emitter.calculate_gust_data(delta, game_camera);
 
-		//if (build_infos.size() > 0)
-		//{
-		//	//Object 1
-		//	if (build_infos.size() >= 1)
-		//		fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[0]);
-		//	//Object 2
-		//	if (build_infos.size() >= 2)
-		//		fx_emitter.calculate_object_2_data(delta, game_camera, build_infos[1]);
-		//	//Object 3
-		//	if (build_infos.size() >= 3)
-		//		fx_emitter.calculate_object_3_data(delta, game_camera, build_infos[2]);
-		//	//Object 4
-		//	if (build_infos.size() == 4)
-		//		fx_emitter.calculate_object_4_data(delta, game_camera, build_infos[3]);
-		//}
 		
 		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects);
 		
@@ -631,7 +620,7 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 
 	int light_count = 0;
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 13; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{
@@ -671,7 +660,7 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 
 	int light_count = 0;
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 13; i++)
 	{
 		if (abs(lights[i].position.y - camera.position.y) < 80.0f)
 		{

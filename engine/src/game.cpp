@@ -524,7 +524,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 		lua_data = gameplay.update(
 			{ delta, obj, triggers,
-			player_inputs, 
+			player_inputs,
 			anim_states,
 			players_placed_objects_id,
 			static_cast<int>(player_count),
@@ -549,15 +549,15 @@ void Game::update(std::chrono::milliseconds delta)
 			if (!dynamics[i].is_stund) // test for placing objects script.
 			{
 
-				if (level.moving_models[i].is_animated)
-				{
-					level.moving_models[i].update_animation((float)delta.count(), anim_states[i]);
-				}
+			if (level.moving_models[i].is_animated)
+			{
+				level.moving_models[i].update_animation((float)delta.count(), anim_states[i]);
+			}
 
-				if (physics.rw[i] == true)
-					level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
-				else if (physics.lw[i] == true)
-					level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
+			if (physics.rw[i] == true)
+				level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+			else if (physics.lw[i] == true)
+				level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 
 
 				if (player_inputs[i][logic::button::right] == logic::button_state::held)
@@ -604,9 +604,11 @@ void Game::update(std::chrono::milliseconds delta)
 	anim idle = anim::falling;
 
 	for (auto& model : level.animated_models)
-			model.update_animation((float)delta.count(), idle);
+		model.update_animation((float)delta.count(), idle);
 
-	//std::cout << dynamics[players_placed_objects_id[net.id()].dynamics_id].position.x << " : " << dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y << "\n";
+	for (int i = 4; i < level.moving_models.size(); i++)
+		if(level.moving_models[i].is_animated)
+			level.moving_models[i].update_animation((float)delta.count(), idle);
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 

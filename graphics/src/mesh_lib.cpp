@@ -71,7 +71,7 @@ void MeshLib::create_mesh_list()
 		"hatch.ssp",						//43
 		"wall_single.ssp",					//44
 		"Shit_robot.ssp",					//45
-		"big_propeller.ssp",				//46
+		"big_prop.ssp",						//46
 		"big_fan_shell.ssp",				//47
 		"platform_fence.ssp",               //48
 		"melting_pot.ssp",                  //49
@@ -80,7 +80,10 @@ void MeshLib::create_mesh_list()
 		"furnace.ssp",                      //52
 		"machine_arm.ssp",                  //53
 		"iron_chunk.ssp",                   //54
-		"scrap_robot.ssp"                   //55
+		"scrap_robot.ssp",				    //55
+		"furnace_in.ssp",					//56
+		"furnace_out.ssp",					//57
+		"smelt_bots.ssp"					//58
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
