@@ -19,7 +19,6 @@ public:
 	{
 		glBindVertexArray(vao_id);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
 	}
 
 	void irradiance_render(const Shader& shader, const Camera& camera)const
@@ -31,7 +30,6 @@ public:
 		glDepthFunc(GL_LEQUAL);
 		glBindVertexArray(vao_id);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
 		glDepthFunc(GL_LESS);
 	}
 

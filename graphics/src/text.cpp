@@ -78,7 +78,6 @@ Text::Text()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 }
 
 Text::~Text()
@@ -121,7 +120,6 @@ void Text::render_text(const std::string& text,
 		// Bitshift by 6 to get value in pixels (2^6 = 64)
 		x += (ch.advance >> 6) * scale;
 	}
-	glBindVertexArray(0);
 }
 
 float Text::get_text_width(const std::string& text, float scale)const

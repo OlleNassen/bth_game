@@ -515,6 +515,8 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		window.toggle_screen_mode(settings);
 	}
+
+	std::cout << glGetError() << '\n';
 }
 
 void Game::pack_data()

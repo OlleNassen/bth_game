@@ -108,7 +108,6 @@ public:
 
 		glPointSize(5.0f);
 		glDrawArrays(GL_LINES, 0, lines.size());
-		glBindVertexArray(0);
 	}
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
@@ -124,7 +123,6 @@ public:
 
 		glPointSize(5.0f);
 		glDrawArrays(GL_POINTS, 0, lines.size());
-		glBindVertexArray(0);
 	}
 
 private:

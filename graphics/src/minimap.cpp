@@ -39,7 +39,6 @@ void Minimap::render(const Shader& shader) const
 		shader.uniform("color", map_elements[i].color);
 		glBindVertexArray(vao_id);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(0);
 	}
 }
 
