@@ -188,24 +188,6 @@ void Renderer::render(
 
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	if (player_count > 0)
-	{
-		if (!is_menu)
-		{
-			glDisable(GL_DEPTH_TEST);
-
-			if (game_state & state::pre_building)
-			{
-				if (build_stage_screen.transparency > 0.0f) // (!build_stage_screen.transparency < 0.0005f)
-				{
-					build_stage_screen.render(build_stage_screen_shader);
-				}
-			}
-			glEnable(GL_DEPTH_TEST);
-		}
-	}
-
 	overlays.render(overlay_shader);
 
 	//Text rendering
@@ -222,6 +204,17 @@ void Renderer::render(
 
 		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 		post_processing_effects.render();
+		
+		if (game_state & state::pre_building)
+		{
+			glDisable(GL_DEPTH_TEST);
+			if (build_stage_screen.transparency > 0.0f) // (!build_stage_screen.transparency < 0.0005f)
+			{
+				build_stage_screen.render(build_stage_screen_shader);
+			}
+			glEnable(GL_DEPTH_TEST);
+		}
+
 
 		glDisable(GL_DEPTH_TEST);
 		std::stringstream out_text;
