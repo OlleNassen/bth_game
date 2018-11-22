@@ -252,32 +252,23 @@ function update_controls(delta_seconds, entity)
 	end
 
 	--Falling
-
 	if entity.anim.current == entity.anim.falling
 	then
-		print("X: ", entity.velocity.x)
-		print("Y: ", entity.velocity.y)
-
-		--[[if entity.velocity.y >= -1.0934910278593e-3 and entity.velocity.y < 0 
-		then
-		print("Lisa")
-			entity.velocity.y = 10
-		end]]--
-
 
 		if entity.button.right 
 		then
-			if entity.velocity.x > 0.001 or entity.velocity.x < -0.001 and entity.velocity.y < -1 or entity.velocity.x == 0
+			if math.abs(entity.velocity.x) > 0.001 and math.abs(entity.velocity.y) > 1 or entity.velocity.x == 0
 			then
 			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 				accelerate(delta_seconds, entity,  max_air_speed, air_acceleration)
 			end
 		elseif entity.button.left
 		then
-			if entity.velocity.x > 0.001 or entity.velocity.x < -0.001 and entity.velocity.y < -1 or  entity.velocity.x == 0
+			if math.abs(entity.velocity.x) > 0.001 and math.abs(entity.velocity.y) > 1 or entity.velocity.x == 0
+			--if entity.velocity.x > 0.001 or entity.velocity.x < -0.001 and entity.velocity.y < -1 or entity.velocity.x == 0
 			then
 			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
-				accelerate(delta_seconds, entity, - max_air_speed, air_acceleration)
+				accelerate(delta_seconds, entity, -max_air_speed, air_acceleration)
 			end
 			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
 			--accelerate(delta_seconds, entity, - max_air_speed, air_acceleration)
@@ -289,7 +280,6 @@ function update_controls(delta_seconds, entity)
 
 		if entity.velocity.y > -0.01 and entity.velocity.y < 0 
 		then 
-			print("adam")
 			entity.velocity.y = 0
 			entity.anim.current = entity.anim.jump_from_wall
 		end
