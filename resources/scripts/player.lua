@@ -253,13 +253,13 @@ function update_controls(delta_seconds, entity)
 		
 		if entity.button.left
 		then
-			if math.abs(entity.velocity.x) >= 0.001 or entity.velocity.x == 0
+			if math.abs(entity.velocity.x) > 0.001 or entity.velocity.x == 0
 			then
 				accelerate(delta_seconds, entity, - max_air_speed, air_acceleration)
 			end
 		elseif entity.button.right 
 		then
-			if math.abs(entity.velocity.x) >= 0.001 or entity.velocity.x == 0
+			if math.abs(entity.velocity.x) > 0.001 or entity.velocity.x == 0
 			then
 				accelerate(delta_seconds, entity,  max_air_speed, air_acceleration)
 			end
