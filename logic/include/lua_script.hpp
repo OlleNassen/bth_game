@@ -13,11 +13,21 @@
 // Olle
 // Edvard
 
+
+struct turret_id_bullet_id
+{
+	int turret_id = 0;
+	int turret_model_id = 0;
+	int bullet_id = 0;
+	int bullet_model_id = 0;
+};
+
 namespace logic
 {
 
 using trigger_array = std::array<int, 100>;
 using trigger_type_array = std::array<int, 100>; // Test for triggers
+using turret_array = std::array<turret_id_bullet_id, 100>;
 
 struct LuaExport
 {
@@ -109,6 +119,25 @@ public:
 	bool build_stage_force_done(int index);
 	void set_build_stage_done(int index, bool state);
 	float get_time(int index);
+
+private:
+	LuaStack stack;
+};
+
+class PlacedObjectScript 
+{
+public:
+	PlacedObjectScript(const std::string& path);
+
+	void setup(int entity);
+	void update(
+		std::chrono::milliseconds delta,
+		objects& object,
+		glm::vec2 turret_pos,
+		glm::vec2 direction,
+		float width,
+		float height,
+		int index);
 
 private:
 	LuaStack stack;

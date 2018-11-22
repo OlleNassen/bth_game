@@ -6,6 +6,17 @@ function setup(entity)
 	--bool active
 
 	--entity.timer = 0
+
+
+	--position
+	--velocity
+	--turret_position
+	--turret_direction
+	--turret_width
+	--turret_height
+
+
+
 end
 
 local a_speed = 0.5
@@ -21,8 +32,7 @@ function  move(entity)
 			entity.speed = direction * a_speed			
 		end
 
-	entity.pos = entity.pos + entity.speed
-
+		entity.pos = entity.pos + entity.speed
 	else
 		entity.pos = --outside map
 	end

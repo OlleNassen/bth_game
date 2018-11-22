@@ -43,11 +43,13 @@ struct id_and_model_place
 	}
 };
 
+
 namespace logic
 {
 
 using objects_array = std::array<objects, 100>;
 using trigger_array = std::array<int, 100>;
+
 	   
 struct Input
 {
@@ -59,6 +61,7 @@ struct Input
 	std::array<id_and_model_place, 4>& players_placed_objects_id;
 
 	const trigger_type_array& triggers_types; //test for triggers
+	const turret_array& turrets_id; //test for turrets
 };
 
 
@@ -82,6 +85,7 @@ private:
 	script_array<int> entities;
 	PlayerScript player_script{"../resources/scripts/player.lua"};
 	PlacingScript placement_script{"../resources/scripts/placing_objects.lua"};
+	PlacedObjectScript projectile_script{ "../resources/scripts/projectile.lua" };
 	GameScript game_script;
 	std::array<glm::vec3, 4> directions;
 

@@ -679,5 +679,96 @@ float PlacingScript::get_time(int index)
 
 	return temp;
 }
+
+PlacedObjectScript::PlacedObjectScript(const std::string& path)
+	: stack{ path.c_str() }
+{
+	stack.setglobal("entities");
+}
+
+void PlacedObjectScript::setup(int entity)
+{
+	std::string name{ "entities[" + std::to_string(entity) + "]" };
+	stack.newtable();
+	stack.setglobal(name.c_str());
+
+	stack.getglobal("setup");
+
+	if (lua_isfunction(stack.lua_state, -1))
+	{
+		stack.getglobal(name.c_str());
+		stack.call(1, 0);
+	}
+
+	stack.clear();
+}
+
+void PlacedObjectScript::update(
+	std::chrono::milliseconds delta,
+	objects& object,
+	glm::vec2 turret_pos,
+	glm::vec2 direction,
+	float width,
+	float height,
+	int index)
+{
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		stack.push("position");
+		stack.push(object.position);
+		stack.rawset(top);
+		stack.push("velocity");
+		stack.push(object.velocity);
+
+		stack.rawset(top);
+		stack.push("turret_position");
+		stack.push(turret_pos);
+		stack.clear();
+
+		stack.rawset(top);
+		stack.push("turret_direction");
+		stack.push(direction);
+		stack.clear();
+
+		stack.rawset(top);
+		stack.push("turret_width");
+		stack.push(width);
+		stack.clear();
+
+		stack.rawset(top);
+		stack.push("turret_height");
+		stack.push(height);
+		stack.clear();
+	}
+
+	stack.getglobal("update");
+	stack.push(delta.count() / 1000.0f);
+	stack.getglobal(name.c_str());
+	stack.call(2, 0);
+
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+
+		stack.getfield(top, "position");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.position.x = stack.tonumber(-2);
+		object.position.y = stack.tonumber(-1);
+
+		stack.getfield(top, "velocity");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.velocity.x = stack.tonumber(-2);
+		object.velocity.y = stack.tonumber(-1);
+
+
+		stack.clear();
+	}
+}
+
 }
 

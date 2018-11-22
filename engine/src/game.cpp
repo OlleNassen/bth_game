@@ -276,22 +276,67 @@ void Game::update(std::chrono::milliseconds delta)
 				//glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
 				//placed_objects_list_id = random_picked_object(); //placed_objects_array[0];
 
+				if (placed_objects_list_id != 1)
+				{
+					collision_data data;
+					int model_id = level.add_object(data, placed_objects_list_id);
+					int dynamic_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
 
-				collision_data data;
-				int model_id = level.add_object(data, placed_objects_list_id);
-				int dynamic_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
+					players_placed_objects_id[i].model_id = model_id;
+					players_placed_objects_id[i].dynamics_id = dynamic_id;
+					players_placed_objects_id[i].model_type_id = data.model_id;
 
-				players_placed_objects_id[i].model_id = model_id;
-				players_placed_objects_id[i].dynamics_id = dynamic_id;
-				players_placed_objects_id[i].model_type_id = data.model_id;
+					dynamics[dynamic_id].position = start_position;
+					dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
+					dynamics[dynamic_id].size = { data.width, data.height };
+					dynamics[dynamic_id].forces = { 0.0f, 0.0f };
+					dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
 
-				dynamics[dynamic_id].position = start_position;
-				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
-				dynamics[dynamic_id].size = { data.width, data.height };
-				dynamics[dynamic_id].forces = { 0.0f, 0.0f };
-				dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+					give_players_objects = true;
+				}
+				else if (placed_objects_list_id == 1)
+				{
+					//turret
+					collision_data data;
+					int model_id = level.add_object(data, placed_objects_list_id);
+					int dynamic_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
 
-				give_players_objects = true;
+					players_placed_objects_id[i].model_id = model_id;
+					players_placed_objects_id[i].dynamics_id = dynamic_id;
+					players_placed_objects_id[i].model_type_id = data.model_id;
+
+					dynamics[dynamic_id].position = start_position;
+					dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
+					dynamics[dynamic_id].size = { data.width, data.height };
+					dynamics[dynamic_id].forces = { 0.0f, 0.0f };
+					dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+
+					turrets_id.back().turret_id = dynamic_id;
+					turrets_id.back().turret_model_id = model_id;
+
+					give_players_objects = true;
+
+					placed_objects_list_id = 8;
+
+					//bullet
+					model_id = level.add_object(data, placed_objects_list_id);
+					dynamic_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
+
+					players_placed_objects_id[i].model_id = model_id;
+					players_placed_objects_id[i].dynamics_id = dynamic_id;
+					players_placed_objects_id[i].model_type_id = data.model_id;
+
+					dynamics[dynamic_id].position = start_position;
+					dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
+					dynamics[dynamic_id].size = { data.width, data.height };
+					dynamics[dynamic_id].forces = { 0.0f, 0.0f };
+					dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+
+					turrets_id.back().bullet_id = dynamic_id;
+					turrets_id.back().bullet_model_id = model_id;
+
+					give_players_objects = true;
+				}
 			}
 		}
 
@@ -345,7 +390,8 @@ void Game::update(std::chrono::milliseconds delta)
 			player_inputs, 
 			anim_states,
 			players_placed_objects_id,
-			triggers_types },
+			triggers_types,
+			turrets_id },
 			game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)

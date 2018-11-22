@@ -51,6 +51,7 @@ private:
 	logic::LuaExport lua_data;
 
 	logic::trigger_type_array triggers_types; //test for triggers
+	logic::turret_array turrets_id;
 	
 	network::uint8 player_count = 1;
 	network::uint32 state_sequence = 0;
