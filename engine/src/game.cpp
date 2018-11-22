@@ -64,6 +64,7 @@ Game::Game()
 		dynamics[i].size = { 1.0f, 3.5f };
 		dynamics[i].forces = { 0.0f, 0.0f };
 		dynamics[i].impulse = { 0.0f, 0.0f };
+		dynamics[i].shield_active = false; //trigger
 		anim_states[i] = anim::idle;
 	}
 
@@ -520,6 +521,7 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].size = dynamics[i].size;
 			obj[i].forces = dynamics[i].forces;
 			obj[i].impulse = dynamics[i].impulse;
+			obj[i].shield_active = dynamics[i].shield_active;
 		}
 
 		lua_data = gameplay.update(
@@ -539,6 +541,7 @@ void Game::update(std::chrono::milliseconds delta)
 			dynamics[i].forces = obj[i].forces;
 			dynamics[i].impulse = obj[i].impulse;
 			dynamics[i].is_stund = obj[i].is_stund;
+			dynamics[i].shield_active = obj[i].shield_active;
 		}
 	}
 

@@ -96,6 +96,15 @@ void PlayerScript::update(
 		stack.clear();
 	}
 
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+		stack.push("shield_active");
+		stack.push(object.shield_active);
+		stack.rawset(top);
+		stack.clear();
+	}
+
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);
 	stack.getglobal(name.c_str());
@@ -146,6 +155,9 @@ void PlayerScript::update(
 		
 		stack.getfield(top, "is_stund");
 		object.is_stund = stack.toboolean(-1);
+
+		stack.getfield(top, "shield_active");
+		object.shield_active = stack.toboolean(-1);
 
 		stack.clear();
 	}	
@@ -267,7 +279,6 @@ void GameScript::update(
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
-
 		for (int i = 1; i <= 4; i++)
 		{
 			stack.rawget(top, i);
@@ -283,7 +294,6 @@ void GameScript::update(
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
-
 		for (int i = 1; i <= 4; i++)
 		{
 			stack.rawget(top, i);
@@ -299,7 +309,6 @@ void GameScript::update(
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
-
 		for (int i = 1; i <= 4; i++)
 		{
 			stack.rawget(top, i);
@@ -315,7 +324,6 @@ void GameScript::update(
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
-
 		for (int i = 1; i <= 4; i++)
 		{
 			stack.rawget(top, i);
@@ -323,6 +331,21 @@ void GameScript::update(
 
 			stack.push("velocity");
 			stack.push(players[i - 1].velocity);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("shield_active");
+			stack.push(players[i - 1].shield_active);
 			stack.rawset(top_pos);
 		}
 		stack.clear();
@@ -363,6 +386,20 @@ void GameScript::update(
 			stack.getfield(-2, "y");
 			players[i - 1].impulse.x = stack.tonumber(-2);
 			players[i - 1].impulse.y = stack.tonumber(-1);
+		}
+
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; ++i)
+		{
+			stack.rawget(top, i);
+			stack.getfield(-1, "shield_active");
+			players[i - 1].shield_active = stack.toboolean(-1);
 		}
 
 		stack.clear();

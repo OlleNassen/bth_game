@@ -44,6 +44,8 @@ public:
 
 	int player_moving_object_type_id = -1;
 	int player_moving_object_id = -1;
+	bool shield_active = false;
+	//bool spike_active = false;
 };
 
 using objects_array = std::array<objects, 100>;

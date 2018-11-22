@@ -10,12 +10,12 @@ function setup(game)
 	game.clock = 0.0
 	game.winner = false
 
-	--game.speed_boost_timer = {0.0, 0.0, 0.0, 0.0}
-	--game.speed_boost_triggerd = { false, false, false, false }
-	--game.max_speed = 8700
-	--game.max_speed_boost = game.max_speed * 2
-	--game.max_velocity = 16
-	--game.max_velocity_boost = game.max_velocity * 1.3
+
+	--shield
+	--game.shield_triggered = {false, false, false, false}
+	game.shield_triggered = {false, false, false, false}
+	game.is_spike = {false, false, false, false}
+	
 
 	game.time = 0.0
 	game.max_time = 90.0
@@ -122,9 +122,13 @@ function update(delta_seconds, game, entities, player_count)
 	do
 		if entities[i].triggered >= 4 and not game.finished[i]
 		then
+			if entities[i].triggered_type == 2 or entities[i].triggered_type == 6
+			then
+				game.shield_triggered[i] = entities[i].shield_active
+			end
 
 			--spike_trap
-			if entities[i].triggered_type == 0 and not game.died[i]
+			if entities[i].triggered_type == 0 and game.shield_triggered[i] == false and not game.died[i]
 			then
 				game.finished[i] = true
 				game.died[i] = true
@@ -142,7 +146,28 @@ function update(delta_seconds, game, entities, player_count)
 
 				game.points = game.points - 1
 
+			elseif entities[i].triggered_type == 0 and game.shield_triggered[i] == true
+			then
+				game.is_spike[i] = true
+				--print("protected")
 			end
+
+
+
+			--shield
+			if entities[i].triggered_type == 6 and game.shield_triggered[i] == false
+			then
+				game.shield_triggered[i] = true
+				entities[i].shield_active = true
+			end
+
+		elseif game.shield_triggered[i] == true and game.is_spike[i] == true
+		then
+			game.shield_triggered[i] = false
+			game.is_spike[i] = false
+			entities[i].shield_active = false
+			--print("removed")
+
 		end
 	end
 

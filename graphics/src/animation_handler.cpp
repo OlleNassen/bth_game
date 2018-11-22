@@ -478,6 +478,8 @@ float Animation_handler::animation_logic(anim state)
 	{
 		if (state == anim::in_jump)
 			time = 0.002;
+		else if (state == anim::landing)//test for new controls
+			time = 0.2;
 		else if (state == anim::independent)
 			time = 0.0;
 	}
@@ -553,7 +555,7 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 			else if (current_state == anim::start_jump) 
 			{
 				//Test for new controls, might be removed later
-				//switch_animation(anim::in_jump);
+				switch_animation(anim::in_jump);
 				play_anim = current_state;
 			}
 			else if (current_state == anim::landing)
