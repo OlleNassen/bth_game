@@ -137,7 +137,7 @@ void Renderer::render(
 		
 		if (!(game_state & state::lobby))
 		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, game_camera, fx_emitter.timer);
+			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer);
 		}
 		if (debug_active)
 		{
@@ -166,7 +166,7 @@ void Renderer::render(
 
 		if (!(game_state & state::lobby))
 		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, game_camera, fx_emitter.timer);
+			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer);
 		}
 
 		if (debug_active)
@@ -559,11 +559,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//	if (build_infos.size() == 4)
 		//		fx_emitter.calculate_object_4_data(delta, game_camera, build_infos[3]);
 		//}
-
-		for (auto& info : all_placed_objects)
-		{
-			//fx_emitter.calculate_object_data(delta, game_camera, info);
-		}
+		
+		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects);
+		
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();

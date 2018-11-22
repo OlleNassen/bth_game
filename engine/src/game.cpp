@@ -474,7 +474,6 @@ void Game::update(std::chrono::milliseconds delta)
 		//Set State -> lobby
 	}
 
-	std::cout << total_nr_objects << "\n";
 
 	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
 	{

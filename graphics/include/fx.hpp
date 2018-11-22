@@ -86,12 +86,16 @@ public:
 	Texture stun;
 	
 	unsigned int randomizer = 0;
-	unsigned int color_picker[4];
+	//unsigned int color_picker[4];
+	unsigned int color_picker;
 	std::chrono::milliseconds timer;
 
-	unsigned char random_color_r[4] = { 0 };
-	unsigned char random_color_g[4] = { 0 };
-	unsigned char random_color_b[4] = { 0 };
+	//unsigned char random_color_r[4] = { 0 };
+	//unsigned char random_color_g[4] = { 0 };
+	//unsigned char random_color_b[4] = { 0 };
+	unsigned char random_color_r = 0;
+	unsigned char random_color_g = 0;
+	unsigned char random_color_b = 0;
 
 	void render_particles(
 		const Shader& dust,
@@ -113,11 +117,11 @@ public:
 	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_object_1_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	void calculate_object_2_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	void calculate_object_3_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	void calculate_object_4_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	void calculate_object_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	//void calculate_object_1_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	//void calculate_object_2_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	//void calculate_object_3_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	//void calculate_object_4_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	void calculate_object_data(std::chrono::milliseconds delta, const Camera& camera, std::vector<build_information> &build_info);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
@@ -129,11 +133,11 @@ public:
 	FXdata* fx_furnace_light_ptr = new FXdata{};
 	FXdata* fx_gust_ptr = new FXdata{};
 	FXdata* fx_stun_ptr = new FXdata{};
-	FXdata* fx_object_1_ptr = new FXdata{};
-	FXdata* fx_object_2_ptr = new FXdata{};
-	FXdata* fx_object_3_ptr = new FXdata{};
-	FXdata* fx_object_4_ptr = new FXdata{};
-	std::vector<FXdata*> fx_object_ptr;
+	//FXdata* fx_object_1_ptr = new FXdata{};
+	//FXdata* fx_object_2_ptr = new FXdata{};
+	//FXdata* fx_object_3_ptr = new FXdata{};
+	//FXdata* fx_object_4_ptr = new FXdata{};
+	FXdata* fx_object_ptr = new FXdata{};
 
 private:
 	void render_particles(const FXdata& data) const;
