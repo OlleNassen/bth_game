@@ -64,7 +64,7 @@ local max_speed = 16
 local max_air_speed = 16
 local ground_acceleration = 100
 local deceleration = 60
-local air_acceleration = 80
+local air_acceleration = 100
 
 
 function update(delta_seconds, entity)
