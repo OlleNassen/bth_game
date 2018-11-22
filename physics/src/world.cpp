@@ -3,6 +3,10 @@
 namespace physics
 {
 
+glm::vec3 find_closest_wall(
+	const std::vector<Rigidbody>& statics,
+	const Rigidbody& player);
+
 int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	float width, float height, glm::vec2 start_force, int trigger_type)
 {
@@ -25,30 +29,57 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	body.trigger_type = trigger_type; // test triggers
 
 	bodies.push_back(body);
-	
-	//dynamic_positions.push_back(start_position);
-	//dynamic_rigidbodies.push_back(start_force);
-	//dynamic_box_colliders.push_back(Box(width, height, offset, false));
 
 	return bodies.size() - 1;
 }
 
-int World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger)
+void World::add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger)
 {
 	glm::vec3 position{start_position.x, start_position.y, 0.0f};
 	glm::vec3 size{width / 2.0f, height / 2.0f, 1.0f};
 	glm::mat3 orientation{1.0f};
 
 	Rigidbody body;
-	body.box = OBB{ position, size, orientation };
+	body.box = OBB{position, size, orientation};
 	body.position = position;
-	body.velocity = glm::vec3{ 0.0f };
-	body.forces = glm::vec3{ 0.0f };
+	body.velocity = glm::vec3{0.0f};
+	body.forces = glm::vec3{0.0f};
 	body.mass = 0.0f;
 	body.inverse_mass = 0.0f;
-	statics.push_back(body);
 
-	return static_positions.size() - 1;
+	auto it = std::find_if(statics.begin(), statics.end(), [&body](const auto& other)
+	{
+		float distance = body.box.size.x + other.box.size.x + 0.1f;	
+		return 
+			glm::abs(body.box.size.y - other.box.size.y) < 0.1f &&
+			glm::abs(body.box.position.y - other.box.position.y) < 0.1f &&
+			glm::abs(body.box.position.x - other.box.position.x) < distance;
+	});
+
+	if (it != statics.end())
+	{
+		auto& other = *it;
+		float distance = glm::abs(body.box.position.x - other.box.position.x);
+		float width = distance + body.box.size.x + other.box.size.x;
+		float offset = width / 2.0f;
+		
+		if (body.position.x < other.position.x)
+		{
+			other.box.position.x -= (distance + body.box.size.x);
+		}
+		else
+		{
+			other.box.position.x -= other.box.size.x;		
+		}
+		
+		other.box.position.x += offset;
+		other.box.size.x = offset;
+		other.position.x = other.box.position.x;
+	}
+	else
+	{
+		statics.push_back(body);
+	}
 }
 
 void World::update(
@@ -135,14 +166,9 @@ void World::update(
 	int index = 0;
 	for (auto& body : bodies)
 	{	
-		/*body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
+		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
 		body.forces.x = dynamics[index].forces.x;
 		body.forces.y = dynamics[index].forces.y;
-		++index;*/
-		
-		body.velocity.x = dynamics[index].velocity.x;
-		body.velocity.y = dynamics[index].velocity.y;
-		body.add_linear_impulse({ dynamics[index].impulse.x, dynamics[index].impulse.y, 0.0f });
 		++index;
 	}
 
@@ -219,7 +245,9 @@ void World::update(
 		points[4].y -= bodies[i].box.size.y * 1.01f;
 		points[4].x -= bodies[i].box.size.x * 0.90f;
 		
-		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || anim_states[i] == anim::hanging_right)
+		if(
+			anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || 
+			anim_states[i] == anim::hanging_right || anim_states[i] == anim::in_jump)
 			for (auto& walls : statics)
 			{
 				if (point_in_obb(points[0], walls.box))// || point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box))
@@ -262,6 +290,8 @@ void World::update(
 
 		}
 	}
+
+	glm::vec3 closest = find_closest_wall(statics, bodies[0]);
 }
 
 std::vector<glm::vec2> World::get_forces() const
@@ -478,6 +508,26 @@ void World::clear_static_object()
 	{
 		statics.pop_back();
 	}
+}
+
+glm::vec3 find_closest_wall(
+	const std::vector<Rigidbody>& statics, 
+	const Rigidbody& player)
+{
+	float closest = 100.0f;	
+	glm::vec3 direction{0.0f, -1.0f, 0.0f};
+	
+	for (auto& body : statics)
+	{
+		float distance = glm::length(player.box.position - body.box.position);
+		if (distance < closest)
+		{
+			closest = distance;
+			direction = glm::normalize(player.box.position - body.box.position);
+		}
+	}
+
+	return player.box.position + direction * closest;
 }
 
 }

@@ -75,7 +75,6 @@ Game::Game()
 
 
 	//Start States
-	//game_state = (game_state | state::lobby);
 	net_state.state = network::SessionState::lobby;
 }
 
@@ -560,33 +559,31 @@ void Game::update(std::chrono::milliseconds delta)
 					level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 
 
-				if (player_inputs[i][logic::button::right] == logic::button_state::held)
-				{
-					if (level.moving_models[i].get_state() != anim::hanging_right &&
-						level.moving_models[i].get_state() != anim::hanging_left &&
-						level.moving_models[i].get_state() != anim::turning &&
-						level.moving_models[i].get_state() != anim::connect_wall &&
-						level.moving_models[i].get_state() != anim::jump_from_wall)
-						level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+					if (player_inputs[i][logic::button::right] == logic::button_state::held)
+					{
+						if (level.moving_models[i].get_state() != anim::hanging_right &&
+							level.moving_models[i].get_state() != anim::hanging_left &&
+							level.moving_models[i].get_state() != anim::turning &&
+							level.moving_models[i].get_state() != anim::connect_wall &&
+							level.moving_models[i].get_state() != anim::jump_from_wall)
+							level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+					}
+					else if (player_inputs[i][logic::button::left] == logic::button_state::held)
+					{
+						if (level.moving_models[i].get_state() != anim::hanging_right &&
+							level.moving_models[i].get_state() != anim::hanging_left &&
+							level.moving_models[i].get_state() != anim::turning &&
+							level.moving_models[i].get_state() != anim::connect_wall  &&
+							level.moving_models[i].get_state() != anim::jump_from_wall)
+							level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
+					}
 				}
-				else if (player_inputs[i][logic::button::left] == logic::button_state::held)
+
+				glm::vec2 pos
 				{
-					if (level.moving_models[i].get_state() != anim::hanging_right &&
-						level.moving_models[i].get_state() != anim::hanging_left &&
-						level.moving_models[i].get_state() != anim::turning &&
-						level.moving_models[i].get_state() != anim::connect_wall  &&
-						level.moving_models[i].get_state() != anim::jump_from_wall)
-						level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
-				}
-
-			}
-
-
-			glm::vec2 pos
-			{
-				dynamics[i].position.x,
-				dynamics[i].position.y - dynamics[i].size.y
-			};
+					dynamics[i].position.x,
+					dynamics[i].position.y - dynamics[i].size.y
+				};
 					
 			if (!(game_state & state::building))
 			{
@@ -606,7 +603,6 @@ void Game::update(std::chrono::milliseconds delta)
 	for (auto& model : level.animated_models)
 			model.update_animation((float)delta.count(), idle);
 
-	//std::cout << dynamics[players_placed_objects_id[net.id()].dynamics_id].position.x << " : " << dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y << "\n";
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 
@@ -722,6 +718,7 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		window.toggle_screen_mode(settings);
 	}
+
 }
 
 void Game::pack_data()

@@ -81,9 +81,6 @@ namespace graphics
 		glDisableVertexAttribArray(3);
 		glDisableVertexAttribArray(4);
 		glDisableVertexAttribArray(5);
-
-
-		glBindVertexArray(0);
 	}
 
 	void UserInterface::disable_chat()

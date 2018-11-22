@@ -17,10 +17,8 @@ OverlayScreen::OverlayScreen()
 void OverlayScreen::render(const Shader & shader) const
 {
 	glDisable(GL_DEPTH_TEST);
-
 	glBindVertexArray(vao_id);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glBindVertexArray(0);
 	glEnable(GL_DEPTH_TEST);
 }
 
