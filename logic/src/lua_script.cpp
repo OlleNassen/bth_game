@@ -241,7 +241,8 @@ void GameScript::update(
 	const input& i,
 	const trigger_array& triggers,
 	const trigger_type_array& types,
-	objects* players)
+	objects* players,
+	int player_count)
 {
 	{
 		stack.getglobal("game");
@@ -332,7 +333,8 @@ void GameScript::update(
 	stack.push(delta.count() / 1000.0f);
 	stack.getglobal("game");
 	stack.getglobal("entities");
-	stack.call(3, 0);
+	stack.push(player_count);
+	stack.call(4, 0);
 
 	{
 		stack.getglobal("entities");

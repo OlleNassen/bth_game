@@ -37,7 +37,13 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+	int dynamic_id = -1;
+	int model_id = -1;
+	int objects_type_id = -1;
 	bool is_stund;
+
+	int player_moving_object_type_id = -1;
+	int player_moving_object_id = -1;
 };
 
 using objects_array = std::array<objects, 100>;
@@ -88,6 +94,8 @@ public:
 	bool lw[4];
 
 	void remove_body(int at);
+
+	glm::vec3 get_closest_wall_point(int player_id);
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 

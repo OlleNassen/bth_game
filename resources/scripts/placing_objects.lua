@@ -7,7 +7,7 @@ function setup(entity)
 end
 
 place_speed = 10
-max_time = 1.0
+max_time = 15.0
 
 function update(delta_seconds, entity)
 
@@ -37,11 +37,6 @@ function update(delta_seconds, entity)
 		then
 			entity.position.y = entity.position.y - delta_place_speed
 		end
-
-		--if entity.button.rotate and not entity.rotate_was_pressed
-		--then
-		--	print("DO ROTATION!")
-		--end
 
 		if entity.button.jump
 		then

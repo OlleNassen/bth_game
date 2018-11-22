@@ -24,13 +24,6 @@
 //test of new leaderboard
 #include <leaderboard.hpp>
 
-struct build_information
-{
-	glm::vec2 world_position;
-	std::vector<glm::vec3> debug_positions;
-	int place_state = 1;
-};
-
 namespace graphics
 {
 
@@ -92,6 +85,7 @@ public:
 		std::array<float, 4> scores,
 		float print_time,
 		float goal_height,
+		std::vector<build_information>& all_placed_objects,
 		int spectator_id,
 		std::array<int, 4> moving_objects_id);
 
@@ -107,7 +101,8 @@ public:
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
 
 		glPointSize(5.0f);
-		glDrawArrays(GL_LINES, 0, lines.size());
+		//glDrawArrays(GL_LINES, 0, lines.size());
+		glDrawArrays(GL_POINTS, 0, lines.size());
 	}
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
@@ -174,6 +169,15 @@ private:
 	Shader fx_fire{
 		"../resources/shaders/fx_fire.vs",
 		"../resources/shaders/fx_fire.fs" };
+	Shader fx_godray{
+		"../resources/shaders/fx_godray.vs",
+		"../resources/shaders/fx_godray.fs" };
+	Shader fx_gust{
+		"../resources/shaders/fx_gust.vs",
+		"../resources/shaders/fx_gust.fs" };
+	Shader fx_stun{
+		"../resources/shaders/fx_stun.vs",
+		"../resources/shaders/fx_stun.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
@@ -236,6 +240,7 @@ private:
 	int player_id;
 
 	FX fx_emitter;
+	std::vector<build_information> build_info_vec;
 
 	int game_state;
 
@@ -251,19 +256,16 @@ private:
 	Text build_text;
 
 	//Arrays of strings and vec3
-	std::array<std::string, 11> objects_description =
+	std::array<std::string, 8> objects_description =
 	{ 	
-		"Spike trap - Kills player if touched",
-		"Saw - Kills player if touched",
-		"Platform oil - Robot glides (disrupt movement)",
-		"Sticky platform - Robot get 'stuck'. Movement slow-down",
-		"Shock trap - Stuns robot. Electric disrupt.",
-		"Treadmill - Moves a player in a direction",
-		"Standard platform - Build block, can build new paths",
-		"Speed boost - Movement speed-up. For a limited time",
-		"Steam boost - Robot double jump. For a limited time",
-		"Trampolin - Robot jump higher",
-		"Turret - Kills player if shot"
+		"Spike Trap - Kills if hit",
+		"Turret - Shoots a projectile that kills",
+		"Stun Trap - Stuns the player",
+		"Glide Trap - Makes the player glide",
+		"Speed Boost - Increases running speed",
+		"Double Jump - Enables double jump",
+		"Shield - Invulnerable for one hit",
+		"Random Buff - Random buff"
 	};
 
 	std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };

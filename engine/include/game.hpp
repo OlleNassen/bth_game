@@ -52,7 +52,7 @@ private:
 
 	logic::trigger_type_array triggers_types; //test for triggers
 	
-	network::uint8 player_count = 1;
+	network::uint8 player_count = 0;
 	network::uint32 state_sequence = 0;
 	network::GameState net_state;
 	network::Messenger net;
@@ -64,6 +64,9 @@ private:
 
 	gui::Chat chat;
 	gui::Menu menu;	
+
+	//Build info
+	std::vector<build_information> build_info;
 
 	void place_random_objects(float start_height, float map_width, int number_of_randoms);
 
@@ -81,6 +84,9 @@ private:
 	bool give_players_objects = false;
 	std::vector<glm::vec3> remove_lines;
 
+	std::vector<build_information> all_placed_objects;
+	int total_nr_objects = 0;
+
 	void remove_object(int id);
 
 	//Random placed objects
@@ -90,11 +96,14 @@ private:
 	int placed_objects_list_id = 7;
 	int placed_objects_array[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-	int random_picked_object() { return placed_objects_array[rand() % 10]; };
+	int random_picked_object() { return placed_objects_array[rand() % level.objects.size()]; };
 	std::array<int, 4> random_indexes();
 
 	//spectator
 	int watching = 0;
+
+	//New gameloop stuff
+	void load_map(const char* file_path);
 };
 
 

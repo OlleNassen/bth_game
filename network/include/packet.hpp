@@ -25,7 +25,10 @@ enum class SessionState : uint8
 	lobby,
 	loading,
 	building,
+	pre_building,
 	playing,
+	pre_playing,
+	score,
 	game_over
 };
 
@@ -54,6 +57,10 @@ class GameObject
 public:
 	Vec2 position;
 	Vec2 velocity;
+
+	//Vincent
+	int player_moving_object_type_id;
+	int player_moving_object_id;
 };
 
 class GameState

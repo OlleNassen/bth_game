@@ -80,7 +80,8 @@ public:
 		const input& i,
 		const trigger_array& triggers,
 		const trigger_type_array& types,
-		objects* players);
+		objects* players,
+		int player_count);
 
 	void update_export();
 	float get_time();

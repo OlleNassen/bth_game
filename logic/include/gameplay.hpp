@@ -21,10 +21,10 @@
 
 struct id_and_model_place
 {
-	int dynamics_id = 0;
-	int model_id = 0;
+	int dynamics_id = -1;
+	int model_id = -1;
 	int place_state = 1;
-	int model_type_id = 0;
+	int model_type_id = -1;
 
 	bool operator==(const id_and_model_place& other) 
 	{
@@ -57,6 +57,7 @@ struct Input
 	const input* player_inputs; //4
 	std::array<anim, 4>& anim_states;
 	std::array<id_and_model_place, 4>& players_placed_objects_id;
+	int player_count = 0;
 
 	const trigger_type_array& triggers_types; //test for triggers
 };
@@ -74,7 +75,7 @@ public:
 
 	LuaExport update(Input input,
 		int& current_state);
-	bool build_stage() const;
+	bool build_stage(int player_count) const;
 	bool pre_playing_stage() const;
 	bool is_new_round = false;
 	void new_round();
