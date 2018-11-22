@@ -186,6 +186,9 @@ void Shader::uniform(const std::string& name,
 
 void Shader::uniform(const std::string& name, const LightGrid& value) const
 {
+	//glUniform1iv(glGetUniformLocation(id, name.c_str()),
+		//value.size() * 16, (int*)value.data());
+
 	for (int i = 0; i < value.size(); ++i)
 	{
 		std::string count = name + "[" + std::to_string(i) + "].count";
@@ -194,7 +197,7 @@ void Shader::uniform(const std::string& name, const LightGrid& value) const
 
 		std::string indices = name + "[" + std::to_string(i) + "].indices";
 		glUniform1iv(glGetUniformLocation(id, indices.c_str()),
-			5, value.data()[i].indices);
+			10, value.data()[i].indices);
 	}
 }
 

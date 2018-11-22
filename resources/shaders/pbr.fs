@@ -11,10 +11,10 @@ in VS_OUT{
 struct light_grid_element
 {
 	int count;
-	int indices[5];
+	int indices[15];
 };
 
-const int block_size =  24;
+const int block_size =  12;
 const int block_size_x = 1920 / block_size;
 const int block_size_y = 1080 / block_size;
 
@@ -121,12 +121,16 @@ void main()
     // reflectance equation
     vec3 Lo = vec3(0.0);
     int x = int(gl_FragCoord.x / block_size_x);
-	int y = int(gl_FragCoord.y / block_size_y);
+	int y = 11 - int(gl_FragCoord.y / block_size_y);
+
 	light_grid_element elem = light_indices[x + y * block_size];
-	
+
+
 	for(int j = 0; j < elem.count; ++j) 
     {
-		int i = elem.indices[j];	
+		int i = elem.indices[j];
+
+
 			
 		// calculate per-light radiance
 		vec3 L = normalize(light_pos[i] - fs_in.world_pos);
@@ -206,6 +210,8 @@ void main()
 	{
 		color = color * emission;
 	}
+
+	color *= (3+float(elem.count)) / 9.0;
 
     frag_color = vec4(color, 1.0);
 }

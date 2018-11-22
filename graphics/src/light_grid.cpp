@@ -48,12 +48,12 @@ LightGrid::LightGrid()
 
 	for (int i = 0; i < 4; ++i)
 	{
-		lights[i].radius = 0.0f;
+		lights[i].radius = 5.0f;
 	}
 
 	for (int i = 4; i < 32; ++i)
 	{
-		lights[i].radius = 8.0f;
+		lights[i].radius = 1.0f;
 	}
 }
 
@@ -82,20 +82,23 @@ void LightGrid::calculate_grid(const Camera& camera)
 
 void LightGrid::update(const Camera& camera)
 {
-	for (int j = 0; j < block_size; ++j)
-	{
-		for (int i = 0; i < block_size; ++i)
-		{
-			indices[i + j * block_size].count = 0;
-		}
-	}
-	
+	//for (int j = 0; j < block_size; ++j)
+	//{
+	//	for (int i = 0; i < block_size; ++i)
+	//	{
+	//		indices[i + j * block_size].count = 0;
+	//	}
+	//}
+
+	memset(indices, 0, sizeof(indices));
+	int  a = 0;
 	for (int light_id = 0; light_id < lights.size(); ++light_id)
 	{
 		glm::vec3 p{lights[light_id].position};
 		glm::vec4 v{p.x, p.y, p.z, 1.0f};
 		v = camera.view() * v;
-		p = glm::vec3{p.x, p.y, p.z};
+		p = glm::vec3{v.x, v.y, v.z};
+
 		Sphere sphere{p, lights[light_id].radius};
 		
 		for (int j = 0; j < block_size; ++j)
@@ -103,11 +106,18 @@ void LightGrid::update(const Camera& camera)
 			for (int i = 0; i < block_size; ++i)
 			{
 				light_grid_element& elem = indices[i + j * block_size];
-				if (!sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count < 5)		
+				if (sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count < 10)
+				{
+					a++;
 					elem.indices[elem.count++] = light_id;
+				
+				}
+				//elem.count = 1;
 			}
 		}
 	}
+
+	a=a;
 }
 
 glm::vec4 screen_to_view(const glm::mat4& inv_proj, const glm::vec4& screen)
@@ -135,13 +145,25 @@ Plane compute_plane(const glm::vec3& p1, const glm::vec3& p2)
 
 Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y)
 {	
-	const int block_size = 24;
+	const int block_size = 12;
 
-	glm::vec4 screen_space[4];	
-	screen_space[0] = glm::vec4(x * block_size, y * block_size, -1.0f, 1.0f);// Top left point	
-	screen_space[1] = glm::vec4((x + 1)* block_size, y * block_size, -1.0f, 1.0f);// Top right point	
-	screen_space[2] = glm::vec4(x * block_size, (y + 1) * block_size, -1.0f, 1.0f);// Bottom left point	
-	screen_space[3] = glm::vec4((x + 1) * block_size, (y + 1) * block_size, -1.0f, 1.0f);// Bottom right point
+	glm::vec4 screen_space[4];
+
+	float dx = 1920 / block_size;
+	float dy = 1080 / block_size;
+	screen_space[0] = glm::vec4(x * dx, y * dy, 1.0f, 1.0f);// Top left point	
+	screen_space[1] = glm::vec4((x + 1)* dx, y * dy, 1.0f, 1.0f);// Top right point	
+	screen_space[2] = glm::vec4(x * dx, (y + 1) * dy, 1.0f, 1.0f);// Bottom left point	
+	screen_space[3] = glm::vec4((x + 1) * dx, (y + 1) * dy, 1.0f, 1.0f);// Bottom right point
+
+	//screen_space[0] = glm::vec4(0, 0, 1.0f, 1.0f);// Top left point	
+	//screen_space[1] = glm::vec4(1920 / 2, 0, 1.0f, 1.0f);// Top right point	
+	//screen_space[2] = glm::vec4(0, 1080 / 2, 1.0f, 1.0f);// Bottom left point	
+	//screen_space[3] = glm::vec4(1920 / 2, 1080 / 2, 1.0f, 1.0f);// Bottom right point
+
+
+
+	//screen_space[3] = glm::vec4(1920/2, 1080/2, -1.0f, 1);
 
 	glm::vec3 view_space[4];
 	for (int i = 0; i < 4; ++i)
@@ -161,32 +183,29 @@ Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y)
 
 bool sphere_inside_plane(const Sphere& sphere, const Plane& plane)
 {
-	return glm::dot(plane.normal, sphere.center) - plane.distance < -sphere.radius;
+
+	float d = glm::dot(plane.normal, sphere.center) + sphere.radius; // > sphere.radius;
+
+	return d >= 0;
 }
 
 bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z_near, float z_far)
 {	
 	bool result = true;
-
-	if (sphere.center.z - sphere.radius > z_near ||
-		sphere.center.z + sphere.radius < z_far)
-	{
-		result = false;
-	}
-
+	int c = 0;
 	if (sphere_inside_plane(sphere, frustum.left))
-		result = false;
+		c++;
 
 	if (sphere_inside_plane(sphere, frustum.right))
-		result = false;
+		c++;
 
 	if (sphere_inside_plane(sphere, frustum.top))
-		result = false;
+		c++;
 
 	if (sphere_inside_plane(sphere, frustum.bottom))
-		result = false;
-	
-	return result;
+		c++;
+
+	return c == 4; //result;
 }
 
 }
