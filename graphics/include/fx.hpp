@@ -113,11 +113,11 @@ public:
 	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_stun_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 	void calculate_object_1_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 	void calculate_object_2_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 	void calculate_object_3_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 	void calculate_object_4_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	void calculate_object_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
@@ -133,6 +133,7 @@ public:
 	FXdata* fx_object_2_ptr = new FXdata{};
 	FXdata* fx_object_3_ptr = new FXdata{};
 	FXdata* fx_object_4_ptr = new FXdata{};
+	std::vector<FXdata*> fx_object_ptr;
 
 private:
 	void render_particles(const FXdata& data) const;
@@ -143,9 +144,9 @@ private:
 	void steam_right(glm::vec3 pos_vec);
 	void steam_back(glm::vec3 pos_vec);
 	void steam_left(glm::vec3 pos_vec);
-
-	int stun_type = 0;
-
+	void calculate_stun_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	void object_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	int num_of_objects = 0;
 };
 
 }

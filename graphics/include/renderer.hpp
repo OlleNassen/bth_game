@@ -242,6 +242,7 @@ private:
 	int player_id;
 
 	FX fx_emitter;
+	std::vector<build_information> build_info_vec;
 
 	int game_state;
 

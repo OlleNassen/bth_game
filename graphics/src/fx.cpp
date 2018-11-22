@@ -27,6 +27,7 @@ FX::FX()
 	auto& fx_object_2 = *fx_object_2_ptr;
 	auto& fx_object_3 = *fx_object_3_ptr;
 	auto& fx_object_4 = *fx_object_4_ptr;
+	//auto& fx_object = fx_object_ptr;
 	gen_particle_buffer(fx_dust);
 	gen_particle_buffer(fx_spark);
 	gen_particle_buffer(fx_steam);
@@ -41,6 +42,8 @@ FX::FX()
 	gen_particle_buffer(fx_object_2);
 	gen_particle_buffer(fx_object_3);
 	gen_particle_buffer(fx_object_4);
+	
+	//gen_particle_buffer(fx_object);
 }
 
 void FX::gen_particle_buffer(FXdata & particle)
@@ -85,6 +88,7 @@ void FX::render_particles(const Shader& dust,
 	auto& fx_object_2 = *fx_object_2_ptr;
 	auto& fx_object_3 = *fx_object_3_ptr;
 	auto& fx_object_4 = *fx_object_4_ptr;
+	auto& fx_object = *fx_object_4_ptr;
 
 	glm::vec3 start_point = glm::vec3(0, 0, 0);
 	glm::mat4 view_matrix = camera.view();
@@ -246,19 +250,23 @@ void FX::render_particles(const Shader& dust,
 	render_particles(fx_dust);
 	
 	//FX - Objects
-	dust.use();
-	this->dust.bind(0);
-	dust.uniform("particle_texture", 0);
-	dust.uniform("camera_right_worldspace", camera_right_vector);
-	dust.uniform("camera_up_worldspace", camera_up_vector);
-	dust.uniform("view", camera.view());
-	dust.uniform("projection", camera.projection);
-	dust.uniform("view_position", camera.position);
-	dust.uniform("particle_pivot", start_point);
-	render_particles(fx_object_1);
-	render_particles(fx_object_2);
-	render_particles(fx_object_3);
-	render_particles(fx_object_4);
+	for (int i = 0; i < num_of_objects; i++)
+	{
+		dust.use();
+		this->dust.bind(0);
+		dust.uniform("particle_texture", 0);
+		dust.uniform("camera_right_worldspace", camera_right_vector);
+		dust.uniform("camera_up_worldspace", camera_up_vector);
+		dust.uniform("view", camera.view());
+		dust.uniform("projection", camera.projection);
+		dust.uniform("view_position", camera.position);
+		dust.uniform("particle_pivot", start_point);
+		render_particles(fx_object_1);
+		render_particles(fx_object_2);
+		render_particles(fx_object_3);
+		render_particles(fx_object_4);
+		render_particles(fx_object);
+	}
 	
 }
 
@@ -2377,9 +2385,235 @@ void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & cam
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_stun.total_particle_count * 4 * sizeof(GLubyte), fx_stun.color_data);
 }
+/*
+void FX::object_data(std::chrono::milliseconds delta, const Camera & camera, build_information build_info)
+{
+	if (build_info.object_id == STUNTRAP)
+	{
+		calculate_stun_data(delta, camera, build_info);
+	}
+	else
+	{
+		using namespace std::chrono_literals;
+		std::chrono::duration<float> seconds = delta;
+		auto& fx_object = *fx_object_ptr;
 
+		fx_object.fx_object_id = build_info.object_id;
+
+		fx_object.default_x = 0.0f;
+		fx_object.default_y = 0.0f;
+		fx_object.default_z = 0.0f;
+		fx_object.nr_of_particles = 1;
+		randomizer = rand() % 100;
+
+		//Update data for particles
+		if (fx_object.total_particle_count <= MAX_PARTICLES)
+		{
+			if (randomizer <= 100)
+			{
+				for (auto i = 0u; i < 1; i++)
+				{
+					if (fx_object.particle_container[i].life <= 0.1f)
+					{
+						//Find and update the last used particle
+						fx_object.last_used_particle = find_unused_particle(fx_object.particle_container, fx_object.last_used_particle);
+						int particle_index = fx_object.last_used_particle;
+
+						//Set default values for the particles, first off life and position.
+						fx_object.particle_container[i].life = 1.0f;
+
+						//Set colors, if you want color from texture, don't change the color
+						if (fx_object.fx_object_id == SPEEDBOOST)
+						{
+							fx_object.particle_container[i].r = 255;
+							fx_object.particle_container[i].g = 222;
+							fx_object.particle_container[i].b = 34;
+							fx_object.particle_container[i].a = 180;
+						}
+						else if (fx_object.fx_object_id == JUMPBOOST)
+						{
+							fx_object.particle_container[i].r = 0;
+							fx_object.particle_container[i].g = 255;
+							fx_object.particle_container[i].b = 0;
+							fx_object.particle_container[i].a = 180;
+						}
+						else if (fx_object.fx_object_id == SHIELD)
+						{
+							fx_object.particle_container[i].r = 24;
+							fx_object.particle_container[i].g = 208;
+							fx_object.particle_container[i].b = 255;
+							fx_object.particle_container[i].a = 180;
+						}
+						else if (fx_object.fx_object_id == GLIDETRAP)
+						{
+							fx_object.particle_container[i].r = 151;
+							fx_object.particle_container[i].g = 0;
+							fx_object.particle_container[i].b = 255;
+							fx_object.particle_container[i].a = 180;
+						}
+						else if (fx_object.fx_object_id == RANDOM)
+						{
+							fx_object.particle_container[i].r = 0;
+							fx_object.particle_container[i].g = 0;
+							fx_object.particle_container[i].b = 0;
+							fx_object.particle_container[i].a = 180;
+						}
+						else
+						{
+							fx_object.particle_container[i].a = 0;
+						}
+
+						fx_object.particle_container[i].size = 4.0f;
+					}
+				}
+			}
+		}
+
+		fx_object.total_particle_count = 0;
+		//Update movement
+		for (int i = 0; i < fx_object.nr_of_particles; i++)
+		{
+			//Update life with delta time
+			fx_object.particle_container[i].life -= (seconds.count() / 2.0f);
+
+			if (fx_object.particle_container[i].life > 0.0f)
+			{
+				fx_object.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
+				fx_object.particle_container[i].camera_distance = glm::length(fx_object.particle_container[i].pos - camera.position);
+
+				//Set positions in the position data
+				fx_object.position_data[4 * fx_object.total_particle_count + 0] = fx_object.particle_container[i].pos.x;
+				fx_object.position_data[4 * fx_object.total_particle_count + 1] = fx_object.particle_container[i].pos.y;
+				fx_object.position_data[4 * fx_object.total_particle_count + 2] = fx_object.particle_container[i].pos.z;
+				fx_object.position_data[4 * fx_object.total_particle_count + 3] = fx_object.particle_container[i].size;
+
+				//Set colors in the color data
+				if (fx_object.fx_object_id == RANDOM)
+				{
+					//RAINBOWS
+
+					if (random_color_r[0] == 0 && random_color_g[0] == 0 && random_color_b[0] == 0)
+					{
+						random_color_r[0] = 255;
+						color_picker[0] = RED;
+					}
+
+					if (color_picker[0] == RED)
+					{
+						random_color_b[0] += seconds.count() * 200.0f;
+						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b[0];
+						if (random_color_b[0] >= 255)
+						{
+							random_color_b[0] = 255;
+							color_picker[0] = PURPLE;
+						}
+					}
+					else if (color_picker[0] == PURPLE)
+					{
+						random_color_r[0] -= seconds.count() * 200.0f;
+						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b[0];
+						if (random_color_r[0] <= 0)
+						{
+							random_color_r[0] = 0;
+							color_picker[0] = BLUE;
+						}
+					}
+					else if (color_picker[0] == BLUE)
+					{
+						random_color_g[0] += seconds.count() * 200.0f;
+						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b[0];
+						if (random_color_g[0] >= 255)
+						{
+							random_color_g[0] = 255;
+							color_picker[0] = TURQUOISE;
+						}
+					}
+					else if (color_picker[0] == TURQUOISE)
+					{
+						random_color_b[0] -= seconds.count() * 200.0f;
+						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b[0];
+						if (random_color_b[0] <= 0)
+						{
+							random_color_b[0] = 0;
+							color_picker[0] = GREEN;
+						}
+					}
+					else if (color_picker[0] == GREEN)
+					{
+						random_color_r[0] += seconds.count() * 200.0f;
+						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b[0];
+						if (random_color_r[0] >= 255)
+						{
+							random_color_r[0] = 255;
+							color_picker[0] = YELLOW;
+						}
+					}
+					else if (color_picker[0] == YELLOW)
+					{
+						random_color_g[0] -= seconds.count() * 200.0f;
+						fx_object.color_data[4 * fx_object.total_particle_count + 0] = random_color_r[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 1] = random_color_g[0];
+						fx_object.color_data[4 * fx_object.total_particle_count + 2] = random_color_b[0];
+						if (random_color_g[0] <= 0)
+						{
+							random_color_g[0] = 0;
+							color_picker[0] = RED;
+						}
+					}
+				}
+				else
+				{
+					fx_object.color_data[4 * fx_object.total_particle_count + 0] = fx_object.particle_container[i].r;
+					fx_object.color_data[4 * fx_object.total_particle_count + 1] = fx_object.particle_container[i].g;
+					fx_object.color_data[4 * fx_object.total_particle_count + 2] = fx_object.particle_container[i].b;
+				}
+
+				//Alpha
+				if (fx_object.particle_container[i].life >= 0.5f)
+				{
+					fx_object.color_data[4 * fx_object.total_particle_count + 3] = fx_object.particle_container[i].a * fx_object.particle_container[i].life;
+				}
+				else
+				{
+					fx_object.color_data[4 * fx_object.total_particle_count + 3] = fx_object.particle_container[i].a * abs(fx_object.particle_container[i].life - 1);
+				}
+			}
+			else
+			{
+				//They ded, hide 'em
+				fx_object.particle_container[i].camera_distance = -1.0f;
+				fx_object.position_data[4 * fx_object.total_particle_count + 0] = 0;
+				fx_object.position_data[4 * fx_object.total_particle_count + 1] = 0;
+				fx_object.position_data[4 * fx_object.total_particle_count + 2] = 0;
+				fx_object.position_data[4 * fx_object.total_particle_count + 3] = 0;
+			}
+			fx_object.total_particle_count++;
+		}
+
+		//Update particle information
+		glBindBuffer(GL_ARRAY_BUFFER, fx_object.position_buffer);
+		glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object.total_particle_count * 4 * sizeof(GLfloat), fx_object.position_data);
+
+		glBindBuffer(GL_ARRAY_BUFFER, fx_object.color_buffer);
+		glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object.total_particle_count * 4 * sizeof(GLubyte), fx_object.color_data);
+	}
+}
+*/
 void FX::calculate_object_1_data(std::chrono::milliseconds delta, const Camera & camera, build_information build_info)
 {
+	num_of_objects++;
 	if (build_info.object_id == STUNTRAP)
 	{
 		calculate_stun_data(delta, camera, build_info);
@@ -2395,7 +2629,7 @@ void FX::calculate_object_1_data(std::chrono::milliseconds delta, const Camera &
 		fx_object_1.default_x = 0.0f;
 		fx_object_1.default_y = 0.0f;
 		fx_object_1.default_z = 0.0f;
-		fx_object_1.nr_of_particles = 1;
+		fx_object_1.nr_of_particles = num_of_objects;//You was hereeee-------------------------------------------------------
 		randomizer = rand() % 100;
 
 		//Update data for particles
@@ -2403,7 +2637,7 @@ void FX::calculate_object_1_data(std::chrono::milliseconds delta, const Camera &
 		{
 			if (randomizer <= 100)
 			{
-				for (auto i = 0u; i < 1; i++)
+				for (auto i = 0u; i < fx_object_1.nr_of_particles; i++)
 				{
 					if (fx_object_1.particle_container[i].life <= 0.1f)
 					{
@@ -2604,669 +2838,680 @@ void FX::calculate_object_1_data(std::chrono::milliseconds delta, const Camera &
 }
 void FX::calculate_object_2_data(std::chrono::milliseconds delta, const Camera & camera, build_information build_info)
 {
-	using namespace std::chrono_literals;
-	std::chrono::duration<float> seconds = delta;
-	auto& fx_object_2 = *fx_object_2_ptr;
-
-	fx_object_2.fx_object_id = build_info.object_id;
-
-	fx_object_2.default_x = 0.0f;
-	fx_object_2.default_y = 0.0f;
-	fx_object_2.default_z = 0.0f;
-	fx_object_2.nr_of_particles = 1;
-	randomizer = rand() % 100;
-
-	//Update data for particles
-	if (fx_object_2.total_particle_count <= MAX_PARTICLES)
+	if (build_info.object_id == STUNTRAP)
 	{
-		if (randomizer <= 100)
+		calculate_stun_data(delta, camera, build_info);
+	}
+	else
+	{
+		using namespace std::chrono_literals;
+		std::chrono::duration<float> seconds = delta;
+		auto& fx_object_2 = *fx_object_2_ptr;
+
+		fx_object_2.fx_object_id = build_info.object_id;
+
+		fx_object_2.default_x = 0.0f;
+		fx_object_2.default_y = 0.0f;
+		fx_object_2.default_z = 0.0f;
+		fx_object_2.nr_of_particles = 1;
+		randomizer = rand() % 100;
+
+		//Update data for particles
+		if (fx_object_2.total_particle_count <= MAX_PARTICLES)
 		{
-			for (auto i = 0u; i < 1; i++)
+			if (randomizer <= 100)
 			{
-				if (fx_object_2.particle_container[i].life <= 0.1f)
+				for (auto i = 0u; i < 1; i++)
 				{
-					//Find and update the last used particle
-					fx_object_2.last_used_particle = find_unused_particle(fx_object_2.particle_container, fx_object_2.last_used_particle);
-					int particle_index = fx_object_2.last_used_particle;
+					if (fx_object_2.particle_container[i].life <= 0.1f)
+					{
+						//Find and update the last used particle
+						fx_object_2.last_used_particle = find_unused_particle(fx_object_2.particle_container, fx_object_2.last_used_particle);
+						int particle_index = fx_object_2.last_used_particle;
 
-					//Set default values for the particles, first off life and position.
-					fx_object_2.particle_container[i].life = 1.0f;
+						//Set default values for the particles, first off life and position.
+						fx_object_2.particle_container[i].life = 1.0f;
 
-					//Set colors, if you want color from texture, don't change the color
-					if (fx_object_2.fx_object_id == SPEEDBOOST)
-					{
-						fx_object_2.particle_container[i].r = 255;
-						fx_object_2.particle_container[i].g = 222;
-						fx_object_2.particle_container[i].b = 34;
-						fx_object_2.particle_container[i].a = 180;
-					}
-					else if (fx_object_2.fx_object_id == JUMPBOOST)
-					{
-						fx_object_2.particle_container[i].r = 0;
-						fx_object_2.particle_container[i].g = 255;
-						fx_object_2.particle_container[i].b = 0;
-						fx_object_2.particle_container[i].a = 180;
-					}
-					else if (fx_object_2.fx_object_id == SHIELD)
-					{
-						fx_object_2.particle_container[i].r = 24;
-						fx_object_2.particle_container[i].g = 208;
-						fx_object_2.particle_container[i].b = 255;
-						fx_object_2.particle_container[i].a = 180;
-					}
-					else if (fx_object_2.fx_object_id == GLIDETRAP)
-					{
-						fx_object_2.particle_container[i].r = 151;
-						fx_object_2.particle_container[i].g = 0;
-						fx_object_2.particle_container[i].b = 255;
-						fx_object_2.particle_container[i].a = 180;
-					}
-					else if (fx_object_2.fx_object_id == RANDOM)
-					{
-						fx_object_2.particle_container[i].r = 0;
-						fx_object_2.particle_container[i].g = 0;
-						fx_object_2.particle_container[i].b = 0;
-						fx_object_2.particle_container[i].a = 180;
-					}
-					else
-					{
-						fx_object_2.particle_container[i].a = 0;
-					}
+						//Set colors, if you want color from texture, don't change the color
+						if (fx_object_2.fx_object_id == SPEEDBOOST)
+						{
+							fx_object_2.particle_container[i].r = 255;
+							fx_object_2.particle_container[i].g = 222;
+							fx_object_2.particle_container[i].b = 34;
+							fx_object_2.particle_container[i].a = 180;
+						}
+						else if (fx_object_2.fx_object_id == JUMPBOOST)
+						{
+							fx_object_2.particle_container[i].r = 0;
+							fx_object_2.particle_container[i].g = 255;
+							fx_object_2.particle_container[i].b = 0;
+							fx_object_2.particle_container[i].a = 180;
+						}
+						else if (fx_object_2.fx_object_id == SHIELD)
+						{
+							fx_object_2.particle_container[i].r = 24;
+							fx_object_2.particle_container[i].g = 208;
+							fx_object_2.particle_container[i].b = 255;
+							fx_object_2.particle_container[i].a = 180;
+						}
+						else if (fx_object_2.fx_object_id == GLIDETRAP)
+						{
+							fx_object_2.particle_container[i].r = 151;
+							fx_object_2.particle_container[i].g = 0;
+							fx_object_2.particle_container[i].b = 255;
+							fx_object_2.particle_container[i].a = 180;
+						}
+						else if (fx_object_2.fx_object_id == RANDOM)
+						{
+							fx_object_2.particle_container[i].r = 0;
+							fx_object_2.particle_container[i].g = 0;
+							fx_object_2.particle_container[i].b = 0;
+							fx_object_2.particle_container[i].a = 180;
+						}
+						else
+						{
+							fx_object_2.particle_container[i].a = 0;
+						}
 
-					fx_object_2.particle_container[i].size = 4.0f;
+						fx_object_2.particle_container[i].size = 4.0f;
+					}
 				}
 			}
 		}
-	}
 
-	fx_object_2.total_particle_count = 0;
-	//Update movement
-	for (int i = 0; i < fx_object_2.nr_of_particles; i++)
-	{
-		//Update life with delta time
-		fx_object_2.particle_container[i].life -= (seconds.count() / 2.0f);
-
-		if (fx_object_2.particle_container[i].life > 0.0f)
+		fx_object_2.total_particle_count = 0;
+		//Update movement
+		for (int i = 0; i < fx_object_2.nr_of_particles; i++)
 		{
-			fx_object_2.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
-			fx_object_2.particle_container[i].camera_distance = glm::length(fx_object_2.particle_container[i].pos - camera.position);
+			//Update life with delta time
+			fx_object_2.particle_container[i].life -= (seconds.count() / 2.0f);
 
-			//Set positions in the position data
-			fx_object_2.position_data[4 * fx_object_2.total_particle_count + 0] = fx_object_2.particle_container[i].pos.x;
-			fx_object_2.position_data[4 * fx_object_2.total_particle_count + 1] = fx_object_2.particle_container[i].pos.y;
-			fx_object_2.position_data[4 * fx_object_2.total_particle_count + 2] = fx_object_2.particle_container[i].pos.z;
-			fx_object_2.position_data[4 * fx_object_2.total_particle_count + 3] = fx_object_2.particle_container[i].size;
-
-			//Set colors in the color data
-			if (fx_object_2.fx_object_id == RANDOM)
+			if (fx_object_2.particle_container[i].life > 0.0f)
 			{
-				//RAINBOWS
+				fx_object_2.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
+				fx_object_2.particle_container[i].camera_distance = glm::length(fx_object_2.particle_container[i].pos - camera.position);
 
-				if (random_color_r[1] == 0 && random_color_g[1] == 0 && random_color_b[1] == 0)
+				//Set positions in the position data
+				fx_object_2.position_data[4 * fx_object_2.total_particle_count + 0] = fx_object_2.particle_container[i].pos.x;
+				fx_object_2.position_data[4 * fx_object_2.total_particle_count + 1] = fx_object_2.particle_container[i].pos.y;
+				fx_object_2.position_data[4 * fx_object_2.total_particle_count + 2] = fx_object_2.particle_container[i].pos.z;
+				fx_object_2.position_data[4 * fx_object_2.total_particle_count + 3] = fx_object_2.particle_container[i].size;
+
+				//Set colors in the color data
+				if (fx_object_2.fx_object_id == RANDOM)
 				{
-					random_color_r[1] = 255;
-					color_picker[1] = RED;
+					//RAINBOWS
+
+					if (random_color_r[0] == 0 && random_color_g[0] == 0 && random_color_b[0] == 0)
+					{
+						random_color_r[0] = 255;
+						color_picker[0] = RED;
+					}
+
+					if (color_picker[0] == RED)
+					{
+						random_color_b[0] += seconds.count() * 200.0f;
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[0];
+						if (random_color_b[0] >= 255)
+						{
+							random_color_b[0] = 255;
+							color_picker[0] = PURPLE;
+						}
+					}
+					else if (color_picker[0] == PURPLE)
+					{
+						random_color_r[0] -= seconds.count() * 200.0f;
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[0];
+						if (random_color_r[0] <= 0)
+						{
+							random_color_r[0] = 0;
+							color_picker[0] = BLUE;
+						}
+					}
+					else if (color_picker[0] == BLUE)
+					{
+						random_color_g[0] += seconds.count() * 200.0f;
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[0];
+						if (random_color_g[0] >= 255)
+						{
+							random_color_g[0] = 255;
+							color_picker[0] = TURQUOISE;
+						}
+					}
+					else if (color_picker[0] == TURQUOISE)
+					{
+						random_color_b[0] -= seconds.count() * 200.0f;
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[0];
+						if (random_color_b[0] <= 0)
+						{
+							random_color_b[0] = 0;
+							color_picker[0] = GREEN;
+						}
+					}
+					else if (color_picker[0] == GREEN)
+					{
+						random_color_r[0] += seconds.count() * 200.0f;
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[0];
+						if (random_color_r[0] >= 255)
+						{
+							random_color_r[0] = 255;
+							color_picker[0] = YELLOW;
+						}
+					}
+					else if (color_picker[0] == YELLOW)
+					{
+						random_color_g[0] -= seconds.count() * 200.0f;
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[0];
+						fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[0];
+						if (random_color_g[0] <= 0)
+						{
+							random_color_g[0] = 0;
+							color_picker[0] = RED;
+						}
+					}
+				}
+				else
+				{
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = fx_object_2.particle_container[i].r;
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = fx_object_2.particle_container[i].g;
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = fx_object_2.particle_container[i].b;
 				}
 
-				if (color_picker[1] == RED)
+				//Alpha
+				if (fx_object_2.particle_container[i].life >= 0.5f)
 				{
-					random_color_b[1] += seconds.count() * 200.0f;
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
-					if (random_color_b[1] >= 255)
-					{
-						random_color_b[1] = 255;
-						color_picker[1] = PURPLE;
-					}
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 3] = fx_object_2.particle_container[i].a * fx_object_2.particle_container[i].life;
 				}
-				else if (color_picker[1] == PURPLE)
+				else
 				{
-					random_color_r[1] -= seconds.count() * 200.0f;
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
-					if (random_color_r[1] <= 0)
-					{
-						random_color_r[1] = 0;
-						color_picker[1] = BLUE;
-					}
-				}
-				else if (color_picker[1] == BLUE)
-				{
-					random_color_g[1] += seconds.count() * 200.0f;
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
-					if (random_color_g[1] >= 255)
-					{
-						random_color_g[1] = 255;
-						color_picker[1] = TURQUOISE;
-					}
-				}
-				else if (color_picker[1] == TURQUOISE)
-				{
-					random_color_b[1] -= seconds.count() * 200.0f;
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
-					if (random_color_b[1] <= 0)
-					{
-						random_color_b[1] = 0;
-						color_picker[1] = GREEN;
-					}
-				}
-				else if (color_picker[1] == GREEN)
-				{
-					random_color_r[1] += seconds.count() * 200.0f;
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
-					if (random_color_r[1] >= 255)
-					{
-						random_color_r[1] = 255;
-						color_picker[1] = YELLOW;
-					}
-				}
-				else if (color_picker[1] == YELLOW)
-				{
-					random_color_g[1] -= seconds.count() * 200.0f;
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = random_color_r[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = random_color_g[1];
-					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = random_color_b[1];
-					if (random_color_g[1] <= 0)
-					{
-						random_color_g[1] = 0;
-						color_picker[1] = RED;
-					}
+					fx_object_2.color_data[4 * fx_object_2.total_particle_count + 3] = fx_object_2.particle_container[i].a * abs(fx_object_2.particle_container[i].life - 1);
 				}
 			}
 			else
 			{
-				//Red
-				fx_object_2.color_data[4 * fx_object_2.total_particle_count + 0] = fx_object_2.particle_container[i].r;
-
-				//Green
-				fx_object_2.color_data[4 * fx_object_2.total_particle_count + 1] = fx_object_2.particle_container[i].g;
-
-				//Blue
-				fx_object_2.color_data[4 * fx_object_2.total_particle_count + 2] = fx_object_2.particle_container[i].b;
+				//They ded, hide 'em
+				fx_object_2.particle_container[i].camera_distance = -1.0f;
+				fx_object_2.position_data[4 * fx_object_2.total_particle_count + 0] = 0;
+				fx_object_2.position_data[4 * fx_object_2.total_particle_count + 1] = 0;
+				fx_object_2.position_data[4 * fx_object_2.total_particle_count + 2] = 0;
+				fx_object_2.position_data[4 * fx_object_2.total_particle_count + 3] = 0;
 			}
-
-			//Alpha
-			if (fx_object_2.particle_container[i].life >= 0.5f)
-			{
-				fx_object_2.color_data[4 * fx_object_2.total_particle_count + 3] = fx_object_2.particle_container[i].a * fx_object_2.particle_container[i].life;
-			}
-			else
-			{
-				fx_object_2.color_data[4 * fx_object_2.total_particle_count + 3] = fx_object_2.particle_container[i].a * abs(fx_object_2.particle_container[i].life - 1);
-			}
+			fx_object_2.total_particle_count++;
 		}
-		else
-		{
-			//They ded, hide 'em
-			fx_object_2.particle_container[i].camera_distance = -1.0f;
-			fx_object_2.position_data[4 * fx_object_2.total_particle_count + 0] = 0;
-			fx_object_2.position_data[4 * fx_object_2.total_particle_count + 1] = 0;
-			fx_object_2.position_data[4 * fx_object_2.total_particle_count + 2] = 0;
-			fx_object_2.position_data[4 * fx_object_2.total_particle_count + 3] = 0;
-		}
-		fx_object_2.total_particle_count++;
+
+		//Update particle information
+		glBindBuffer(GL_ARRAY_BUFFER, fx_object_2.position_buffer);
+		glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_2.total_particle_count * 4 * sizeof(GLfloat), fx_object_2.position_data);
+
+		glBindBuffer(GL_ARRAY_BUFFER, fx_object_2.color_buffer);
+		glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_2.total_particle_count * 4 * sizeof(GLubyte), fx_object_2.color_data);
 	}
-
-	//Update particle information
-	glBindBuffer(GL_ARRAY_BUFFER, fx_object_2.position_buffer);
-	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_2.total_particle_count * 4 * sizeof(GLfloat), fx_object_2.position_data);
-
-	glBindBuffer(GL_ARRAY_BUFFER, fx_object_2.color_buffer);
-	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_2.total_particle_count * 4 * sizeof(GLubyte), fx_object_2.color_data);
 }
 void FX::calculate_object_3_data(std::chrono::milliseconds delta, const Camera & camera, build_information build_info)
 {
-	using namespace std::chrono_literals;
-	std::chrono::duration<float> seconds = delta;
-	auto& fx_object_3 = *fx_object_3_ptr;
-
-	fx_object_3.fx_object_id = build_info.object_id;
-
-	fx_object_3.default_x = 0.0f;
-	fx_object_3.default_y = 0.0f;
-	fx_object_3.default_z = 0.0f;
-	fx_object_3.nr_of_particles = 1;
-	randomizer = rand() % 100;
-
-	//Update data for particles
-	if (fx_object_3.total_particle_count <= MAX_PARTICLES)
+	if (build_info.object_id == STUNTRAP)
 	{
-		if (randomizer <= 100)
+		calculate_stun_data(delta, camera, build_info);
+	}
+	else
+	{
+		using namespace std::chrono_literals;
+		std::chrono::duration<float> seconds = delta;
+		auto& fx_object_3 = *fx_object_3_ptr;
+
+		fx_object_3.fx_object_id = build_info.object_id;
+
+		fx_object_3.default_x = 0.0f;
+		fx_object_3.default_y = 0.0f;
+		fx_object_3.default_z = 0.0f;
+		fx_object_3.nr_of_particles = 1;
+		randomizer = rand() % 100;
+
+		//Update data for particles
+		if (fx_object_3.total_particle_count <= MAX_PARTICLES)
 		{
-			for (auto i = 0u; i < 1; i++)
+			if (randomizer <= 100)
 			{
-				if (fx_object_3.particle_container[i].life <= 0.1f)
+				for (auto i = 0u; i < 1; i++)
 				{
-					//Find and update the last used particle
-					fx_object_3.last_used_particle = find_unused_particle(fx_object_3.particle_container, fx_object_3.last_used_particle);
-					int particle_index = fx_object_3.last_used_particle;
+					if (fx_object_3.particle_container[i].life <= 0.1f)
+					{
+						//Find and update the last used particle
+						fx_object_3.last_used_particle = find_unused_particle(fx_object_3.particle_container, fx_object_3.last_used_particle);
+						int particle_index = fx_object_3.last_used_particle;
 
-					//Set default values for the particles, first off life and position.
-					fx_object_3.particle_container[i].life = 1.0f;
+						//Set default values for the particles, first off life and position.
+						fx_object_3.particle_container[i].life = 1.0f;
 
-					//Set colors, if you want color from texture, don't change the color
-					if (fx_object_3.fx_object_id == SPEEDBOOST)
-					{
-						fx_object_3.particle_container[i].r = 255;
-						fx_object_3.particle_container[i].g = 222;
-						fx_object_3.particle_container[i].b = 34;
-						fx_object_3.particle_container[i].a = 180;
-					}
-					else if (fx_object_3.fx_object_id == JUMPBOOST)
-					{
-						fx_object_3.particle_container[i].r = 0;
-						fx_object_3.particle_container[i].g = 255;
-						fx_object_3.particle_container[i].b = 0;
-						fx_object_3.particle_container[i].a = 180;
-					}
-					else if (fx_object_3.fx_object_id == SHIELD)
-					{
-						fx_object_3.particle_container[i].r = 24;
-						fx_object_3.particle_container[i].g = 208;
-						fx_object_3.particle_container[i].b = 255;
-						fx_object_3.particle_container[i].a = 180;
-					}
-					else if (fx_object_3.fx_object_id == GLIDETRAP)
-					{
-						fx_object_3.particle_container[i].r = 151;
-						fx_object_3.particle_container[i].g = 0;
-						fx_object_3.particle_container[i].b = 255;
-						fx_object_3.particle_container[i].a = 180;
-					}
-					else if (fx_object_3.fx_object_id == RANDOM)
-					{
-						fx_object_3.particle_container[i].r = 0;
-						fx_object_3.particle_container[i].g = 0;
-						fx_object_3.particle_container[i].b = 0;
-						fx_object_3.particle_container[i].a = 180;
-					}
-					else
-					{
-						fx_object_3.particle_container[i].a = 0;
-					}
+						//Set colors, if you want color from texture, don't change the color
+						if (fx_object_3.fx_object_id == SPEEDBOOST)
+						{
+							fx_object_3.particle_container[i].r = 255;
+							fx_object_3.particle_container[i].g = 222;
+							fx_object_3.particle_container[i].b = 34;
+							fx_object_3.particle_container[i].a = 180;
+						}
+						else if (fx_object_3.fx_object_id == JUMPBOOST)
+						{
+							fx_object_3.particle_container[i].r = 0;
+							fx_object_3.particle_container[i].g = 255;
+							fx_object_3.particle_container[i].b = 0;
+							fx_object_3.particle_container[i].a = 180;
+						}
+						else if (fx_object_3.fx_object_id == SHIELD)
+						{
+							fx_object_3.particle_container[i].r = 24;
+							fx_object_3.particle_container[i].g = 208;
+							fx_object_3.particle_container[i].b = 255;
+							fx_object_3.particle_container[i].a = 180;
+						}
+						else if (fx_object_3.fx_object_id == GLIDETRAP)
+						{
+							fx_object_3.particle_container[i].r = 151;
+							fx_object_3.particle_container[i].g = 0;
+							fx_object_3.particle_container[i].b = 255;
+							fx_object_3.particle_container[i].a = 180;
+						}
+						else if (fx_object_3.fx_object_id == RANDOM)
+						{
+							fx_object_3.particle_container[i].r = 0;
+							fx_object_3.particle_container[i].g = 0;
+							fx_object_3.particle_container[i].b = 0;
+							fx_object_3.particle_container[i].a = 180;
+						}
+						else
+						{
+							fx_object_3.particle_container[i].a = 0;
+						}
 
-					fx_object_3.particle_container[i].size = 4.0f;
+						fx_object_3.particle_container[i].size = 4.0f;
+					}
 				}
 			}
 		}
-	}
 
-	fx_object_3.total_particle_count = 0;
-	//Update movement
-	for (int i = 0; i < fx_object_3.nr_of_particles; i++)
-	{
-		//Update life with delta time
-		fx_object_3.particle_container[i].life -= (seconds.count() / 2.0f);
-
-		if (fx_object_3.particle_container[i].life > 0.0f)
+		fx_object_3.total_particle_count = 0;
+		//Update movement
+		for (int i = 0; i < fx_object_3.nr_of_particles; i++)
 		{
-			fx_object_3.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
-			fx_object_3.particle_container[i].camera_distance = glm::length(fx_object_3.particle_container[i].pos - camera.position);
+			//Update life with delta time
+			fx_object_3.particle_container[i].life -= (seconds.count() / 2.0f);
 
-			//Set positions in the position data
-			fx_object_3.position_data[4 * fx_object_3.total_particle_count + 0] = fx_object_3.particle_container[i].pos.x;
-			fx_object_3.position_data[4 * fx_object_3.total_particle_count + 1] = fx_object_3.particle_container[i].pos.y;
-			fx_object_3.position_data[4 * fx_object_3.total_particle_count + 2] = fx_object_3.particle_container[i].pos.z;
-			fx_object_3.position_data[4 * fx_object_3.total_particle_count + 3] = fx_object_3.particle_container[i].size;
-
-			//Set colors in the color data
-			if (fx_object_3.fx_object_id == RANDOM)
+			if (fx_object_3.particle_container[i].life > 0.0f)
 			{
-				//RAINBOWS
+				fx_object_3.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
+				fx_object_3.particle_container[i].camera_distance = glm::length(fx_object_3.particle_container[i].pos - camera.position);
 
-				if (random_color_r[2] == 0 && random_color_g[2] == 0 && random_color_b[2] == 0)
+				//Set positions in the position data
+				fx_object_3.position_data[4 * fx_object_3.total_particle_count + 0] = fx_object_3.particle_container[i].pos.x;
+				fx_object_3.position_data[4 * fx_object_3.total_particle_count + 1] = fx_object_3.particle_container[i].pos.y;
+				fx_object_3.position_data[4 * fx_object_3.total_particle_count + 2] = fx_object_3.particle_container[i].pos.z;
+				fx_object_3.position_data[4 * fx_object_3.total_particle_count + 3] = fx_object_3.particle_container[i].size;
+
+				//Set colors in the color data
+				if (fx_object_3.fx_object_id == RANDOM)
 				{
-					random_color_r[2] = 255;
-					color_picker[2] = RED;
+					//RAINBOWS
+
+					if (random_color_r[0] == 0 && random_color_g[0] == 0 && random_color_b[0] == 0)
+					{
+						random_color_r[0] = 255;
+						color_picker[0] = RED;
+					}
+
+					if (color_picker[0] == RED)
+					{
+						random_color_b[0] += seconds.count() * 200.0f;
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[0];
+						if (random_color_b[0] >= 255)
+						{
+							random_color_b[0] = 255;
+							color_picker[0] = PURPLE;
+						}
+					}
+					else if (color_picker[0] == PURPLE)
+					{
+						random_color_r[0] -= seconds.count() * 200.0f;
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[0];
+						if (random_color_r[0] <= 0)
+						{
+							random_color_r[0] = 0;
+							color_picker[0] = BLUE;
+						}
+					}
+					else if (color_picker[0] == BLUE)
+					{
+						random_color_g[0] += seconds.count() * 200.0f;
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[0];
+						if (random_color_g[0] >= 255)
+						{
+							random_color_g[0] = 255;
+							color_picker[0] = TURQUOISE;
+						}
+					}
+					else if (color_picker[0] == TURQUOISE)
+					{
+						random_color_b[0] -= seconds.count() * 200.0f;
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[0];
+						if (random_color_b[0] <= 0)
+						{
+							random_color_b[0] = 0;
+							color_picker[0] = GREEN;
+						}
+					}
+					else if (color_picker[0] == GREEN)
+					{
+						random_color_r[0] += seconds.count() * 200.0f;
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[0];
+						if (random_color_r[0] >= 255)
+						{
+							random_color_r[0] = 255;
+							color_picker[0] = YELLOW;
+						}
+					}
+					else if (color_picker[0] == YELLOW)
+					{
+						random_color_g[0] -= seconds.count() * 200.0f;
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[0];
+						fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[0];
+						if (random_color_g[0] <= 0)
+						{
+							random_color_g[0] = 0;
+							color_picker[0] = RED;
+						}
+					}
+				}
+				else
+				{
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = fx_object_3.particle_container[i].r;
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = fx_object_3.particle_container[i].g;
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = fx_object_3.particle_container[i].b;
 				}
 
-				if (color_picker[2] == RED)
+				//Alpha
+				if (fx_object_3.particle_container[i].life >= 0.5f)
 				{
-					random_color_b[2] += seconds.count() * 200.0f;
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
-					if (random_color_b[2] >= 255)
-					{
-						random_color_b[2] = 255;
-						color_picker[2] = PURPLE;
-					}
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 3] = fx_object_3.particle_container[i].a * fx_object_3.particle_container[i].life;
 				}
-				else if (color_picker[2] == PURPLE)
+				else
 				{
-					random_color_r[2] -= seconds.count() * 200.0f;
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
-					if (random_color_r[2] <= 0)
-					{
-						random_color_r[2] = 0;
-						color_picker[2] = BLUE;
-					}
-				}
-				else if (color_picker[2] == BLUE)
-				{
-					random_color_g[2] += seconds.count() * 200.0f;
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
-					if (random_color_g[2] >= 255)
-					{
-						random_color_g[2] = 255;
-						color_picker[2] = TURQUOISE;
-					}
-				}
-				else if (color_picker[2] == TURQUOISE)
-				{
-					random_color_b[2] -= seconds.count() * 200.0f;
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
-					if (random_color_b[2] <= 0)
-					{
-						random_color_b[2] = 0;
-						color_picker[2] = GREEN;
-					}
-				}
-				else if (color_picker[2] == GREEN)
-				{
-					random_color_r[2] += seconds.count() * 200.0f;
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
-					if (random_color_r[2] >= 255)
-					{
-						random_color_r[2] = 255;
-						color_picker[2] = YELLOW;
-					}
-				}
-				else if (color_picker[2] == YELLOW)
-				{
-					random_color_g[2] -= seconds.count() * 200.0f;
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = random_color_r[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = random_color_g[2];
-					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = random_color_b[2];
-					if (random_color_g[2] <= 0)
-					{
-						random_color_g[2] = 0;
-						color_picker[2] = RED;
-					}
+					fx_object_3.color_data[4 * fx_object_3.total_particle_count + 3] = fx_object_3.particle_container[i].a * abs(fx_object_3.particle_container[i].life - 1);
 				}
 			}
 			else
 			{
-				//Red
-				fx_object_3.color_data[4 * fx_object_3.total_particle_count + 0] = fx_object_3.particle_container[i].r;
-
-				//Green
-				fx_object_3.color_data[4 * fx_object_3.total_particle_count + 1] = fx_object_3.particle_container[i].g;
-
-				//Blue
-				fx_object_3.color_data[4 * fx_object_3.total_particle_count + 2] = fx_object_3.particle_container[i].b;
+				//They ded, hide 'em
+				fx_object_3.particle_container[i].camera_distance = -1.0f;
+				fx_object_3.position_data[4 * fx_object_3.total_particle_count + 0] = 0;
+				fx_object_3.position_data[4 * fx_object_3.total_particle_count + 1] = 0;
+				fx_object_3.position_data[4 * fx_object_3.total_particle_count + 2] = 0;
+				fx_object_3.position_data[4 * fx_object_3.total_particle_count + 3] = 0;
 			}
-
-			//Alpha
-			if (fx_object_3.particle_container[i].life >= 0.5f)
-			{
-				fx_object_3.color_data[4 * fx_object_3.total_particle_count + 3] = fx_object_3.particle_container[i].a * fx_object_3.particle_container[i].life;
-			}
-			else
-			{
-				fx_object_3.color_data[4 * fx_object_3.total_particle_count + 3] = fx_object_3.particle_container[i].a * abs(fx_object_3.particle_container[i].life - 1);
-			}
+			fx_object_3.total_particle_count++;
 		}
-		else
-		{
-			//They ded, hide 'em
-			fx_object_3.particle_container[i].camera_distance = -1.0f;
-			fx_object_3.position_data[4 * fx_object_3.total_particle_count + 0] = 0;
-			fx_object_3.position_data[4 * fx_object_3.total_particle_count + 1] = 0;
-			fx_object_3.position_data[4 * fx_object_3.total_particle_count + 2] = 0;
-			fx_object_3.position_data[4 * fx_object_3.total_particle_count + 3] = 0;
-		}
-		fx_object_3.total_particle_count++;
+
+		//Update particle information
+		glBindBuffer(GL_ARRAY_BUFFER, fx_object_3.position_buffer);
+		glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_3.total_particle_count * 4 * sizeof(GLfloat), fx_object_3.position_data);
+
+		glBindBuffer(GL_ARRAY_BUFFER, fx_object_3.color_buffer);
+		glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_3.total_particle_count * 4 * sizeof(GLubyte), fx_object_3.color_data);
 	}
-
-	//Update particle information
-	glBindBuffer(GL_ARRAY_BUFFER, fx_object_3.position_buffer);
-	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_3.total_particle_count * 4 * sizeof(GLfloat), fx_object_3.position_data);
-
-	glBindBuffer(GL_ARRAY_BUFFER, fx_object_3.color_buffer);
-	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_3.total_particle_count * 4 * sizeof(GLubyte), fx_object_3.color_data);
 }
 void FX::calculate_object_4_data(std::chrono::milliseconds delta, const Camera & camera, build_information build_info)
 {
-	using namespace std::chrono_literals;
-	std::chrono::duration<float> seconds = delta;
-	auto& fx_object_4 = *fx_object_4_ptr;
-
-	fx_object_4.fx_object_id = build_info.object_id;
-
-	fx_object_4.default_x = 0.0f;
-	fx_object_4.default_y = 0.0f;
-	fx_object_4.default_z = 0.0f;
-	fx_object_4.nr_of_particles = 1;
-	randomizer = rand() % 100;
-
-	//Update data for particles
-	if (fx_object_4.total_particle_count <= MAX_PARTICLES)
+	if (build_info.object_id == STUNTRAP)
 	{
-		if (randomizer <= 100)
+		calculate_stun_data(delta, camera, build_info);
+	}
+	else
+	{
+		using namespace std::chrono_literals;
+		std::chrono::duration<float> seconds = delta;
+		auto& fx_object_4 = *fx_object_4_ptr;
+
+		fx_object_4.fx_object_id = build_info.object_id;
+
+		fx_object_4.default_x = 0.0f;
+		fx_object_4.default_y = 0.0f;
+		fx_object_4.default_z = 0.0f;
+		fx_object_4.nr_of_particles = 1;
+		randomizer = rand() % 100;
+
+		//Update data for particles
+		if (fx_object_4.total_particle_count <= MAX_PARTICLES)
 		{
-			for (auto i = 0u; i < 1; i++)
+			if (randomizer <= 100)
 			{
-				if (fx_object_4.particle_container[i].life <= 0.1f)
+				for (auto i = 0u; i < 1; i++)
 				{
-					//Find and update the last used particle
-					fx_object_4.last_used_particle = find_unused_particle(fx_object_4.particle_container, fx_object_4.last_used_particle);
-					int particle_index = fx_object_4.last_used_particle;
+					if (fx_object_4.particle_container[i].life <= 0.1f)
+					{
+						//Find and update the last used particle
+						fx_object_4.last_used_particle = find_unused_particle(fx_object_4.particle_container, fx_object_4.last_used_particle);
+						int particle_index = fx_object_4.last_used_particle;
 
-					//Set default values for the particles, first off life and position.
-					fx_object_4.particle_container[i].life = 1.0f;
+						//Set default values for the particles, first off life and position.
+						fx_object_4.particle_container[i].life = 1.0f;
 
-					//Set colors, if you want color from texture, don't change the color
-					if (fx_object_4.fx_object_id == SPEEDBOOST)
-					{
-						fx_object_4.particle_container[i].r = 255;
-						fx_object_4.particle_container[i].g = 222;
-						fx_object_4.particle_container[i].b = 34;
-						fx_object_4.particle_container[i].a = 180;
-					}
-					else if (fx_object_4.fx_object_id == JUMPBOOST)
-					{
-						fx_object_4.particle_container[i].r = 0;
-						fx_object_4.particle_container[i].g = 255;
-						fx_object_4.particle_container[i].b = 0;
-						fx_object_4.particle_container[i].a = 180;
-					}
-					else if (fx_object_4.fx_object_id == SHIELD)
-					{
-						fx_object_4.particle_container[i].r = 24;
-						fx_object_4.particle_container[i].g = 208;
-						fx_object_4.particle_container[i].b = 255;
-						fx_object_4.particle_container[i].a = 180;
-					}
-					else if (fx_object_4.fx_object_id == GLIDETRAP)
-					{
-						fx_object_4.particle_container[i].r = 151;
-						fx_object_4.particle_container[i].g = 0;
-						fx_object_4.particle_container[i].b = 255;
-						fx_object_4.particle_container[i].a = 180;
-					}
-					else if (fx_object_4.fx_object_id == RANDOM)
-					{
-						fx_object_4.particle_container[i].r = 0;
-						fx_object_4.particle_container[i].g = 0;
-						fx_object_4.particle_container[i].b = 0;
-						fx_object_4.particle_container[i].a = 180;
-					}
-					else
-					{
-						fx_object_4.particle_container[i].a = 0;
-					}
+						//Set colors, if you want color from texture, don't change the color
+						if (fx_object_4.fx_object_id == SPEEDBOOST)
+						{
+							fx_object_4.particle_container[i].r = 255;
+							fx_object_4.particle_container[i].g = 222;
+							fx_object_4.particle_container[i].b = 34;
+							fx_object_4.particle_container[i].a = 180;
+						}
+						else if (fx_object_4.fx_object_id == JUMPBOOST)
+						{
+							fx_object_4.particle_container[i].r = 0;
+							fx_object_4.particle_container[i].g = 255;
+							fx_object_4.particle_container[i].b = 0;
+							fx_object_4.particle_container[i].a = 180;
+						}
+						else if (fx_object_4.fx_object_id == SHIELD)
+						{
+							fx_object_4.particle_container[i].r = 24;
+							fx_object_4.particle_container[i].g = 208;
+							fx_object_4.particle_container[i].b = 255;
+							fx_object_4.particle_container[i].a = 180;
+						}
+						else if (fx_object_4.fx_object_id == GLIDETRAP)
+						{
+							fx_object_4.particle_container[i].r = 151;
+							fx_object_4.particle_container[i].g = 0;
+							fx_object_4.particle_container[i].b = 255;
+							fx_object_4.particle_container[i].a = 180;
+						}
+						else if (fx_object_4.fx_object_id == RANDOM)
+						{
+							fx_object_4.particle_container[i].r = 0;
+							fx_object_4.particle_container[i].g = 0;
+							fx_object_4.particle_container[i].b = 0;
+							fx_object_4.particle_container[i].a = 180;
+						}
+						else
+						{
+							fx_object_4.particle_container[i].a = 0;
+						}
 
-					fx_object_4.particle_container[i].size = 4.0f;
+						fx_object_4.particle_container[i].size = 4.0f;
+					}
 				}
 			}
 		}
-	}
 
-	fx_object_4.total_particle_count = 0;
-	//Update movement
-	for (int i = 0; i < fx_object_4.nr_of_particles; i++)
-	{
-		//Update life with delta time
-		fx_object_4.particle_container[i].life -= (seconds.count() / 2.0f);
-
-		if (fx_object_4.particle_container[i].life > 0.0f)
+		fx_object_4.total_particle_count = 0;
+		//Update movement
+		for (int i = 0; i < fx_object_4.nr_of_particles; i++)
 		{
-			fx_object_4.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
-			fx_object_4.particle_container[i].camera_distance = glm::length(fx_object_4.particle_container[i].pos - camera.position);
+			//Update life with delta time
+			fx_object_4.particle_container[i].life -= (seconds.count() / 2.0f);
 
-			//Set positions in the position data
-			fx_object_4.position_data[4 * fx_object_4.total_particle_count + 0] = fx_object_4.particle_container[i].pos.x;
-			fx_object_4.position_data[4 * fx_object_4.total_particle_count + 1] = fx_object_4.particle_container[i].pos.y;
-			fx_object_4.position_data[4 * fx_object_4.total_particle_count + 2] = fx_object_4.particle_container[i].pos.z;
-			fx_object_4.position_data[4 * fx_object_4.total_particle_count + 3] = fx_object_4.particle_container[i].size;
-
-			//Set colors in the color data
-			if (fx_object_4.fx_object_id == RANDOM)
+			if (fx_object_4.particle_container[i].life > 0.0f)
 			{
-				//RAINBOWS
+				fx_object_4.particle_container[i].pos = build_info.local_position + glm::vec3(0, 0, -2.0f);
+				fx_object_4.particle_container[i].camera_distance = glm::length(fx_object_4.particle_container[i].pos - camera.position);
 
-				if (random_color_r[3] == 0 && random_color_g[3] == 0 && random_color_b[3] == 0)
+				//Set positions in the position data
+				fx_object_4.position_data[4 * fx_object_4.total_particle_count + 0] = fx_object_4.particle_container[i].pos.x;
+				fx_object_4.position_data[4 * fx_object_4.total_particle_count + 1] = fx_object_4.particle_container[i].pos.y;
+				fx_object_4.position_data[4 * fx_object_4.total_particle_count + 2] = fx_object_4.particle_container[i].pos.z;
+				fx_object_4.position_data[4 * fx_object_4.total_particle_count + 3] = fx_object_4.particle_container[i].size;
+
+				//Set colors in the color data
+				if (fx_object_4.fx_object_id == RANDOM)
 				{
-					random_color_r[3] = 255;
-					color_picker[3] = RED;
+					//RAINBOWS
+
+					if (random_color_r[0] == 0 && random_color_g[0] == 0 && random_color_b[0] == 0)
+					{
+						random_color_r[0] = 255;
+						color_picker[0] = RED;
+					}
+
+					if (color_picker[0] == RED)
+					{
+						random_color_b[0] += seconds.count() * 200.0f;
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[0];
+						if (random_color_b[0] >= 255)
+						{
+							random_color_b[0] = 255;
+							color_picker[0] = PURPLE;
+						}
+					}
+					else if (color_picker[0] == PURPLE)
+					{
+						random_color_r[0] -= seconds.count() * 200.0f;
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[0];
+						if (random_color_r[0] <= 0)
+						{
+							random_color_r[0] = 0;
+							color_picker[0] = BLUE;
+						}
+					}
+					else if (color_picker[0] == BLUE)
+					{
+						random_color_g[0] += seconds.count() * 200.0f;
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[0];
+						if (random_color_g[0] >= 255)
+						{
+							random_color_g[0] = 255;
+							color_picker[0] = TURQUOISE;
+						}
+					}
+					else if (color_picker[0] == TURQUOISE)
+					{
+						random_color_b[0] -= seconds.count() * 200.0f;
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[0];
+						if (random_color_b[0] <= 0)
+						{
+							random_color_b[0] = 0;
+							color_picker[0] = GREEN;
+						}
+					}
+					else if (color_picker[0] == GREEN)
+					{
+						random_color_r[0] += seconds.count() * 200.0f;
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[0];
+						if (random_color_r[0] >= 255)
+						{
+							random_color_r[0] = 255;
+							color_picker[0] = YELLOW;
+						}
+					}
+					else if (color_picker[0] == YELLOW)
+					{
+						random_color_g[0] -= seconds.count() * 200.0f;
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[0];
+						fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[0];
+						if (random_color_g[0] <= 0)
+						{
+							random_color_g[0] = 0;
+							color_picker[0] = RED;
+						}
+					}
+				}
+				else
+				{
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = fx_object_4.particle_container[i].r;
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = fx_object_4.particle_container[i].g;
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = fx_object_4.particle_container[i].b;
 				}
 
-				if (color_picker[3] == RED)
+				//Alpha
+				if (fx_object_4.particle_container[i].life >= 0.5f)
 				{
-					random_color_b[3] += seconds.count() * 200.0f;
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
-					if (random_color_b[3] >= 255)
-					{
-						random_color_b[3] = 255;
-						color_picker[3] = PURPLE;
-					}
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 3] = fx_object_4.particle_container[i].a * fx_object_4.particle_container[i].life;
 				}
-				else if (color_picker[3] == PURPLE)
+				else
 				{
-					random_color_r[3] -= seconds.count() * 200.0f;
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
-					if (random_color_r[3] <= 0)
-					{
-						random_color_r[3] = 0;
-						color_picker[3] = BLUE;
-					}
-				}
-				else if (color_picker[3] == BLUE)
-				{
-					random_color_g[3] += seconds.count() * 200.0f;
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
-					if (random_color_g[3] >= 255)
-					{
-						random_color_g[3] = 255;
-						color_picker[3] = TURQUOISE;
-					}
-				}
-				else if (color_picker[3] == TURQUOISE)
-				{
-					random_color_b[3] -= seconds.count() * 200.0f;
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
-					if (random_color_b[3] <= 0)
-					{
-						random_color_b[3] = 0;
-						color_picker[3] = GREEN;
-					}
-				}
-				else if (color_picker[3] == GREEN)
-				{
-					random_color_r[3] += seconds.count() * 200.0f;
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
-					if (random_color_r[3] >= 255)
-					{
-						random_color_r[3] = 255;
-						color_picker[3] = YELLOW;
-					}
-				}
-				else if (color_picker[3] == YELLOW)
-				{
-					random_color_g[3] -= seconds.count() * 200.0f;
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = random_color_r[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = random_color_g[3];
-					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = random_color_b[3];
-					if (random_color_g[3] <= 0)
-					{
-						random_color_g[3] = 0;
-						color_picker[3] = RED;
-					}
+					fx_object_4.color_data[4 * fx_object_4.total_particle_count + 3] = fx_object_4.particle_container[i].a * abs(fx_object_4.particle_container[i].life - 1);
 				}
 			}
 			else
 			{
-				//Red
-				fx_object_4.color_data[4 * fx_object_4.total_particle_count + 0] = fx_object_4.particle_container[i].r;
-
-				//Green
-				fx_object_4.color_data[4 * fx_object_4.total_particle_count + 1] = fx_object_4.particle_container[i].g;
-
-				//Blue
-				fx_object_4.color_data[4 * fx_object_4.total_particle_count + 2] = fx_object_4.particle_container[i].b;
+				//They ded, hide 'em
+				fx_object_4.particle_container[i].camera_distance = -1.0f;
+				fx_object_4.position_data[4 * fx_object_4.total_particle_count + 0] = 0;
+				fx_object_4.position_data[4 * fx_object_4.total_particle_count + 1] = 0;
+				fx_object_4.position_data[4 * fx_object_4.total_particle_count + 2] = 0;
+				fx_object_4.position_data[4 * fx_object_4.total_particle_count + 3] = 0;
 			}
-
-			//Alpha
-			if (fx_object_4.particle_container[i].life >= 0.5f)
-			{
-				fx_object_4.color_data[4 * fx_object_4.total_particle_count + 3] = fx_object_4.particle_container[i].a * fx_object_4.particle_container[i].life;
-			}
-			else
-			{
-				fx_object_4.color_data[4 * fx_object_4.total_particle_count + 3] = fx_object_4.particle_container[i].a * abs(fx_object_4.particle_container[i].life - 1);
-			}
+			fx_object_4.total_particle_count++;
 		}
-		else
-		{
-			//They ded, hide 'em
-			fx_object_4.particle_container[i].camera_distance = -1.0f;
-			fx_object_4.position_data[4 * fx_object_4.total_particle_count + 0] = 0;
-			fx_object_4.position_data[4 * fx_object_4.total_particle_count + 1] = 0;
-			fx_object_4.position_data[4 * fx_object_4.total_particle_count + 2] = 0;
-			fx_object_4.position_data[4 * fx_object_4.total_particle_count + 3] = 0;
-		}
-		fx_object_4.total_particle_count++;
+
+		//Update particle information
+		glBindBuffer(GL_ARRAY_BUFFER, fx_object_4.position_buffer);
+		glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_4.total_particle_count * 4 * sizeof(GLfloat), fx_object_4.position_data);
+
+		glBindBuffer(GL_ARRAY_BUFFER, fx_object_4.color_buffer);
+		glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_4.total_particle_count * 4 * sizeof(GLubyte), fx_object_4.color_data);
 	}
+}
 
-	//Update particle information
-	glBindBuffer(GL_ARRAY_BUFFER, fx_object_4.position_buffer);
-	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_4.total_particle_count * 4 * sizeof(GLfloat), fx_object_4.position_data);
+void FX::calculate_object_data(std::chrono::milliseconds delta, const Camera & camera, build_information build_info)
+{
 
-	glBindBuffer(GL_ARRAY_BUFFER, fx_object_4.color_buffer);
-	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_object_4.total_particle_count * 4 * sizeof(GLubyte), fx_object_4.color_data);
 }
 
 }

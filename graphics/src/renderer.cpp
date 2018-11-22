@@ -545,9 +545,19 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Gust
 		fx_emitter.calculate_gust_data(delta, game_camera);
 
+		/*for (int i = 0; i < build_infos.size(); i++)
+		{
+			build_info_vec.push_back(build_infos[i]);
+		}
+
+		for (int i = 0; i < build_info_vec.size(); i++)
+		{
+			fx_emitter.calculate_object_1_data
+		}*/
+
 		if (build_infos.size() > 0)
 		{
-			//Object 1 && Stun
+			//Object 1
 			if (build_infos.size() >= 1)
 			{
 				fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[0]);
