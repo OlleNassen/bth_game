@@ -454,7 +454,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<float, 4> scores,
 	float print_time,
 	float goal_height,
-	std::vector<build_information>& build_infos,
+	std::vector<build_information>& all_placed_objects,
 	int spectator_id,
 	std::array<int, 4> moving_objects_id)
 {
@@ -507,7 +507,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 	game_state = new_game_state;
 	player_id = id;
 	bool is_chat_on = (game_state & state::chat);
-	fx_emitter.timer += delta;
 
 	using namespace std::chrono_literals;
 
@@ -545,39 +544,24 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Gust
 		fx_emitter.calculate_gust_data(delta, game_camera);
 
-		/*for (int i = 0; i < build_infos.size(); i++)
-		{
-			build_info_vec.push_back(build_infos[i]);
-		}
-
-		for (int i = 0; i < build_info_vec.size(); i++)
-		{
-			fx_emitter.calculate_object_1_data
-		}*/
-
-		if (build_infos.size() > 0)
-		{
-			//Object 1
-			if (build_infos.size() >= 1)
-			{
-				fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[0]);
-			}
-			//Object 2
-			if (build_infos.size() >= 2)
-			{
-				fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[1]);
-			}
-			//Object 3
-			if (build_infos.size() >= 3)
-			{
-				fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[2]);
-			}
-			//Object 4
-			if (build_infos.size() == 4)
-			{
-				fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[3]);
-			}
-		}
+		//if (build_infos.size() > 0)
+		//{
+		//	//Object 1
+		//	if (build_infos.size() >= 1)
+		//		fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[0]);
+		//	//Object 2
+		//	if (build_infos.size() >= 2)
+		//		fx_emitter.calculate_object_2_data(delta, game_camera, build_infos[1]);
+		//	//Object 3
+		//	if (build_infos.size() >= 3)
+		//		fx_emitter.calculate_object_3_data(delta, game_camera, build_infos[2]);
+		//	//Object 4
+		//	if (build_infos.size() == 4)
+		//		fx_emitter.calculate_object_4_data(delta, game_camera, build_infos[3]);
+		//}
+		
+		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects);
+		
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();

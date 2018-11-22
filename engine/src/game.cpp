@@ -106,7 +106,7 @@ void Game::run()
 }
 
 void Game::render()
-{	
+{
 	std::vector<glm::vec3> db_coll = physics.get_all_debug();
 
 	build_info.clear();
@@ -114,7 +114,7 @@ void Game::render()
 	{
 		int d_id = players_placed_objects_id[i].dynamics_id;
 		build_information info;
-		
+
 		info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
 		info.debug_positions = physics.get_debug_for(d_id);
 		info.place_state = players_placed_objects_id[i].place_state;
@@ -278,6 +278,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 				players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
 							0, dynamics[d_id].objects_type_id };
+
+				total_nr_objects++;
 			}
 
 			give_players_objects = true;
@@ -316,6 +318,8 @@ void Game::update(std::chrono::milliseconds delta)
 								0, dynamics[d_id].objects_type_id };
 
 					give_players_objects = true;
+
+					total_nr_objects++;
 				}
 			}
 		}
@@ -355,11 +359,26 @@ void Game::update(std::chrono::milliseconds delta)
 					dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
 					level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
 
-					std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
-					std::swap(ppoi, players_placed_objects_id[static_cast<int>(player_count) - 1]);
+					int index = -1;
+					for (auto& dyn : dynamics)
+					{
+						if (dyn.model_id == level.moving_models.size() - 1)
+						{
+							index = dyn.model_id;
+							break;
+						}
+					}
 
+					std::swap(level.moving_models[ppoi.model_id], level.moving_models[index]);
 					level.moving_models.pop_back();
 					physics.remove_body(ppoi.dynamics_id);
+
+					dynamics[ppoi.dynamics_id] = dynamics[index];
+
+					/*dynamics[index].model_id = ppoi.model_id;
+					dynamics[index].dynamic_id = ppoi.dynamics_id;*/
+
+					total_nr_objects--;
 				}
 			}
 
@@ -455,102 +474,6 @@ void Game::update(std::chrono::milliseconds delta)
 		//Set State -> lobby
 	}
 
-	/*static bool printed = false;
-	static int old_state = state::lobby;
-
-	if (old_state != game_state)
-	{
-		printed = false;
-		old_state = game_state;
-	}
-
-	if (!printed)
-	{
-		if (game_state & state::lobby)
-		{
-			std::cout << "Lobby State\n";
-			printed = true;
-		}
-		else if (game_state & state::pre_building)
-		{
-			std::cout << "Pre_building State\n";
-			printed = true;
-		}
-		else if (game_state & state::building)
-		{
-			std::cout << "Building State\n";
-			printed = true;
-		}
-		else if (game_state & state::pre_playing)
-		{
-			std::cout << "Pre_playing State\n";
-			printed = true;
-		}
-		else if (game_state & state::playing)
-		{
-			std::cout << "Playing State\n";
-			printed = true;
-		}
-		else if (game_state & state::score)
-		{
-			std::cout << "Score State\n";
-			printed = true;
-		}
-		else if (game_state & state::game_over)
-		{
-			std::cout << "Game_over State\n";
-			printed = true;
-		}
-	}*/
-
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	std::cout << "Player " << i << " is " << lua_data.died[i] << "\n";
-	//}
-	//std::cout << "-----\n";
-
-	/*if (lua_data.game_over || net_state.state == network::SessionState::game_over)
-	{
-		game_state = (game_state | state::game_over);
-		net_state.state = network::SessionState::game_over;
-	}
-	else if (net_state.state == network::SessionState::none)
-	{
-		game_state = (game_state | state::lobby);
-
-		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed)
-		{
-			net_state.state = network::SessionState::loading;
-		}
-	}
-	else if (net_state.state == network::SessionState::loading)
-	{
-		level = graphics::GameScene("../resources/level/level_1_testing.ssp", &mesh_lib, &object_lib);
-
-		gameplay.refresh();
-		gameplay.is_new_round = false;
-		give_players_objects = false;
-		physics.clear_static_object();
-		for (auto& coll : level.coll_data)
-		{
-			physics.add_static_body(coll.position,
-				glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
-		}
-
-		net_state.state = network::SessionState::building;
-	}
-	else if (gameplay.build_stage(player_count))
-	{
-		game_state = (game_state | state::building);
-	}
-	else if (gameplay.pre_playing_stage())
-	{
-		game_state = (game_state | state::pre_playing);
-	}
-	else if(!lua_data.game_over)
-	{
-		game_state = (game_state | state::playing);
-	}*/
 
 	if ((*local_input)[logic::button::quit] == logic::button_state::pressed)
 	{
@@ -587,70 +510,7 @@ void Game::update(std::chrono::milliseconds delta)
 		glm::vec3{0.0f},
 		glm::vec3{0.0f}
 	};
-
-	//Giving players building blocks and moving them.
-	/*if (game_state & state::building)
-	{
-		if (!give_players_objects)
-		{
-			players_placed_objects_id.fill({ 0, 0, 0 });
-			std::array<int, 4> random_index = random_indexes();
-			for (int i = 0; i < 4; i++)
-			{
-				glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
-				placed_objects_list_id = random_picked_object(); //placed_objects_array[0];
-
-				collision_data data;
-				int model_id = level.add_object(data, placed_objects_list_id);
-				int dynamic_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
-
-				players_placed_objects_id[i].model_id = model_id;
-				players_placed_objects_id[i].dynamics_id = dynamic_id;
-				players_placed_objects_id[i].object_type_id = placed_objects_list_id;
-
-				dynamics[dynamic_id].position = start_position;
-				dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
-				dynamics[dynamic_id].size = { data.width, data.height };
-				dynamics[dynamic_id].forces = { 0.0f, 0.0f };
-				dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
-
-				give_players_objects = true;
-			}
-		}
-
-		
-		for (auto& ppoi : players_placed_objects_id)
-		{
-			if (ppoi.place_state != 2)
-			{
-				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
-
-				if (!physics.overlapping(ppoi.dynamics_id))
-					ppoi.place_state = 1;
-				else
-					ppoi.place_state = 0;
-			}
-		}
-	}
-	else if (give_players_objects == true)
-	{
-		give_players_objects = false;
-		for (auto& ppoi : players_placed_objects_id)
-		{
-			if (ppoi.place_state == 0 || ppoi.place_state == 1)			{
-				//Remove object
-				dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
-				level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
-				
-				std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
-				std::swap(ppoi, players_placed_objects_id[players_placed_objects_id.size() - 1]);
-
-				level.moving_models.pop_back();
-				physics.remove_body(ppoi.dynamics_id);
-			}
-		}
-	}*/
-
+	
 	{
 		logic::objects_array obj;
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -828,6 +688,18 @@ void Game::update(std::chrono::milliseconds delta)
 				}
 			}
 		}
+		
+		all_placed_objects.clear();
+
+		for (int i = 4; i < total_nr_objects + 4; i++)
+		{
+			build_information info;
+
+			info.local_position = glm::vec3(dynamics[i].position.x, dynamics[i].position.y, 0.0f);
+			info.object_id = dynamics[i].objects_type_id;
+
+			all_placed_objects.push_back(info);
+		}
 
 		std::array<int, 4> moving_objects_id = { players_placed_objects_id[0].model_id,
 			players_placed_objects_id[1].model_id,
@@ -841,7 +713,7 @@ void Game::update(std::chrono::milliseconds delta)
 			directions,
 			chat[1], static_cast<int>(player_count),
 			net.id(), game_state, temp, lua_data.died, 
-			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height, build_info,
+			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
 			moving_objects_id);
 	}
