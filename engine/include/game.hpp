@@ -88,7 +88,7 @@ private:
 
 	//test trigger
 	int placed_objects_list_id = 7;
-	int placed_objects_array[4] = {2/*random*/, 3/*glide*/, 7/*speed*/, 6/*shield*/ };
+	int placed_objects_array[4] = {7/*random*/, 3/*glide*/, 2/*speed*/, 6/*shield*/ };
 	//int placed_objects_array[7] = { 0, 2, 3, 4, 5, 6, 7 };
 
 	int random_picked_object() { return placed_objects_array[rand() % 10]; };

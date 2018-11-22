@@ -77,8 +77,10 @@ local shock_trap_max_timer = 3
 local shock_trap_immune_max_timer = 5
 
 --speed boost
-local max_speed_boost = max_speed * 1.5
-local max_speed_boost_air = max_air_speed * 1.5
+local max_speed_boost = max_speed * 5
+local max_speed_boost_air = max_air_speed * 2
+local speed_boost_ground_acceleration = ground_acceleration * 5
+local speed_boost_air_acceleration = air_acceleration * 2
 local speed_boost_max_timer = 10
 
 --double jump
@@ -462,7 +464,7 @@ function update_triggers(delta_seconds, entity)
 		end
 
 		--speed_boost
-		if entity.triggered_type == 4 and entity.speed_boost_triggered == false
+		if entity.triggered_type == 7 and entity.speed_boost_triggered == false
 		then
 			entity.speed_boost_triggered = true
 			entity.speed_boost_timer = 0.0
@@ -474,7 +476,7 @@ function update_triggers(delta_seconds, entity)
 				entity.shield_active = false
 			end
 
-			--print("Sprint_boost")
+			print("Sprint_boost")
 		end
 
 		--double_jump
@@ -512,7 +514,7 @@ function update_triggers(delta_seconds, entity)
 		end
 
 		--random_buff
-		if entity.triggered_type == 7 and entity.random_buff_triggered == false
+		if entity.triggered_type == 4 and entity.random_buff_triggered == false
 		then
 			entity.random_buff_triggered = true
 			entity.random_buff_timer = 0.0
@@ -622,20 +624,23 @@ function update_triggers(delta_seconds, entity)
 			then
 				if entity.button.right
 				then
-					entity.velocity.x = max_speed_boost_air--right
+					--entity.velocity.x = max_speed_boost_air--right
+					accelerate(delta_seconds, entity, max_speed_boost_air, speed_boost_air_acceleration)
 				
 				elseif entity.button.left
 				then 
-					entity.velocity.x = -max_speed_boost_air --left
+					--entity.velocity.x = -max_speed_boost_air --left
+					accelerate(delta_seconds, entity, -max_speed_boost_air, speed_boost_air_acceleration)
 				end
 			else
 				if entity.button.right
 				then
-					entity.velocity.x = max_speed_boost--right
-				
+					--entity.velocity.x = max_speed_boost--right
+					accelerate(delta_seconds, entity, max_speed_boost, speed_boost_ground_acceleration)
 				elseif entity.button.left
 				then 
-					entity.velocity.x = -max_speed_boost --left
+					--entity.velocity.x = -max_speed_boost --left
+					accelerate(delta_seconds, entity, -max_speed_boost, speed_boost_ground_acceleration)
 				end
 			end
 		end
