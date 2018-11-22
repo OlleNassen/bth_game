@@ -6,6 +6,8 @@
 #include <gl/glew.h>
 #include <glm/glm.hpp>
 
+#include "light_grid.hpp"
+
 //::.. authors ..:://
 // Olle
 // Edvard
@@ -45,6 +47,8 @@ public:
 		const std::vector<glm::vec4>& value) const;
 	void uniform(const std::string& name,
 		const std::vector<glm::mat4>& value) const;
+
+	void uniform(const std::string& name, const LightGrid& value) const;
 	
 	template <std::size_t N>
 	void uniform(const std::string& name,

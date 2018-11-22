@@ -15,14 +15,9 @@ struct DirectionalLight
 
 struct PointLight
 {
-	PointLight() = default;
-	PointLight(const glm::vec3& pos, const glm::vec3& col)
-	{
-		position = pos;
-		color = col;
-	}
 	glm::vec3 position;
 	glm::vec3 color;
+	float radius;
 	float intensity;
 };
 

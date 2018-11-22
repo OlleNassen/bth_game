@@ -218,8 +218,7 @@ private:
 
 	PostProcessingEffects post_processing_effects;
 
-	std::array<PointLight, 14> lights;
-	std::array<SpotLight, 1> spotlights;
+
 	DirectionalLight dir_light;
 
 	ModelsToRender s_to_render;
@@ -274,6 +273,8 @@ private:
 												glm::vec3{ 0.1f, 0.1f, 0.9f},
 												glm::vec3{ 0.9f, 0.8f, 0.1f} };
 
+
+	LightGrid grid;
 };
 
 }
