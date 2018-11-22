@@ -270,7 +270,7 @@ void Game::update(std::chrono::milliseconds delta)
 			std::array<int, 4> random_index = random_indexes();
 			for (int i = 0; i < 4; i++)
 			{
-				glm::vec2 start_position = { 7 * (i - 2), (20 + i * 2) /*+ (random_index[i] * 64)*/ };
+				glm::vec2 start_position = { 7 * (i - 2), (20 + (i + 1) * 2) /*+ (random_index[i] * 64)*/ };
 				placed_objects_list_id = placed_objects_array[i]; //3;//random_picked_object(); //placed_objects_array[0];
 
 				//glm::vec2 start_position = { 0, 20 + (random_index[i] * 64) };
