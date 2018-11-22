@@ -407,7 +407,9 @@ void World::remove_body(int at)
 	//std::swap(bodies[at], bodies[bodies.size() - 1]);
 	//std::swap(dynamic_rigidbodies[at], dynamic_rigidbodies[dynamic_rigidbodies.size() - 1]);
 
-	bodies.erase(bodies.begin() + at, bodies.begin() + at);
+
+	std::swap(bodies[at], bodies[bodies.size() - 1]);
+	bodies.pop_back();
 
 	//dynamic_rigidbodies.pop_back();
 	//bodies.pop_back();

@@ -85,7 +85,7 @@ public:
 		std::array<float, 4> scores,
 		float print_time,
 		float goal_height,
-		std::vector<build_information>& build_infos,
+		std::vector<build_information>& all_placed_objects,
 		int spectator_id,
 		std::array<int, 4> moving_objects_id);
 
