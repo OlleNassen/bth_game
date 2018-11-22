@@ -245,9 +245,7 @@ void World::update(
 		points[4].y -= bodies[i].box.size.y * 1.01f;
 		points[4].x -= bodies[i].box.size.x * 0.90f;
 		
-		if(
-			anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || 
-			anim_states[i] == anim::hanging_right || anim_states[i] == anim::in_jump)
+		if(anim_states[i] == anim::falling || anim_states[i] == anim::hanging_left || anim_states[i] == anim::hanging_right || anim_states[i] == anim::jump_from_wall)//TEST
 			for (auto& walls : statics)
 			{
 				if (point_in_obb(points[0], walls.box))// || point_in_obb(points[3], walls.box) || point_in_obb(points[4], walls.box))

@@ -2,8 +2,8 @@ settings =
 {
     window = 
     {
-        fullscreen = false,
-        width = 1920,
+        fullscreen = true,
+		width = 1920,
         height = 1080,
     },
 

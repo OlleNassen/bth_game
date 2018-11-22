@@ -7,7 +7,7 @@ function setup(entity)
 end
 
 place_speed = 10
-max_time = 0.1
+max_time = 1.0
 
 function update(delta_seconds, entity)
 
