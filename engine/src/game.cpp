@@ -369,12 +369,14 @@ void Game::update(std::chrono::milliseconds delta)
 						}
 					}
 
-					std::swap(level.moving_models[ppoi.model_id], level.moving_models[level.moving_models.size() - 1]);
+					std::swap(level.moving_models[ppoi.model_id], level.moving_models[index]);
 					level.moving_models.pop_back();
 					physics.remove_body(ppoi.dynamics_id);
 
-					dynamics[index].model_id = ppoi.model_id;
-					dynamics[index].dynamic_id = ppoi.dynamics_id;
+					dynamics[ppoi.dynamics_id] = dynamics[index];
+
+					/*dynamics[index].model_id = ppoi.model_id;
+					dynamics[index].dynamic_id = ppoi.dynamics_id;*/
 
 					total_nr_objects--;
 				}
