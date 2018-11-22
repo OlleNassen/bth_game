@@ -448,7 +448,7 @@ function update_triggers(delta_seconds, entity)
 		
 
 		--stun_trap
-		if entity.triggered_type == 4 and entity.shield_active == true 
+		if entity.triggered_type == 2 and entity.shield_active == true 
 		then
 			entity.is_stun_trap = true
 
@@ -462,7 +462,7 @@ function update_triggers(delta_seconds, entity)
 		end
 
 		--speed_boost
-		if entity.triggered_type == 7 and entity.speed_boost_triggered == false
+		if entity.triggered_type == 4 and entity.speed_boost_triggered == false
 		then
 			entity.speed_boost_triggered = true
 			entity.speed_boost_timer = 0.0
@@ -478,7 +478,7 @@ function update_triggers(delta_seconds, entity)
 		end
 
 		--double_jump
-		if entity.triggered_type == 8 and entity.double_jump_triggered == false
+		if entity.triggered_type == 5 and entity.double_jump_triggered == false
 		then
 			entity.double_jump_triggered = true
 			entity.can_double_jump = false
@@ -512,7 +512,7 @@ function update_triggers(delta_seconds, entity)
 		end
 
 		--random_buff
-		if entity.triggered_type == 2 and entity.random_buff_triggered == false
+		if entity.triggered_type == 7 and entity.random_buff_triggered == false
 		then
 			entity.random_buff_triggered = true
 			entity.random_buff_timer = 0.0
