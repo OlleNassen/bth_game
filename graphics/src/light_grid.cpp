@@ -38,22 +38,10 @@ LightGrid::LightGrid()
 	lights[10].position = glm::vec3{13.34f, 240.0f, -20.0f};
 	lights[10].color = glm::vec3{1.0f, 0.48f, 0.0f};
 
-	for (int i = 4; i < 12; ++i)
+	for (int i = 0; i < 11; ++i)
 	{
-		lights[i].intensity = 400.0f;
-	}
-	lights[4].intensity = 100.0f;
-	lights[5].intensity = 700.0f;
-	lights[6].intensity = 1000.0f;
-
-	for (int i = 0; i < 4; ++i)
-	{
-		lights[i].radius = 5.0f;
-	}
-
-	for (int i = 4; i < 32; ++i)
-	{
-		lights[i].radius = 1.0f;
+		lights[i].intensity = 10.0f;
+		lights[i].radius = lights[i].intensity;
 	}
 }
 

@@ -211,7 +211,7 @@ void main()
 		color = color * emission;
 	}
 
-	color *= (3+float(elem.count)) / 9.0;
+	//color *= (3+float(elem.count)) / 9.0;
 
     frag_color = vec4(color, 1.0);
 }
