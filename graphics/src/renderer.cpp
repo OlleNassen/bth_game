@@ -95,7 +95,7 @@ void Renderer::render(
 		render_character(robot_shader, game_camera, scene->moving_models, player_count); 
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbr, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
+			render_type(pbra, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
 
 		render_type(pbra, game_camera,a_to_render.first, a_to_render.last);
 		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
@@ -150,40 +150,34 @@ void Renderer::render(
 
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	if (player_count > 0)
-	{
-		if (!is_menu)
-		{
-			post_proccessing.use();
-			post_proccessing.uniform("scene_texture", 0);
-			post_proccessing.uniform("depth_texture", 1);
-			post_proccessing.uniform("screen_warning", 2);
-
-			scene_texture.bind_texture(0);
-			scene_texture.bind_texture(1);
-			post_processing_effects.texture.bind(2);
-
-			post_proccessing.uniform("pulse", post_processing_effects.glow_value);
-			post_processing_effects.render();
-
-			glDisable(GL_DEPTH_TEST);
-			if (game_state & state::pre_building)
-			{
-				if (build_stage_screen.transparency > 0.0f) // (!build_stage_screen.transparency < 0.0005f)
-				{
-					build_stage_screen.render(build_stage_screen_shader);
-				}
-			}
-			glEnable(GL_DEPTH_TEST);
-		}
-	}
-
 	overlays.render(overlay_shader);
 
 	//Text rendering
 	if (!is_menu)
 	{ 
+		post_proccessing.use();
+		post_proccessing.uniform("scene_texture", 0);
+		post_proccessing.uniform("depth_texture", 1);
+		post_proccessing.uniform("screen_warning", 2);
+
+		scene_texture.bind_texture(0);
+		scene_texture.bind_texture(1);
+		post_processing_effects.texture.bind(2);
+
+		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
+		post_processing_effects.render();
+		
+		if (game_state & state::pre_building)
+		{
+			glDisable(GL_DEPTH_TEST);
+			if (build_stage_screen.transparency > 0.0f) // (!build_stage_screen.transparency < 0.0005f)
+			{
+				build_stage_screen.render(build_stage_screen_shader);
+			}
+			glEnable(GL_DEPTH_TEST);
+		}
+
+
 		glDisable(GL_DEPTH_TEST);
 		std::stringstream out_text;
 		out_text << std::fixed << std::setprecision(1) << print_time;
@@ -481,6 +475,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	is_chat_visible = is_chat_on || time < 3s;
 
 	//--FX Calculations--
+	fx_emitter.timer += delta;
 	if (!is_chat_on)
 	{
 		//Dust
@@ -500,7 +495,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		//Godray
 		fx_emitter.calculate_godray_data(delta, game_camera);
-
+ 
 		//Lava Light
 		fx_emitter.calculate_lava_light_data(delta, game_camera);
 
@@ -510,21 +505,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Gust
 		fx_emitter.calculate_gust_data(delta, game_camera);
 
-		//if (build_infos.size() > 0)
-		//{
-		//	//Object 1
-		//	if (build_infos.size() >= 1)
-		//		fx_emitter.calculate_object_1_data(delta, game_camera, build_infos[0]);
-		//	//Object 2
-		//	if (build_infos.size() >= 2)
-		//		fx_emitter.calculate_object_2_data(delta, game_camera, build_infos[1]);
-		//	//Object 3
-		//	if (build_infos.size() >= 3)
-		//		fx_emitter.calculate_object_3_data(delta, game_camera, build_infos[2]);
-		//	//Object 4
-		//	if (build_infos.size() == 4)
-		//		fx_emitter.calculate_object_4_data(delta, game_camera, build_infos[3]);
-		//}
 		
 		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects);
 		

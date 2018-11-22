@@ -25,7 +25,7 @@ enum object_type
 	STUNTRAP,
 	GLIDETRAP,         //Lila
 	SPEEDBOOST,        //Gul
-	JUMPBOOST,         //Grön
+	DOUBLEJUMP,        //Grön
 	SHIELD,            //Ljusblå
 	RANDOM             //Random
 };
@@ -117,11 +117,11 @@ public:
 	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_object_data(std::chrono::milliseconds delta, const Camera& camera, std::vector<build_information> &build_info);
 	//void calculate_object_1_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 	//void calculate_object_2_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 	//void calculate_object_3_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
 	//void calculate_object_4_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	void calculate_object_data(std::chrono::milliseconds delta, const Camera& camera, std::vector<build_information> &build_info);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
@@ -133,24 +133,43 @@ public:
 	FXdata* fx_furnace_light_ptr = new FXdata{};
 	FXdata* fx_gust_ptr = new FXdata{};
 	FXdata* fx_stun_ptr = new FXdata{};
+	FXdata* fx_glide_ptr = new FXdata{};
+	FXdata* fx_speedboost_ptr = new FXdata{};
+	FXdata* fx_doublejump_ptr = new FXdata{};
+	FXdata* fx_shield_ptr = new FXdata{};
+	FXdata* fx_random_ptr = new FXdata{};
 	//FXdata* fx_object_1_ptr = new FXdata{};
 	//FXdata* fx_object_2_ptr = new FXdata{};
 	//FXdata* fx_object_3_ptr = new FXdata{};
 	//FXdata* fx_object_4_ptr = new FXdata{};
-	FXdata* fx_object_ptr = new FXdata{};
 
 private:
-	void render_particles(const FXdata& data) const;
+	int nr_of_stun = 0;
+	int nr_of_glide = 0;
+	int nr_of_speedboost = 0;
+	int nr_of_doublejump = 0;
+	int nr_of_shield = 0;
+	int nr_of_random = 0;
+	std::vector<glm::vec3> stun_loc;
+	std::vector<glm::vec3> glide_loc;
+	std::vector<glm::vec3> speedboost_loc;
+	std::vector<glm::vec3> doublejump_loc;
+	std::vector<glm::vec3> shield_loc;
+	std::vector<glm::vec3> random_loc;
 
+	void render_particles(const FXdata& data) const;
 	void gen_particle_buffer(FXdata& particle);
 	void particle_linear_sort(Particle* arr, int size);
 	int find_unused_particle(Particle* container, int lastUsedParticle);
 	void steam_right(glm::vec3 pos_vec);
 	void steam_back(glm::vec3 pos_vec);
 	void steam_left(glm::vec3 pos_vec);
-	void calculate_stun_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	void object_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	int num_of_objects = 0;
+	void calculate_stun_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_glide_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_speedboost_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_doublejump_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_random_data(std::chrono::milliseconds delta, const Camera& camera);
 };
 
 }

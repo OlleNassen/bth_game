@@ -248,17 +248,15 @@ void main()
 
 	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
     
-    vec3 color = ambient + Lo + emission; //emissive here?
+    vec3 color = ambient + Lo; //emissive here?
 
     // HDR tonemapping
     color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2));
 
-	if( emission.x > 0.0 )
-	{
-		color = color * emission;
-	}
+	color.rgb = color.rgb * abs(texture(emissive_map, fs_in.tex_coord).w - 1);
+	color.rgb += emission * texture(emissive_map, fs_in.tex_coord).w;
 
 	//color *= (3+float(elem.count)) / 9.0;
 

@@ -64,6 +64,7 @@ Game::Game()
 		dynamics[i].size = { 1.0f, 3.5f };
 		dynamics[i].forces = { 0.0f, 0.0f };
 		dynamics[i].impulse = { 0.0f, 0.0f };
+		dynamics[i].shield_active = false; //trigger
 		anim_states[i] = anim::idle;
 	}
 
@@ -272,7 +273,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-				placed_objects_list_id = random_picked_object(); 
+				placed_objects_list_id = random_picked_object();
 				collision_data data;
 				int m_id = level.add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
@@ -547,11 +548,12 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].size = dynamics[i].size;
 			obj[i].forces = dynamics[i].forces;
 			obj[i].impulse = dynamics[i].impulse;
+			obj[i].shield_active = dynamics[i].shield_active;
 		}
 
 		lua_data = gameplay.update(
 			{ delta, obj, triggers,
-			player_inputs, 
+			player_inputs,
 			anim_states,
 			players_placed_objects_id,
 			static_cast<int>(player_count),
@@ -566,6 +568,7 @@ void Game::update(std::chrono::milliseconds delta)
 			dynamics[i].forces = obj[i].forces;
 			dynamics[i].impulse = obj[i].impulse;
 			dynamics[i].is_stund = obj[i].is_stund;
+			dynamics[i].shield_active = obj[i].shield_active;
 		}
 	}
 
@@ -576,15 +579,15 @@ void Game::update(std::chrono::milliseconds delta)
 			if (!dynamics[i].is_stund) // test for placing objects script.
 			{
 
-				if (level.moving_models[i].is_animated)
-				{
-					level.moving_models[i].update_animation((float)delta.count(), anim_states[i]);
-				}
+			if (level.moving_models[i].is_animated)
+			{
+				level.moving_models[i].update_animation((float)delta.count(), anim_states[i]);
+			}
 
-				if (physics.rw[i] == true)
-					level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
-				else if (physics.lw[i] == true)
-					level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
+			if (physics.rw[i] == true)
+				level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+			else if (physics.lw[i] == true)
+				level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 
 
 					if (player_inputs[i][logic::button::right] == logic::button_state::held)
@@ -629,8 +632,11 @@ void Game::update(std::chrono::milliseconds delta)
 	anim idle = anim::falling;
 
 	for (auto& model : level.animated_models)
-			model.update_animation((float)delta.count(), idle);
+		model.update_animation((float)delta.count(), idle);
 
+	for (int i = 4; i < level.moving_models.size(); i++)
+		if(level.moving_models[i].is_animated)
+			level.moving_models[i].update_animation((float)delta.count(), idle);
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 
