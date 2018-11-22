@@ -269,6 +269,7 @@ function update_controls(delta_seconds, entity)
 
 		if entity.velocity.y > -0.01 and entity.velocity.y < 0 
 		then 
+			print("adam")
 			entity.velocity.y = 0
 			entity.anim.current = entity.anim.idle
 		end
