@@ -276,7 +276,7 @@ function update_controls(delta_seconds, entity)
 		--print("X: ", entity.velocity.x)
 		--print("Y: ", entity.velocity.y)
 
-		--[[if entity.velocity.y >= -1.0934910278593e-3 and entity.velocity.y < 0 
+		if entity.velocity.y >= -1.0934910278593e-3 and entity.velocity.y < 0 
 		then
 			entity.velocity.x = -5
 		elseif entity.velocity.y >= -1.0934910278593e-3 and entity.velocity.y < 0 and entity.button.right == true
