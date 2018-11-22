@@ -193,7 +193,7 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::loading)
 	{
-		level = graphics::GameScene("../resources/level/movement_test.ssp", &mesh_lib, &object_lib);
+		level = graphics::GameScene("../resources/level/level_1_testing.ssp", &mesh_lib, &object_lib);
 
 		gameplay.refresh();
 		gameplay.is_new_round = false;
