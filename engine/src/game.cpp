@@ -215,26 +215,32 @@ void Game::update(std::chrono::milliseconds delta)
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu))
 		{
 			if (net.id() == 0)
-				net_state.state = network::SessionState::loading;
-			game_state = (game_state | state::loading);
+				net_state.state = network::SessionState::pre_building;
+			game_state = (game_state | state::pre_building);
 		}
 	}
-	else if (net_state.state == network::SessionState::loading)
-	{
-		game_state = (game_state | state::loading);
+	//else if (net_state.state == network::SessionState::loading)
+	//{
+	//	game_state = (game_state | state::loading);
 
-		gameplay.refresh();
-		load_map(&level1);
+	//	gameplay.refresh();
+	//	load_map(&level1);
 
-		/*for (int i = 0; i < 4; ++i)
-			dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
+	//	/*for (int i = 0; i < 4; ++i)
+	//		dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
 
-		if (net.id() == 0)
-			net_state.state = network::SessionState::pre_building;
-		game_state = (game_state | state::pre_building);
-	}
+	//	if (net.id() == 0)
+	//		net_state.state = network::SessionState::pre_building;
+	//	game_state = (game_state | state::pre_building);
+	//}
 	else if (net_state.state == network::SessionState::pre_building)
 	{
+		if (level != &level1)
+		{ 
+			gameplay.refresh();
+			load_map(&level1);
+		}
+
 		//Render text of state and what to do.
 		game_state = (game_state | state::pre_building);
 		static float pre_build_timer = 3.5f;
