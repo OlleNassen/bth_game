@@ -27,7 +27,6 @@ start_round = true
 
 function update(delta_seconds, game, entities, player_count)
 
-	print(game.spike_frame)
 	game.clock = game.clock + delta_seconds
 	game.time = game.max_time - game.clock
 

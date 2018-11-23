@@ -26,10 +26,10 @@ Overlays::Overlays()
 {
 	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_no_battery.png"});
 	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_low_battery.png" });
-	waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_1.png" });
-	waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_2.png" });
-	waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_3.png" });
-	waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_4.png" });
+	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_1.png" });
+	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_2.png" });
+	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_3.png" });
+	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_4.png" });
 	death.push_back(Texture{ "../resources/textures/death_screen/death_1.png" });
 	death.push_back(Texture{ "../resources/textures/death_screen/death_2.png" });
 	death.push_back(Texture{ "../resources/textures/death_screen/death_3.png" });
@@ -82,7 +82,7 @@ void Overlays::update(
 	}
 
 	//Loading screen update
-	if (current_state & state::waiting)
+	/*if (current_state & state::waiting)
 	{
 		if (loading_timer > 4000ms)
 		{
@@ -93,7 +93,7 @@ void Overlays::update(
 			loading_timer += delta;
 		}
 	}
-
+*/
 	//Main menu update
 	if (current_state & state::menu)
 	{
@@ -181,7 +181,7 @@ void Overlays::render(const Shader & shader) const
 	{
 		//Render loading screen
 
-		if (loading_timer <= 1000ms)
+	/*	if (loading_timer <= 1000ms)
 		{
 			this->waiting.at(0).bind(0);
 		}
@@ -196,7 +196,7 @@ void Overlays::render(const Shader & shader) const
 		else if (loading_timer >= 3000ms)
 		{
 			this->waiting.at(3).bind(0);
-		}
+		}*/
 	}
 	if (current_state & state::menu)
 	{
