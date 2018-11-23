@@ -14,8 +14,7 @@ Game::Game()
 	, "Scrap Escape")
 	, mesh_lib{0}
 	, object_lib{1}
-	, level{"../resources/level/lobby.ssp", &mesh_lib, &object_lib}
-	, renderer{&level}
+	, renderer{&lobby}
 {
 	anim_states[0] = anim::idle;
 	anim_states[1] = anim::idle;
@@ -52,14 +51,14 @@ Game::Game()
 		player_inputs[3][static_cast<logic::button>(i)] = logic::button_state::none;
 	}	
 
-	physics.add_dynamic_body(level.v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body(level.v[1], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body(level.v[2], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
-	physics.add_dynamic_body(level.v[3], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(level->v[0], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(level->v[1], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(level->v[2], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
+	physics.add_dynamic_body(level->v[3], { 0.0, 1.75 }, 1, 3.5, { 0.0, 0.0 });
 
 	for (int i = 0; i < 4; ++i)
 	{
-		dynamics[i].position = level.v[i];
+		dynamics[i].position = level->v[i];
 		dynamics[i].velocity = { 0.0f, 0.0f };
 		dynamics[i].size = { 1.0f, 3.5f };
 		dynamics[i].forces = { 0.0f, 0.0f };
@@ -68,7 +67,7 @@ Game::Game()
 		anim_states[i] = anim::idle;
 	}
 
-	for (auto& coll : level.coll_data)
+	for (auto& coll : level->coll_data)
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f, 0.0f }, coll.width, coll.height, coll.trigger);
 
@@ -161,7 +160,7 @@ void Game::update(std::chrono::milliseconds delta)
 		net_state.state = network::SessionState::lobby;
 		game_state = (game_state | state::lobby);
 
-		load_map("../resources/level/lobby.ssp");
+		load_map(&lobby);
 	}
 
 	/*if (net_state.state == network::SessionState::waiting)
@@ -225,7 +224,7 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::loading);
 
 		gameplay.refresh();
-		load_map("../resources/level/level_1.ssp");
+		load_map(&level1);
 
 		/*for (int i = 0; i < 4; ++i)
 			dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
@@ -275,7 +274,7 @@ void Game::update(std::chrono::milliseconds delta)
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
 				placed_objects_list_id = 0;// random_picked_object();
 				collision_data data;
-				int m_id = level.add_object(data, placed_objects_list_id);
+				int m_id = level->add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
 
 				//std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "Type ID:\t" << placed_objects_list_id << std::endl << std::endl;
@@ -316,7 +315,7 @@ void Game::update(std::chrono::milliseconds delta)
 					dynamics[i].player_moving_object_type_id = -1;
 
 					collision_data data;
-					int m_id = level.add_object(data, obj_type_id);
+					int m_id = level->add_object(data, obj_type_id);
 					int d_id = physics.add_dynamic_body(dynamics[obj_id].position, { 0, 0 }, data.width, data.height, { 0, 0 }, obj_type_id);
 
 					//std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "\nType ID:\t" << obj_type_id << std::endl << std::endl;
@@ -348,7 +347,7 @@ void Game::update(std::chrono::milliseconds delta)
 							   
 				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
 								
-				level.moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
+				level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
 					players_placed_objects_id[i].place_state = 1;
@@ -379,20 +378,20 @@ void Game::update(std::chrono::milliseconds delta)
 				{
 					//Remove object
 					dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
-					level.moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
+					level->moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
 
 					int index = -1;
 					for (auto& dyn : dynamics)
 					{
-						if (dyn.model_id == level.moving_models.size() - 1)
+						if (dyn.model_id == level->moving_models.size() - 1)
 						{
 							index = dyn.model_id;
 							break;
 						}
 					}
 
-					std::swap(level.moving_models[ppoi.model_id], level.moving_models[index]);
-					level.moving_models.pop_back();
+					std::swap(level->moving_models[ppoi.model_id], level->moving_models[index]);
+					level->moving_models.pop_back();
 					physics.remove_body(ppoi.dynamics_id);
 
 					dynamics[ppoi.dynamics_id] = dynamics[index];
@@ -406,7 +405,7 @@ void Game::update(std::chrono::milliseconds delta)
 				{
 					glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
 					dynamics[players_placed_objects_id[i].dynamics_id].position = { pos.x, pos.y };
-					level.moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
+					level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 				}
 			}
 
@@ -498,7 +497,7 @@ void Game::update(std::chrono::milliseconds delta)
 			net_state.state = network::SessionState::lobby;
 		game_state = (game_state | state::lobby);
 
-		load_map("../resources/level/lobby.ssp");
+		load_map(&lobby);
 		//Set State -> lobby
 	}
 
@@ -581,34 +580,34 @@ void Game::update(std::chrono::milliseconds delta)
 			if (!dynamics[i].is_stund) // test for placing objects script.
 			{
 
-			if (level.moving_models[i].is_animated)
+			if (level->moving_models[i].is_animated)
 			{
-				level.moving_models[i].update_animation((float)delta.count(), anim_states[i]);
+				level->moving_models[i].update_animation((float)delta.count(), anim_states[i]);
 			}
 
 			if (physics.rw[i] == true)
-				level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+				level->moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
 			else if (physics.lw[i] == true)
-				level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
+				level->moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 
 
 					if (player_inputs[i][logic::button::right] == logic::button_state::held)
 					{
-						if (level.moving_models[i].get_state() != anim::hanging_right &&
-							level.moving_models[i].get_state() != anim::hanging_left &&
-							level.moving_models[i].get_state() != anim::turning &&
-							level.moving_models[i].get_state() != anim::connect_wall &&
-							level.moving_models[i].get_state() != anim::jump_from_wall)
-							level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
+						if (level->moving_models[i].get_state() != anim::hanging_right &&
+							level->moving_models[i].get_state() != anim::hanging_left &&
+							level->moving_models[i].get_state() != anim::turning &&
+							level->moving_models[i].get_state() != anim::connect_wall &&
+							level->moving_models[i].get_state() != anim::jump_from_wall)
+							level->moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
 					}
 					else if (player_inputs[i][logic::button::left] == logic::button_state::held)
 					{
-						if (level.moving_models[i].get_state() != anim::hanging_right &&
-							level.moving_models[i].get_state() != anim::hanging_left &&
-							level.moving_models[i].get_state() != anim::turning &&
-							level.moving_models[i].get_state() != anim::connect_wall  &&
-							level.moving_models[i].get_state() != anim::jump_from_wall)
-							level.moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
+						if (level->moving_models[i].get_state() != anim::hanging_right &&
+							level->moving_models[i].get_state() != anim::hanging_left &&
+							level->moving_models[i].get_state() != anim::turning &&
+							level->moving_models[i].get_state() != anim::connect_wall  &&
+							level->moving_models[i].get_state() != anim::jump_from_wall)
+							level->moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f));
 					}
 				}
 
@@ -620,20 +619,20 @@ void Game::update(std::chrono::milliseconds delta)
 					
 			if (!(game_state & state::building))
 			{
-				level.v[i] = pos;
-				level.moving_models[i].set_position(pos);
+				level->v[i] = pos;
+				level->moving_models[i].set_position(pos);
 			}
 		}
 	}
 
 	if (game_state & state::building)
 	{
-		level.v[net.id()] = { level.v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
+		level->v[net.id()] = { level->v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
 	}
 
 	anim idle = anim::falling;
 
-	for (auto& model : level.animated_models)
+	for (auto& model : level->animated_models)
 		model.update_animation((float)delta.count(), idle);
 
 	for (int i = 4; i < level.moving_models.size(); i++)
@@ -869,7 +868,7 @@ void Game::place_random_objects(float start_height, float map_width, int number_
 	for (int i = 99; i > 99 - number_of_randoms; i--)
 	{
 		collision_data data;
-		int model_id = level.add_object(data, 6);
+		int model_id = level->add_object(data, 6);
 		data.position = positions[rand_numb[abs(i - 99)]];
 		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 });
 
@@ -879,8 +878,7 @@ void Game::place_random_objects(float start_height, float map_width, int number_
 		dynamics[dynamic_id].forces = { 0.0f, 0.0f };
 		dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
 
-
-		level.moving_models[model_id].set_position(dynamics[dynamic_id].position);
+		level->moving_models[model_id].set_position(dynamics[dynamic_id].position);
 
 	}
 }
@@ -906,23 +904,24 @@ std::array<int, 4> Game::random_indexes()
 void Game::remove_object(int id)
 {
 	dynamics[id].position = glm::vec3{ 3000, 0, 0 };
-	level.moving_models[id].set_position(dynamics[id].position);
+	level->moving_models[id].set_position(dynamics[id].position);
 }
 
-void Game::load_map(const char*  file_path)
+void Game::load_map(graphics::GameScene* scene)
 {
 	physics.clear_object();
-	level.clear_object();
+	level->clear_object();
 
 	for (int i = 0; i < 4; ++i)
 		dynamics[i].position = glm::vec2(3.f * i, 2.5f);
 	for (int i = 4; i < dynamics.size(); ++i)
 		dynamics[i].position = glm::vec2(-20000.f, -20000.f);
 
-	level = graphics::GameScene(file_path, &mesh_lib, &object_lib);
+	renderer.switch_scene(scene);
+	level = scene;
 
 	physics.clear_static_object();
-	for (auto& coll : level.coll_data)
+	for (auto& coll : scene->coll_data)
 	{
 		physics.add_static_body(coll.position,
 			glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);

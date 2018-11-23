@@ -42,7 +42,13 @@ private:
 	
 	graphics::MeshLib mesh_lib;
 	graphics::MeshLib object_lib;
-	graphics::GameScene level;
+	
+	graphics::GameScene level1{"../resources/level/level_1.ssp", &mesh_lib, &object_lib};
+	graphics::GameScene level2{"../resources/level/level_1.ssp", &mesh_lib, &object_lib};
+	graphics::GameScene lobby{"../resources/level/lobby.ssp", &mesh_lib, &object_lib};
+
+	graphics::GameScene* level{&lobby};
+
 	graphics::Renderer renderer;
 
 	logic::Gameplay gameplay;
@@ -97,7 +103,7 @@ private:
 	//int placed_objects_array[4] = {2/*random*/, 3/*glide*/, 7/*speed*/, 6/*shield*/ };
 	int placed_objects_array[8] = { 0, 0, 2, 3, 4, 5, 6, 7 };
 
-	int random_picked_object() { return placed_objects_array[rand() % level.objects.size()]; };
+	int random_picked_object() { return placed_objects_array[rand() % level1.objects.size()]; };
 	std::array<int, 4> random_indexes();
 
 	//spectator
@@ -105,7 +111,7 @@ private:
 	int spikeframe = 0;
 	int turretframe = 0;
 	//New gameloop stuff
-	void load_map(const char* file_path);
+	void load_map(graphics::GameScene* scene);
 };
 
 
