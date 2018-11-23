@@ -252,7 +252,7 @@ private:
 	//Placing
 	int places = 1;
 	std::array<int, 4> placing = { -1, -1, -1, -1 };
-	std::array<int, 4> scores = { 4, 3, 2, 1 };
+	std::array<int, 4> scores_to_give = { 4, 3, 2, 1 };
 	
 	//Timer info
 	Text timer_text;
