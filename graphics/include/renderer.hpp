@@ -248,6 +248,11 @@ private:
 	//Test of leaderboard
 	glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
 	Leaderboard leaderboard;
+
+	//Placing
+	int places = 1;
+	std::array<int, 4> placing = { -1, -1, -1, -1 };
+	std::array<int, 4> scores = { 4, 3, 2, 1 };
 	
 	//Timer info
 	Text timer_text;

@@ -333,19 +333,6 @@ void Renderer::render(
 				timer_text.render_text(out_text.str(), current.x - (width * 0.5f), current.y, current_size);
 			}
 
-			static int places = 1;
-			static std::array<int, 4> placing = { -1, -1, -1, -1 };
-			static std::array<int, 4> scores = { 4, 3, 2, 1 };
-
-			for (int i = 0; i < player_count; i++)
-			{
-				if (finish[i] && placing[i] == -1)
-				{
-					placing[i] = places;
-					places++;
-				}
-			}
-
 			if (finish[player_id] && !died[player_id])
 			{
 				//Escaped	-- till 5 sekunder
@@ -377,7 +364,7 @@ void Renderer::render(
 				}
 			}
 
-			if ((died[player_id] || finish[player_id]) && (overlays.finished_timer <= 5000ms || overlays.death_timer >= 2000ms))
+			if ((died[player_id] || finish[player_id]) && overlays.finished_timer >= 5000ms)
 			{				
 				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 			}
@@ -509,9 +496,26 @@ void Renderer::update(std::chrono::milliseconds delta,
 			}
 		}
 	}
-	else if (game_state & state::playing && print_time <= 15.0f)
+	else if (game_state & state::playing)
 	{
-		post_processing_effects.update(delta);
+		if (print_time <= 15.0f)
+			post_processing_effects.update(delta);
+
+		for (int i = 0; i < player_count; i++)
+		{
+			if (finish[i] && placing[i] == -1)
+			{
+				placing[i] = places;
+				places++;
+			}
+		}
+	}
+
+	if (game_state & state::pre_playing)
+	{
+		places = 1;
+		placing = { -1, -1, -1, -1 };
+		scores = { 4, 3, 2, 1 };
 	}
 
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
