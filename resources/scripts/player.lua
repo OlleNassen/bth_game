@@ -72,16 +72,13 @@ function setup(entity)
 	entity.random_buff_max_timer = 10
 	entity.buffs_id = { 3, 4, 5, 6 }
 
+	entity.jump_speed = 0
+	entity.gravity = 120
+	entity.max_gravity = 1600 --1800
+
 end
 
-local jump_speed = 0
-local gravity = 120
-local max_gravity = 1600 --1800
-local wall_jump_speed = 
-{
-	x = 150,
-	y = 20
-}
+
 
 --[[local max_speed = 16
 local max_air_speed = 16
@@ -104,13 +101,13 @@ function update(delta_seconds, entity)
 	--Gravity 
 	if entity.anim.current == entity.anim.hanging_left and entity.velocity.y < 0 or entity.anim.current == entity.anim.hanging_right and entity.velocity.y < 0
 	then
-		entity.velocity.y = entity.velocity.y - gravity * 0.2 * delta_seconds
+		entity.velocity.y = entity.velocity.y - entity.gravity * 0.2 * delta_seconds
 		
 	else
-		entity.velocity.y = entity.velocity.y - gravity * delta_seconds
-		if entity.velocity.y < -max_gravity * delta_seconds
+		entity.velocity.y = entity.velocity.y - entity.gravity * delta_seconds
+		if entity.velocity.y < -entity.max_gravity * delta_seconds
 		then
-			entity.velocity.y = -max_gravity * delta_seconds
+			entity.velocity.y = -entity.max_gravity * delta_seconds
 		end
 	end
 
@@ -184,19 +181,19 @@ function update_controls(delta_seconds, entity)
 	then
 		if entity.can_jump and entity.button.jump == true
 		then
-			jump_speed = jump_speed + 1.1
+			entity.jump_speed = entity.jump_speed + 1.1
 			entity.jump_timer = entity.jump_timer + delta_seconds
 			
-			if jump_speed < 2.2
+			if entity.jump_speed < 2.2
 			then
 				entity.impulse.y = 29
-			elseif jump_speed > 2.2 and jump_speed < 6.6
+			elseif entity.jump_speed > 2.2 and entity.jump_speed < 6.6
 			then
 				
-				entity.impulse.y = jump_speed
+				entity.impulse.y = entity.jump_speed
 			end
 
-		elseif jump_speed > 0 and entity.button.jump == false or entity.jump_timer > 0.17 
+		elseif entity.jump_speed > 0 and entity.button.jump == false or entity.jump_timer > 0.17 
 		then
 			entity.anim.current = entity.anim.in_jump
 		end
@@ -207,7 +204,7 @@ function update_controls(delta_seconds, entity)
 	then 
 		if entity.can_jump
 		then
-			entity.impulse.y = jump_speed
+			entity.impulse.y = entity.jump_speed
 			entity.can_jump = false
 		end
 
@@ -241,7 +238,7 @@ function update_controls(delta_seconds, entity)
 	--Landing
 	if entity.anim.current == entity.anim.landing
 	then
-		jump_speed = 0
+		entity.jump_speed = 0
 		entity.ungrounded_time = 0	
 		entity.jump_timer = 0
 		entity.can_jump = true
