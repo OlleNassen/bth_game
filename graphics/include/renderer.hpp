@@ -101,8 +101,8 @@ public:
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
 
 		glPointSize(5.0f);
-		//glDrawArrays(GL_LINES, 0, lines.size());
-		glDrawArrays(GL_POINTS, 0, lines.size());
+		glDrawArrays(GL_LINES, 0, lines.size());
+		//glDrawArrays(GL_POINTS, 0, lines.size());
 	}
 
 	static void line_debug(const std::vector<glm::vec3>& lines)

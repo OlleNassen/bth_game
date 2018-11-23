@@ -439,7 +439,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			a_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->animated_models.front(), &scene->animated_models.back() };
 	}
 	
-	if (game_state & state::score)
+	if (game_state & state::score || game_state & state::lobby)
 	{
 		build_stage_screen.timer = 0ms;
 		build_stage_screen.transparency = 1.0f;
