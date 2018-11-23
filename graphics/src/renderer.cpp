@@ -150,7 +150,11 @@ void Renderer::render(
 
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	overlays.render(overlay_shader);
+
+	if (is_menu)
+	{
+		overlays.render(overlay_shader);
+	}
 
 	//Text rendering
 	if (!is_menu)
@@ -166,6 +170,8 @@ void Renderer::render(
 
 		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 		post_processing_effects.render();
+
+		overlays.render(overlay_shader);
 		
 		if (game_state & state::pre_building)
 		{

@@ -115,6 +115,8 @@ void Overlays::render(const Shader & shader) const
 	shader.use();
 	shader.uniform("overlay_texture", 0);
 
+	empty.bind(0);
+
 	if (current_state & state::playing)
 	{
 		//Render death screen
