@@ -351,12 +351,13 @@ void FX::steam_right(glm::vec3 pos_vec)
 
 			//Set default values for the particles, first off life and position.
 			fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
+			fx_steam.particle_container[particle_index].r_amp = 0;
 			fx_steam.particle_container[particle_index].life = 1.0f;
 			//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 			fx_steam.particle_container[particle_index].pos = pos_vec;
 
 			//Create a direction for the particles to travel
-			glm::vec3 main_dir = glm::vec3(60, 0, -1);
+			glm::vec3 main_dir = glm::vec3(40, 0, -1);
 			glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
 			glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
 			float spread_x = (rand() % 100 / 100.0f) + 1;
@@ -400,6 +401,7 @@ void FX::steam_back(glm::vec3 pos_vec)
 
 			//Set default values for the particles, first off life and position.
 			fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
+			fx_steam.particle_container[particle_index].r_amp = 0;
 			fx_steam.particle_container[particle_index].life = 1.0f;
 			//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 			fx_steam.particle_container[particle_index].pos = pos_vec;
@@ -456,12 +458,13 @@ void FX::steam_left(glm::vec3 pos_vec)
 
 			//Set default values for the particles, first off life and position.
 			fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
+			fx_steam.particle_container[particle_index].r_amp = 0;
 			fx_steam.particle_container[particle_index].life = 1.0f;
 			//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 			fx_steam.particle_container[particle_index].pos = pos_vec;
 
 			//Create a direction for the particles to travel
-			glm::vec3 main_dir = glm::vec3(-60, 0, -1);
+			glm::vec3 main_dir = glm::vec3(-40, 0, -1);
 			glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
 			glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
 			float spread_x = (rand() % 100 / 100.0f) + 1;
@@ -1024,20 +1027,17 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 		if (fx_steam.particle_container[i].life > 0.0f)
 		{
+			fx_steam.particle_container[i].r_amp += ((seconds.count() / 250.0f) * abs(fx_steam.particle_container[i].life - 1.0f));
 			//data.particle_container[i].speed += * seconds.count();
 			fx_steam.particle_container[i].pos += fx_steam.particle_container[i].speed / 50.0f * seconds.count();
+			fx_steam.particle_container[i].pos.y += fx_steam.particle_container[i].r_amp;
 			fx_steam.particle_container[i].camera_distance = glm::length(fx_steam.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
 			fx_steam.position_data[4 * fx_steam.total_particle_count + 0] = fx_steam.particle_container[i].pos.x;
-			if (fx_steam.particle_container[i].life <= 0.3f)
-			{
-				fx_steam.position_data[4 * fx_steam.total_particle_count + 1] = fx_steam.particle_container[i].pos.y * (abs(fx_steam.particle_container[i].life - 1.0f) * 2);
-			}
-			else
-			{
-				fx_steam.position_data[4 * fx_steam.total_particle_count + 1] = fx_steam.particle_container[i].pos.y;
-			}
+			
+			fx_steam.position_data[4 * fx_steam.total_particle_count + 1] = fx_steam.particle_container[i].pos.y;
+			
 			fx_steam.position_data[4 * fx_steam.total_particle_count + 2] = fx_steam.particle_container[i].pos.z;
 			fx_steam.position_data[4 * fx_steam.total_particle_count + 3] = fx_steam.particle_container[i].size * fx_steam.particle_container[i].life;
 			
