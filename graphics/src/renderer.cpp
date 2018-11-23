@@ -210,16 +210,6 @@ void Renderer::render(
 
 		if (game_state & state::building)
 		{
-			//Other Text
-			text_shader.use();
-			text_shader.uniform("projection", projection);
-			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-
-			build_text.render_text("Press 'Space' to place object", screen_width - 540, 10.f, 0.75f);
-			build_text.render_text("Build Stage", screen_width - 210, screen_height - 35.f, 0.75f);
-			build_text.render_text("Your object:", 10.f, 45.f, 0.75f);
-			build_text.render_text(objects_description[player_object_id], 10.f, 10.f, 0.75f);
-
 			//Timer
 			world_text_shader.use();
 			world_text_shader.uniform("view", game_camera.view());
@@ -235,6 +225,7 @@ void Renderer::render(
 			timer_text.render_text(out_text.str(), build_info[player_id].local_position.x - (width * 0.5f), build_info[player_id].local_position.y + 1.f, 0.02f);
 
 			//Build area
+			int total_players_ready = 0;
 			for (int i = 0; i < player_count; i++)
 			{
 				lines.use();
@@ -252,10 +243,27 @@ void Renderer::render(
 				else if (build_info[i].place_state == 2) //Has Placed
 				{
 					lines.uniform("line_color", glm::vec3(0.0f, 0.0f, 1.0f));
+					total_players_ready++;
 				}
-
+				
 				point_debug(build_info[i].debug_positions);
 			}
+
+			//Other Text
+			text_shader.use();
+			text_shader.uniform("projection", projection);
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+
+			build_text.render_text("Press 'Space' to place object", screen_width - 540, 10.f, 0.75f);
+			build_text.render_text("Build Stage", screen_width - 210, screen_height - 35.f, 0.75f);
+
+			out_text.str("");
+			out_text << total_players_ready << "/" << player_count;
+			build_text.render_text(out_text.str(), screen_width - 210, screen_height - 70.f, 0.75f);
+
+
+			build_text.render_text("Your object:", 10.f, 45.f, 0.75f);
+			build_text.render_text(objects_description[player_object_id], 10.f, 10.f, 0.75f);
 		}
 
 		if (game_state & state::pre_playing)
