@@ -55,21 +55,16 @@ void Model::set_position(glm::vec2 position)
 
 void Model::rotate(float degree)
 {
-	/*glm::mat3 rotation{ model };
-	glm::vec3 translation{ model[3][0], model[3][1], model[3][2] };
-
-	model = glm::mat4{ 1.0f };
-	model = glm::translate(model, translation);
-	model = glm::rotate(model, glm::radians(degree), {0.0f, 0.0f, 1.0f});
-	model = model * glm::mat4{rotation};*/
-
-
-	//Works but not for all
-	/*model = glm::translate(model, { 0.0, center_pivot.x / 2, 0.0 });
-	model = glm::rotate(model, glm::radians(degree), { 1,0,0 });
-	model = glm::translate(model, { 0.0, -center_pivot.x / 2, 0.0 });*/
-
 	model = glm::rotate(model, glm::radians(degree), { 0, 0, 1 });
+}
+
+void Model::set_rotation(float degree)
+{
+	glm::vec3 position = { model[3][0], model[3][1], model[3][2] };
+	glm::mat4 ident = glm::mat4(1.0f);
+	ident = glm::rotate(ident, glm::radians(degree), { 0, 0, 1 });
+	ident = glm::translate(ident, position);
+	model = ident;
 }
 
 glm::vec3 Model::get_position()const
@@ -81,7 +76,6 @@ glm::vec3 Model::get_color() const
 {
 	return emissive_color;
 }
-
 
 float Model::get_y_position() const
 {

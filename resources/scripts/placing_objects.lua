@@ -7,7 +7,7 @@ function setup(entity)
 end
 
 place_speed = 10
-max_time = 15.0
+max_time = 1500.0
 
 function update(delta_seconds, entity)
 
@@ -61,7 +61,7 @@ function update(delta_seconds, entity)
 	end
 	
 	maxHeight = 256.0
-	minHeight = 9.5
+	minHeight = 19.32
 
 	if entity.position.y < minHeight
 	then

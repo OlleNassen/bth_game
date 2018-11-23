@@ -64,7 +64,7 @@ LuaExport Gameplay::update(Input inputs,
 	if (current_state & state::pre_building)
 	{
 		for (int i = 0; i < 4; ++i)
-			inputs.dynamics[i].position = glm::vec2(3.f * i, 0.85f);
+			inputs.dynamics[i].position = glm::vec2(3.f * i, 0.9f);
 	}
 	
 	if (current_state & state::building)

@@ -27,6 +27,7 @@ public:
 	int trigger_type = -1;
 
 	OBB box;
+	glm::vec3 original_size;
 };
 
 CollisionManifold find_collision_features(Rigidbody& left, Rigidbody& right);
