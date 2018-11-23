@@ -772,7 +772,7 @@ void Game::pack_data()
 		net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
 	}
 
-	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0)
+	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0 && net_state.state != network::SessionState::lobby)
 		net_state.state = network::SessionState::waiting;
 }
 
