@@ -335,6 +335,8 @@ void Renderer::render(
 
 			static int places = 1;
 			static std::array<int, 4> placing = { -1, -1, -1, -1 };
+			static std::array<int, 4> scores = { 4, 3, 2, 1 };
+
 			for (int i = 0; i < player_count; i++)
 			{
 				if (finish[i] && placing[i] == -1)
@@ -369,7 +371,7 @@ void Renderer::render(
 				if (overlays.finished_timer <= 5000ms && overlays.finished_timer >= 3000ms)
 				{
 					out_text.str("");
-					out_text << "Score: +" << player_count;
+					out_text << "Score: +" << scores[placing[player_id] - 1];
 					width = build_text.get_text_width(out_text.str(), 0.75f);
 					build_text.render_text(out_text.str(), (screen_width * 0.5f) - (width * 0.5f) + 10.f, (screen_height * 0.5f) - 105.f, 0.75f);
 				}
