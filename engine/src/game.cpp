@@ -214,8 +214,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu))
 		{
-			if (net.id() == 0)
-				net_state.state = network::SessionState::loading;
+			net_state.state = network::SessionState::loading;
 			game_state = (game_state | state::loading);
 		}
 	}
