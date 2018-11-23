@@ -16,6 +16,7 @@ struct build_information
 	glm::vec3 local_position;
 	int object_id;
 	int place_state = 1;
+	int rotation_index = 0; //0 = left, 1 = up, 2 = right, 3 = down
 };
 
 enum object_type

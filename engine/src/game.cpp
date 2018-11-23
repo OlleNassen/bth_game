@@ -259,7 +259,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-				placed_objects_list_id = random_picked_object();
+				placed_objects_list_id = 2; //random_picked_object();
 				collision_data data;
 				int m_id = level.add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
@@ -334,10 +334,14 @@ void Game::update(std::chrono::milliseconds delta)
 							   
 				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
 						
-				//std::cout << pos.z << "\n";
-				//float degree = 90.f * pos.z;
+				dynamics[players_placed_objects_id[i].dynamics_id].rotation_index = static_cast<int>(pos.z);
 
-				//level.moving_models[players_placed_objects_id[i].model_id].set_rotation(degree);
+				float degree = 90.f * pos.z;
+
+				physics.set_rotation(players_placed_objects_id[i].dynamics_id, static_cast<int>(pos.z));
+
+				level.moving_models[players_placed_objects_id[i].model_id].set_rotation(degree);
+
 				level.moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
@@ -722,6 +726,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 			info.local_position = glm::vec3(dynamics[i].position.x, dynamics[i].position.y, 0.0f);
 			info.object_id = dynamics[i].objects_type_id;
+			info.rotation_index = dynamics[i].rotation_index;
 
 			all_placed_objects.push_back(info);
 		}
