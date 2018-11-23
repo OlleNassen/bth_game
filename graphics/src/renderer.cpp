@@ -259,7 +259,7 @@ void Renderer::render(
 
 			out_text.str("");
 			out_text << total_players_ready << "/" << player_count;
-			build_text.render_text(out_text.str(), screen_width - 210, screen_height - 70.f, 0.75f);
+			build_text.render_text(out_text.str(), screen_width - 65.f, screen_height - 65.f, 0.75f);
 
 
 			build_text.render_text("Your object:", 10.f, 45.f, 0.75f);
