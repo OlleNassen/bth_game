@@ -666,15 +666,7 @@ function update_triggers(delta_seconds, entity)
 		then
 			entity.random_assigned = true
 
-
-			rand = 1
-			id = entity.buffs_id[rand]
-
-			while id == entity.random_last
-			do
-				rand = 1
-				id = entity.buffs_id[rand]
-			end
+			id = entity.buffs_id[1]
 
 			entity.random_last = id
 
