@@ -145,6 +145,7 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		net_state.state = network::SessionState::lobby;
 		game_state = (game_state | state::lobby);
+		gameplay.refresh();
 
 		load_map("../resources/level/lobby.ssp");
 	}
