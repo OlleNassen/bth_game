@@ -120,6 +120,11 @@ public:
 		glDrawArrays(GL_POINTS, 0, lines.size());
 	}
 
+	void switch_scene(GameScene* scene)
+	{
+		this->scene = scene;
+	}
+
 private:
 	void render_type(const Shader& shader, const Camera& camera, 
 		const Model* first, const Model* last) const;
