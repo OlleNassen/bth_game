@@ -347,7 +347,11 @@ void Game::update(std::chrono::milliseconds delta)
 				//level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
 							   
 				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
-								
+						
+				//std::cout << pos.z << "\n";
+				//float degree = 90.f * pos.z;
+
+				//level.moving_models[players_placed_objects_id[i].model_id].set_rotation(degree);
 				level.moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
@@ -409,6 +413,11 @@ void Game::update(std::chrono::milliseconds delta)
 					level.moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 				}
 			}
+
+			/*for (int i = 4; i < 8; i++)
+			{
+				std::cout << "Dynamic: " << dynamics[i].position.x << " - " << dynamics[i].position.y << "\n";
+			}*/
 
 			give_players_objects = false;
 		}
