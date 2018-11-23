@@ -40,7 +40,6 @@ public:
 	int dynamic_id = -1;
 	int model_id = -1;
 	int objects_type_id = -1;
-	int rotation_index = 0; //0 = left, 1 = up, 2 = right, 3 = down
 	bool is_stund;
 
 	int player_moving_object_type_id = -1;

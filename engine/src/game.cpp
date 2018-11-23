@@ -333,8 +333,6 @@ void Game::update(std::chrono::milliseconds delta)
 				//level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
 							   
 				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
-						
-				dynamics[players_placed_objects_id[i].dynamics_id].rotation_index = static_cast<int>(pos.z);
 
 				float degree = 90.f * pos.z;
 
@@ -726,7 +724,6 @@ void Game::update(std::chrono::milliseconds delta)
 
 			info.local_position = glm::vec3(dynamics[i].position.x, dynamics[i].position.y, 0.0f);
 			info.object_id = dynamics[i].objects_type_id;
-			info.rotation_index = dynamics[i].rotation_index;
 
 			all_placed_objects.push_back(info);
 		}
