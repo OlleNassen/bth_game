@@ -217,8 +217,8 @@ void Game::update(std::chrono::milliseconds delta)
 			dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
 
 		if (net.id() == 0)
-			net_state.state = network::SessionState::pre_building;
-		game_state = (game_state | state::pre_building);
+			net_state.state = network::SessionState::playing;
+		game_state = (game_state | state::playing);
 	}
 	else if (net_state.state == network::SessionState::pre_building)
 	{

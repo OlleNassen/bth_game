@@ -333,6 +333,48 @@ void Renderer::render(
 				timer_text.render_text(out_text.str(), current.x - (width * 0.5f), current.y, current_size);
 			}
 
+			static int places = 1;
+			static std::array<int, 4> placing = { -1, -1, -1, -1 };
+			for (int i = 0; i < player_count; i++)
+			{
+				if (finish[i] && placing[i] == -1)
+				{
+					placing[i] = places;
+					places++;
+				}
+			}
+
+			if (finish[player_id] && !died[player_id])
+			{
+				//Escaped	-- till 5 sekunder
+				//Place -- Efter 1.5 sekunder till 5 sekunder
+				//Score -- Efter 3 sekunder till 5 sekunder
+
+				float width = 0;
+
+				if (overlays.finished_timer <= 5000ms)
+				{
+					width = build_text.get_text_width("Escaped", 2.f);
+					build_text.render_text("Escaped", (screen_width * 0.5f) - (width * 0.5f), (screen_height * 0.5f) + 35.f, 2.f);
+				}
+
+				if (overlays.finished_timer <= 5000ms && overlays.finished_timer >= 1500ms)
+				{
+					out_text.str("");
+					out_text << "Place: " << placing[player_id];
+					width = build_text.get_text_width(out_text.str(), 1.25f);
+					build_text.render_text(out_text.str(), (screen_width * 0.5f) - (width * 0.5f) + 20.f, (screen_height * 0.5f) - 35.f, 1.25f);
+				}
+
+				if (overlays.finished_timer <= 5000ms && overlays.finished_timer >= 3000ms)
+				{
+					out_text.str("");
+					out_text << "Score: +" << player_count;
+					width = build_text.get_text_width(out_text.str(), 0.75f);
+					build_text.render_text(out_text.str(), (screen_width * 0.5f) - (width * 0.5f) + 10.f, (screen_height * 0.5f) - 105.f, 0.75f);
+				}
+			}
+
 			if ((died[player_id] || finish[player_id]) && (overlays.finished_timer <= 5000ms || overlays.death_timer >= 2000ms))
 			{				
 				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
@@ -450,7 +492,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	if (game_state & state::score || game_state & state::lobby)
 	{
 		build_stage_screen.timer = 0ms;
-		build_stage_screen.transparency = 1.0f;
+		build_stage_screen.transparency = 0.8f;
 	}
 
 	if (!(game_state & state::playing))
