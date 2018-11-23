@@ -35,17 +35,20 @@ function update(delta_seconds, game, entities, player_count)
 		start_round = false
 
 		-- Start positions
-		entities[1].position.x = 0
-		entities[1].position.y = 0.85
+		for i = 1, 4, 1
+		do
+			entities[i].position.x = 3 * (i - 1)
+			entities[i].position.y = 0.9
 
-		entities[2].position.x = 3
-		entities[2].position.y = 0.85
+			entities[i].impulse.x = 0
+			entities[i].impulse.y = 0
 
-		entities[3].position.x = 6
-		entities[3].position.y = 0.85
+			entities[i].velocity.x = 0
+			entities[i].velocity.y = 0
 
-		entities[4].position.x = 9
-		entities[4].position.y = 0.85
+			game.finished[i] = false
+			game.died[i] = false
+		end
 		
 		game.max_points = player_count * 3
 		game.points = player_count -- Don't change unless you know what you're doing :)

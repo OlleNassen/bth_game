@@ -28,6 +28,8 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 
 	body.trigger_type = trigger_type; // test triggers
 
+	body.original_size = size;
+
 	bodies.push_back(body);
 
 	return bodies.size() - 1;
@@ -429,9 +431,17 @@ std::vector<glm::vec3> World::get_debug_for(int id) const
 	return out_vertices;
 }
 
-void World::rotate_static_box(int id)
+void World::set_rotation(int id, int index)
 {
-	static_box_colliders[id].rotate_colliders();
+	if (index == 2 || index == 4)
+	{
+		bodies[id].box.size = bodies[id].original_size;
+	}
+	else if (index == 1 || index == 3)
+	{
+		bodies[id].box.size.x = bodies[id].original_size.y;
+		bodies[id].box.size.y = bodies[id].original_size.x;
+	}
 }
 
 void World::remove_body(int at)
@@ -536,10 +546,10 @@ glm::vec3 find_closest_wall(
 	//float t = raycast(closest_body.box, Ray(player.position, direction));
 	
 	std::array<glm::vec3, 4> directions = {
-		glm::vec3{0, 1, 0},
-		glm::vec3{0, -1, 0},
 		glm::vec3{1, 0, 0},
-		glm::vec3{-1, 0, 0}
+		glm::vec3{0, 1, 0},
+		glm::vec3{-1, 0, 0},
+		glm::vec3{0, -1, 0}		
 	};
 
 	float t = 7.f;
@@ -560,17 +570,29 @@ glm::vec3 find_closest_wall(
 
 	glm::vec3 width_height = { 0, 0, 0 };
 
-	if (index == 0)
-		width_height.y = -player.box.size.y;
-	else if (index == 1)
-		width_height.y = player.box.size.y;
-	else if (index == 2)
+	/*if (index == 0)
 		width_height.x = -player.box.size.x;
-	else if (index == 3)
+	else if (index == 1)
+		width_height.y = -player.box.size.y;
+	else if (index == 2)
 		width_height.x = player.box.size.x;
+	else if (index == 3)
+		width_height.y = player.box.size.y;*/
+
+	if (index == 0)
+		width_height.x = -player.original_size.y;
+	else if (index == 1)
+		width_height.y = -player.original_size.y;
+	else if (index == 2)
+		width_height.x = player.original_size.y;
+	else if (index == 3)
+		width_height.y = player.original_size.y;
 
 	if (index != -1)
-		return (player.box.position + directions[index] * t) + width_height;
+	{
+		glm::vec3 out = (player.box.position + directions[index] * t) + width_height;
+		return { out.x, out.y, index + 1 };
+	}
 
 	return player.box.position;
 }

@@ -71,7 +71,6 @@ void Overlays::update(
 			death_timer = 0ms;
 		}
 		//Finish screen update
-
 		if (has_finished && !is_dead)
 		{
 			finished_timer += delta;
@@ -148,7 +147,7 @@ void Overlays::render(const Shader & shader) const
 			}
 		}
 		//Render finished screen
-		if (!is_dead && has_finished && finished_timer <= 5000ms)
+		/*if (!is_dead && has_finished && finished_timer <= 5000ms)
 		{
 			if (finished_timer <= 1500ms)
 			{
@@ -176,7 +175,7 @@ void Overlays::render(const Shader & shader) const
 				if (player_id == 3)
 					this->finish_4_2.bind(0);
 			}
-		}
+		}*/
 	}
 	if (current_state & state::waiting)
 	{

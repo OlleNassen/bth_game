@@ -123,21 +123,6 @@ void Game::render()
 		build_info.push_back(info);
 	}
 
-	//for (int i = 0; i < static_cast<int>(player_count); i++)
-	//{
-	//	int d_id = players_placed_objects_id[i].dynamics_id;
-	//	build_information info;
-	//
-	//	glm::vec3 pos = physics.get_closest_wall_point(d_id);
-	//
-	//	//info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
-	//	info.debug_positions.emplace_back(pos); //physics.get_debug_for(d_id);
-	//	info.place_state = players_placed_objects_id[i].place_state;
-	//	info.object_id = players_placed_objects_id[i].model_type_id;
-	//
-	//	build_info.push_back(info);
-	//}
-
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
@@ -159,6 +144,7 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		net_state.state = network::SessionState::lobby;
 		game_state = (game_state | state::lobby);
+		gameplay.refresh();
 
 		load_map(&lobby);
 	}
@@ -210,29 +196,42 @@ void Game::update(std::chrono::milliseconds delta)
 
 	if ((net_state.state == network::SessionState::lobby))
 	{
+		if (level != &lobby)
+		{
+			load_map(&lobby);
+		}
+
 		game_state = (game_state | state::lobby);
 
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu))
 		{
-			net_state.state = network::SessionState::loading;
-			game_state = (game_state | state::loading);
+			if (net.id() == 0)
+				net_state.state = network::SessionState::pre_building;
+			game_state = (game_state | state::pre_building);
 		}
 	}
-	else if (net_state.state == network::SessionState::loading)
-	{
-		game_state = (game_state | state::loading);
+	//else if (net_state.state == network::SessionState::loading)
+	//{
+	//	game_state = (game_state | state::loading);
 
-		gameplay.refresh();
-		load_map(&level1);
+	//	gameplay.refresh();
+	//	load_map(&level1);
 
-		/*for (int i = 0; i < 4; ++i)
-			dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
+	//	/*for (int i = 0; i < 4; ++i)
+	//		dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
 
-		net_state.state = network::SessionState::pre_building;
-		game_state = (game_state | state::pre_building);
-	}
+	//	if (net.id() == 0)
+	//		net_state.state = network::SessionState::pre_building;
+	//	game_state = (game_state | state::pre_building);
+	//}
 	else if (net_state.state == network::SessionState::pre_building)
 	{
+		if (level != &level1)
+		{ 
+			gameplay.refresh();
+			load_map(&level1);
+		}
+
 		//Render text of state and what to do.
 		game_state = (game_state | state::pre_building);
 		static float pre_build_timer = 3.5f;
@@ -248,7 +247,8 @@ void Game::update(std::chrono::milliseconds delta)
 		if (pre_build_timer <= 0.0f)
 		{
 			pre_build_timer = 3.5f;
-			net_state.state = network::SessionState::building;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::building;
 			game_state = (game_state | state::building);
 		}
 	}
@@ -343,7 +343,13 @@ void Game::update(std::chrono::milliseconds delta)
 				//level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
 							   
 				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
-								
+
+				float degree = 90.f * pos.z;
+
+				physics.set_rotation(players_placed_objects_id[i].dynamics_id, static_cast<int>(pos.z));
+
+				level->moving_models[players_placed_objects_id[i].model_id].set_rotation(degree);
+
 				level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
@@ -358,7 +364,8 @@ void Game::update(std::chrono::milliseconds delta)
 		//Set State -> pre_playing
 		if (!gameplay.build_stage(static_cast<int>(player_count)))
 		{
-			net_state.state = network::SessionState::pre_playing;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::pre_playing;
 			game_state = (game_state | state::pre_playing);
 		}
 	}
@@ -405,6 +412,11 @@ void Game::update(std::chrono::milliseconds delta)
 				}
 			}
 
+			/*for (int i = 4; i < 8; i++)
+			{
+				std::cout << "Dynamic: " << dynamics[i].position.x << " - " << dynamics[i].position.y << "\n";
+			}*/
+
 			give_players_objects = false;
 		}
 		
@@ -416,7 +428,8 @@ void Game::update(std::chrono::milliseconds delta)
 		if (lua_data.time <= 0.5f)
 		{
 			watching = net.id();
-			net_state.state = network::SessionState::playing;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::playing;
 			game_state = (game_state | state::playing);
 		}
 
@@ -449,7 +462,8 @@ void Game::update(std::chrono::milliseconds delta)
 		if (lua_data.time <= 0.0f)
 		{
 			all_finished_timer = 3.5f;
-			net_state.state = network::SessionState::score;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::score;
 			game_state = (game_state | state::score);
 		}
 	}
@@ -465,7 +479,8 @@ void Game::update(std::chrono::milliseconds delta)
 			//Set State -> game_over
 		if (lua_data.game_over)
 		{
-			net_state.state = network::SessionState::game_over;
+			if (net.id() == 0)
+				net_state.state = network::SessionState::game_over;
 			game_state = (game_state | state::game_over);
 		}
 		else //Otherwise distribute score and //Set State -> pre_building
@@ -473,7 +488,8 @@ void Game::update(std::chrono::milliseconds delta)
 			if (score_timer <= 0.0f)
 			{
 				score_timer = 3.5f; 
-				net_state.state = network::SessionState::pre_building;
+				if (net.id() == 0)
+					net_state.state = network::SessionState::pre_building;
 				game_state = (game_state | state::pre_building);
 				//gameplay.new_round();
 			}
@@ -485,7 +501,8 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::game_over);
 
 
-		net_state.state = network::SessionState::lobby;
+		if (net.id() == 0)
+			net_state.state = network::SessionState::lobby;
 		game_state = (game_state | state::lobby);
 
 		load_map(&lobby);
@@ -762,7 +779,7 @@ void Game::pack_data()
 		net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
 	}
 
-	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0)
+	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0 && net_state.state != network::SessionState::lobby)
 		net_state.state = network::SessionState::waiting;
 }
 
