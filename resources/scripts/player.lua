@@ -52,6 +52,26 @@ function setup(entity)
 	entity.random_assigned = false
 	entity.random_last = 0
 	entity.random_buff_timer = 0.0
+
+	--triggers
+
+
+	entity.shock_trap_max_timer = 3
+	entity.shock_trap_immune_max_timer = 5
+	
+	entity.max_speed_boost = 16 * 1.5
+	entity.max_speed_boost_air = 16 * 1.5
+	entity.speed_boost_max_timer = 10
+	
+	entity.double_jump_impulse = 40
+	entity.double_jump_timer_max = 10
+	
+	entity.glide_trap_max_timer = 10
+	entity.glide_decrease = 0.0055
+	
+	entity.random_buff_max_timer = 10
+	entity.buffs_id = { 3, 4, 5, 6 }
+
 end
 
 local jump_speed = 0
@@ -70,34 +90,9 @@ local deceleration = 60
 local   = 100
 ]]--
 
---triggers
-
---shock_trap
-local shock_trap_max_timer = 3
-local shock_trap_immune_max_timer = 5
-
---speed boost
-local max_speed_boost = 16 * 1.5
-local max_speed_boost_air = 16 * 1.5
-local speed_boost_max_timer = 10
-
---double jump
-local double_jump_impulse = 40
-local double_jump_timer_max = 10
-
---glide_trap
-local glide_trap_max_timer = 10
-local glide_decrease = 0.0055
-
---random_buff
-local random_buff_max_timer = 10
-local buffs_id = { 3, 4, 5, 6 }
-
 
 function update(delta_seconds, entity)
 	
-	math.randomseed( os.time() )
-
 	if entity.stun_trap_triggered == false
 	then
 		update_controls(delta_seconds, entity)
@@ -533,7 +528,7 @@ function update_triggers(delta_seconds, entity)
 	--trap and boost "functions"
 
 	--stun trap
-	if	entity.stun_trap_triggered == true and entity.stun_trap_timer <= shock_trap_max_timer --stun timer
+	if	entity.stun_trap_triggered == true and entity.stun_trap_timer <= entity.shock_trap_max_timer --stun timer
 	then
 		entity.stun_trap_timer = entity.stun_trap_timer + delta_seconds
 
@@ -546,7 +541,7 @@ function update_triggers(delta_seconds, entity)
 		entity.stun_trap_immune = true
 	end
 
-	if	entity.stun_trap_immune_timer <= shock_trap_immune_max_timer and entity.stun_trap_immune == true --immune timer
+	if	entity.stun_trap_immune_timer <= entity.shock_trap_immune_max_timer and entity.stun_trap_immune == true --immune timer
 	then
 		entity.stun_trap_immune_timer = entity.stun_trap_immune_timer + delta_seconds
 
@@ -557,7 +552,7 @@ function update_triggers(delta_seconds, entity)
 
 
 	--glide_trap
-	if entity.glide_trap_triggered == true and entity.glide_trap_timer <= glide_trap_max_timer
+	if entity.glide_trap_triggered == true and entity.glide_trap_timer <= entity.glide_trap_max_timer
 	then
 		entity.glide_trap_timer = entity.glide_trap_timer + delta_seconds
 
@@ -566,7 +561,7 @@ function update_triggers(delta_seconds, entity)
 		if entity.button.right or entity.button.left or entity.anim.current == entity.anim.falling
 		then
 			entity.friction = entity.velocity.x
-			entity.friction_slowrate = entity.velocity.x * glide_decrease
+			entity.friction_slowrate = entity.velocity.x * entity.glide_decrease
 		end
 	
 		if entity.button.right == false and entity.button.left == false
@@ -594,7 +589,7 @@ function update_triggers(delta_seconds, entity)
 
 
 	--speed_boost
-	if entity.speed_boost_triggered == true and entity.speed_boost_timer <= speed_boost_max_timer
+	if entity.speed_boost_triggered == true and entity.speed_boost_timer <= entity.speed_boost_max_timer
 	then
 		entity.speed_boost_timer = entity.speed_boost_timer + delta_seconds
 
@@ -604,20 +599,20 @@ function update_triggers(delta_seconds, entity)
 			then
 				if entity.button.right
 				then
-					entity.velocity.x = max_speed_boost_air--right
+					entity.velocity.x = entity.max_speed_boost_air--right
 				
 				elseif entity.button.left
 				then 
-					entity.velocity.x = -max_speed_boost_air --left
+					entity.velocity.x = -entity.max_speed_boost_air --left
 				end
 			else
 				if entity.button.right
 				then
-					entity.velocity.x = max_speed_boost--right
+					entity.velocity.x = entity.max_speed_boost--right
 				
 				elseif entity.button.left
 				then 
-					entity.velocity.x = -max_speed_boost --left
+					entity.velocity.x = -entity.max_speed_boost --left
 				end
 			end
 		end
@@ -629,7 +624,7 @@ function update_triggers(delta_seconds, entity)
 
 
 	--double_jump
-	if entity.double_jump_triggered == true and entity.double_jump_timer <= double_jump_timer_max
+	if entity.double_jump_triggered == true and entity.double_jump_timer <= entity.double_jump_timer_max
 	then 
 
 		entity.double_jump_timer = entity.double_jump_timer + delta_seconds
@@ -638,7 +633,7 @@ function update_triggers(delta_seconds, entity)
 		then
 			if entity.button.jump and entity.now_you_can_jump and entity.have_double_jumped == false and entity.in_wall_jump_state == false 
 			then
-				entity.velocity.y = double_jump_impulse
+				entity.velocity.y = entity.double_jump_impulse
 				entity.can_double_jump = false
 				entity.have_double_jumped = true
 
@@ -665,7 +660,7 @@ function update_triggers(delta_seconds, entity)
 	end
 
 	--random_buff
-	if entity.random_buff_triggered == true and entity.random_buff_timer <= random_buff_max_timer
+	if entity.random_buff_triggered == true and entity.random_buff_timer <= entity.random_buff_max_timer
 	then
 
 		entity.random_buff_timer = entity.random_buff_timer + delta_seconds
@@ -675,37 +670,37 @@ function update_triggers(delta_seconds, entity)
 			entity.random_assigned = true
 
 
-			rand = math.random(1, 4)
-			id = buffs_id[rand]
+			rand = 1
+			id = entity.buffs_id[rand]
 
 			while id == entity.random_last
 			do
-				rand = math.random(1, 4)
-				id = buffs_id[rand]
+				rand = 1
+				id = entity.buffs_id[rand]
 			end
 
 			entity.random_last = id
 
-			if id == buffs_id[1] --glide_trap
+			if id == entity.buffs_id[1] --glide_trap
 			then
 				--print("glide trap")
 				entity.glide_trap_triggered = true
 				entity.glide_trap_timer = 0.0
 
-			elseif id == buffs_id[2] --speed_boost
+			elseif id == entity.buffs_id[2] --speed_boost
 			then
 				--print("speed boost")
 				entity.speed_boost_triggered = true
 				entity.speed_boost_timer = 0.0
 
-			elseif id == buffs_id[3] --double_jump
+			elseif id == entity.buffs_id[3] --double_jump
 			then
 				--print("double jump")
 				entity.double_jump_triggered = true
 				entity.double_jump_timer = 0.0
 				entity.can_double_jump = false
 
-			elseif id == buffs_id[4] --shield
+			elseif id == entity.buffs_id[4] --shield
 			then
 				--print("shield player")
 				entity.shield_active = true;
