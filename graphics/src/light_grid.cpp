@@ -13,36 +13,57 @@ bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z
 LightGrid::LightGrid()
 {	
 	//Player Light
-	lights[0].color = glm::vec3{ 0.9f, 1.0f, 1.0f };
+	lights[0].color = glm::vec3{ 0.9f, 0.1f, 0.1f };
 	lights[0].intensity = 30;
+	lights[0].radius = lights[0].intensity;
 	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
 	lights[1].intensity = 30;
+	lights[1].radius = lights[1].intensity;
 	lights[2].color = glm::vec3{ 0.1f, 0.1f, 0.9f };
 	lights[2].intensity = 30;
+	lights[2].radius = lights[2].intensity;
 	lights[3].color = glm::vec3{ 0.9f, 0.8f, 0.1f };
 	lights[3].intensity = 30;
+	lights[3].radius = lights[3].intensity;
 
 	//Map Light
-	lights[4].position = glm::vec3{-5.625f, 0.0f, -20.0f};
-	lights[4].color = glm::vec3{1.0f, 0.38f, 0.0f};
-	lights[5].position = glm::vec3{-5.32f, 40.0f, -20.0f};
-	lights[5].color = glm::vec3{0.0f, 0.82f, 1.0f};
-	lights[6].position = glm::vec3{15.821f, 80.0f, -20.0f};
-	lights[6].color = glm::vec3{1.0f, 0.48f, 0.0f};
-	lights[7].position = glm::vec3{-11.853f, 120.0f, -20.0f};
-	lights[7].color = glm::vec3{0.0f, 0.82f, 1.0f};
-	lights[8].position = glm::vec3{13.34f,160.0f,-20.0f};
-	lights[8].color = glm::vec3{1.0f, 0.48f, 0.0f};
-	lights[9].position = glm::vec3{-11.853f, 200.0f,-20.0f};
-	lights[9].color = glm::vec3{0.0f, 0.82f, 1.0f};
-	lights[10].position = glm::vec3{13.34f, 240.0f, -20.0f};
-	lights[10].color = glm::vec3{1.0f, 0.48f, 0.0f};
+	lights[4].position = glm::vec3{ -0.145,-6.289,8.929 };
+	lights[4].color = glm::vec3{ 1,0.2,0 };
+	lights[5].position = glm::vec3{ -7.73,23.368,-22.735 };
+	lights[5].color = glm::vec3{ 1,0.2,0 };
+	lights[6].position = glm::vec3{ -7.74,44,-22.984 };
+	lights[6].color = glm::vec3{ 1,0.2,0 };
+	lights[7].position = glm::vec3{ 0, 123.035, -23.725 };
+	lights[7].color = glm::vec3{ 0, 0.82, 1 };
+	lights[8].position = glm::vec3{ 0, 187.484, -18.185 };
+	lights[8].color = glm::vec3{ 1, 0.2, 0 };
+	lights[9].position = glm::vec3{ 0, 208.400, -34.226 };
+	lights[9].color = glm::vec3{ 1, 0.2, 0 };
+	lights[10].position = glm::vec3{ 0, 260.169, 5.0 };
+	lights[10].color = glm::vec3{ 1, 1, 1 };
+	lights[11].position = glm::vec3{ 0, 88.553, -29.053 };
+	lights[11].color = glm::vec3{ 1, 0.2, 0 };
+	lights[12].position = glm::vec3{ 0, 135.246, -11.474 };
+	lights[12].color = glm::vec3{ 1, 0.2, 0 };
 
-	for (int i = 0; i < 11; ++i)
+	for (int i = 4; i < 13; i++)
 	{
-		lights[i].intensity = 10.0f;
+		lights[i].intensity = 400;
+	}
+	
+	for (int i = 0; i < 13; i++)
+	{
 		lights[i].radius = lights[i].intensity;
 	}
+
+	lights[5].intensity = 700;
+	lights[6].intensity = 700;
+
+	//for (int i = 4; i < 11; ++i)
+	//{
+	//	lights[i].intensity = 30.0f;
+	//	lights[i].radius = lights[i].intensity;
+	//}
 }
 
 const light_grid_element* LightGrid::data() const
