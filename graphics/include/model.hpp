@@ -43,7 +43,7 @@ public:
 	Mesh* mesh; //Change where this is created and implement flyweight pattern
 
 private:
-	Animation_handler animation_handler;
+	Animation_handler* animation_handler;
 	glm::mat4 model;
 	glm::vec3 light_pos{ 0, 3, 1 };
 };

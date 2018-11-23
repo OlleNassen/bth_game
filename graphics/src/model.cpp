@@ -40,7 +40,7 @@ void Model::switch_animation(anim enm)
 
 int Model::getCurrentKeyframe()
 {
-	return this->animation_handler.current_keyframe;
+	return animation_handler->current_keyframe;
 }
 
 void Model::move(glm::vec2 offset)

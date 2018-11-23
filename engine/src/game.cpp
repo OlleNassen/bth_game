@@ -635,12 +635,12 @@ void Game::update(std::chrono::milliseconds delta)
 	for (auto& model : level->animated_models)
 		model.update_animation((float)delta.count(), idle);
 
-	for (int i = 4; i < level.moving_models.size(); i++)
-		if (level.moving_models[i].is_animated)
+	for (int i = 4; i < level->moving_models.size(); i++)
+		if (level->moving_models[i].is_animated)
 		{
-			level.moving_models[i].update_animation((float)delta.count(), idle);
-			if (level.moving_models[i].mesh->name == "spike_trap")
-				spikeframe = level.moving_models[i].getCurrentKeyframe();
+			level->moving_models[i].update_animation((float)delta.count(), idle);
+			if (level->moving_models[i].mesh->name == "spike_trap")
+				spikeframe = level->moving_models[i].getCurrentKeyframe();
 		}
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
