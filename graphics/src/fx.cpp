@@ -351,12 +351,13 @@ void FX::steam_right(glm::vec3 pos_vec)
 
 			//Set default values for the particles, first off life and position.
 			fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
+			fx_steam.particle_container[particle_index].r_amp = 0;
 			fx_steam.particle_container[particle_index].life = 1.0f;
 			//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 			fx_steam.particle_container[particle_index].pos = pos_vec;
 
 			//Create a direction for the particles to travel
-			glm::vec3 main_dir = glm::vec3(60, 0, -1);
+			glm::vec3 main_dir = glm::vec3(40, 0, -1);
 			glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
 			glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
 			float spread_x = (rand() % 100 / 100.0f) + 1;
@@ -400,6 +401,7 @@ void FX::steam_back(glm::vec3 pos_vec)
 
 			//Set default values for the particles, first off life and position.
 			fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
+			fx_steam.particle_container[particle_index].r_amp = 0;
 			fx_steam.particle_container[particle_index].life = 1.0f;
 			//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 			fx_steam.particle_container[particle_index].pos = pos_vec;
@@ -456,12 +458,13 @@ void FX::steam_left(glm::vec3 pos_vec)
 
 			//Set default values for the particles, first off life and position.
 			fx_steam.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10 + 4);
+			fx_steam.particle_container[particle_index].r_amp = 0;
 			fx_steam.particle_container[particle_index].life = 1.0f;
 			//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
 			fx_steam.particle_container[particle_index].pos = pos_vec;
 
 			//Create a direction for the particles to travel
-			glm::vec3 main_dir = glm::vec3(-60, 0, -1);
+			glm::vec3 main_dir = glm::vec3(-40, 0, -1);
 			glm::vec3 random_dir_up = glm::vec3(0, 5, 0);
 			glm::vec3 random_dir_down = glm::vec3(0, -5, 0);
 			float spread_x = (rand() % 100 / 100.0f) + 1;
@@ -1024,13 +1027,17 @@ void FX::calculate_steam_data(std::chrono::milliseconds delta, const Camera& cam
 
 		if (fx_steam.particle_container[i].life > 0.0f)
 		{
+			fx_steam.particle_container[i].r_amp += ((seconds.count() / 250.0f) * abs(fx_steam.particle_container[i].life - 1.0f));
 			//data.particle_container[i].speed += * seconds.count();
 			fx_steam.particle_container[i].pos += fx_steam.particle_container[i].speed / 50.0f * seconds.count();
+			fx_steam.particle_container[i].pos.y += fx_steam.particle_container[i].r_amp;
 			fx_steam.particle_container[i].camera_distance = glm::length(fx_steam.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
 			fx_steam.position_data[4 * fx_steam.total_particle_count + 0] = fx_steam.particle_container[i].pos.x;
+			
 			fx_steam.position_data[4 * fx_steam.total_particle_count + 1] = fx_steam.particle_container[i].pos.y;
+			
 			fx_steam.position_data[4 * fx_steam.total_particle_count + 2] = fx_steam.particle_container[i].pos.z;
 			fx_steam.position_data[4 * fx_steam.total_particle_count + 3] = fx_steam.particle_container[i].size * fx_steam.particle_container[i].life;
 			
@@ -2414,24 +2421,21 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 		{
 			for (auto i = 0u; i < fx_glide.nr_of_particles; i++)
 			{
-				if (fx_glide.particle_container[i].life <= 0.1f)
-				{
-					//Find and update the last used particle
-					fx_glide.last_used_particle = find_unused_particle(fx_glide.particle_container, fx_glide.last_used_particle);
-					int particle_index = fx_glide.last_used_particle;
+				//Find and update the last used particle
+				fx_glide.last_used_particle = find_unused_particle(fx_glide.particle_container, fx_glide.last_used_particle);
+				int particle_index = fx_glide.last_used_particle;
 
-					//Set default values for the particles, first off life and position.
-					fx_glide.particle_container[i].life = 1.0f;
+				//Set default values for the particles, first off life and position.
+				fx_glide.particle_container[i].life = 1.0f;
 
-					//Set colors, if you want color from texture, don't change the color
+				//Set colors, if you want color from texture, don't change the color
 
-					fx_glide.particle_container[i].r = 151;
-					fx_glide.particle_container[i].g = 0;
-					fx_glide.particle_container[i].b = 255;
-					fx_glide.particle_container[i].a = 180;
+				fx_glide.particle_container[i].r = 151;
+				fx_glide.particle_container[i].g = 0;
+				fx_glide.particle_container[i].b = 255;
+				fx_glide.particle_container[i].a = 180;
 
-					fx_glide.particle_container[i].size = 4.0f;
-				}
+				fx_glide.particle_container[i].size = 4.0f;
 			}
 		}
 	}
@@ -2460,16 +2464,7 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 			fx_glide.color_data[4 * fx_glide.total_particle_count + 2] = fx_glide.particle_container[i].b;
 
 			//Alpha
-			//Alpha
-			if (fx_glide.particle_container[i].life >= 0.5f)
-			{
-				fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].a * fx_glide.particle_container[i].life;
-			}
-			else
-			{
-				fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].a * abs(fx_glide.particle_container[i].life - 1);
-			}
-
+			fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].a;
 		}
 		else
 		{
@@ -2511,24 +2506,21 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 		{
 			for (auto i = 0u; i < fx_speedboost.nr_of_particles; i++)
 			{
-				if (fx_speedboost.particle_container[i].life <= 0.1f)
-				{
-					//Find and update the last used particle
-					fx_speedboost.last_used_particle = find_unused_particle(fx_speedboost.particle_container, fx_speedboost.last_used_particle);
-					int particle_index = fx_speedboost.last_used_particle;
+				//Find and update the last used particle
+				fx_speedboost.last_used_particle = find_unused_particle(fx_speedboost.particle_container, fx_speedboost.last_used_particle);
+				int particle_index = fx_speedboost.last_used_particle;
 
-					//Set default values for the particles, first off life and position.
-					fx_speedboost.particle_container[i].life = 1.0f;
+				//Set default values for the particles, first off life and position.
+				fx_speedboost.particle_container[i].life = 1.0f;
 
-					//Set colors, if you want color from texture, don't change the color
+				//Set colors, if you want color from texture, don't change the color
 
-					fx_speedboost.particle_container[i].r = 255;
-					fx_speedboost.particle_container[i].g = 222;
-					fx_speedboost.particle_container[i].b = 34;
-					fx_speedboost.particle_container[i].a = 180;
+				fx_speedboost.particle_container[i].r = 255;
+				fx_speedboost.particle_container[i].g = 222;
+				fx_speedboost.particle_container[i].b = 34;
+				fx_speedboost.particle_container[i].a = 180;
 
-					fx_speedboost.particle_container[i].size = 4.0f;
-				}
+				fx_speedboost.particle_container[i].size = 4.0f;
 			}
 		}
 	}
@@ -2557,15 +2549,8 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 2] = fx_speedboost.particle_container[i].b;
 
 			//Alpha
-			//Alpha
-			if (fx_speedboost.particle_container[i].life >= 0.5f)
-			{
-				fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].a * fx_speedboost.particle_container[i].life;
-			}
-			else
-			{
-				fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].a * abs(fx_speedboost.particle_container[i].life - 1);
-			}
+			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].a;
+			
 
 		}
 		else
@@ -2608,24 +2593,21 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 		{
 			for (auto i = 0u; i < fx_doublejump.nr_of_particles; i++)
 			{
-				if (fx_doublejump.particle_container[i].life <= 0.1f)
-				{
-					//Find and update the last used particle
-					fx_doublejump.last_used_particle = find_unused_particle(fx_doublejump.particle_container, fx_doublejump.last_used_particle);
-					int particle_index = fx_doublejump.last_used_particle;
+				//Find and update the last used particle
+				fx_doublejump.last_used_particle = find_unused_particle(fx_doublejump.particle_container, fx_doublejump.last_used_particle);
+				int particle_index = fx_doublejump.last_used_particle;
 
-					//Set default values for the particles, first off life and position.
-					fx_doublejump.particle_container[i].life = 1.0f;
+				//Set default values for the particles, first off life and position.
+				fx_doublejump.particle_container[i].life = 1.0f;
 
-					//Set colors, if you want color from texture, don't change the color
+				//Set colors, if you want color from texture, don't change the color
 
-					fx_doublejump.particle_container[i].r = 0;
-					fx_doublejump.particle_container[i].g = 255;
-					fx_doublejump.particle_container[i].b = 0;
-					fx_doublejump.particle_container[i].a = 180;
+				fx_doublejump.particle_container[i].r = 0;
+				fx_doublejump.particle_container[i].g = 255;
+				fx_doublejump.particle_container[i].b = 0;
+				fx_doublejump.particle_container[i].a = 180;
 
-					fx_doublejump.particle_container[i].size = 4.0f;
-				}
+				fx_doublejump.particle_container[i].size = 4.0f;
 			}
 		}
 	}
@@ -2654,14 +2636,8 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 			fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 2] = fx_doublejump.particle_container[i].b;
 
 			//Alpha
-			if (fx_doublejump.particle_container[i].life >= 0.5f)
-			{
-				fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[i].a * fx_doublejump.particle_container[i].life;
-			}
-			else
-			{
-				fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[i].a * abs(fx_doublejump.particle_container[i].life - 1);
-			}
+			fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[i].a;
+			
 
 		}
 		else
@@ -2704,24 +2680,21 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 		{
 			for (auto i = 0u; i < fx_shield.nr_of_particles; i++)
 			{
-				if (fx_shield.particle_container[i].life <= 0.1f)
-				{
-					//Find and update the last used particle
-					fx_shield.last_used_particle = find_unused_particle(fx_shield.particle_container, fx_shield.last_used_particle);
-					int particle_index = fx_shield.last_used_particle;
+				//Find and update the last used particle
+				fx_shield.last_used_particle = find_unused_particle(fx_shield.particle_container, fx_shield.last_used_particle);
+				int particle_index = fx_shield.last_used_particle;
 
-					//Set default values for the particles, first off life and position.
-					fx_shield.particle_container[i].life = 1.0f;
+				//Set default values for the particles, first off life and position.
+				fx_shield.particle_container[i].life = 1.0f;
 
-					//Set colors, if you want color from texture, don't change the color
+				//Set colors, if you want color from texture, don't change the color
 
-					fx_shield.particle_container[i].r = 24;
-					fx_shield.particle_container[i].g = 208;
-					fx_shield.particle_container[i].b = 255;
-					fx_shield.particle_container[i].a = 180;
+				fx_shield.particle_container[i].r = 24;
+				fx_shield.particle_container[i].g = 208;
+				fx_shield.particle_container[i].b = 255;
+				fx_shield.particle_container[i].a = 180;
 
-					fx_shield.particle_container[i].size = 4.0f;
-				}
+				fx_shield.particle_container[i].size = 4.0f;
 			}
 		}
 	}
@@ -2750,15 +2723,7 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 			fx_shield.color_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[i].b;
 
 			//Alpha
-			if (fx_shield.particle_container[i].life >= 0.5f)
-			{
-				fx_shield.color_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[i].a * fx_shield.particle_container[i].life;
-			}
-			else
-			{
-				fx_shield.color_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[i].a * abs(fx_shield.particle_container[i].life - 1);
-			}
-
+			fx_shield.color_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[i].a;
 		}
 		else
 		{
@@ -2800,24 +2765,21 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 		{
 			for (auto i = 0u; i < fx_random.nr_of_particles; i++)
 			{
-				if (fx_random.particle_container[i].life <= 0.1f)
-				{
-					//Find and update the last used particle
-					fx_random.last_used_particle = find_unused_particle(fx_random.particle_container, fx_random.last_used_particle);
-					int particle_index = fx_random.last_used_particle;
+				//Find and update the last used particle
+				fx_random.last_used_particle = find_unused_particle(fx_random.particle_container, fx_random.last_used_particle);
+				int particle_index = fx_random.last_used_particle;
 
-					//Set default values for the particles, first off life and position.
-					fx_random.particle_container[i].life = 1.0f;
+				//Set default values for the particles, first off life and position.
+				fx_random.particle_container[i].life = 1.0f;
 
-					//Set colors, if you want color from texture, don't change the color
+				//Set colors, if you want color from texture, don't change the color
 
-					fx_random.particle_container[i].r = 0;
-					fx_random.particle_container[i].g = 0;
-					fx_random.particle_container[i].b = 0;
-					fx_random.particle_container[i].a = 180;
+				fx_random.particle_container[i].r = 255;
+				fx_random.particle_container[i].g = 255;
+				fx_random.particle_container[i].b = 255;
+				fx_random.particle_container[i].a = 180;
 
-					fx_random.particle_container[i].size = 4.0f;
-				}
+				fx_random.particle_container[i].size = 4.0f;
 			}
 		}
 	}
@@ -2921,15 +2883,13 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 				}
 			}
 
+			fx_random.color_data[4 * fx_random.total_particle_count + 0] = fx_random.particle_container[i].r;
+			fx_random.color_data[4 * fx_random.total_particle_count + 1] = fx_random.particle_container[i].g;
+			fx_random.color_data[4 * fx_random.total_particle_count + 2] = fx_random.particle_container[i].b;
+
 			//Alpha
-			if (fx_random.particle_container[i].life >= 0.5f)
-			{
-				fx_random.color_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].a * fx_random.particle_container[i].life;
-			}
-			else
-			{
-				fx_random.color_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].a * abs(fx_random.particle_container[i].life - 1);
-			}
+			fx_random.color_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].a;
+			
 
 		}
 		else

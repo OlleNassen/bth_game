@@ -269,7 +269,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-				placed_objects_list_id = random_picked_object();
+				placed_objects_list_id = 0;// random_picked_object();
 				collision_data data;
 				int m_id = level->add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
@@ -557,14 +557,16 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].impulse = dynamics[i].impulse;
 			obj[i].shield_active = dynamics[i].shield_active;
 		}
-
+		
 		lua_data = gameplay.update(
 			{ delta, obj, triggers,
 			player_inputs,
 			anim_states,
 			players_placed_objects_id,
 			static_cast<int>(player_count),
-			triggers_types },
+			spikeframe,
+			turretframe,
+			triggers_types},
 			game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -642,8 +644,12 @@ void Game::update(std::chrono::milliseconds delta)
 		model.update_animation((float)delta.count(), idle);
 
 	for (int i = 4; i < level->moving_models.size(); i++)
-		if(level->moving_models[i].is_animated)
+		if (level->moving_models[i].is_animated)
+		{
 			level->moving_models[i].update_animation((float)delta.count(), idle);
+			if (level->moving_models[i].mesh->name == "spike_trap")
+				spikeframe = level->moving_models[i].getCurrentKeyframe();
+		}
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 

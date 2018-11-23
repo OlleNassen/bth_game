@@ -254,13 +254,15 @@ void GameScript::update(
 	const trigger_array& triggers,
 	const trigger_type_array& types,
 	objects* players,
-	int player_count)
+	int player_count,
+	int spike_frame, 
+	int turret_frame)
 {
 	{
 		stack.getglobal("game");
 		stack.clear();
 	}
-
+	
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
@@ -350,7 +352,17 @@ void GameScript::update(
 		}
 		stack.clear();
 	}
+	{
+		stack.getglobal("game");
 
+		int top_pos = stack.top();
+
+		stack.push("spike_frame");
+		stack.push(spike_frame);
+		stack.rawset(top_pos);
+
+		stack.clear();
+	}
 
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);
@@ -403,7 +415,10 @@ void GameScript::update(
 		}
 
 		stack.clear();
+
+
 	}
+
 
 	/*{
 		stack.getglobal("entities");
