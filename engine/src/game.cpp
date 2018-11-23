@@ -201,8 +201,8 @@ void Game::update(std::chrono::milliseconds delta)
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu))
 		{
 			if (net.id() == 0)
-				net_state.state = network::SessionState::loading;
-			game_state = (game_state | state::loading);
+				net_state.state = network::SessionState::pre_playing;
+			game_state = (game_state | state::pre_playing);
 		}
 	}
 	else if (net_state.state == network::SessionState::loading)
@@ -337,9 +337,9 @@ void Game::update(std::chrono::milliseconds delta)
 
 				physics.set_rotation(players_placed_objects_id[i].dynamics_id, static_cast<int>(pos.z));
 
-				level.moving_models[players_placed_objects_id[i].model_id].set_rotation(degree);
+				level->moving_models[players_placed_objects_id[i].model_id].set_rotation(degree);
 
-				level.moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
+				level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
 					players_placed_objects_id[i].place_state = 1;
