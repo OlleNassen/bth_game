@@ -7,9 +7,9 @@ namespace graphics
 
 	UserInterface::UserInterface()
 	{
-		elements.fill({ {2.0f, 2.0f}, {1.0, 1.0}, { 0.05f, 0.05f }, 0.0f });
-		elements.front() = { { 0.5f, -0.5f },{ 0.8f, 0.3f },{ 0.7f, 0.25f }, 0.0f };
-		elements.at(1) = { {0.5f, -0.5f}, {1.0, 1.0}, { 0.7f, 0.7f }, 0.0f };
+		elements.fill({ {2.0f, 2.0f}, {1.0f, 1.0f, 1.0f}, { 0.05f, 0.05f }, 0.0f });
+		elements.front() = { { 0.5f, -0.5f },{ 0.8f, 0.3f, 1.0f},{ 0.7f, 0.25f }, 0.0f };
+		elements.at(1) = { {0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, { 0.7f, 0.7f }, 0.0f };
 		active_texture = 0;
 
 		glBindVertexArray(vao);
@@ -22,7 +22,7 @@ namespace graphics
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2) * 2, (void*)sizeof(glm::vec2));
 
 		rebind_buffers();
-		gui_textures.at(0).load_texture("../resources/textures/player_arrow.png");
+		gui_textures.at(0).load_texture("../resources/textures/player_arrow_2.png");
 		gui_textures.at(1).load_texture("../resources/textures/chat_texture.png");
 
 	}
@@ -55,16 +55,16 @@ namespace graphics
 			nullptr);
 
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
 			(void*)sizeof(glm::vec2));
 
 		glEnableVertexAttribArray(4);
 		glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
-			(void*)(sizeof(glm::vec2) * 2));
+			(void*)(sizeof(glm::vec2) + sizeof(glm::vec3)));
 
 		glEnableVertexAttribArray(5);
 		glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
-			(void*)(sizeof(glm::vec2) * 3));
+			(void*)(sizeof(glm::vec2) * 2 + sizeof(glm::vec3)));
 
 		glVertexAttribDivisor(0, 0);
 		glVertexAttribDivisor(1, 0);
@@ -112,14 +112,16 @@ namespace graphics
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement), nullptr);
 
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement), (void*)sizeof(glm::vec2));
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
+			(void*)sizeof(glm::vec2));
 
 		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement), (void*)(sizeof(glm::vec2) * 2));
+		glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
+			(void*)(sizeof(glm::vec2) + sizeof(glm::vec3)));
 
 		glEnableVertexAttribArray(5);
 		glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(GuiElement),
-			(void*)(sizeof(glm::vec2) * 3));
+			(void*)(sizeof(glm::vec2) * 2 + sizeof(glm::vec3)));
 	}
 
 	PlayerArrows::PlayerArrows()

@@ -1,6 +1,6 @@
 #version 430
 
-in vec2 vs_color;
+in vec3 vs_color;
 in vec2 texture_coord;
 out vec4 fragment_color;
 
