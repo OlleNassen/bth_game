@@ -32,6 +32,11 @@ void Model::switch_animation(anim enm)
 	this->animation_handler.switch_animation(enm);
 }
 
+int Model::getCurrentKeyframe()
+{
+	return this->animation_handler.current_keyframe;
+}
+
 void Model::move(glm::vec2 offset)
 {
 	//model = glm::translate(model, glm::vec3{ offset, 0.0f });

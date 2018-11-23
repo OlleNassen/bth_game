@@ -82,7 +82,9 @@ public:
 		const trigger_array& triggers,
 		const trigger_type_array& types,
 		objects* players,
-		int player_count);
+		int player_count,
+		int spike_frame,
+		int turret_frame);
 
 	void update_export();
 	float get_time();

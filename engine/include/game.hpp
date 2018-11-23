@@ -102,7 +102,8 @@ private:
 
 	//spectator
 	int watching = 0;
-
+	int spikeframe = 0;
+	int turretframe = 0;
 	//New gameloop stuff
 	void load_map(const char* file_path);
 };
