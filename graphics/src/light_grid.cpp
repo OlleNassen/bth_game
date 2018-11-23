@@ -13,14 +13,18 @@ bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z
 LightGrid::LightGrid()
 {	
 	//Player Light
-	lights[0].color = glm::vec3{ 0.9f, 1.0f, 1.0f };
+	lights[0].color = glm::vec3{ 0.9f, 0.1f, 0.1f };
 	lights[0].intensity = 30;
+	lights[0].radius = lights[0].intensity;
 	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
 	lights[1].intensity = 30;
+	lights[1].radius = lights[1].intensity;
 	lights[2].color = glm::vec3{ 0.1f, 0.1f, 0.9f };
 	lights[2].intensity = 30;
+	lights[2].radius = lights[2].intensity;
 	lights[3].color = glm::vec3{ 0.9f, 0.8f, 0.1f };
 	lights[3].intensity = 30;
+	lights[3].radius = lights[3].intensity;
 
 	//Map Light
 	lights[4].position = glm::vec3{-5.625f, 0.0f, -20.0f};
@@ -38,9 +42,9 @@ LightGrid::LightGrid()
 	lights[10].position = glm::vec3{13.34f, 240.0f, -20.0f};
 	lights[10].color = glm::vec3{1.0f, 0.48f, 0.0f};
 
-	for (int i = 0; i < 11; ++i)
+	for (int i = 4; i < 11; ++i)
 	{
-		lights[i].intensity = 10.0f;
+		lights[i].intensity = 30.0f;
 		lights[i].radius = lights[i].intensity;
 	}
 }
