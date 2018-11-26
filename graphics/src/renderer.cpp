@@ -500,12 +500,15 @@ void Renderer::update(std::chrono::milliseconds delta,
 	
 	if (game_state & state::pre_playing || game_state & state::lobby)
 	{
+		build_stage_screen.timer = 0ms;
+		build_stage_screen.transparency = 0.8f;
+	}
+
+	if (game_state & state::pre_building)
+	{
 		places = 1;
 		placing = { -1, -1, -1, -1 };
 		scores_to_give = { player_count, player_count - 1, player_count - 2, player_count - 3 };
-
-		build_stage_screen.timer = 0ms;
-		build_stage_screen.transparency = 0.8f;
 	}
 
 	if (!(game_state & state::playing))
