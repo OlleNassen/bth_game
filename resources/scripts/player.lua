@@ -77,10 +77,10 @@ local shock_trap_max_timer = 3
 local shock_trap_immune_max_timer = 5
 
 --speed boost
-local max_speed_boost = max_speed * 5
-local max_speed_boost_air = max_air_speed * 2
-local speed_boost_ground_acceleration = ground_acceleration * 5
-local speed_boost_air_acceleration = air_acceleration * 2
+local max_speed_boost = max_speed * 4
+local max_speed_boost_air = max_air_speed * 1
+local speed_boost_ground_acceleration = ground_acceleration * 4
+local speed_boost_air_acceleration = air_acceleration * 1
 local speed_boost_max_timer = 10
 
 --double jump
@@ -209,6 +209,12 @@ function update_controls(delta_seconds, entity)
 		then
 			entity.anim.current = entity.anim.in_jump
 		end
+
+		--if entity.speed_boost_triggered and entity.can_jump and entity.button.jump
+		--then
+		--	entity.impulse.y = 50
+		--	entity.can_jump = false
+		--end
 	end
 
 	--In Jump
