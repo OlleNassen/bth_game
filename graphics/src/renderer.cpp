@@ -50,7 +50,7 @@ Renderer::Renderer(GameScene* scene)
 
 	dir_light.direction = glm::vec3(0, -0.7, -1);
 	dir_light.color = glm::vec3(1.0, 0.8, 0.8);
-	dir_light.intensity = 0.8f;
+	dir_light.intensity = 0.7f;
 
 	//spotlights[0].position = glm::vec3(0, 30, 0);
 	//spotlights[0].color = glm::vec3(1.f, 1.0f, 0.0f);
