@@ -509,7 +509,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		
 		for (int i = 0; i < player_count; i++)
 		{
-			if (finish[i] && placing[i] == -1)
+			if (!died[i] && finish[i] && placing[i] == -1)
 			{
 				placing[i] = places;
 				places++;
@@ -521,7 +521,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		places = 1;
 		placing = { -1, -1, -1, -1 };
-		scores_to_give = { player_count, player_count - 1,player_count - 2,player_count - 3 };
+		scores_to_give = { player_count, player_count - 1, player_count - 2, player_count - 3 };
 	}
 
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
