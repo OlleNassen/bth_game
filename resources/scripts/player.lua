@@ -21,10 +21,18 @@ function setup(entity)
 	entity.stun_trap_triggered = false
 	entity.stun_trap_immune = false
 	entity.temp = 0
+ 	entity.shock_trap_max_timer = 3
+	entity.shock_trap_immune_max_timer = 5
+	
 
 	--speed boost
 	entity.speed_boost_timer = 0.0
 	entity.speed_boost_triggered = false
+	entity.max_speed_boost = entity.max_speed * 1.5
+	entity.max_speed_boost_air = entity.max_air_speed * 1.5
+	entity.speed_boost_acceleration = entity.ground_acceleration * 4
+	entity.speed_boost_air_acceleration = entity.air_acceleration * 2
+	entity.speed_boost_max_timer = 10
 	
 
 	--double jump
@@ -36,13 +44,16 @@ function setup(entity)
 	entity.now_you_can_jump = false --if was in jump last frame
 	entity.in_wall_jump_state = false --in air after hanging r/l anim
 	entity.set_once = false
-
+	entity.double_jump_impulse = 40
+	entity.double_jump_timer_max = 10
 
 	--glide_trap
 	entity.glide_trap_triggered = false
 	entity.glide_trap_timer = 0.0
 	entity.friction = 0
 	entity.friction_slowrate = 0
+	entity.glide_trap_max_timer = 10
+	entity.glide_decrease = 0.0055
 
 	--shield
 	entity.is_stun_trap = false
@@ -52,25 +63,10 @@ function setup(entity)
 	entity.random_assigned = false
 	entity.random_last = 0
 	entity.random_buff_timer = 0.0
-
-	--triggers
-
-
-	entity.shock_trap_max_timer = 3
-	entity.shock_trap_immune_max_timer = 5
-	
-	entity.max_speed_boost = entity.max_speed * 1.5
-	entity.max_speed_boost_air = entity.max_air_speed * 1.5
-	entity.speed_boost_max_timer = 10
-	
-	entity.double_jump_impulse = 40
-	entity.double_jump_timer_max = 10
-	
-	entity.glide_trap_max_timer = 10
-	entity.glide_decrease = 0.0055
-	
 	entity.random_buff_max_timer = 10
 	entity.buffs_id = { 3, 4, 5, 6 }
+
+
 
 	entity.jump_speed = 0
 	entity.gravity = 120
@@ -594,20 +590,20 @@ function update_triggers(delta_seconds, entity)
 			then
 				if entity.button.right
 				then
-					entity.velocity.x = entity.max_speed_boost_air--right
-				
+					accelerate(delta_seconds, entity, entity.max_speed_boost_air, entity.speed_boost_air_acceleration) --right
+
 				elseif entity.button.left
 				then 
-					entity.velocity.x = -entity.max_speed_boost_air --left
+					accelerate(delta_seconds, entity, -entity.max_speed_boost_air, entity.speed_boost_air_acceleration) --left
 				end
 			else
 				if entity.button.right
 				then
-					entity.velocity.x = entity.max_speed_boost--right
-				
+					accelerate(delta_seconds, entity, entity.max_speed_boost, entity.speed_boost_acceleration) --right
+
 				elseif entity.button.left
 				then 
-					entity.velocity.x = -entity.max_speed_boost --left
+					accelerate(delta_seconds, entity, -entity.max_speed_boost, entity.speed_boost_acceleration) --left
 				end
 			end
 		end
