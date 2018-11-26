@@ -31,6 +31,7 @@ Game::Game()
 	window.assign_key(logic::button::jump, GLFW_KEY_SPACE);
 	window.assign_key(logic::button::rotate, GLFW_KEY_R);
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
+	window.assign_key(logic::button::score, GLFW_KEY_TAB);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
 	window.assign_key(logic::button::debug, GLFW_KEY_F3);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
@@ -128,13 +129,16 @@ void Game::render()
 		}
 	}
 
+	bool view_score = (*local_input)[logic::button::score] == logic::button_state::held;
+
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
 		lua_data.finished, lua_data.scores, lua_data.time,
 		net.id(),
 		players_placed_objects_id[net.id()].model_type_id,
-		remove_lines);
+		remove_lines,
+		view_score);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -259,6 +263,11 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::building)
 	{
+		for (auto& anim : anim_states)
+		{
+			anim = anim::falling;
+		}
+
 		//Inititate player objects and move it.
 		game_state = (game_state | state::building);
 
@@ -335,7 +344,7 @@ void Game::update(std::chrono::milliseconds delta)
 								0, dynamics[d_id].objects_type_id };
 
 					give_players_objects = true;
-
+					
 					total_nr_objects++;
 				}
 			}
@@ -343,7 +352,7 @@ void Game::update(std::chrono::milliseconds delta)
 		
 		for (int i = 0; i < static_cast<int>(player_count); i++)
 		{
-			if (players_placed_objects_id[i].place_state != 2)
+			if (players_placed_objects_id[i].place_state != 2 && players_placed_objects_id[i].dynamics_id != -1)
 			{
 				//level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
 							   
@@ -398,11 +407,24 @@ void Game::update(std::chrono::milliseconds delta)
 						}
 					}
 
-					std::swap(level->moving_models[ppoi.model_id], level->moving_models[index]);
-					level->moving_models.pop_back();
+					level->moving_models.erase(level->moving_models.begin() + ppoi.model_id);
+
+					//std::swap(level->moving_models[ppoi.model_id], level->moving_models[index]);
+					//level->moving_models.pop_back();
+
 					physics.remove_body(ppoi.dynamics_id);
 
-					dynamics[ppoi.dynamics_id] = dynamics[index];
+					//dynamics[ppoi.dynamics_id] = dynamics[index];
+
+
+					auto beg = dynamics.begin() + players_placed_objects_id[i].dynamics_id;
+					std::rotate(beg, beg + 1, dynamics.end());
+
+					for (int i = 0; i < static_cast<int>(player_count); i++)
+					{
+						players_placed_objects_id[i].model_id--;
+						players_placed_objects_id[i].dynamics_id--;
+					}
 
 					/*dynamics[index].model_id = ppoi.model_id;
 					dynamics[index].dynamic_id = ppoi.dynamics_id;*/
@@ -638,7 +660,7 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
-	if (game_state & state::building)
+	if ((game_state & state::building) && players_placed_objects_id[net.id()].dynamics_id != -1)
 	{
 		level->v[net.id()] = { level->v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
 	}
@@ -686,16 +708,7 @@ void Game::update(std::chrono::milliseconds delta)
 				direction.z -= 1.0f;
 			if (in[button::right] >= button_state::pressed)
 				direction.x += 1.0f;
-		}
-
-		using namespace std;
-		stringstream stream;
-		for (int i = 0; i < 4; ++i)
-		{
-			stream << lua_data.names[i] << ": "
-				<< fixed << setprecision(2) 
-				<< lua_data.scores[i] << " | ";
-		}			
+		}	
 		
 		if ((lua_data.died[net.id()] || lua_data.finished[net.id()]) && (net_state.state == network::SessionState::playing))
 		{
@@ -754,16 +767,18 @@ void Game::update(std::chrono::milliseconds delta)
 			players_placed_objects_id[2].model_id,
 			players_placed_objects_id[3].model_id };
 			
-		string temp = stream.str();
+		bool view_score = (*local_input)[logic::button::score] == logic::button_state::held;
+
 		renderer.update(delta,
 			obj,
 			player_inputs[net.id()].cursor,
 			directions,
 			chat[1], static_cast<int>(player_count),
-			net.id(), game_state, temp, lua_data.died, 
+			net.id(), game_state, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
-			moving_objects_id);
+			moving_objects_id,
+			view_score);
 	}
 
 	if (game_state & state::menu && menu.get_fullscreen_pressed())
