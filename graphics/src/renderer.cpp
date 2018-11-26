@@ -214,7 +214,7 @@ void Renderer::render(
 			
 		}
 
-		if (game_state & state::building)
+		if ((game_state & state::building) && build_info.size() >= player_count)
 		{
 			//Timer
 			world_text_shader.use();
