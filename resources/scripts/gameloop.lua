@@ -38,7 +38,7 @@ function update(delta_seconds, game, entities, player_count)
 		for i = 1, 4, 1
 		do
 			entities[i].position.x = 3 * (i - 1)
-			entities[i].position.y = 0.9
+			entities[i].position.y = 255 --0.9
 
 			entities[i].impulse.x = 0
 			entities[i].impulse.y = 0

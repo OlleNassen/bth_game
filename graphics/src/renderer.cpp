@@ -463,7 +463,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int num_players,
 	int id,
 	int new_game_state,
-	std::string scoreboard,
 	std::array<bool, 4> died,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
@@ -625,7 +624,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		grid.lights[i].position = scene->moving_models[i].get_position();
 	}
 
-	leaderboard.update(std::move(scoreboard));
 	grid.update(game_camera);
 
 	overlays.update(delta, 

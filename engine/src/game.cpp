@@ -258,6 +258,11 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::building)
 	{
+		for (auto& anim : anim_states)
+		{
+			anim = anim::falling;
+		}
+
 		//Inititate player objects and move it.
 		game_state = (game_state | state::building);
 
@@ -685,16 +690,7 @@ void Game::update(std::chrono::milliseconds delta)
 				direction.z -= 1.0f;
 			if (in[button::right] >= button_state::pressed)
 				direction.x += 1.0f;
-		}
-
-		using namespace std;
-		stringstream stream;
-		for (int i = 0; i < 4; ++i)
-		{
-			stream << lua_data.names[i] << ": "
-				<< fixed << setprecision(2) 
-				<< lua_data.scores[i] << " | ";
-		}			
+		}	
 		
 		if ((lua_data.died[net.id()] || lua_data.finished[net.id()]) && (net_state.state == network::SessionState::playing))
 		{
@@ -755,13 +751,12 @@ void Game::update(std::chrono::milliseconds delta)
 			
 		bool view_score = (*local_input)[logic::button::score] == logic::button_state::held;
 
-		string temp = stream.str();
 		renderer.update(delta,
 			obj,
 			player_inputs[net.id()].cursor,
 			directions,
 			chat[1], static_cast<int>(player_count),
-			net.id(), game_state, temp, lua_data.died, 
+			net.id(), game_state, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
 			moving_objects_id,
