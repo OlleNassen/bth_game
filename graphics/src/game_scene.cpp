@@ -195,13 +195,14 @@ void GameScene::light_level_1()
 		lights[i].intensity = 400;
 	}
 
+	lights[5].intensity = 700;
+	lights[6].intensity = 700;
+
 	for (int i = 0; i < 13; i++)
 	{
 		lights[i].radius = lights[i].intensity;
 	}
 
-	lights[5].intensity = 700;
-	lights[6].intensity = 700;
 }
 
 void GameScene::inititate_object(CustomLevel& objects, MeshLib* object_lib)
