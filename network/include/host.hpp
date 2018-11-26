@@ -36,7 +36,7 @@ private:
 	void connect(const ENetEvent& eevent);
 	void disconnect(const ENetEvent& eevent);
 
-	uint8 player_count = 4;
+	uint8 player_count = 1;
 	uint32 sequence = 0;
 
 	ENetAddress address;
