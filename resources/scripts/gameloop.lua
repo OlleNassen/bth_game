@@ -55,12 +55,6 @@ function update(delta_seconds, game, entities, player_count)
 			game.finished[i] = false
 			game.died[i] = false
 		end
-		
-		for i = 1, 4, 1
-		do
-			print("Player ", i, " has ", game.scores[i], "points")
-		end
-		print("\n");
 
 		--game.max_points = player_count * 3
 		game.points = total_players -- Don't change unless you know what you're doing :)
@@ -114,7 +108,7 @@ function update(delta_seconds, game, entities, player_count)
 	--Check if players finished
 	for i = 1, player_count, 1
 	do
-		if entities[i].position.y > game.goal and not game.finished[i] and not game.died[i]
+		if entities[i].position.y > game.goal and not game.finished[i] and not game.died[i] and game.points ~= 0
 		then
 			game.scores[i] = game.scores[i] + game.points
 			game.points = game.points - 1

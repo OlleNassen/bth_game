@@ -200,11 +200,16 @@ void Renderer::render(
 			{
 				build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
 
+				std::array<int, 4> positions;
+
 				for (int i = 0; i < player_count; i++)
 				{
 					out_text.str("");
-					out_text << players[i] << " : " << scores[i];
-					text_shader.uniform("text_color", players_colors[i]);
+
+					out_text << player_infos[i].name << " : " << player_infos[i].score;
+
+					text_shader.uniform("text_color", player_infos[i].color);
+
 					build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 				}
 			}
