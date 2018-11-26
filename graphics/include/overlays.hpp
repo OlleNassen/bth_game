@@ -40,7 +40,6 @@ public:
 	);
 
 	void render(const Shader& shader) const;
-	//void render_death_screen(const Shader& shader) const;
 	
 	std::chrono::milliseconds main_menu_timer{0};
 	std::chrono::milliseconds finished_timer{0};
@@ -56,17 +55,6 @@ private:
 	std::vector<Texture> finish;
 	std::vector<Texture> waiting;
 	std::vector<Texture> death;
-	Texture current_texture;
-
-	Texture finish_escaped{"../resources/textures/finish_screen/finish_escaped.png"};
-	Texture finish_1_1{"../resources/textures/finish_screen/finish_1.1.png"};
-	Texture finish_1_2{"../resources/textures/finish_screen/finish_1.2.png"};
-	Texture finish_2_1{"../resources/textures/finish_screen/finish_2.1.png"};
-	Texture finish_2_2{"../resources/textures/finish_screen/finish_2.2.png"};
-	Texture finish_3_1{"../resources/textures/finish_screen/finish_3.1.png"};
-	Texture finish_3_2{"../resources/textures/finish_screen/finish_3.2.png"};
-	Texture finish_4_1{"../resources/textures/finish_screen/finish_4.1.png"};
-	Texture finish_4_2{"../resources/textures/finish_screen/finish_4.2.png"};
 	
 	int player_id;
 	int current_state = 0;

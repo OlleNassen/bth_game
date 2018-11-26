@@ -90,7 +90,7 @@ public:
 	void clear_object();
 	void clear_static_object();
 
-	void rotate_static_box(int id);
+	void set_rotation(int id, int index);
 
 	bool rw[4];
 	bool lw[4];

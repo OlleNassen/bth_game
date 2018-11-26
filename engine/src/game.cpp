@@ -115,28 +115,15 @@ void Game::render()
 		int d_id = players_placed_objects_id[i].dynamics_id;
 		build_information info;
 
-		info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
-		info.debug_positions = physics.get_debug_for(d_id);
-		info.place_state = players_placed_objects_id[i].place_state;
-		info.object_id = players_placed_objects_id[i].model_type_id;
-
-		build_info.push_back(info);
+		if (d_id != -1)
+		{
+			info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
+			info.debug_positions = physics.get_debug_for(d_id);
+			info.place_state = players_placed_objects_id[i].place_state;
+			info.object_id = players_placed_objects_id[i].model_type_id;
+			build_info.push_back(info);
+		}
 	}
-
-	//for (int i = 0; i < static_cast<int>(player_count); i++)
-	//{
-	//	int d_id = players_placed_objects_id[i].dynamics_id;
-	//	build_information info;
-	//
-	//	glm::vec3 pos = physics.get_closest_wall_point(d_id);
-	//
-	//	//info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
-	//	info.debug_positions.emplace_back(pos); //physics.get_debug_for(d_id);
-	//	info.place_state = players_placed_objects_id[i].place_state;
-	//	info.object_id = players_placed_objects_id[i].model_type_id;
-	//
-	//	build_info.push_back(info);
-	//}
 
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
@@ -159,6 +146,7 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		net_state.state = network::SessionState::lobby;
 		game_state = (game_state | state::lobby);
+		gameplay.refresh();
 
 		load_map(&lobby);
 	}
@@ -210,31 +198,42 @@ void Game::update(std::chrono::milliseconds delta)
 
 	if ((net_state.state == network::SessionState::lobby))
 	{
+		if (level != &lobby)
+		{
+			load_map(&lobby);
+		}
+
 		game_state = (game_state | state::lobby);
 
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu))
 		{
 			if (net.id() == 0)
-				net_state.state = network::SessionState::loading;
-			game_state = (game_state | state::loading);
+				net_state.state = network::SessionState::pre_building;
+			game_state = (game_state | state::pre_building);
 		}
 	}
-	else if (net_state.state == network::SessionState::loading)
-	{
-		game_state = (game_state | state::loading);
+	//else if (net_state.state == network::SessionState::loading)
+	//{
+	//	game_state = (game_state | state::loading);
 
-		gameplay.refresh();
-		load_map(&level1);
+	//	gameplay.refresh();
+	//	load_map(&level1);
 
-		/*for (int i = 0; i < 4; ++i)
-			dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
+	//	/*for (int i = 0; i < 4; ++i)
+	//		dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
 
-		if (net.id() == 0)
-			net_state.state = network::SessionState::pre_building;
-		game_state = (game_state | state::pre_building);
-	}
+	//	if (net.id() == 0)
+	//		net_state.state = network::SessionState::pre_building;
+	//	game_state = (game_state | state::pre_building);
+	//}
 	else if (net_state.state == network::SessionState::pre_building)
 	{
+		if (level != &level1)
+		{ 
+			gameplay.refresh();
+			load_map(&level1);
+		}
+
 		//Render text of state and what to do.
 		game_state = (game_state | state::pre_building);
 		static float pre_build_timer = 3.5f;
@@ -346,7 +345,13 @@ void Game::update(std::chrono::milliseconds delta)
 				//level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
 							   
 				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
-								
+
+				float degree = 90.f * pos.z;
+
+				physics.set_rotation(players_placed_objects_id[i].dynamics_id, static_cast<int>(pos.z));
+
+				level->moving_models[players_placed_objects_id[i].model_id].set_rotation(degree);
+
 				level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
@@ -408,6 +413,11 @@ void Game::update(std::chrono::milliseconds delta)
 					level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 				}
 			}
+
+			/*for (int i = 4; i < 8; i++)
+			{
+				std::cout << "Dynamic: " << dynamics[i].position.x << " - " << dynamics[i].position.y << "\n";
+			}*/
 
 			give_players_objects = false;
 		}
@@ -549,14 +559,16 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].impulse = dynamics[i].impulse;
 			obj[i].shield_active = dynamics[i].shield_active;
 		}
-
+		
 		lua_data = gameplay.update(
 			{ delta, obj, triggers,
 			player_inputs,
 			anim_states,
 			players_placed_objects_id,
 			static_cast<int>(player_count),
-			triggers_types },
+			spikeframe,
+			turretframe,
+			triggers_types},
 			game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -634,8 +646,12 @@ void Game::update(std::chrono::milliseconds delta)
 		model.update_animation((float)delta.count(), idle);
 
 	for (int i = 4; i < level->moving_models.size(); i++)
-		if(level->moving_models[i].is_animated)
+		if (level->moving_models[i].is_animated)
+		{
 			level->moving_models[i].update_animation((float)delta.count(), idle);
+			if (level->moving_models[i].mesh->name == "spike_trap")
+				spikeframe = level->moving_models[i].getCurrentKeyframe();
+		}
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 
@@ -771,7 +787,7 @@ void Game::pack_data()
 		net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
 	}
 
-	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0)
+	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0 && net_state.state != network::SessionState::lobby)
 		net_state.state = network::SessionState::waiting;
 }
 
