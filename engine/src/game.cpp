@@ -404,11 +404,22 @@ void Game::update(std::chrono::milliseconds delta)
 						}
 					}
 
-					std::swap(level->moving_models[ppoi.model_id], level->moving_models[index]);
-					level->moving_models.pop_back();
+					level->moving_models.erase(level->moving_models.begin() + ppoi.model_id);
+					//std::swap(level->moving_models[ppoi.model_id], level->moving_models[index]);
+					//level->moving_models.pop_back();
+
 					physics.remove_body(ppoi.dynamics_id);
 
 					dynamics[ppoi.dynamics_id] = dynamics[index];
+
+					for (int i = 0; i < static_cast<int>(player_count); i++)
+					{
+						players_placed_objects_id[i].model_id--;
+						players_placed_objects_id[i].dynamics_id--;
+					}
+
+					auto beg = dynamics.begin() + players_placed_objects_id[i].dynamics_id;
+					std::rotate(beg, beg + 1, dynamics.end());
 
 					/*dynamics[index].model_id = ppoi.model_id;
 					dynamics[index].dynamic_id = ppoi.dynamics_id;*/
