@@ -1,6 +1,7 @@
 #ifndef GAME_SCENE_HPP
 #define GAME_SCENE_HPP
 #include "model.hpp"
+#include "lights.hpp"
 #include "LeapImporter/LeapImporter/LeapLevel.h"
 #include <vector>
 #include <string>
@@ -14,9 +15,6 @@ struct collision_data
 	bool trigger;
 	int objects_type_id;
 };
-
-
-
 
 namespace graphics
 {
@@ -35,6 +33,9 @@ public:
 	GameScene();
 	GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_lib);
 	~GameScene();
+	
+	void light_lobby();
+	void light_level_1();
 
 	glm::vec2 v[4];
 	std::vector<Model> moving_models;
@@ -44,6 +45,7 @@ public:
 
 // Lucas/Vincet Test för placering av object.
 	std::vector<placeableObjectInfo> objects;
+	std::array<PointLight, 32> lights;
 	bool build_mode_active = false;
 
 //Placed Objects // lucas test

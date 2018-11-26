@@ -96,6 +96,115 @@ GameScene::~GameScene()
 {
 }
 
+void GameScene::light_lobby()
+{
+	//Player Light
+	lights[0].color = glm::vec3{ 0.9f, 0.1f, 0.1f };
+	lights[0].intensity = 30;
+	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
+	lights[1].intensity = 30;
+	lights[2].color = glm::vec3{ 0.1f, 0.1f, 0.9f };
+	lights[2].intensity = 30;
+	lights[3].color = glm::vec3{ 0.9f, 0.8f, 0.1f };
+	lights[3].intensity = 30;
+
+	//Map Light
+	lights[4].position = glm::vec3{ 0.0, 8.689, -23.873 };
+	lights[4].color = glm::vec3{ 0, 0.82, 1 };
+	lights[4].intensity = 600;
+	lights[5].position = glm::vec3{ 0.0, 31.901, -3.596 };
+	lights[5].color = glm::vec3{ 0, 0.82, 1 };
+	lights[5].intensity = 600;
+	lights[6].position = glm::vec3{ 12.361, 4.61, -32.308 };
+	lights[6].color = glm::vec3{ 1, 1, 0 };
+	lights[6].intensity = 5;
+	lights[7].position = glm::vec3{ 16.868, 8.91, -26.007 };
+	lights[7].color = glm::vec3{ 1, 1, 0 };
+	lights[7].intensity = 5;
+	lights[8].position = glm::vec3{ 17.924, 5.232, -22.665 };
+	lights[8].color = glm::vec3{ 1, 1, 0 };
+	lights[8].intensity = 5;
+	lights[9].position = glm::vec3{ 19.108, 2.175, -14.395 };
+	lights[9].color = glm::vec3{ 1, 1, 0 };
+	lights[9].intensity = 5;
+	lights[10].position = glm::vec3{ -11.225, 8.62, -38.192 };
+	lights[10].color = glm::vec3{ 1, 1, 0 };
+	lights[10].intensity = 5;
+	lights[11].position = glm::vec3{ -15.115, 5.317, -30.962 };
+	lights[11].color = glm::vec3{ 1, 1, 0 };
+	lights[11].intensity = 5;
+	lights[12].position = glm::vec3{ -16.604, 9.025, -28.182 };
+	lights[12].color = glm::vec3{ 1, 1, 0 };
+	lights[12].intensity = 5;
+	lights[13].position = glm::vec3{ -17.894, 5.857, -19.358 };
+	lights[13].color = glm::vec3{ 1, 1, 0 };
+	lights[13].intensity = 5;
+	lights[14].position = glm::vec3{ -19.09, 2.282, -11.537 };
+	lights[14].color = glm::vec3{ 1, 1, 0 };
+	lights[14].intensity = 5;
+	lights[15].position = glm::vec3{ -13.985, -0.805, -8.626 };
+	lights[15].color = glm::vec3{ 1, 1, 0 };
+	lights[15].intensity = 5;
+	lights[16].position = glm::vec3{ 15.491, -1.476, -7.988 };
+	lights[16].color = glm::vec3{ 1, 1, 0 };
+	lights[16].intensity = 5;
+	lights[17].position = glm::vec3{ 0, 17.11, 25.838 };
+	lights[17].color = glm::vec3{ 0, 0.82, 1 };
+	lights[17].intensity = 600;
+
+	for (int i = 0; i < 18; i++)
+	{
+		lights[i].radius = lights[i].intensity;
+	}
+}
+
+void GameScene::light_level_1()
+{
+	//Player Light
+	lights[0].color = glm::vec3{ 0.9f, 0.1f, 0.1f };
+	lights[0].intensity = 30;
+	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
+	lights[1].intensity = 30;
+	lights[2].color = glm::vec3{ 0.1f, 0.1f, 0.9f };
+	lights[2].intensity = 30;
+	lights[3].color = glm::vec3{ 0.9f, 0.8f, 0.1f };
+	lights[3].intensity = 30;
+
+	//Map Light
+	lights[4].position = glm::vec3{ -0.145,-6.289,8.929 };
+	lights[4].color = glm::vec3{ 1,0.2,0 };
+	lights[5].position = glm::vec3{ -7.73,23.368,-22.735 };
+	lights[5].color = glm::vec3{ 1,0.2,0 };
+	lights[6].position = glm::vec3{ -7.74,44,-22.984 };
+	lights[6].color = glm::vec3{ 1,0.2,0 };
+	lights[7].position = glm::vec3{ 0, 123.035, -23.725 };
+	lights[7].color = glm::vec3{ 0, 0.82, 1 };
+	lights[8].position = glm::vec3{ 0, 187.484, -18.185 };
+	lights[8].color = glm::vec3{ 1, 0.2, 0 };
+	lights[9].position = glm::vec3{ 0, 208.400, -34.226 };
+	lights[9].color = glm::vec3{ 1, 0.2, 0 };
+	lights[10].position = glm::vec3{ 0, 260.169, 5.0 };
+	lights[10].color = glm::vec3{ 1, 1, 1 };
+	lights[11].position = glm::vec3{ 0, 88.553, -29.053 };
+	lights[11].color = glm::vec3{ 1, 0.2, 0 };
+	lights[12].position = glm::vec3{ 0, 135.246, -11.474 };
+	lights[12].color = glm::vec3{ 1, 0.2, 0 };
+
+	for (int i = 4; i < 13; i++)
+	{
+		lights[i].intensity = 400;
+	}
+
+	lights[5].intensity = 700;
+	lights[6].intensity = 700;
+
+	for (int i = 0; i < 13; i++)
+	{
+		lights[i].radius = lights[i].intensity;
+	}
+
+}
+
 void GameScene::inititate_object(CustomLevel& objects, MeshLib* object_lib)
 {
 	this->objects.clear();

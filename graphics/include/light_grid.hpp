@@ -42,9 +42,8 @@ public:
 	int size()const;
 
 	void calculate_grid(const Camera& camera);
-	void update(const Camera& camera);	
+	void update(const Camera& camera, const std::array<PointLight, 32> lights);
 
-	std::array<PointLight, 32> lights;
 private:
 	static constexpr int block_size = 12;
 

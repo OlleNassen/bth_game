@@ -597,11 +597,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	for (int i = 0; i < 4; ++i)
 	{
-		grid.lights[i].position = scene->moving_models[i].get_position();
+		scene->lights[i].position = scene->moving_models[i].get_position();
 	}
 
 	leaderboard.update(std::move(scoreboard));
-	grid.update(game_camera);
+	grid.update(game_camera, scene->lights);
 
 	overlays.update(delta, 
 		died[player_id], 
@@ -631,18 +631,18 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 	shader.uniform("dir_light_dir", dir_light.direction);
 	shader.uniform("dir_light_color", dir_light.color);
 	shader.uniform("dir_light_intensity", dir_light.intensity);
-	shader.uniform("light_count", (int)grid.lights.size());
+	shader.uniform("light_count", (int)scene->lights.size());
 
 	int light_count = 0;
 
-	for (int i = 0; i < grid.lights.size(); ++i)
+	for (int i = 0; i < scene->lights.size(); ++i)
 	{
 		shader.uniform("light_pos[" + std::to_string(i) + "]", 
-			grid.lights[i].position);
+			scene->lights[i].position);
 		shader.uniform("light_color[" + std::to_string(i) + "]", 
-			grid.lights[i].color);
+			scene->lights[i].color);
 		shader.uniform("light_intensity[" + std::to_string(i) + "]", 
-			grid.lights[i].intensity);
+			scene->lights[i].intensity);
 	}
 
 	for (auto it = first; it != last; ++it)
@@ -669,21 +669,21 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 	shader.uniform("projection", camera.projection);
 
 	shader.uniform("cam_pos", camera.position);
-	shader.uniform("light_count", (int)grid.lights.size());
+	shader.uniform("light_count", (int)scene->lights.size());
 	shader.uniform("dir_light_dir", dir_light.direction);
 	shader.uniform("dir_light_color", dir_light.color);
 	shader.uniform("dir_light_intensity", dir_light.intensity);
 
 	int light_count = 0;
 
-	for (int i = 0; i < grid.lights.size(); ++i)
+	for (int i = 0; i < scene->lights.size(); ++i)
 	{
 		shader.uniform("light_pos[" + std::to_string(i) + "]",
-			grid.lights[i].position);
+			scene->lights[i].position);
 		shader.uniform("light_color[" + std::to_string(i) + "]",
-			grid.lights[i].color);
+			scene->lights[i].color);
 		shader.uniform("light_intensity[" + std::to_string(i) + "]",
-			grid.lights[i].intensity);
+			scene->lights[i].intensity);
 	}
 	
 	for (auto i = 0; i < num_players; ++i)
