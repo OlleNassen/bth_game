@@ -676,7 +676,7 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 
 	int light_count = 0;
 
-	for (int i = 0; i < scene->lights.size(); ++i)
+	for (int i = 4; i < scene->lights.size(); ++i)
 	{
 		shader.uniform("light_pos[" + std::to_string(i) + "]",
 			scene->lights[i].position);
