@@ -341,7 +341,7 @@ void Game::update(std::chrono::milliseconds delta)
 								0, dynamics[d_id].objects_type_id };
 
 					give_players_objects = true;
-
+					
 					total_nr_objects++;
 				}
 			}
@@ -657,7 +657,7 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
-	if (game_state & state::building)
+	if ((game_state & state::building) && players_placed_objects_id[net.id()].dynamics_id != -1)
 	{
 		level->v[net.id()] = { level->v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
 	}
