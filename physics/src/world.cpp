@@ -420,7 +420,12 @@ std::vector<glm::vec3> World::get_debug_for(int id) const
 {
 	std::vector<glm::vec3> out_vertices;
 
-	std::vector<Point> vertices = get_vertices(bodies[id].box);
+	std::vector<Point> vertices;
+
+	if (id >= bodies.size())
+		return vertices;
+
+	vertices = get_vertices(bodies[id].box);
 
 	for (auto& vertex : vertices)
 	{
