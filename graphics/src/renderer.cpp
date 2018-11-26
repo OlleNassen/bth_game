@@ -479,19 +479,22 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		if (moving_objects_id[id] < scene->moving_models.size())
 			s_to_render = ModelsToRender{ scene->moving_models[moving_objects_id[id]], &scene->models[9], &scene->models.back() };
-		if (scene->animated_models.size() > 0)
+		
+		if (scene->animated_models.size() > 0 && moving_objects_id[id] < scene->moving_models.size())
 			a_to_render = ModelsToRender{ scene->moving_models[moving_objects_id[id]], &scene->animated_models.front(), &scene->animated_models.back() };
 	}
 	else if (!died[id] && !finish[id])
 	{
 		s_to_render = ModelsToRender{ scene->moving_models[id], &scene->models[9], &scene->models.back() };
-		if (scene->animated_models.size() > 0)
+
+		if (scene->animated_models.size() > 0 && moving_objects_id[id] < scene->moving_models.size())
 			a_to_render = ModelsToRender{ scene->moving_models[id], &scene->animated_models.front(), &scene->animated_models.back() };
 	}
 	else
 	{
 		s_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->models[9], &scene->models.back() };
-		if (scene->animated_models.size() > 0)
+		
+		if (scene->animated_models.size() > 0 && moving_objects_id[spectator_id] < scene->moving_models.size())
 			a_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->animated_models.front(), &scene->animated_models.back() };
 	}
 	
