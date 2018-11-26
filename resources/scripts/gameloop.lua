@@ -34,8 +34,6 @@ function update(delta_seconds, game, entities, player_count)
 	then
 		start_round = false
 
-		print("Max Points ", game.max_points)
-
 		-- Start positions
 		for i = 1, 4, 1
 		do
@@ -50,10 +48,7 @@ function update(delta_seconds, game, entities, player_count)
 
 			game.finished[i] = false
 			game.died[i] = false
-
-			print("Player ", i, " score ", game.scores[i])
 		end
-		print("\n")
 		
 		--game.max_points = player_count * 3
 		game.points = player_count -- Don't change unless you know what you're doing :)
