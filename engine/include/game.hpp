@@ -108,7 +108,8 @@ private:
 
 	//spectator
 	int watching = 0;
-
+	int spikeframe = 0;
+	int turretframe = 0;
 	//New gameloop stuff
 	void load_map(graphics::GameScene* scene);
 };

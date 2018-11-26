@@ -115,12 +115,14 @@ void Game::render()
 		int d_id = players_placed_objects_id[i].dynamics_id;
 		build_information info;
 
-		info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
-		info.debug_positions = physics.get_debug_for(d_id);
-		info.place_state = players_placed_objects_id[i].place_state;
-		info.object_id = players_placed_objects_id[i].model_type_id;
-
-		build_info.push_back(info);
+		if (d_id != -1)
+		{
+			info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
+			info.debug_positions = physics.get_debug_for(d_id);
+			info.place_state = players_placed_objects_id[i].place_state;
+			info.object_id = players_placed_objects_id[i].model_type_id;
+			build_info.push_back(info);
+		}
 	}
 
 	renderer.render(chat.begin(), chat.end(),
@@ -557,14 +559,16 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].impulse = dynamics[i].impulse;
 			obj[i].shield_active = dynamics[i].shield_active;
 		}
-
+		
 		lua_data = gameplay.update(
 			{ delta, obj, triggers,
 			player_inputs,
 			anim_states,
 			players_placed_objects_id,
 			static_cast<int>(player_count),
-			triggers_types },
+			spikeframe,
+			turretframe,
+			triggers_types},
 			game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -642,8 +646,12 @@ void Game::update(std::chrono::milliseconds delta)
 		model.update_animation((float)delta.count(), idle);
 
 	for (int i = 4; i < level->moving_models.size(); i++)
-		if(level->moving_models[i].is_animated)
+		if (level->moving_models[i].is_animated)
+		{
 			level->moving_models[i].update_animation((float)delta.count(), idle);
+			if (level->moving_models[i].mesh->name == "spike_trap")
+				spikeframe = level->moving_models[i].getCurrentKeyframe();
+		}
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 

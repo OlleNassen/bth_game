@@ -131,7 +131,7 @@ function update(delta_seconds, game, entities, player_count)
 			end
 
 			--spike_trap
-			if entities[i].triggered_type == 0 and game.shield_triggered[i] == false and not game.died[i]
+			if entities[i].triggered_type == 0 and game.shield_triggered[i] == false and not game.died[i] and game.spike_frame <= 50
 			then
 				game.finished[i] = true
 				game.died[i] = true
