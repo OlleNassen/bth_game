@@ -188,6 +188,7 @@ void Window::update_input(logic::input& input)
 	{
 		int count = 0;
 		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+		std::cout << count << '\n';
 		for (int i = 0; i < count; ++i)
 		{
 			auto& neg = axis_neg[static_cast<controller_axis>(i)];
