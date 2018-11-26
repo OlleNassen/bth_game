@@ -487,10 +487,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		s_to_render = ModelsToRender{ scene->moving_models[id], &scene->models[9], &scene->models.back() };
 
-		if (scene->animated_models.size() > 0 && moving_objects_id[id] < scene->moving_models.size())
+		if (scene->animated_models.size() > 0 && moving_objects_id[id] < static_cast<int>(scene->moving_models.size()))
 			a_to_render = ModelsToRender{ scene->moving_models[id], &scene->animated_models.front(), &scene->animated_models.back() };
 	}
-	else
+	else //Spectator
 	{
 		s_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->models[9], &scene->models.back() };
 		
