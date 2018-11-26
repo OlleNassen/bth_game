@@ -345,6 +345,11 @@ void Gameplay::new_round()
 	pre_starter_time = 3.5f;
 	players_done = 0;
 	
+	for (auto i = 0; i < 4; ++i)
+	{
+		player_script.setup(i);
+	}
+
 	for (int i = 0; i < 100; ++i)
 	{
 		placement_script.setup(i);
