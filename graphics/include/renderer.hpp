@@ -69,7 +69,8 @@ public:
 		float print_time,
 		int player_id,
 		int player_object_id,
-		std::vector<glm::vec3> remove_lines) const;
+		std::vector<glm::vec3> remove_lines,
+		bool view_score) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -87,7 +88,8 @@ public:
 		float goal_height,
 		std::vector<build_information>& all_placed_objects,
 		int spectator_id,
-		std::array<int, 4> moving_objects_id);
+		std::array<int, 4> moving_objects_id,
+		bool view_score);
 
 	static void point_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -258,7 +260,7 @@ private:
 	int places = 1;
 	std::array<int, 4> placing = { -1, -1, -1, -1 };
 	std::array<int, 4> scores_to_give = { 4, 3, 2, 1 };
-	
+
 	//Timer info
 	Text timer_text;
 
@@ -285,6 +287,23 @@ private:
 												glm::vec3{ 0.1f, 0.1f, 0.9f},
 												glm::vec3{ 0.9f, 0.8f, 0.1f} };
 
+
+	struct player_info
+	{
+		int my_id = 0;
+		float score = 0.f;
+		std::string name = "";
+		glm::vec3 color = { 0, 0, 0 };
+	};
+
+	struct {
+		bool operator() (const player_info& left, const player_info& right) const
+		{
+			return left.score > right.score;
+		}
+	} sort_by_score;
+
+	std::vector<player_info> player_infos;
 
 	LightGrid grid;
 };

@@ -28,6 +28,7 @@ Game::Game()
 	window.assign_key(logic::button::jump, GLFW_KEY_SPACE);
 	window.assign_key(logic::button::rotate, GLFW_KEY_R);
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
+	window.assign_key(logic::button::score, GLFW_KEY_TAB);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
 	window.assign_key(logic::button::debug, GLFW_KEY_F3);
 	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
@@ -123,13 +124,16 @@ void Game::render()
 		build_info.push_back(info);
 	}
 
+	bool view_score = (*local_input)[logic::button::score] == logic::button_state::held;
+
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
 		lua_data.finished, lua_data.scores, lua_data.time,
 		net.id(),
 		players_placed_objects_id[net.id()].model_type_id,
-		remove_lines);
+		remove_lines,
+		view_score);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -749,6 +753,8 @@ void Game::update(std::chrono::milliseconds delta)
 			players_placed_objects_id[2].model_id,
 			players_placed_objects_id[3].model_id };
 			
+		bool view_score = (*local_input)[logic::button::score] == logic::button_state::held;
+
 		string temp = stream.str();
 		renderer.update(delta,
 			obj,
@@ -758,7 +764,8 @@ void Game::update(std::chrono::milliseconds delta)
 			net.id(), game_state, temp, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
-			moving_objects_id);
+			moving_objects_id,
+			view_score);
 	}
 
 	if (game_state & state::menu && menu.get_fullscreen_pressed())
