@@ -303,7 +303,7 @@ private:
 		}
 	} sort_by_score;
 
-	std::vector<player_info> player_infos;
+	std::array<player_info, 4> player_infos;
 
 	LightGrid grid;
 };

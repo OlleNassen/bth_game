@@ -543,7 +543,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 			info.name = players[i];
 			info.color = players_colors[i];
 
-			player_infos.emplace_back(info);
+			player_infos[i] = info;
 		}
 
 		std::sort(player_infos.begin(), player_infos.end(), sort_by_score);
