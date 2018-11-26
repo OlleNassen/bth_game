@@ -628,7 +628,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		scene->lights[i].position = scene->moving_models[i].get_position();
 	}
 
-	leaderboard.update(std::move(scoreboard));
 	grid.update(game_camera, scene->lights);
 
 	overlays.update(delta, 
