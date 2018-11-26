@@ -8,6 +8,18 @@ in VS_OUT{
 	vec2 tex_coord;
 } fs_in;
 
+struct light_grid_element
+{
+	int count;
+	int indices[15];
+};
+
+const int block_size =  12;
+const int block_size_x = 1920 / block_size;
+const int block_size_y = 1080 / block_size;
+
+uniform light_grid_element light_indices[block_size * block_size];
+
 // material parameters
 uniform sampler2D emissive_map;
 
@@ -16,9 +28,9 @@ uniform sampler2D normal_map;
 uniform sampler2D roughness_metallic_ao_map;
 uniform vec3 player_color;
 
-uniform vec3 light_pos[14];
-uniform vec3 light_color[14];
-uniform float light_intensity[14];
+uniform vec3 light_pos[32];
+uniform vec3 light_color[32];
+uniform float light_intensity[32];
 uniform vec3 cam_pos;
 
 uniform vec3 dir_light_dir;
@@ -114,8 +126,14 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 4; ++i) 
+    int x = int(gl_FragCoord.x / block_size_x);
+	int y = int(gl_FragCoord.y / block_size_y);
+	light_grid_element elem = light_indices[x + y * block_size];
+
+    for(int j = 0; j < elem.count; ++j) 
     {
+		int i = elem.indices[j];
+
         // calculate per-light radiance
         vec3 L = normalize(light_pos[i] - fs_in.world_pos);
         vec3 H = normalize(V + L);
@@ -179,26 +197,7 @@ void main()
 		Lo += (kD * albedo / PI + specular) * radiance * NdotL;
     }
 
-    // ambient lighting (note that the next IBL tutorial will replace 
-    // this ambient lighting with environment lighting).
-	
-    // ambient lighting (we now use IBL as the ambient term)
-	
-    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
-
-    vec3 kS = F;
-    vec3 kD = 1.0 - kS;
-    kD *= 1.0 - metallic;	
-	
-    vec3 irradiance = texture(irradiance_map, N).rgb;
-    vec3 diffuse = irradiance * albedo;
-
-	const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(prefilter_map, R,  roughness * MAX_REFLECTION_LOD).rgb;    
-    vec2 brdf  = texture(brdf_lut, vec2(max(dot(N, V), 0.0), roughness)).rg;
-    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
-
-    vec3 ambient = (kD * diffuse + specular) * ao;
+	vec3 ambient = vec3(0.03) * albedo * ao;
 
 	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb * player_color;
     

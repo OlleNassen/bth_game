@@ -667,6 +667,7 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
+
 	shader.uniform("cam_pos", camera.position);
 	shader.uniform("light_count", (int)grid.lights.size());
 	shader.uniform("dir_light_dir", dir_light.direction);
