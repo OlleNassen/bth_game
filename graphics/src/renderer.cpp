@@ -73,7 +73,8 @@ void Renderer::render(
 	float print_time,
 	int player_id,
 	int player_object_id,
-	std::vector<glm::vec3> remove_lines)const
+	std::vector<glm::vec3> remove_lines,
+	bool view_score)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -376,7 +377,7 @@ void Renderer::render(
 			}
 		}
 
-		if (game_state & state::score)
+		if (game_state & state::score || view_score)
 		{
 			text_shader.use();
 			text_shader.uniform("projection", projection);
@@ -384,11 +385,20 @@ void Renderer::render(
 
 			build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
 
+			std::array<int, 4> positions;
+
 			for (int i = 0; i < player_count; i++)
 			{
 				out_text.str("");
-				out_text << players[i] << " : " << scores[i];
-				text_shader.uniform("text_color", players_colors[i]);
+
+				/*out_text << players[i] << " : " << scores[i];
+
+				text_shader.uniform("text_color", players_colors[i]);*/
+
+				out_text << player_infos[i].name << " : " << player_infos[i].score;
+
+				text_shader.uniform("text_color", player_infos[i].color);
+
 				build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 			}
 		}
@@ -453,7 +463,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int num_players,
 	int id,
 	int new_game_state,
-	std::string scoreboard,
 	std::array<bool, 4> died,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
@@ -461,7 +470,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	float goal_height,
 	std::vector<build_information>& all_placed_objects,
 	int spectator_id,
-	std::array<int, 4> moving_objects_id)
+	std::array<int, 4> moving_objects_id,
+	bool view_score)
 {
 	bool is_menu = (new_game_state & state::menu);
 	
@@ -485,8 +495,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 			a_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->animated_models.front(), &scene->animated_models.back() };
 	}
 	
-	if (game_state & state::score || game_state & state::lobby)
+	if (game_state & state::pre_playing || game_state & state::lobby)
 	{
+		places = 1;
+		placing = { -1, -1, -1, -1 };
+		scores_to_give = { player_count, player_count - 1, player_count - 2, player_count - 3 };
+
 		build_stage_screen.timer = 0ms;
 		build_stage_screen.transparency = 0.8f;
 	}
@@ -510,7 +524,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		
 		for (int i = 0; i < player_count; i++)
 		{
-			if (finish[i] && placing[i] == -1)
+			if (!died[i] && finish[i] && placing[i] == -1)
 			{
 				placing[i] = places;
 				places++;
@@ -518,11 +532,21 @@ void Renderer::update(std::chrono::milliseconds delta,
 		}
 	}
 
-	if (game_state & state::pre_playing)
+	if (game_state & state::score || view_score)
 	{
-		places = 1;
-		placing = { -1, -1, -1, -1 };
-		scores_to_give = { player_count, player_count - 1,player_count - 2,player_count - 3 };
+		for (int i = 0; i < player_count; i++)
+		{
+			player_info info;
+
+			info.my_id = i;
+			info.score = scores[i];
+			info.name = players[i];
+			info.color = players_colors[i];
+
+			player_infos[i] = info;
+		}
+
+		std::sort(player_infos.begin(), player_infos.end(), sort_by_score);
 	}
 
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
@@ -601,7 +625,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		grid.lights[i].position = scene->moving_models[i].get_position();
 	}
 
-	leaderboard.update(std::move(scoreboard));
 	grid.update(game_camera);
 
 	overlays.update(delta, 

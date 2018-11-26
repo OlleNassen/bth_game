@@ -1,7 +1,7 @@
 function setup(game)
 	game.goal = 258
 	game.points = 0 -- do not change this, edit value in update loop
-	game.max_points = 12
+	game.max_points = 10
 	--4 playerscores:
 	game.names = {"p1", "p2", "p3", "p4"}
 	game.scores = { 0, 0, 0, 0 }
@@ -50,7 +50,7 @@ function update(delta_seconds, game, entities, player_count)
 			game.died[i] = false
 		end
 		
-		game.max_points = player_count * 3
+		--game.max_points = player_count * 3
 		game.points = player_count -- Don't change unless you know what you're doing :)
 		round = round + 1
 		--game.clock = 0
