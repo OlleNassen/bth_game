@@ -371,7 +371,7 @@ void Renderer::render(
 				}
 			}
 
-			if ((died[player_id] || finish[player_id]) && overlays.finished_timer >= 5000ms)
+			if ((died[player_id] || finish[player_id]) && (overlays.finished_timer >= 5000ms || overlays.death_timer >= 500ms))
 			{				
 				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 			}
@@ -485,10 +485,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		s_to_render = ModelsToRender{ scene->moving_models[id], &scene->models[9], &scene->models.back() };
 
-		if (scene->animated_models.size() > 0 && moving_objects_id[id] < scene->moving_models.size())
+		if (scene->animated_models.size() > 0)
 			a_to_render = ModelsToRender{ scene->moving_models[id], &scene->animated_models.front(), &scene->animated_models.back() };
 	}
-	else
+	else //Spectator
 	{
 		s_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->models[9], &scene->models.back() };
 		
@@ -498,12 +498,15 @@ void Renderer::update(std::chrono::milliseconds delta,
 	
 	if (game_state & state::pre_playing || game_state & state::lobby)
 	{
+		build_stage_screen.timer = 0ms;
+		build_stage_screen.transparency = 0.8f;
+	}
+
+	if (game_state & state::pre_building)
+	{
 		places = 1;
 		placing = { -1, -1, -1, -1 };
 		scores_to_give = { player_count, player_count - 1, player_count - 2, player_count - 3 };
-
-		build_stage_screen.timer = 0ms;
-		build_stage_screen.transparency = 0.8f;
 	}
 
 	if (!(game_state & state::playing))
