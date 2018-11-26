@@ -8,7 +8,7 @@ function setup(entity)
 	entity.max_speed = 16
 	entity.max_air_speed = 16
 	entity.ground_acceleration = 100
-	entity.deceleration = 60
+	entity.deceleration = 80
 	entity.air_acceleration = 100
 	entity.ungrounded_time = 0
 	entity.jump_forgiveness_time = 0.5
@@ -388,6 +388,7 @@ function accelerate(delta_seconds, entity, top_speed, acceleration)
 		if entity.velocity.x < top_speed	
 		then
 			entity.velocity.x = entity.velocity.x +(acceleration*delta_seconds )
+			--entity.anim.current = entity.anim.running
 		else
 			entity.velocity.x = top_speed
 		end

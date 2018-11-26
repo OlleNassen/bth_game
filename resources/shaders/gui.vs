@@ -3,11 +3,11 @@
 layout (location = 0) in vec2 vertex_position;
 layout (location = 1) in vec2 uv;
 layout (location = 2) in vec2 position;
-layout (location = 3) in vec2 color;
+layout (location = 3) in vec3 color;
 layout (location = 4) in vec2 scale;
 layout (location = 5) in float angle;
 
-out vec2 vs_color;
+out vec3 vs_color;
 out vec2 texture_coord;
 
 //uniform bool is_arrow;

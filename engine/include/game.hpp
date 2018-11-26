@@ -12,6 +12,8 @@
 #include <world.hpp>
 #include <input.hpp>
 
+#include <algorithm>
+
 #include "mesh_lib.hpp"
 #include "game_scene.hpp"
 #include "window.hpp"

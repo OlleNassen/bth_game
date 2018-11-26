@@ -420,7 +420,12 @@ std::vector<glm::vec3> World::get_debug_for(int id) const
 {
 	std::vector<glm::vec3> out_vertices;
 
-	std::vector<Point> vertices = get_vertices(bodies[id].box);
+	std::vector<Point> vertices;
+
+	if (id >= bodies.size())
+		return vertices;
+
+	vertices = get_vertices(bodies[id].box);
 
 	for (auto& vertex : vertices)
 	{
@@ -449,9 +454,10 @@ void World::remove_body(int at)
 	//std::swap(bodies[at], bodies[bodies.size() - 1]);
 	//std::swap(dynamic_rigidbodies[at], dynamic_rigidbodies[dynamic_rigidbodies.size() - 1]);
 
+	bodies.erase(bodies.begin() + at);
 
-	std::swap(bodies[at], bodies[bodies.size() - 1]);
-	bodies.pop_back();
+	//std::swap(bodies[at], bodies[bodies.size() - 1]);
+	//bodies.pop_back();
 
 	//dynamic_rigidbodies.pop_back();
 	//bodies.pop_back();
