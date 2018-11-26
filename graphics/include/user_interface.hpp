@@ -15,7 +15,7 @@ namespace graphics
 struct GuiElement
 {
 	glm::vec2 position;
-	glm::vec2 color;
+	glm::vec3 color;
 	glm::vec2 scale;
 	float angle;
 };
