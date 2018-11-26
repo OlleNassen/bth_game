@@ -37,71 +37,61 @@ void PlayerScript::update(
 	anim& anim_state)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	int top = stack.top();
 
+	if (lua_istable(stack.lua_state, top))
 	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("button");
-		stack.push(i);
-		stack.rawset(top);
-		stack.clear();
-	}
+		{
+			stack.push("button");
+			stack.push(i);
+			stack.rawset(top);
+		}
 
-	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("anim");
-		stack.push(anim_state);
-		stack.rawset(top);
-		stack.clear();
-	}
+		{
+			
+			stack.push("anim");
+			stack.push(anim_state);
+			stack.rawset(top);
+		}
 
-	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("position");
-		stack.push(object.position);
-		stack.rawset(top);
-		stack.push("velocity");
-		stack.push(object.velocity);
-		stack.rawset(top);
-		stack.push("size");
-		stack.push(object.size);
-		stack.rawset(top);
-		stack.push("forces");
-		stack.push(object.forces);
-		stack.rawset(top);
-		stack.push("impulse");
-		stack.push(object.impulse);
-		stack.rawset(top);
-		stack.clear();
-	}
+		{
+			stack.push("position");
+			stack.push(object.position);
+			stack.rawset(top);
+			stack.push("velocity");
+			stack.push(object.velocity);
+			stack.rawset(top);
+			stack.push("size");
+			stack.push(object.size);
+			stack.rawset(top);
+			stack.push("forces");
+			stack.push(object.forces);
+			stack.rawset(top);
+			stack.push("impulse");
+			stack.push(object.impulse);
+			stack.rawset(top);
+		}
 
-	//test for trigger
-	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("triggered");
-		stack.push(trigger);
-		stack.rawset(top);
-		stack.clear();
-	}
+		//test for trigger
+		{
+			stack.push("triggered");
+			stack.push(trigger);
+			stack.rawset(top);
+		}
 
-	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("triggered_type");
-		stack.push(type);
-		stack.rawset(top);
-		stack.clear();
-	}
+		{
+			stack.push("triggered_type");
+			stack.push(type);
+			stack.rawset(top);
+		}
 
-	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("shield_active");
-		stack.push(object.shield_active);
-		stack.rawset(top);
+		{
+			stack.push("shield_active");
+			stack.push(object.shield_active);
+			stack.rawset(top);
+			
+		}
 		stack.clear();
 	}
 

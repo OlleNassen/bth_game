@@ -116,12 +116,14 @@ void Game::render()
 		int d_id = players_placed_objects_id[i].dynamics_id;
 		build_information info;
 
-		info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
-		info.debug_positions = physics.get_debug_for(d_id);
-		info.place_state = players_placed_objects_id[i].place_state;
-		info.object_id = players_placed_objects_id[i].model_type_id;
-
-		build_info.push_back(info);
+		if (d_id != -1)
+		{
+			info.local_position = glm::vec3(dynamics[d_id].position.x, dynamics[d_id].position.y, 0.0f);
+			info.debug_positions = physics.get_debug_for(d_id);
+			info.place_state = players_placed_objects_id[i].place_state;
+			info.object_id = players_placed_objects_id[i].model_type_id;
+			build_info.push_back(info);
+		}
 	}
 
 	bool view_score = (*local_input)[logic::button::score] == logic::button_state::held;
