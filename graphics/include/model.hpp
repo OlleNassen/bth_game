@@ -46,7 +46,6 @@ public:
 private:
 	Animation_handler* animation_handler;
 	glm::mat4 model;
-	glm::vec3 light_pos{ 0, 3, 1 };
 };
 
 }
