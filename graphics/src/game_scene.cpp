@@ -187,15 +187,14 @@ void GameScene::light_level_1()
 	lights[10].color = glm::vec3{ 1, 1, 1 };
 	lights[11].position = glm::vec3{ 0, 88.553, -29.053 };
 	lights[11].color = glm::vec3{ 1, 0.2, 0 };
-	lights[12].position = glm::vec3{ 0, 135.246, -11.474 };
+	lights[12].position = glm::vec3{ 0, 141.359, -31.505 };
 	lights[12].color = glm::vec3{ 1, 0.2, 0 };
 
 	for (int i = 4; i < 13; i++)
 	{
-		lights[i].intensity = 100;
+		lights[i].intensity = 700;
 	}
 
-	lights[5].intensity = 700;
 	lights[6].intensity = 700;
 
 	for (int i = 0; i < 13; i++)
