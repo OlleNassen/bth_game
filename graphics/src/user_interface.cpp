@@ -126,7 +126,7 @@ namespace graphics
 
 	PlayerArrows::PlayerArrows()
 	{
-		is_invisible.fill(false);
+		is_invisible.fill(true);
 
 	}
 
@@ -162,8 +162,8 @@ namespace graphics
 		}
 	}
 
-	void PlayerArrows::set_visibility(unsigned int player, bool visible)
+	void PlayerArrows::set_visibility(unsigned int player, bool invisible)
 	{
-		this->is_invisible[player] = visible;
+		this->is_invisible[player] = invisible;
 	}
 }
