@@ -276,7 +276,7 @@ void Game::update(std::chrono::milliseconds delta)
 		if (!give_players_objects && net.id() == 0)
 		{
 			players_placed_objects_id.fill({ -1, -1, -1, -1 });
-			std::array<int, 4> random_position = { 0, 0, 0, 0 }; // random_indexes();
+			std::array<int, 4> random_position = random_indexes(); //{ 0, 0, 0, 0 };
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
