@@ -335,6 +335,12 @@ void Renderer::render(
 			{				
 				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 			}
+			else
+			{
+				minimap.render(minimap_shader);
+				gui.use();
+				ui.render(gui);
+			}
 		}
 
 		if (game_state & state::score)
@@ -392,13 +398,13 @@ void Renderer::render(
 				leaderboard.render(text_shader, text);
 			}
 
-			if (!is_menu && !finish[player_id] && !died[player_id])
+			/*if (!is_menu && !finish[player_id] && !died[player_id])
 			{
 				minimap.render(minimap_shader);
 				gui.use();
 
 				ui.render(gui);
-			}
+			}*/
 		}
 
 		glEnable(GL_DEPTH_TEST);

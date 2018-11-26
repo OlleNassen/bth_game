@@ -148,6 +148,7 @@ namespace graphics
 					player_vector[i].y *= -1;
 
 					elements.at(i + 2).angle = std::atan2(player_vector[i].y, player_vector[i].x);
+					elements.at(i + 2).color = models.at(i).get_color();
 				}
 				else
 				{
