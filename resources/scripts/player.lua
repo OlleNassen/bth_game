@@ -388,6 +388,7 @@ function accelerate(delta_seconds, entity, top_speed, acceleration)
 		if entity.velocity.x < top_speed	
 		then
 			entity.velocity.x = entity.velocity.x +(acceleration*delta_seconds )
+			--entity.anim.current = entity.anim.running
 		else
 			entity.velocity.x = top_speed
 		end
