@@ -11,10 +11,10 @@ in VS_OUT{
 struct light_grid_element
 {
 	int count;
-	int indices[5];
+	int indices[15];
 };
 
-const int block_size =  24;
+const int block_size =  12;
 const int block_size_x = 1920 / block_size;
 const int block_size_y = 1080 / block_size;
 
@@ -32,6 +32,7 @@ uniform vec3 light_pos[32];
 uniform vec3 light_color[32];
 uniform float light_intensity[32];
 uniform vec3 cam_pos;
+
 uniform vec3 dir_light_dir;
 uniform vec3 dir_light_color;
 uniform float dir_light_intensity;
