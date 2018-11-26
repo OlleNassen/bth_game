@@ -349,7 +349,7 @@ void Game::update(std::chrono::milliseconds delta)
 		
 		for (int i = 0; i < static_cast<int>(player_count); i++)
 		{
-			if (players_placed_objects_id[i].place_state != 2)
+			if (players_placed_objects_id[i].place_state != 2 && players_placed_objects_id[i].dynamics_id != -1)
 			{
 				//level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
 							   
