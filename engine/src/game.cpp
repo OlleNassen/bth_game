@@ -126,7 +126,7 @@ void Game::render()
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
-		lua_data.finished, lua_data.scores, lua_data.time,
+		lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time,
 		net.id(),
 		players_placed_objects_id[net.id()].model_type_id,
 		remove_lines);
@@ -269,7 +269,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-				placed_objects_list_id = random_picked_object();
+				placed_objects_list_id = 6;// random_picked_object();
 				collision_data data;
 				int m_id = level->add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
@@ -756,7 +756,7 @@ void Game::update(std::chrono::milliseconds delta)
 			directions,
 			chat[1], static_cast<int>(player_count),
 			net.id(), game_state, temp, lua_data.died, 
-			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height, all_placed_objects,
+			lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
 			moving_objects_id);
 	}

@@ -27,6 +27,7 @@ public:
 	std::array<float, 4> scores;
 	std::array<bool, 4> died;
 	std::array<bool, 4> finished;
+	std::array<int, 4> trigger_type;
 	bool game_over = false;
 	float time;
 	float goal_height;
