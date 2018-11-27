@@ -156,6 +156,9 @@ void GameScene::light_lobby()
 	{
 		lights[i].radius = lights[i].intensity;
 	}
+	lights[4].radius = 40;
+	lights[5].radius = 40;
+	lights[17].radius = 40;
 }
 
 void GameScene::light_level_1()
@@ -163,12 +166,16 @@ void GameScene::light_level_1()
 	//Player Light
 	lights[0].color = glm::vec3{ 0.9f, 0.1f, 0.1f };
 	lights[0].intensity = 30;
+	lights[0].radius = 30;
 	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
 	lights[1].intensity = 30;
+	lights[1].radius = 30;
 	lights[2].color = glm::vec3{ 0.1f, 0.1f, 0.9f };
 	lights[2].intensity = 30;
+	lights[2].radius = 30;
 	lights[3].color = glm::vec3{ 0.9f, 0.8f, 0.1f };
 	lights[3].intensity = 30;
+	lights[3].radius = 30;
 
 	//Map Light
 	lights[4].position = glm::vec3{ -0.145,-6.289,8.929 };
@@ -187,7 +194,7 @@ void GameScene::light_level_1()
 	lights[10].color = glm::vec3{ 1, 1, 1 };
 	lights[11].position = glm::vec3{ 0, 88.553, -29.053 };
 	lights[11].color = glm::vec3{ 1, 0.2, 0 };
-	lights[12].position = glm::vec3{ 0, 135.246, -11.474 };
+	lights[12].position = glm::vec3{ 0, 141.359, -31.505 };
 	lights[12].color = glm::vec3{ 1, 0.2, 0 };
 
 	for (int i = 4; i < 13; i++)
@@ -195,12 +202,11 @@ void GameScene::light_level_1()
 		lights[i].intensity = 400;
 	}
 
-	lights[5].intensity = 700;
 	lights[6].intensity = 700;
 
-	for (int i = 0; i < 13; i++)
+	for (int i = 4; i < 13; i++)
 	{
-		lights[i].radius = lights[i].intensity;
+		lights[i].radius = 60;
 	}
 
 }

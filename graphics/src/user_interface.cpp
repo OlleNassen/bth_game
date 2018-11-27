@@ -22,8 +22,8 @@ namespace graphics
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2) * 2, (void*)sizeof(glm::vec2));
 
 		rebind_buffers();
-		gui_textures.at(0).load_texture("../resources/textures/player_arrow_2.png");
-		gui_textures.at(1).load_texture("../resources/textures/chat_texture.png");
+		gui_textures.at(0).load_texture("../resources/textures/player_arrow_2.png", true);
+		gui_textures.at(1).load_texture("../resources/textures/chat_texture.png", true);
 
 	}
 
