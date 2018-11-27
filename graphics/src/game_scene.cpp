@@ -156,6 +156,9 @@ void GameScene::light_lobby()
 	{
 		lights[i].radius = lights[i].intensity;
 	}
+	lights[4].radius = 40;
+	lights[5].radius = 40;
+	lights[17].radius = 40;
 }
 
 void GameScene::light_level_1()
