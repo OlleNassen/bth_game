@@ -61,14 +61,15 @@ LuaExport Gameplay::update(Input inputs,
 
 		for (int i = 0; i < inputs.player_count; i++)
 		{
-			player_script.update(
-				inputs.delta,
-				inputs.dynamics[i],
-				inputs.player_inputs[i],
-				i,
-				inputs.triggers[i],
-				inputs.triggers_types[i],
-				inputs.anim_states[i]);
+			if (!game_script.data.finished[i])
+				player_script.update(
+					inputs.delta,
+					inputs.dynamics[i],
+					inputs.player_inputs[i],
+					i,
+					inputs.triggers[i],
+					inputs.triggers_types[i],
+					inputs.anim_states[i]);
 		}
 	}
 
