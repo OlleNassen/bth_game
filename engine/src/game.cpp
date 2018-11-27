@@ -580,7 +580,7 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			if (dynamics[i].objects_type_id == 1)
 			{
-				player_hit_array = laser_update(dynamics[i].position, dir, turretframe);
+				player_hit_array = laser_update(glm::vec3{dynamics[i].position.x, dynamics[i].position.y, 0}, dir, turretframe);
 			}
 		}
 	}
