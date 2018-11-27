@@ -24,16 +24,16 @@ void OverlayScreen::render(const Shader & shader) const
 
 Overlays::Overlays()
 {
-	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_down_0.png"});
-	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_down_1.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_6.png" });
-	stun.push_back(Texture{ "../resources/textures/overlays/stun_1.png" });
-	stun.push_back(Texture{ "../resources/textures/overlays/stun_2.png" });
-	glide.push_back(Texture{ "../resources/textures/overlays/glide_1.png" });
-	speedboost.push_back(Texture{ "../resources/textures/overlays/speedboost_1.png" });
-	doublejump.push_back(Texture{ "../resources/textures/overlays/doublejump_1.png" });
-	shield.push_back(Texture{ "../resources/textures/overlays/shield_1.png" });
-	random.push_back(Texture{ "../resources/textures/overlays/glide_1.png" });
+	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_down_0.png", false});
+	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_down_1.png", false });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_6.png", true });
+	stun.push_back(Texture{ "../resources/textures/overlays/stun_1.png", true });
+	stun.push_back(Texture{ "../resources/textures/overlays/stun_2.png", true });
+	glide.push_back(Texture{ "../resources/textures/overlays/glide_1.png", true });
+	speedboost.push_back(Texture{ "../resources/textures/overlays/speedboost_1.png", true });
+	doublejump.push_back(Texture{ "../resources/textures/overlays/doublejump_1.png", true });
+	shield.push_back(Texture{ "../resources/textures/overlays/shield_1.png", true });
+	random.push_back(Texture{ "../resources/textures/overlays/glide_1.png", true });
 }
 
 Overlays::Overlays(int player_id)
