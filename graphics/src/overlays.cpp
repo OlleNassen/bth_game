@@ -33,6 +33,7 @@ Overlays::Overlays()
 	speedboost.push_back(Texture{ "../resources/textures/overlays/speedboost_1.png" });
 	doublejump.push_back(Texture{ "../resources/textures/overlays/doublejump_1.png" });
 	shield.push_back(Texture{ "../resources/textures/overlays/shield_1.png" });
+	random.push_back(Texture{ "../resources/textures/overlays/random_1.png" });
 }
 
 Overlays::Overlays(int player_id)
@@ -74,64 +75,118 @@ void Overlays::update(
 		if (previous_trigger >= 2 && previous_trigger <= 7)
 		{
 			overall_trigger = true;
+			
 			if (previous_trigger == 2)
 			{
 				stun_trigger = true;
+
+				//reset the other triggers
+				glide_trigger = false;
+				speedboost_trigger = false;
+				doublejump_trigger = false;
+				shield_trigger = false;
+				random_trigger = false;
 			}
 			else if (previous_trigger == 3)
 			{
 				glide_trigger = true;
+
+				stun_trigger = false;
+				speedboost_trigger = false;
+				doublejump_trigger = false;
+				shield_trigger = false;
+				random_trigger = false;
 			}
 			else if (previous_trigger == 4)
 			{
 				speedboost_trigger = true;
+
+				stun_trigger = false;
+				glide_trigger = false;
+				doublejump_trigger = false;
+				shield_trigger = false;
+				random_trigger = false;
 			}
 			else if (previous_trigger == 5)
 			{
 				doublejump_trigger = true;
+
+				stun_trigger = false;
+				glide_trigger = false;
+				speedboost_trigger = false;
+				shield_trigger = false;
+				random_trigger = false;
 			}
 			else if (previous_trigger == 6)
 			{
 				shield_trigger = true;
+
+				stun_trigger = false;
+				glide_trigger = false;
+				speedboost_trigger = false;
+				doublejump_trigger = false;
+				random_trigger = false;
 			}
 			else if (previous_trigger == 7)
 			{
 				random_trigger = true;
+
+				stun_trigger = false;
+				glide_trigger = false;
+				speedboost_trigger = false;
+				doublejump_trigger = false;
+				shield_trigger = false;
 			}
 		}
+		else
+		{
+			pulse_timer = 0ms;
+			overall_trigger = false;
+		}
+
 
 		//Reset timer if the trigger has changed
-		if (previous_trigger != trigger_type && trigger_type != -1)
+		if (previous_trigger != trigger_type && trigger_type > 1)
 		{
 			pulse_timer = 0ms;
 			stun_timer = 0ms;
 			shield_timer = 0ms;
 		}
+		else if (previous_trigger == 3 && trigger_type == 3)
+		{
+			//If you get stunned, set so the stun overlay doesn't active again
+			previous_trigger = -1;
+		}
+
+		//Set which trigger
+		if (trigger_type > 1)
+		{
+			previous_trigger = trigger_type;
+		}
 
 		//Pickup timers
 		if (overall_trigger == true)
 		{
-			if (stun_timer <= 3000ms)
+			if (stun_trigger && stun_timer <= 8000ms)
 			{
 				stun_timer += delta;
 			}
-			else
+			else if (shield_trigger)
 			{
-				stun_timer = 0ms;
-				previous_trigger = -1;
+				shield_timer += delta;
 			}
-
-			if (pulse_timer <= 10000ms)
+			else if (pulse_timer <= 10000ms)
 			{
 				pulse_timer += delta;
 			}
-			if (shield_trigger)
+			else
 			{
-				shield_timer += delta;
+				pulse_timer = 0ms;
 			}
 		}
 		else
 		{
+			overall_trigger = false;
 			stun_trigger = false;
 			glide_trigger = false;
 			speedboost_trigger = false;
@@ -140,20 +195,27 @@ void Overlays::update(
 			random_trigger = false;
 			pulse_timer = 0ms;
 			stun_timer = 0ms;
-			speedboost_timer = 0ms;
 			shield_timer = 0ms;
 		}
 		
 		//Reset
+		if (stun_timer >= 8000ms)
+		{
+			stun_timer = 0ms;
+			stun_trigger = false;
+			previous_trigger = -1;
+		}
 		if (pulse_timer >= 10000ms)
 		{
+			pulse_timer = 0ms;
 			previous_trigger = -1;
 		}
 		if (trigger_type == 0)
 		{
+			shield_trigger = false;
+			shield_timer = 0ms;
 			previous_trigger = -1;
 		}
-		
 	}
 	else
 	{
@@ -162,9 +224,12 @@ void Overlays::update(
 		stun_timer = 0ms;
 		shield_timer = 0ms;
 		overall_trigger = false;
+		glide_trigger = false;
 		stun_trigger = false;
 		speedboost_trigger = false;
+		doublejump_trigger = false;
 		shield_trigger = false;
+		random_trigger = false;
 		previous_trigger = -1;
 	}
 
@@ -181,10 +246,6 @@ void Overlays::update(
 		}
 	}
 
-	if (trigger_type != -1)
-	{
-		previous_trigger = trigger_type;
-	}
 
 	//Pulse update
 	if (pulse_timer >= 7000ms)
@@ -198,6 +259,7 @@ void Overlays::update(
 	}
 	overall_modulus = pulse_timer.count() % 800;
 	stun_modulus = stun_timer.count() % 300;
+	std::cout << stun_timer.count() << "\n";
 }
 
 void Overlays::render(const Shader & shader) const
@@ -227,28 +289,28 @@ void Overlays::render(const Shader & shader) const
 				this->stun.at(1).bind(0);
 			}
 		}
-		else if (pulse_timer > 0ms && pulse_timer <= 10000ms)
+		else if (shield_trigger && shield_timer > 0ms)
+		{
+			this->shield.at(0).bind(0);
+		}
+		else if (overall_trigger && pulse_timer <= 10000ms)
 		{
 			if (glide_trigger)
 			{
-				glide.at(0).bind(0);
+				this->glide.at(0).bind(0);
 			}
 			else if (speedboost_trigger)
 			{
-				speedboost.at(0).bind(0);
+				this->speedboost.at(0).bind(0);
 			}
 			else if (doublejump_trigger)
 			{
-				doublejump.at(0).bind(0);
+				this->doublejump.at(0).bind(0);
 			}
 			else if (random_trigger)
 			{
-				bind_overlay(this->random, 500);
+				this->random.at(0).bind(0);
 			}
-		}
-		else if (shield_timer > 0ms)
-		{
-			this->shield.at(0).bind(0);
 		}
 	}
 	if (current_state & state::menu)
