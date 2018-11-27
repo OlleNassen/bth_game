@@ -109,7 +109,7 @@ function update(delta_seconds, game, entities, player_count)
 	--Check if players finished
 	for i = 1, player_count, 1
 	do
-		if entities[i].position.y > game.goal and not game.finished[i] and not game.died[i] and game.points ~= 0
+		if entities[i].position.y >= game.goal and not game.finished[i] and not game.died[i] and game.points ~= 0
 		then
 			game.scores[i] = game.scores[i] + game.points
 			game.points = game.points - 1
@@ -153,8 +153,6 @@ function update(delta_seconds, game, entities, player_count)
 
 				entities[i].velocity.x = 0
 				entities[i].velocity.y = 0
-
-				game.points = game.points - 1
 
 			elseif entities[i].triggered_type == 0 and game.shield_triggered[i] == true
 			then
