@@ -800,7 +800,7 @@ void Game::update(std::chrono::milliseconds delta)
 			player_inputs[net.id()].cursor,
 			directions,
 			chat[1], static_cast<int>(player_count),
-			net.id(), game_state, temp, lua_data.died, 
+			net.id(), game_state, lua_data.died, 
 			lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
 			moving_objects_id,
