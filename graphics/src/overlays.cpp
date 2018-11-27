@@ -24,18 +24,16 @@ void OverlayScreen::render(const Shader & shader) const
 
 Overlays::Overlays()
 {
-	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_down_0.png"});
-	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_down_1.png" });
-	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_1.png" });
-	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_2.png" });
-	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_3.png" });
-	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_4.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_1.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_2.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_3.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_4.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_5.png" });
+	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_no_battery.png"});
+	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_low_battery.png" });
 	death.push_back(Texture{ "../resources/textures/death_screen/death_6.png" });
+	stun.push_back(Texture{ "../resources/textures/overlays/stun_1.png" });
+	stun.push_back(Texture{ "../resources/textures/overlays/stun_2.png" });
+	glide.push_back(Texture{ "../resources/textures/overlays/glide_1.png" });
+	speedboost.push_back(Texture{ "../resources/textures/overlays/speedboost_1.png" });
+	doublejump.push_back(Texture{ "../resources/textures/overlays/doublejump_1.png" });
+	shield.push_back(Texture{ "../resources/textures/overlays/shield_1.png" });
+	random.push_back(Texture{ "../resources/textures/overlays/random_1.png" });
 }
 
 Overlays::Overlays(int player_id)
@@ -49,6 +47,7 @@ void Overlays::update(
 	bool died,
 	bool finish,
 	std::array<float, 4> &scores,
+	int trigger_type,
 	int game_state,
 	int player
 )	
@@ -59,17 +58,9 @@ void Overlays::update(
 	has_finished = finish;
 	player_id = player;
 
-	//Death screen update
+	//Playing update
 	if (current_state & state::playing)
 	{
-		if (is_dead && has_finished)
-		{
-			death_timer += delta;
-		}
-		else
-		{
-			death_timer = 0ms;
-		}
 		//Finish screen update
 		if (has_finished && !is_dead)
 		{
@@ -79,21 +70,173 @@ void Overlays::update(
 		{
 			finished_timer = 0ms;
 		}
-	}
-
-	//Loading screen update
-	/*if (current_state & state::waiting)
-	{
-		if (loading_timer > 4000ms)
+		if (is_dead && has_finished)
 		{
-			loading_timer = 0ms;
+			death_timer += delta;
+		}
+
+		//Pickup triggers
+		if (previous_trigger >= 2 && previous_trigger <= 7)
+		{
+			overall_trigger = true;
+			
+			if (previous_trigger == 2)
+			{
+				stun_trigger = true;
+
+				//reset the other triggers
+				glide_trigger = false;
+				speedboost_trigger = false;
+				doublejump_trigger = false;
+				shield_trigger = false;
+				random_trigger = false;
+			}
+			else if (previous_trigger == 3)
+			{
+				glide_trigger = true;
+
+				stun_trigger = false;
+				speedboost_trigger = false;
+				doublejump_trigger = false;
+				shield_trigger = false;
+				random_trigger = false;
+			}
+			else if (previous_trigger == 4)
+			{
+				speedboost_trigger = true;
+
+				stun_trigger = false;
+				glide_trigger = false;
+				doublejump_trigger = false;
+				shield_trigger = false;
+				random_trigger = false;
+			}
+			else if (previous_trigger == 5)
+			{
+				doublejump_trigger = true;
+
+				stun_trigger = false;
+				glide_trigger = false;
+				speedboost_trigger = false;
+				shield_trigger = false;
+				random_trigger = false;
+			}
+			else if (previous_trigger == 6)
+			{
+				shield_trigger = true;
+
+				stun_trigger = false;
+				glide_trigger = false;
+				speedboost_trigger = false;
+				doublejump_trigger = false;
+				random_trigger = false;
+			}
+			else if (previous_trigger == 7)
+			{
+				random_trigger = true;
+
+				stun_trigger = false;
+				glide_trigger = false;
+				speedboost_trigger = false;
+				doublejump_trigger = false;
+				shield_trigger = false;
+			}
 		}
 		else
 		{
-			loading_timer += delta;
+			pulse_timer = 0ms;
+			overall_trigger = false;
+		}
+
+
+		//Reset timer if the trigger has changed
+		if (previous_trigger != trigger_type && trigger_type > 1)
+		{
+			pulse_timer = 0ms;
+			stun_timer = 0ms;
+			shield_timer = 0ms;
+		}
+		else if (previous_trigger == 3 && trigger_type == 3)
+		{
+			//If you get stunned, set so the stun overlay doesn't active again
+			previous_trigger = -1;
+		}
+
+		//Set which trigger
+		if (trigger_type > 1)
+		{
+			previous_trigger = trigger_type;
+		}
+
+		//Pickup timers
+		if (overall_trigger == true)
+		{
+			if (stun_trigger && stun_timer <= 8000ms)
+			{
+				stun_timer += delta;
+			}
+			else if (shield_trigger)
+			{
+				shield_timer += delta;
+			}
+			else if (pulse_timer <= 10000ms)
+			{
+				pulse_timer += delta;
+			}
+			else
+			{
+				pulse_timer = 0ms;
+			}
+		}
+		else
+		{
+			overall_trigger = false;
+			stun_trigger = false;
+			glide_trigger = false;
+			speedboost_trigger = false;
+			doublejump_trigger = false;
+			shield_trigger = false;
+			random_trigger = false;
+			pulse_timer = 0ms;
+			stun_timer = 0ms;
+			shield_timer = 0ms;
+		}
+		
+		//Reset
+		if (stun_timer >= 8000ms)
+		{
+			stun_timer = 0ms;
+			stun_trigger = false;
+			previous_trigger = -1;
+		}
+		if (pulse_timer >= 10000ms)
+		{
+			pulse_timer = 0ms;
+			previous_trigger = -1;
+		}
+		if (trigger_type == 0)
+		{
+			shield_trigger = false;
+			shield_timer = 0ms;
+			previous_trigger = -1;
 		}
 	}
-*/
+	else
+	{
+	    //Hard reset
+	    pulse_timer = 0ms;
+		stun_timer = 0ms;
+		shield_timer = 0ms;
+		overall_trigger = false;
+		glide_trigger = false;
+		stun_trigger = false;
+		speedboost_trigger = false;
+		doublejump_trigger = false;
+		shield_trigger = false;
+		random_trigger = false;
+		previous_trigger = -1;
+	}
+
 	//Main menu update
 	if (current_state & state::menu)
 	{
@@ -106,6 +249,20 @@ void Overlays::update(
 			main_menu_timer += delta;
 		}
 	}
+
+
+	//Pulse update
+	if (pulse_timer >= 7000ms)
+	{
+		duration += delta;
+		pulse = std::cos(4 * duration.count());
+	}
+	else
+	{
+		duration = 0s;
+	}
+	overall_modulus = pulse_timer.count() % 800;
+	stun_modulus = stun_timer.count() % 300;
 }
 
 void Overlays::render(const Shader & shader) const
@@ -113,6 +270,7 @@ void Overlays::render(const Shader & shader) const
 	using namespace std::chrono_literals;
 	shader.use();
 	shader.uniform("overlay_texture", 0);
+	shader.uniform("pulse", pulse);
 
 	empty.bind(0);
 
@@ -121,82 +279,42 @@ void Overlays::render(const Shader & shader) const
 		//Render death screen
 		if (is_dead && has_finished && death_timer <= 2000ms)
 		{
-			if (death_timer <= 50ms)
+			this->death.at(0).bind(0);
+		}
+		else if (stun_trigger && (stun_timer > 0ms && stun_timer <= 3000ms))
+		{
+			if (stun_modulus <= 150)
 			{
-				death.at(0).bind(0);
+				this->stun.at(0).bind(0);
 			}
-			else if (death_timer >= 50ms && death_timer <= 100ms)
+			else
 			{
-				death.at(1).bind(0);
-			}
-			else if (death_timer >= 100ms && death_timer <= 150ms)
-			{
-				death.at(2).bind(0);
-			}
-			else if (death_timer >= 150ms && death_timer <= 200ms)
-			{
-				death.at(3).bind(0);
-			}
-			else if (death_timer >= 200ms && death_timer <= 250ms)
-			{
-				death.at(4).bind(0);
-			}
-			else if (death_timer >= 250ms)
-			{
-				death.at(5).bind(0);
+				this->stun.at(1).bind(0);
 			}
 		}
-		//Render finished screen
-		/*if (!is_dead && has_finished && finished_timer <= 5000ms)
+		else if (shield_trigger && shield_timer > 0ms)
 		{
-			if (finished_timer <= 1500ms)
-			{
-				this->finish_escaped.bind(0);
-			}
-			else if (finished_timer > 1500ms && finished_timer <= 3000ms)
-			{
-				if (player_id == 0)
-					this->finish_1_1.bind(0);
-				if (player_id == 1)
-					this->finish_2_1.bind(0);
-				if (player_id == 2)
-					this->finish_3_1.bind(0);
-				if (player_id == 3)
-					this->finish_4_1.bind(0);
-			}
-			else if (finished_timer > 3000ms)
-			{
-				if (player_id == 0)
-					this->finish_1_2.bind(0);
-				if (player_id == 1)
-					this->finish_2_2.bind(0);
-				if (player_id == 2)
-					this->finish_3_2.bind(0);
-				if (player_id == 3)
-					this->finish_4_2.bind(0);
-			}
-		}*/
-	}
-	if (current_state & state::waiting)
-	{
-		//Render loading screen
-
-	/*	if (loading_timer <= 1000ms)
-		{
-			this->waiting.at(0).bind(0);
+			this->shield.at(0).bind(0);
 		}
-		else if (loading_timer >= 1000ms && loading_timer <= 2000ms)
+		else if (overall_trigger && pulse_timer <= 10000ms)
 		{
-			this->waiting.at(1).bind(0);
+			if (glide_trigger)
+			{
+				this->glide.at(0).bind(0);
+			}
+			else if (speedboost_trigger)
+			{
+				this->speedboost.at(0).bind(0);
+			}
+			else if (doublejump_trigger)
+			{
+				this->doublejump.at(0).bind(0);
+			}
+			else if (random_trigger)
+			{
+				this->random.at(0).bind(0);
+			}
 		}
-		else if (loading_timer >= 2000ms && loading_timer <= 3000ms)
-		{
-			this->waiting.at(2).bind(0);
-		}
-		else if (loading_timer >= 3000ms)
-		{
-			this->waiting.at(3).bind(0);
-		}*/
 	}
 	if (current_state & state::menu)
 	{
@@ -212,6 +330,18 @@ void Overlays::render(const Shader & shader) const
 	}
 
 	overlay.render(shader);
+}
+
+void Overlays::bind_overlay(std::vector<Texture> texture, float modulus_max) const
+{
+	if (overall_modulus <= modulus_max)
+	{
+		texture.at(0).bind(0);
+	}
+	else
+	{
+		texture.at(1).bind(0);
+	}
 }
 
 }

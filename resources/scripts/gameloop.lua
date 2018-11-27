@@ -7,6 +7,7 @@ function setup(game)
 	game.scores = { 0, 0, 0, 0 }
 	game.finished = { false, false, false, false }
 	game.died = { false, false, false, false }
+	game.triggered_type = { -1, -1, -1, -1 }
 	game.clock = 0.0
 	game.winner = false
 
@@ -219,6 +220,11 @@ function update(delta_seconds, game, entities, player_count)
 		end
 	end
 
+	for i = 1, player_count, 1
+	do
+		game.triggered_type[i] = entities[i].triggered_type
+	end
+
 	--for i = 1, 4, 1
 	--do
 	--	if game.died[i] == true or game.finished[i]
@@ -236,5 +242,6 @@ function reset_time(game)
 	--4 playerscores:
 	game.finished = { false, false, false, false }
 	game.died = {false, false, false, false}
+	game.triggered_type = { -1, -1, -1, -1 }
 	game.clock = 0.0
 end

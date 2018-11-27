@@ -128,7 +128,7 @@ void World::update(
 		t = 0;
 
 	for (auto& t : triggers_types) //test for triggers
-		t = 0;
+		t = -1;
 
 	for (auto i = 0u; i < bodies.size(); ++i)
 	{

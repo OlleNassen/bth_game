@@ -471,6 +471,10 @@ void GameScript::update_export()
 		stack.rawget(-1, i);
 		data.finished[i - 1] = stack.toboolean(-1);
 
+		stack.getfield(top, "triggered_type");
+		stack.rawget(-1, i);
+		data.trigger_type[i - 1] = stack.tointeger(-1);
+
 		//std::cout<< data.died[i - 1] << '\n';
 		//std::cout << data.finished[i - 1] << '\n';
 
