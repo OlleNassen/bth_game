@@ -197,9 +197,9 @@ void GameScene::light_level_1()
 
 	lights[6].intensity = 700;
 
-	for (int i = 0; i < 13; i++)
+	for (int i = 4; i < 13; i++)
 	{
-		lights[i].radius = lights[i].intensity;
+		lights[i].radius = 60;
 	}
 
 }
