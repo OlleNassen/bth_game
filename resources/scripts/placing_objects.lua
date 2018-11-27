@@ -59,8 +59,7 @@ function update(delta_seconds, entity)
 	width = 20
 
 	distance = entity.position.y - entity.start_height
-	print(distance)
-	max_movement = 10
+	max_movement = 30
 
 	if distance > max_movement
 	then
