@@ -52,7 +52,7 @@ LuaExport Gameplay::update(Input inputs,
 		for (int i = 0; i < inputs.player_count; i++)
 		{
 			auto& dyn = inputs.dynamics[i];
-			if (glm::distance(level_1_door, glm::vec2(dyn.position)) < 0.5f)
+			if (glm::distance(level_1_door, glm::vec2(dyn.position)) < 0.5f || dyn.position.x == -40)
 			{
 				dyn.position.x = -40;
 				game_script.data.finished[i] = true;
