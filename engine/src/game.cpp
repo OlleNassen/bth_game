@@ -208,6 +208,11 @@ void Game::update(std::chrono::milliseconds delta)
 		if (level != &lobby)
 		{
 			load_map(&lobby);
+
+			for (int i = 0; i < static_cast<int>(player_count); i++)
+			{
+				lua_data.finished[i] = false;
+			}
 		}
 
 		game_state = (game_state | state::lobby);
