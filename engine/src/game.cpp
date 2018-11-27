@@ -304,7 +304,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 				players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
 							0, dynamics[d_id].objects_type_id };
-
+				
 				total_nr_objects++;
 			}
 

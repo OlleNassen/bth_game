@@ -128,6 +128,10 @@ LuaExport Gameplay::update(Input inputs,
 			}
 		}
 		
+		//laser function
+
+		//physics::World::laser_ray_cast();
+
 		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0], inputs.player_count, spike_frame, turret_frame);
 
 		time = game_script.get_time();
@@ -195,5 +199,14 @@ void Gameplay::new_round()
 
 	game_script.reset_time();
 }
+
+std::array<bool, 4> laser_update(const glm::vec3 turret_position, glm::vec3 direction, int turret_frame)
+{
+	//std::array<bool, 4>
+
+
+	
+}
+
 
 }

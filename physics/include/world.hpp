@@ -98,6 +98,10 @@ public:
 	void remove_body(int at);
 
 	glm::vec3 get_closest_wall_point(int player_id);
+
+	std::array<bool, 4> laser_ray_cast(const glm::vec3 turret, const glm::vec3 direction);
+	float laser_range(const glm::vec3 turret, const glm::vec3 direction);
+
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 

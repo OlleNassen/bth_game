@@ -25,6 +25,7 @@ public:
 	float friction = 0.98f;
 
 	int trigger_type = -1;
+	//glm::vec3 direction; //test for turrets
 
 	OBB box;
 	glm::vec3 original_size;
