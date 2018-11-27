@@ -50,7 +50,7 @@ public:
 private:
 	OverlayScreen overlay;
 	
-	Texture empty{ "../resources/textures/black_pixel.png" };
+	Texture empty{ "../resources/textures/black_pixel.png", true };
 	std::vector<Texture> main_menu;
 	std::vector<Texture> finish;
 	std::vector<Texture> waiting;

@@ -192,7 +192,7 @@ void GameScene::light_level_1()
 
 	for (int i = 4; i < 13; i++)
 	{
-		lights[i].intensity = 700;
+		lights[i].intensity = 400;
 	}
 
 	lights[6].intensity = 700;

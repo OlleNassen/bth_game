@@ -24,18 +24,18 @@ void OverlayScreen::render(const Shader & shader) const
 
 Overlays::Overlays()
 {
-	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_down_0.png"});
-	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_down_1.png" });
+	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_down_0.png", false });
+	main_menu.push_back(Texture{ "../resources/textures/main_menu_screen/mainmenu_down_1.png", false });
 	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_1.png" });
 	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_2.png" });
 	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_3.png" });
 	//waiting.push_back(Texture{ "../resources/textures/loading_screen/waiting_4.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_1.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_2.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_3.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_4.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_5.png" });
-	death.push_back(Texture{ "../resources/textures/death_screen/death_6.png" });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_1.png", true });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_2.png", true });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_3.png", true });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_4.png", true });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_5.png", true });
+	death.push_back(Texture{ "../resources/textures/death_screen/death_6.png", true });
 }
 
 Overlays::Overlays(int player_id)
