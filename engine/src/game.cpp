@@ -212,7 +212,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 		game_state = (game_state | state::lobby);
 		
-		bool all_ready = false;
+		bool all_ready = true;
 		for (int i = 0; i < static_cast<int>(player_count); i++)
 		{
 			if (!lua_data.finished[i])
