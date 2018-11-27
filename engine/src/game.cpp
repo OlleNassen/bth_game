@@ -288,7 +288,7 @@ void Game::update(std::chrono::milliseconds delta)
 				int m_id = level->add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
 
-				//std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "Type ID:\t" << placed_objects_list_id << std::endl << std::endl;
+				std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "Type ID:\t" << placed_objects_list_id << std::endl << std::endl;
 
 				dynamics[d_id].position = start_position;
 				dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -329,7 +329,7 @@ void Game::update(std::chrono::milliseconds delta)
 					int m_id = level->add_object(data, obj_type_id);
 					int d_id = physics.add_dynamic_body(dynamics[obj_id].position, { 0, 0 }, data.width, data.height, { 0, 0 }, obj_type_id);
 
-					//std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "\nType ID:\t" << obj_type_id << std::endl << std::endl;
+					std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "\nType ID:\t" << obj_type_id << std::endl << std::endl;
 
 					//dynamics[d_id].position = start_position;
 					//dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -658,25 +658,51 @@ void Game::update(std::chrono::milliseconds delta)
 				level->moving_models[i].set_position(pos);
 			}
 		}
-	}
+		anim idle = anim::falling;
+
+		for (auto& model : level->animated_models)
+			model.update_animation((float)delta.count(), idle);
+
+		bool spike = false, jump = false, speed = false, random = false, shield = false, turret = false, stun = false;
+
+		for (int i = 4; i < level->moving_models.size(); i++)
+			if (level->moving_models[i].is_animated)
+			{
+				if (level->moving_models[i].mesh->name == "spike_trap" && spike == false ||
+					level->moving_models[i].mesh->name == "double_jump" && jump == false ||
+					level->moving_models[i].mesh->name == "turret" && turret == false ||
+					level->moving_models[i].mesh->name == "stun_trap" && stun == false ||
+					level->moving_models[i].mesh->name == "speed_boost" && speed == false ||
+					level->moving_models[i].mesh->name == "random_buff" && random == false ||
+					level->moving_models[i].mesh->name == "shield" && shield == false)
+				{
+					level->moving_models[i].update_animation((float)delta.count(), idle);
+					if (level->moving_models[i].mesh->name == "spike_trap")
+					{
+						spike = true;
+						spikeframe = level->moving_models[i].getCurrentKeyframe();
+					}
+					if (level->moving_models[i].mesh->name == "double_jump")
+						jump = true;
+					if (level->moving_models[i].mesh->name == "turret")
+						turret = true;
+					if (level->moving_models[i].mesh->name == "stun_trap")
+						stun = true;
+					if (level->moving_models[i].mesh->name == "random_buff")
+						random = true;
+					if (level->moving_models[i].mesh->name == "shield")
+						shield = true;
+					if (level->moving_models[i].mesh->name == "speed_boost")
+						speed = true;
+				}	  	
+			}		   
+	}				   
 
 	if ((game_state & state::building) && players_placed_objects_id[net.id()].dynamics_id != -1)
 	{
 		level->v[net.id()] = { level->v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
 	}
 
-	anim idle = anim::falling;
-
-	for (auto& model : level->animated_models)
-		model.update_animation((float)delta.count(), idle);
-
-	for (int i = 4; i < level->moving_models.size(); i++)
-		if (level->moving_models[i].is_animated)
-		{
-			level->moving_models[i].update_animation((float)delta.count(), idle);
-			if (level->moving_models[i].mesh->name == "spike_trap")
-				spikeframe = level->moving_models[i].getCurrentKeyframe();
-		}
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 
