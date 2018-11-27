@@ -49,7 +49,6 @@ LuaExport Gameplay::update(Input inputs,
 	if (current_state & state::lobby)
 	{
 		glm::vec2 level_1_door = { -19.7, 26.1 };
-		bool all_within = true;
 		for (int i = 0; i < inputs.player_count; i++)
 		{
 			auto& dyn = inputs.dynamics[i];

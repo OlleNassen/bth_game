@@ -218,7 +218,6 @@ void Game::update(std::chrono::milliseconds delta)
 			if (!lua_data.finished[i])
 			{
 				all_ready = false;
-				break;
 			}
 		}
 
