@@ -163,12 +163,16 @@ void GameScene::light_level_1()
 	//Player Light
 	lights[0].color = glm::vec3{ 0.9f, 0.1f, 0.1f };
 	lights[0].intensity = 30;
+	lights[0].radius = 30;
 	lights[1].color = glm::vec3{ 0.2f, 0.9f, 0.1f };
 	lights[1].intensity = 30;
+	lights[1].radius = 30;
 	lights[2].color = glm::vec3{ 0.1f, 0.1f, 0.9f };
 	lights[2].intensity = 30;
+	lights[2].radius = 30;
 	lights[3].color = glm::vec3{ 0.9f, 0.8f, 0.1f };
 	lights[3].intensity = 30;
+	lights[3].radius = 30;
 
 	//Map Light
 	lights[4].position = glm::vec3{ -0.145,-6.289,8.929 };
