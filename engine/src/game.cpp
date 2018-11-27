@@ -212,7 +212,17 @@ void Game::update(std::chrono::milliseconds delta)
 
 		game_state = (game_state | state::lobby);
 		
-		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu))
+		bool all_ready = false;
+		for (int i = 0; i < static_cast<int>(player_count); i++)
+		{
+			if (!lua_data.finished[i])
+			{
+				all_ready = false;
+				break;
+			}
+		}
+
+		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu) && all_ready)
 		{
 			if (net.id() == 0)
 				net_state.state = network::SessionState::pre_building;
