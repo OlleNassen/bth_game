@@ -15,32 +15,35 @@ function setup(entity)
 	--turret_width
 	--turret_height
 
-
+	entity.a_speed = 0.5
+	entity.timer_max = 5
 
 end
 
-local a_speed = 0.5
-local timer_max = 5
 
-function  move(entity)
+
+function  move(delta_seconds, entity)
 	
-	start(entity)
+	entity.timer = entity.timer + delta_seconds
+
+	start(delta_seconds, entity)
 
 	if entity.active --within map (and moving)
 	then
 		if --entity.direction == x/y +/-
-			entity.speed = direction * a_speed			
+			entity.speed = entity.direction * (entity.a_speed * delta_seconds)
 		end
 
 		entity.pos = entity.pos + entity.speed
 	else
-		entity.pos = --outside map
+		entity.pos.x = -100 --outside map
+		entity.pos.y = -100
 	end
 end
 
-function start(entity)
+function start(delta_seconds, entity)
 	
-	if entity.timer >= timer_max and entity.active == false
+	if entity.timer >= entity.timer_max and entity.active == false
 	then
 		entity.pos = entity.start_pos
 		entity.active = true
