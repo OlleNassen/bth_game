@@ -282,7 +282,7 @@ void Game::update(std::chrono::milliseconds delta)
 			std::array<int, 4> random_position = random_indexes(); //{ 0, 0, 0, 0 };
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
-				glm::vec2 start_position = { 0, 19.32f + (random_position[i] * 30) };
+				glm::vec2 start_position = { 0, 19.32f + 30.f + (random_position[i] * 30) };
 				placed_objects_list_id = random_picked_object();
 				collision_data data;
 				int m_id = level->add_object(data, placed_objects_list_id);
@@ -939,7 +939,7 @@ void Game::place_random_objects(float start_height, float map_width, int number_
 
 std::array<int, 4> Game::random_indexes()
 {
-	std::vector<int> taken = { 1, 2, 3, 4 };
+	std::vector<int> taken = { 0, 2, 4, 6 };
 	std::array<int, 4> out;
 
 	int i = 0;
