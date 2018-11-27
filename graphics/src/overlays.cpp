@@ -70,6 +70,10 @@ void Overlays::update(
 		{
 			finished_timer = 0ms;
 		}
+		if (is_dead && has_finished)
+		{
+			death_timer += delta;
+		}
 
 		//Pickup triggers
 		if (previous_trigger >= 2 && previous_trigger <= 7)
