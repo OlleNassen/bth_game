@@ -213,6 +213,18 @@ void Renderer::render(
 					build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 				}
 			}
+
+			for (int i = 0; i < player_count; i++)
+			{
+				if (finish[i])
+				{
+					text_shader.uniform("text_color", player_infos[i].color);
+
+					out_text.str("");
+					out_text << player_infos[i].name << " is ready";
+					build_text.render_text(out_text.str(), 10.f, screen_height - (45.f * (i + 1)), 1.f);
+				}
+			}
 		}
 
 		if (game_state & state::pre_building)
@@ -541,7 +553,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		}
 	}
 
-	if (game_state & state::score || view_score)
+	if (game_state & state::score || view_score || game_state & state::lobby)
 	{
 		for (int i = 0; i < player_count; i++)
 		{

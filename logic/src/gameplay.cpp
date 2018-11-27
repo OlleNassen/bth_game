@@ -48,6 +48,18 @@ LuaExport Gameplay::update(Input inputs,
 	int turret_frame = inputs.turret_keyframe;
 	if (current_state & state::lobby)
 	{
+		glm::vec2 level_1_door = { -19.7, 26.1 };
+		bool all_within = true;
+		for (int i = 0; i < inputs.player_count; i++)
+		{
+			auto& dyn = inputs.dynamics[i];
+			if (glm::distance(level_1_door, glm::vec2(dyn.position)) < 0.5f)
+			{
+				dyn.position.x = -40;
+				game_script.data.finished[i] = true;
+			}
+		}
+
 		for (int i = 0; i < inputs.player_count; i++)
 		{
 			player_script.update(
@@ -138,9 +150,11 @@ LuaExport Gameplay::update(Input inputs,
 		new_round();
 	}
 	
-	game_script.update_export();
-
-	game_script.data.time = time;
+	if (!(current_state & state::lobby))
+	{
+		game_script.update_export();
+		game_script.data.time = time;
+	}
 
 	return game_script.data;
 }
