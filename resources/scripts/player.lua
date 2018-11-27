@@ -7,11 +7,12 @@ function setup(entity)
 	entity.jump_impulse_x = 0
 	entity.max_speed = 16
 	entity.max_air_speed = 16
-	entity.ground_acceleration = 100
-	entity.deceleration = 80
-	entity.air_acceleration = 100
+	entity.ground_acceleration = 150
+	entity.deceleration = 90
+	entity.air_acceleration = 150
 	entity.ungrounded_time = 0
 	entity.jump_forgiveness_time = 0.5
+	entity.velocity_y_last = 0
 
 	--trigger
 
@@ -69,8 +70,8 @@ function setup(entity)
 
 
 	entity.jump_speed = 0
-	entity.gravity = 120
-	entity.max_gravity = 1600 --1800
+	entity.gravity = 110
+	entity.max_gravity = 1800
 
 end
 
@@ -211,10 +212,17 @@ function update_controls(delta_seconds, entity)
 
 		if entity.button.right 
 		then
-			
+			if math.abs(entity.velocity.x) < 0.01
+			then
+				entity.velocity.y = entity.velocity_y_last - entity.gravity * delta_seconds
+			end
 			accelerate(delta_seconds, entity,  entity.max_air_speed, entity.air_acceleration)
 		elseif entity.button.left
 		then
+			if math.abs(entity.velocity.x) < 0.01
+			then
+				entity.velocity.y = entity.velocity_y_last - entity.gravity * delta_seconds
+			end
 			accelerate(delta_seconds, entity, - entity.max_air_speed, entity.air_acceleration)
 		else
 			decelerate(delta_seconds, entity)
@@ -229,6 +237,7 @@ function update_controls(delta_seconds, entity)
 		then 
 			entity.anim.current = entity.anim.idle
 		end
+		entity.velocity_y_last = entity.velocity.y
 	end
 
 	--Landing
@@ -266,7 +275,6 @@ function update_controls(delta_seconds, entity)
 
 	if entity.anim.current == entity.anim.falling
 	then
-		--print("X: ", entity.velocity.x)
 		--print("Y: ", entity.velocity.y)
 
 		if entity.velocity.y >= -1.0934910278593e-3 and entity.velocity.y < 0 
