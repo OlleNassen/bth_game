@@ -84,7 +84,8 @@ public:
 		objects* players,
 		int player_count,
 		int spike_frame,
-		int turret_frame);
+		int turret_frame,
+		bool laser_hit);
 
 	void update_export();
 	float get_time();

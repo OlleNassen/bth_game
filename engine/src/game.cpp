@@ -573,6 +573,19 @@ void Game::update(std::chrono::milliseconds delta)
 		glm::vec3{0.0f}
 	};
 	
+
+	{
+		glm::vec3 dir = { 0, 0, 0 };
+		for (auto i = 0u; i < dynamics.size(); ++i)
+		{
+			if (dynamics[i].objects_type_id == 1)
+			{
+				player_hit_array = laser_update(dynamics[i].position, dir, turretframe);
+			}
+		}
+	}
+
+
 	{
 		logic::objects_array obj;
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -593,8 +606,11 @@ void Game::update(std::chrono::milliseconds delta)
 			static_cast<int>(player_count),
 			spikeframe,
 			turretframe,
-			triggers_types},
+			triggers_types,
+			player_hit_array},
 			game_state);
+
+		//add laser hit array
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
 		{
@@ -676,6 +692,9 @@ void Game::update(std::chrono::milliseconds delta)
 			level->moving_models[i].update_animation((float)delta.count(), idle);
 			if (level->moving_models[i].mesh->name == "spike_trap")
 				spikeframe = level->moving_models[i].getCurrentKeyframe();
+
+			//if (level->moving_models[i].mesh->name == "turret")
+			//	turretframe = level->moving_models[i].getCurrentKeyframe();
 		}
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
@@ -959,4 +978,16 @@ void Game::load_map(graphics::GameScene* scene)
 	give_players_objects = false;
 	give_players_objects = false;
 	watching = net.id();
+}
+
+std::array<bool, 4> Game::laser_update(const glm::vec3 turret_position, glm::vec3 direction, int turret_frame)
+{
+	std::array<bool, 4> hit_array = { false, false, false, false };
+
+	if (turret_frame < 5)
+	{
+		return hit_array = physics.laser_ray_cast(turret_position, direction);
+	}
+
+	return hit_array;
 }

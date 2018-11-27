@@ -114,6 +114,9 @@ private:
 	int turretframe = 0;
 	//New gameloop stuff
 	void load_map(graphics::GameScene* scene);
+
+	std::array<bool, 4> laser_update(const glm::vec3 turret_position, glm::vec3 direction, int turret_frame);
+	std::array<bool, 4> player_hit_array = { false, false, false, false };
 };
 
 

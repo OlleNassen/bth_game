@@ -246,7 +246,8 @@ void GameScript::update(
 	objects* players,
 	int player_count,
 	int spike_frame, 
-	int turret_frame)
+	int turret_frame,
+	bool laser_hit)
 {
 	{
 		stack.getglobal("game");
@@ -342,6 +343,22 @@ void GameScript::update(
 		}
 		stack.clear();
 	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("laser_hit");
+			stack.push(laser_hit);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
 	{
 		stack.getglobal("game");
 

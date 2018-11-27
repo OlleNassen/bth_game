@@ -15,7 +15,7 @@ function setup(game)
 	--game.shield_triggered = {false, false, false, false}
 	game.shield_triggered = {false, false, false, false}
 	game.is_spike = {false, false, false, false}
-	
+	game.is_laser = {false, false, false, false}
 
 	game.time = 0.0
 	game.max_time = 90.0
@@ -142,7 +142,7 @@ function update(delta_seconds, game, entities, player_count)
 				game.finished[i] = true
 				game.died[i] = true
 				
-				death_height[i] = entities[i].position.y;
+				death_height[i] = entities[i].position.y
 
 				--entities[i].position.y = entities[i].position.y
 				entities[i].position.x = -40
@@ -170,13 +170,42 @@ function update(delta_seconds, game, entities, player_count)
 				entities[i].shield_active = true
 			end
 
-		elseif game.shield_triggered[i] == true and game.is_spike[i] == true
+			--turret laser
+			if entities[i].laser_hit == true and game.shield_triggered[i] == false
+			then
+				game.finished[i] = true
+				game.died[i] = true
+				
+				death_height[i] = entities[i].position.y
+
+				--entities[i].position.y = entities[i].position.y
+				entities[i].position.x = -40
+
+				entities[i].impulse.x = 0
+				entities[i].impulse.y = 0
+
+				entities[i].velocity.x = 0
+				entities[i].velocity.y = 0
+
+				game.points = game.points - 1
+			elseif entities[i].laser_hit == true and game.shield_triggered[i] == true
+			then
+				game.is_laser[i] = true
+
+			end
+
+		elseif game.shield_triggered[i] == true and game.is_spike[i] == true 
 		then
 			game.shield_triggered[i] = false
 			game.is_spike[i] = false
 			entities[i].shield_active = false
-			--print("removed")
 
+			--print("removed")
+		elseif game.shield_triggered[i] == true and game.is_laser[i] == true
+		then
+			game.shield_triggered[i] = false
+			game.is_laser[i] = false
+			entities[i].shield_active = false
 		end
 	end
 

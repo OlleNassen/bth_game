@@ -62,6 +62,7 @@ struct Input
 	int turret_keyframe = 0;
 
 	const trigger_type_array& triggers_types; //test for triggers
+	std::array<bool, 4> laser_hit_array;
 };
 
 
