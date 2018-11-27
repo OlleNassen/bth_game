@@ -194,7 +194,6 @@ void Renderer::render(
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Lobby Stage, Host press 'R' to start", screen_width * 0.33f, screen_height - 35.f, 0.75f);
 
 			if (scores[0] > 0)
 			{
@@ -213,7 +212,8 @@ void Renderer::render(
 					build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 				}
 			}
-
+			
+			int total_players_ready = 0;
 			for (int i = 0; i < player_count; i++)
 			{
 				if (finish[i])
@@ -222,9 +222,18 @@ void Renderer::render(
 
 					out_text.str("");
 					out_text << player_infos[i].name << " is ready";
-					build_text.render_text(out_text.str(), 10.f, screen_height - (45.f * (i + 1)), 1.f);
+					build_text.render_text(out_text.str(), 10.f, screen_height - (45.f * (i + 2)), 1.f);
+					total_players_ready++;
 				}
 			}
+
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			out_text.str("");
+			out_text << total_players_ready << "/" << player_count;
+			build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
+
+			if (total_players_ready == player_count)
+				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);
 		}
 
 		if (game_state & state::pre_building)
