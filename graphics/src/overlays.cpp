@@ -263,7 +263,6 @@ void Overlays::update(
 	}
 	overall_modulus = pulse_timer.count() % 800;
 	stun_modulus = stun_timer.count() % 300;
-	std::cout << stun_timer.count() << "\n";
 }
 
 void Overlays::render(const Shader & shader) const

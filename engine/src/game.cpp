@@ -269,7 +269,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-				placed_objects_list_id = random_picked_object();
+				placed_objects_list_id = 7;// random_picked_object();
 				collision_data data;
 				int m_id = level->add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
@@ -643,12 +643,38 @@ void Game::update(std::chrono::milliseconds delta)
 	for (auto& model : level->animated_models)
 		model.update_animation((float)delta.count(), idle);
 
+	bool spike = false, jump = false, speed = false, random = false, shield = false, turret = false, stun = false;
+
 	for (int i = 4; i < level->moving_models.size(); i++)
 		if (level->moving_models[i].is_animated)
 		{
-			level->moving_models[i].update_animation((float)delta.count(), idle);
-			if (level->moving_models[i].mesh->name == "spike_trap")
-				spikeframe = level->moving_models[i].getCurrentKeyframe();
+			if (level->moving_models[i].mesh->name == "spike_trap" && spike == false ||
+				level->moving_models[i].mesh->name == "double_jump" && jump == false ||
+				level->moving_models[i].mesh->name == "turret" && turret == false ||
+				level->moving_models[i].mesh->name == "stun_trap" && stun == false ||
+				level->moving_models[i].mesh->name == "speed_boost" && speed == false ||
+				level->moving_models[i].mesh->name == "random_buff" && random == false ||
+				level->moving_models[i].mesh->name == "shield" && shield == false)
+			{
+				level->moving_models[i].update_animation((float)delta.count(), idle);
+				if (level->moving_models[i].mesh->name == "spike_trap")
+				{
+					spike = true;
+					spikeframe = level->moving_models[i].getCurrentKeyframe();
+				}
+				if (level->moving_models[i].mesh->name == "double_jump")
+					jump = true;
+				if (level->moving_models[i].mesh->name == "turret")
+					turret = true;
+				if (level->moving_models[i].mesh->name == "stun_trap")
+					stun = true;
+				if (level->moving_models[i].mesh->name == "random_buff")
+					random = true;
+				if (level->moving_models[i].mesh->name == "shield")
+					shield = true;
+				if (level->moving_models[i].mesh->name == "speed_boost")
+					speed = true;
+			}
 		}
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);

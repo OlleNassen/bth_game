@@ -2889,8 +2889,6 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 
 			//Alpha
 			fx_random.color_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].a;
-			
-
 		}
 		else
 		{
