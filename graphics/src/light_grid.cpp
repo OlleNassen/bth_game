@@ -60,16 +60,17 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> li
 		{
 			for (int i = 0; i < block_size; ++i)
 			{
-				light_grid_element& elem = indices[i + j * block_size];
-				if (sphere_inside_frustum(sphere, grid[i][j]) && elem.count < 10)
-				{
-					elem.indices[elem.count++] = light_id;
+				int* elem_count = &indices[i * 16 + j * block_size];
+				if (sphere_inside_frustum(sphere, grid[i][j]) && *elem_count < 10)
+				{			
+					indices[i * 16 + j * block_size + *elem_count] = light_id;
+					*elem_count = *elem_count + 1;
 				}
 			}
 		}
 	}
 	glBindTexture(GL_TEXTURE_2D, light_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R, block_size, block_size, 0, GL_R, GL_INT, indices);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R, block_size * 16, block_size, 0, GL_R, GL_INT, indices);
 }
 
 glm::vec4 screen_to_view(const glm::mat4& inv_proj, const glm::vec4& screen)

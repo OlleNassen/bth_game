@@ -46,7 +46,7 @@ public:
 private:
 	static constexpr int block_size = 12;
 
-	light_grid_element indices[block_size * block_size];
+	int indices[block_size * block_size * 16];
 	Frustum grid[block_size][block_size];
 
 	unsigned int light_texture;
