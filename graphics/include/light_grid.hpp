@@ -37,9 +37,8 @@ class LightGrid
 {
 public:
 	LightGrid();
-	
-	const light_grid_element* data()const;
-	int size()const;
+
+	void bind(int index) const;
 
 	void calculate_grid(const Camera& camera);
 	void update(const Camera& camera, const std::array<PointLight, 32> lights);
@@ -49,6 +48,8 @@ private:
 
 	light_grid_element indices[block_size * block_size];
 	Frustum grid[block_size][block_size];
+
+	unsigned int light_texture;
 };
 
 }

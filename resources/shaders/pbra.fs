@@ -8,17 +8,11 @@ in VS_OUT{
 	vec2 tex_coord;
 } fs_in;
 
-struct light_grid_element
-{
-	int count;
-	int indices[15];
-};
-
 const int block_size =  12;
 const int block_size_x = 1920 / block_size;
 const int block_size_y = 1080 / block_size;
 
-uniform light_grid_element light_indices[block_size * block_size];
+uniform isampler2D light_indices;
 
 // material parameters
 uniform sampler2D emissive_map;
@@ -121,13 +115,12 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    int x = int(gl_FragCoord.x / block_size_x);
-	int y = int(gl_FragCoord.y / block_size_y);
-	light_grid_element elem = light_indices[x + y * block_size];
-	
-	for(int j = 0; j < elem.count; ++j) 
+    ivec2 lights = ivec2(gl_FragCoord.x / block_size_x, gl_FragCoord.y / block_size_y);
+	int elem_count =  texture(light_indices, vec2(lights.x / 16, lights.y)).r;
+
+	for(int j = 0; j < elem_count; ++j) 
     {
-		int i = elem.indices[j];
+		int i = texture(light_indices, vec2(lights.x / 16 + j, lights.y)).r;
 			
 		// calculate per-light radiance
 		vec3 L = normalize(light_pos[i] - fs_in.world_pos);

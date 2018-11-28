@@ -1,6 +1,7 @@
 #include "light_grid.hpp"
 
 #include <iostream>
+#include <gl/glew.h>
 
 namespace graphics
 {
@@ -12,16 +13,21 @@ bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z
 
 LightGrid::LightGrid()
 {	
+	glGenTextures(1, &light_texture);
+	glBindTexture(GL_TEXTURE_2D, light_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R, block_size * 16, block_size, 0, GL_R, GL_INT, indices);
+
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-const light_grid_element* LightGrid::data() const
+void LightGrid::bind(int index) const
 {
-	return indices;
-}
-
-int LightGrid::size() const
-{
-	return block_size * block_size;
+	glActiveTexture(GL_TEXTURE0 + index);
+	glBindTexture(GL_TEXTURE_2D, light_texture);
 }
 
 void LightGrid::calculate_grid(const Camera& camera)
@@ -39,16 +45,8 @@ void LightGrid::calculate_grid(const Camera& camera)
 
 void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> lights)
 {
-	//for (int j = 0; j < block_size; ++j)
-	//{
-	//	for (int i = 0; i < block_size; ++i)
-	//	{
-	//		indices[i + j * block_size].count = 0;
-	//	}
-	//}
-
 	memset(indices, 0, sizeof(indices));
-	int  a = 0;
+	
 	for (int light_id = 0; light_id < lights.size(); ++light_id)
 	{
 		glm::vec3 p{lights[light_id].position};
@@ -65,16 +63,13 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> li
 				light_grid_element& elem = indices[i + j * block_size];
 				if (sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count < 10)
 				{
-					a++;
 					elem.indices[elem.count++] = light_id;
-				
 				}
-				//elem.count = 1;
 			}
 		}
 	}
-
-	a=a;
+	glBindTexture(GL_TEXTURE_2D, light_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R, block_size, block_size, 0, GL_R, GL_INT, indices);
 }
 
 glm::vec4 screen_to_view(const glm::mat4& inv_proj, const glm::vec4& screen)
@@ -113,15 +108,6 @@ Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y)
 	screen_space[2] = glm::vec4(x * dx, (y + 1) * dy, 1.0f, 1.0f);// Bottom left point	
 	screen_space[3] = glm::vec4((x + 1) * dx, (y + 1) * dy, 1.0f, 1.0f);// Bottom right point
 
-	//screen_space[0] = glm::vec4(0, 0, 1.0f, 1.0f);// Top left point	
-	//screen_space[1] = glm::vec4(1920 / 2, 0, 1.0f, 1.0f);// Top right point	
-	//screen_space[2] = glm::vec4(0, 1080 / 2, 1.0f, 1.0f);// Bottom left point	
-	//screen_space[3] = glm::vec4(1920 / 2, 1080 / 2, 1.0f, 1.0f);// Bottom right point
-
-
-
-	//screen_space[3] = glm::vec4(1920/2, 1080/2, -1.0f, 1);
-
 	glm::vec3 view_space[4];
 	for (int i = 0; i < 4; ++i)
 	{
@@ -141,8 +127,7 @@ Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y)
 bool sphere_inside_plane(const Sphere& sphere, const Plane& plane)
 {
 
-	float d = glm::dot(plane.normal, sphere.center) + sphere.radius; // > sphere.radius;
-
+	float d = glm::dot(plane.normal, sphere.center) + sphere.radius;
 	return d >= 0;
 }
 
@@ -162,7 +147,7 @@ bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z
 	if (sphere_inside_plane(sphere, frustum.bottom))
 		c++;
 
-	return c == 4; //result;
+	return c == 4;
 }
 
 }

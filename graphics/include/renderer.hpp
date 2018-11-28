@@ -20,6 +20,7 @@
 #include "minimap.hpp"
 #include "build_stage_screen.hpp"
 #include "overlays.hpp"
+#include "light_grid.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
