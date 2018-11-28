@@ -20,11 +20,11 @@ function setup(game)
 
 	game.time = 0.0
 	game.max_time = 90.0
+	game.start_round = true
 end
 
 round = 0
 death_height = { 0.0, 0.0, 0.0, 0.0 }
-start_round = true
 total_players = 0;
 
 function update(delta_seconds, game, entities, player_count)
@@ -37,9 +37,9 @@ function update(delta_seconds, game, entities, player_count)
 	game.clock = game.clock + delta_seconds
 	game.time = game.max_time - game.clock
 
-	if start_round
+	if game.start_round
 	then
-		start_round = false
+		game.start_round = false
 
 		-- Start positions
 		for i = 1, 4, 1
@@ -235,7 +235,7 @@ function update(delta_seconds, game, entities, player_count)
 end
 
 function reset_time(game)
-	start_round = true
+	game.start_round = true
 	game.time = game.max_time
 	--4 playerscores:
 	game.finished = { false, false, false, false }

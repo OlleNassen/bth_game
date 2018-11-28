@@ -34,7 +34,7 @@ Game::Game()
 	window.assign_key(logic::button::score, GLFW_KEY_TAB);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
 	window.assign_key(logic::button::debug, GLFW_KEY_F3);
-	window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
+	//window.assign_key(logic::button::quit, GLFW_KEY_ESCAPE);
 
 	window.assign_button(logic::button::up, controller_buttons::up);
 	window.assign_button(logic::button::left, controller_buttons::left);
@@ -208,11 +208,25 @@ void Game::update(std::chrono::milliseconds delta)
 		if (level != &lobby)
 		{
 			load_map(&lobby);
+
+			for (int i = 0; i < static_cast<int>(player_count); i++)
+			{
+				lua_data.finished[i] = false;
+			}
 		}
 
 		game_state = (game_state | state::lobby);
+		
+		bool all_ready = true;
+		for (int i = 0; i < static_cast<int>(player_count); i++)
+		{
+			if (!lua_data.finished[i])
+			{
+				all_ready = false;
+			}
+		}
 
-		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu))
+		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu) && all_ready)
 		{
 			if (net.id() == 0)
 				net_state.state = network::SessionState::pre_building;

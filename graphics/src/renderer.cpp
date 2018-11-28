@@ -195,7 +195,6 @@ void Renderer::render(
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			build_text.render_text("Lobby Stage, Host press 'R' to start", screen_width * 0.33f, screen_height - 35.f, 0.75f);
 
 			if (scores[0] > 0)
 			{
@@ -203,17 +202,42 @@ void Renderer::render(
 
 				std::array<int, 4> positions;
 
+				std::array<player_info, 4> sorted_infos = player_infos;
+				std::sort(sorted_infos.begin(), sorted_infos.end(), sort_by_score);
+
 				for (int i = 0; i < player_count; i++)
 				{
 					out_text.str("");
 
-					out_text << player_infos[i].name << " : " << player_infos[i].score;
+					out_text << sorted_infos[i].name << " : " << sorted_infos[i].score;
 
-					text_shader.uniform("text_color", player_infos[i].color);
+					text_shader.uniform("text_color", sorted_infos[i].color);
 
 					build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 				}
 			}
+			
+			int total_players_ready = 0;
+			for (int i = 0; i < player_count; i++)
+			{
+				if (finish[i])
+				{
+					text_shader.uniform("text_color", player_infos[i].color);
+
+					out_text.str("");
+					out_text << player_infos[i].name << " is ready";
+					build_text.render_text(out_text.str(), 10.f, screen_height - (45.f * (i + 2)), 1.f);
+					total_players_ready++;
+				}
+			}
+
+			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+			out_text.str("");
+			out_text << total_players_ready << "/" << player_count;
+			build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
+
+			if (total_players_ready == player_count)
+				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);
 		}
 
 		if (game_state & state::pre_building)
@@ -543,7 +567,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		}
 	}
 
-	if (game_state & state::score || view_score)
+	if (game_state & state::score || view_score || game_state & state::lobby)
 	{
 		for (int i = 0; i < player_count; i++)
 		{
@@ -556,8 +580,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 			player_infos[i] = info;
 		}
-
-		std::sort(player_infos.begin(), player_infos.end(), sort_by_score);
 	}
 
 	//Change to num_players + 1 to see the game loop, without + 1 will show loading screen.
