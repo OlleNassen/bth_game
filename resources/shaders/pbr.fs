@@ -123,11 +123,11 @@ void main()
     // reflectance equation
     vec3 Lo = vec3(0.0);
     ivec2 lights = ivec2(gl_FragCoord.x / block_size_x, gl_FragCoord.y / block_size_y);
-	int elem_count =  texture(light_indices, vec2(lights.x / 16, lights.y)).r;
+	int elem_count =  texture(light_indices, vec2(lights.x * 16, lights.y)).r;
 
 	for(int j = 0; j < elem_count; ++j) 
     {
-		int i = texture(light_indices, vec2(lights.x / 16 + j, lights.y)).r;
+		int i = texture(light_indices, vec2(lights.x * 16 + j, lights.y)).r;
 			
 		// calculate per-light radiance
 		vec3 L = normalize(light_pos[i] - fs_in.world_pos);

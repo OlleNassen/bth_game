@@ -9,7 +9,7 @@ namespace graphics
 glm::vec4 screen_to_view(const glm::mat4& inv_proj, const glm::vec4& screen);
 glm::vec4 clip_to_view(const glm::mat4& inv_proj, const glm::vec4& clip);
 Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y);
-bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z_near, float z_far);
+bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum);
 
 LightGrid::LightGrid()
 {	
@@ -61,7 +61,7 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> li
 			for (int i = 0; i < block_size; ++i)
 			{
 				light_grid_element& elem = indices[i + j * block_size];
-				if (sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count < 10)
+				if (sphere_inside_frustum(sphere, grid[i][j]) && elem.count < 10)
 				{
 					elem.indices[elem.count++] = light_id;
 				}
@@ -131,7 +131,7 @@ bool sphere_inside_plane(const Sphere& sphere, const Plane& plane)
 	return d >= 0;
 }
 
-bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z_near, float z_far)
+bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum)
 {	
 	bool result = true;
 	int c = 0;
