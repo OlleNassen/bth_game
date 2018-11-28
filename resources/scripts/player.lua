@@ -684,7 +684,7 @@ function random_assignment(entity)
 	then
 		entity.random_assigned = true
 
-		id = entity.buffs_id[1]
+		id = entity.buffs_id[3]
 
 		entity.random_last = id
 

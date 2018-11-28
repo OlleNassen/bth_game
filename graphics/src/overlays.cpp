@@ -33,7 +33,7 @@ Overlays::Overlays()
 	speedboost.push_back(Texture{ "../resources/textures/overlays/speedboost_1.png", true });
 	doublejump.push_back(Texture{ "../resources/textures/overlays/doublejump_1.png", true });
 	shield.push_back(Texture{ "../resources/textures/overlays/shield_1.png", true });
-	random.push_back(Texture{ "../resources/textures/overlays/glide_1.png", true });
+	random.push_back(Texture{ "../resources/textures/overlays/doublejump_1.png", true });
 }
 
 Overlays::Overlays(int player_id)
