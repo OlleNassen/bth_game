@@ -7,9 +7,9 @@ function setup(entity)
 	entity.jump_impulse_x = 0
 	entity.max_speed = 16
 	entity.max_air_speed = 16
-	entity.ground_acceleration = 150
-	entity.deceleration = 90
-	entity.air_acceleration = 150
+	entity.ground_acceleration = 130
+	entity.deceleration = 50
+	entity.air_acceleration = 130
 	entity.ungrounded_time = 0
 	entity.jump_forgiveness_time = 0.5
 	entity.velocity_y_last = 0
@@ -70,7 +70,7 @@ function setup(entity)
 
 
 	entity.jump_speed = 0
-	entity.gravity = 110
+	entity.gravity = 115
 	entity.max_gravity = 1800
 
 end
