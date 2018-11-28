@@ -212,16 +212,20 @@ function update_controls(delta_seconds, entity)
 
 		if entity.button.right 
 		then
-			if math.abs(entity.velocity.x) < 0.01 and entity.velocity.x ~= 0
+			if math.abs(entity.velocity.x) < 0.001 and entity.velocity.x ~= 0 and entity.velocity.y < 20
 			then
 				entity.velocity.y = entity.velocity_y_last - entity.gravity * delta_seconds
+				--entity.impulse.y = 7
+				--entity.velocity.y = entity.velocity.y - entity.gravity * delta_seconds
 			end
 			accelerate(delta_seconds, entity,  entity.max_air_speed, entity.air_acceleration)
 		elseif entity.button.left
 		then
-			if math.abs(entity.velocity.x) < 0.01 and entity.velocity.x ~= 0
+			if math.abs(entity.velocity.x) < 0.001 and entity.velocity.x ~= 0 and entity.velocity.y < 20
 			then
 				entity.velocity.y = entity.velocity_y_last - entity.gravity * delta_seconds
+				--entity.impulse.y = 7
+				--entity.velocity.y = entity.velocity.y - entity.gravity * delta_seconds
 			end
 			accelerate(delta_seconds, entity, - entity.max_air_speed, entity.air_acceleration)
 		else
@@ -237,7 +241,11 @@ function update_controls(delta_seconds, entity)
 		then 
 			entity.anim.current = entity.anim.idle
 		end
+		if entity.velocity.y > 0
+		then
 		entity.velocity_y_last = entity.velocity.y
+		end
+		--print(entity.velocity.y)
 	end
 
 	--Landing
