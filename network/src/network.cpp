@@ -254,7 +254,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 		}
 		
 		player_host.send(snapshots);
-		player_host.receive(inputs);
+		player_host.receive(inputs, snapshots);
 
 		for (auto&[key, value] : snapshots)
 		{

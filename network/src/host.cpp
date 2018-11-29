@@ -143,7 +143,7 @@ void Host::send(snapshot_map& snapshots)
 	}
 }
 
-void Host::receive(input_map& input)
+void Host::receive(input_map& inputs, snapshot_map& snapshots)
 {
 	if (enet_host)
 	{
@@ -154,16 +154,20 @@ void Host::receive(input_map& input)
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
 			{
-				recieve(eevent, input[eevent.peer->connectID]);
+				recieve(eevent, inputs[eevent.peer->connectID]);
 				break;
 			}
 			case ENET_EVENT_TYPE_CONNECT:
 			{
+				snapshots[eevent.peer->connectID] = {};
+				inputs[eevent.peer->connectID] = {};
 				connect(eevent);
 				break;
 			}
 			case ENET_EVENT_TYPE_DISCONNECT:
 			{
+				snapshots.erase(eevent.peer->connectID);
+				inputs.erase(eevent.peer->connectID);
 				disconnect(eevent);
 				break;
 			}

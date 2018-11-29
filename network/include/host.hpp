@@ -39,7 +39,7 @@ public:
 	void receive(Snapshot& snapshot);
 
 	void send(snapshot_map& snapshots);
-	void receive(input_map& input);
+	void receive(input_map& inputs, snapshot_map& snapshots);
 
 private:
 	void recieve(const ENetEvent& eevent, UserInput& input);
