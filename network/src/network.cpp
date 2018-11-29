@@ -78,7 +78,7 @@ bit_writer& operator<<(bit_writer& writer, const UserInput& value)
 
 	for (int i = 0; i <= (int)logic::button::quit; ++i)
 	{
-
+		writer << (value.input[(logic::button)i] == logic::button_state::held);		
 	}
 
 	writer << value.color;
@@ -95,7 +95,11 @@ bit_reader& operator>>(bit_reader& reader, UserInput& value)
 
 	for (int i = (int)logic::button::quit; i >= 0; ++i)
 	{
+		bool held = false;
+		reader >> held;
 
+		if (held)
+			value.input[(logic::button)i] = logic::button_state::held;
 	}
 
 	reader >> value.color; //vec2!!!
