@@ -139,11 +139,11 @@ namespace graphics
 			{
 				player_positions[i] = glm::vec2(models.at(i).get_position());
 
-				if	(abs(player_positions[i].y - camera_pos.y) > 16)
+				if	(abs(player_positions[i].y - camera_pos.y) > screen_height)
 				{
 					if (player_positions[i].y > camera_pos.y)
 					{
-						elements.at(i + 2).angle = 0;
+						elements.at(i + 2).angle = 0.0;
 						elements.at(i + 2).position.y = 0.95;
 					}
 					else
