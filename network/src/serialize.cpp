@@ -1,5 +1,4 @@
 #include "serialize.hpp"
-#include <iostream>
 
 namespace network
 {
@@ -16,7 +15,6 @@ void bit_writer::write_bits(uint32 value, int bits)
 {
     assert(bits > 0);
     assert(bits <= 32);
-	std::cout << bits << '\n';
     assert(bits_written + bits <= num_bits);
 
     value &= (static_cast<uint64>(1) << bits) - 1;

@@ -217,6 +217,19 @@ void Messenger::update(GameState& state, const char* ip_address)
 		player_host.send(inputs[client]);
 		player_host.receive(snapshots[client]);
 		inputs[client].ack = snapshots[client].seq;
+
+		int i = 0;
+		auto& value = snapshots[client];
+		for (auto&[key_p, value_p] : inputs)
+		{
+			int type = value.types[i];
+			int score = value.scores[i];
+			state.game_objects[i].position = value.positions[i];
+			state.game_objects[i].velocity = value.velocities[i];
+
+			if (client != key_p)
+				value_p = value.players[i++];
+		}
 	}
 	else
 	{	
