@@ -32,6 +32,7 @@ private:
 	std::array<glm::vec2, 4> player_positions;
 	std::array<glm::vec2, 4> player_vector;
 	std::array<bool, 4> is_invisible;
+	int direction{ 1 };
 };
 
 class UserInterface

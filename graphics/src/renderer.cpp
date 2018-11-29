@@ -411,6 +411,7 @@ void Renderer::render(
 				gui.use();
 				ui.render(gui);
 			}
+
 		}
 
 		if (game_state & state::score || view_score)
@@ -477,7 +478,7 @@ void Renderer::render(
 				leaderboard.render(text_shader, text);
 			}
 		}
-
+		
 		glEnable(GL_DEPTH_TEST);
 	}
 
