@@ -220,6 +220,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 		inputs[client].ack = snapshots[client].seq;
 
 		int i = 0;
+		int i2 = 0;
 		auto& value = snapshots[client];
 		for (auto&[key_p, value_p] : inputs)
 		{
@@ -227,9 +228,10 @@ void Messenger::update(GameState& state, const char* ip_address)
 			int score = value.scores[i];
 			state.game_objects[i].position = value.positions[i];
 			state.game_objects[i].velocity = value.velocities[i];
+			++i;
 
 			if (client != key_p)
-				value_p = value.players[i++];
+				value_p = value.players[i2++];
 		}
 	}
 	else
@@ -237,15 +239,17 @@ void Messenger::update(GameState& state, const char* ip_address)
 		for (auto&[key, value] : snapshots)
 		{
 			int i = 0;
+			int i2 = 0;
 			for (auto&[key_p, value_p] : inputs)
 			{
 				value.types[i] = 0;
 				value.scores[i] = 0.0f;
 				value.positions[i] = state.game_objects[i].position;
 				value.velocities[i] = state.game_objects[i].velocity;
-				
+				std::cout << i << ": " << value.velocities[i].x << '\n';
+				++i;
 				if (key != key_p)
-					value.players[i++] = value_p;
+					value.players[i2++] = value_p;
 			}
 		}
 		
@@ -255,15 +259,17 @@ void Messenger::update(GameState& state, const char* ip_address)
 		for (auto&[key, value] : snapshots)
 		{
 			int i = 0;
+			int i2 = 0;
 			for (auto&[key_p, value_p] : inputs)
 			{
 				int type = value.types[i];
 				int score = value.scores[i];
 				state.game_objects[i].position = value.positions[i];
 				state.game_objects[i].velocity = value.velocities[i];
+				++i;
 
 				if (key != key_p)
-					value_p = value.players[i++];
+					value_p = value.players[i2++];
 			}
 		}
 	}
