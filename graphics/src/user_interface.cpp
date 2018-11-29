@@ -149,7 +149,7 @@ namespace graphics
 					}
 					else
 					{
-						elements.at(i + 2).angle = atan(1) * 4;
+						elements.at(i + 2).angle = pi;
 						elements.at(i + 2).position.y = -0.95;
 					}
 					//player_vector[i] = player_positions[i] - glm::vec2(camera_pos.x, camera_pos.y);
@@ -162,7 +162,7 @@ namespace graphics
 					*/
 					
 
-					elements.at(i + 2).position.x = player_positions[i].x / 24;
+					elements.at(i + 2).position.x = player_positions[i].x / stage_width;
 					elements.at(i + 2).color = models.at(i).get_color();
 				}
 				else
