@@ -22,7 +22,7 @@ namespace graphics
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2) * 2, (void*)sizeof(glm::vec2));
 
 		rebind_buffers();
-		gui_textures.at(0).load_texture("../resources/textures/player_arrow_2.png", true);
+		gui_textures.at(0).load_texture("../resources/textures/player_arrow.png", true);
 		gui_textures.at(1).load_texture("../resources/textures/chat_texture.png", true);
 
 	}
@@ -142,7 +142,16 @@ namespace graphics
 				//if (abs(player_positions[i].x - camera_pos.x) > 23 || 
 				if	(abs(player_positions[i].y - camera_pos.y) > 16)
 				{
-					direction = (player_positions[i].y > camera_pos.y) ? 1 : -1;
+					if (player_positions[i].y > camera_pos.y)
+					{
+						elements.at(i + 2).angle = 0;
+						elements.at(i + 2).position.y = 0.95;
+					}
+					else
+					{
+						elements.at(i + 2).angle = atan(1) * 2;
+						elements.at(i + 2).position.y = -0.95;
+					}
 					//player_vector[i] = player_positions[i] - glm::vec2(camera_pos.x, camera_pos.y);
 					/*
 					elements.at(i + 2).position = (glm::normalize(player_vector[i]) * 0.95f);
@@ -151,10 +160,9 @@ namespace graphics
 
 					elements.at(i + 2).angle = std::atan2(player_vector[i].y, player_vector[i].x);
 					*/
-					elements.at(i + 2).angle *= direction;
-					elements.at(i + 2).position.y = 0.95 * direction;
+					
 
-					elements.at(i + 2).position.x = player_positions[i].x / 23;
+					elements.at(i + 2).position.x = player_positions[i].x / 24;
 					elements.at(i + 2).color = models.at(i).get_color();
 				}
 				else
