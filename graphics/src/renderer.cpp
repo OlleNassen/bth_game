@@ -200,8 +200,6 @@ void Renderer::render(
 			{
 				build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
 
-				std::array<int, 4> positions;
-
 				std::array<player_info, 4> sorted_infos = player_infos;
 				std::sort(sorted_infos.begin(), sorted_infos.end(), sort_by_score);
 
@@ -421,7 +419,8 @@ void Renderer::render(
 
 			build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
 
-			std::array<int, 4> positions;
+			std::array<player_info, 4> sorted_infos = player_infos;
+			std::sort(sorted_infos.begin(), sorted_infos.end(), sort_by_score);
 
 			for (int i = 0; i < player_count; i++)
 			{
@@ -430,10 +429,10 @@ void Renderer::render(
 				/*out_text << players[i] << " : " << scores[i];
 
 				text_shader.uniform("text_color", players_colors[i]);*/
+				
+				out_text << (i + 1) << " " << sorted_infos[i].name << " \t: " << std::setprecision(0) << sorted_infos[i].score;
 
-				out_text << player_infos[i].name << " : " << player_infos[i].score;
-
-				text_shader.uniform("text_color", player_infos[i].color);
+				text_shader.uniform("text_color", sorted_infos[i].color);
 
 				build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 			}
