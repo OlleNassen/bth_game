@@ -425,19 +425,19 @@ void Renderer::render(
 			for (int i = 0; i < player_count; i++)
 			{
 				out_text.str("");
-
-				/*out_text << players[i] << " : " << scores[i];
-
-				text_shader.uniform("text_color", players_colors[i]);*/
-				
-				out_text << (i + 1) << " " << sorted_infos[i].name; // << " \t: " << std::setprecision(0) << sorted_infos[i].score;
-
-				text_shader.uniform("text_color", sorted_infos[i].color);
+				out_text << (i + 1) << ":";
+				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 				build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 
 				out_text.str("");
-				out_text << std::setprecision(0) << sorted_infos[i].score;s
-				build_text.render_text(out_text.str(), (screen_width * 0.5f) + 150, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
+				out_text << sorted_infos[i].name;
+				text_shader.uniform("text_color", sorted_infos[i].color);
+				build_text.render_text(out_text.str(), (screen_width * 0.5f) + 30.f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
+
+				out_text.str("");
+				out_text << ": " << std::setprecision(0) << sorted_infos[i].score;
+				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
+				build_text.render_text(out_text.str(), (screen_width * 0.5f) + 170.f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 			}
 		}
 
