@@ -230,8 +230,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 				value.types[i] = 0;
 				value.scores[i] = 0.0f;
 				value.positions[i] = state.game_objects[i].position;
-				value.velocities[i] = state.game_objects[i].velocity;
-				std::cout << i << ": " << value.positions[i].x << '\n';
+				value.velocities[i] = state.game_objects[i].velocity;		
 				++i;
 				if (key != key_p)
 					value.players[i2++] = value_p;
@@ -254,6 +253,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 			int score = value.scores[i];
 			state.game_objects[i].position = value.positions[i];
 			state.game_objects[i].velocity = value.velocities[i];
+			std::cout << i << ": " << value.positions[i].x << '\n';
 			++i;
 
 			if (key != key_p)
