@@ -79,7 +79,7 @@ void Host::send(UserInput& input)
 	if (enet_host)
 	{
 		uint32 data[320] = {};
-		bit_writer writer{ data, 100 / 32 };
+		bit_writer writer{ data, 320 * 32 };
 		input.seq = ++input.seq % 4096;
 		writer << input;
 
@@ -129,7 +129,7 @@ void Host::send(snapshot_map& snapshots)
 		for (const auto& peer : peers)
 		{
 			uint32 data[320] = {};
-			bit_writer writer{ data , 100 / 32 };
+			bit_writer writer{ data , 320 * 32 };
 			snapshots[peer->connectID].seq = ++snapshots[peer->connectID].seq % 4096;
 			writer << snapshots[peer->connectID];
 
