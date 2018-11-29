@@ -7,7 +7,7 @@ namespace graphics
 
 	UserInterface::UserInterface()
 	{
-		elements.fill({ {2.0f, 2.0f}, {1.0f, 1.0f, 1.0f}, { 0.03f, 0.03f }, static_cast<float>(atan(1) * 2 )});
+		elements.fill({ {2.0f, 2.0f}, {1.0f, 1.0f, 1.0f}, { 0.03f, 0.03f }, 0.0f });
 		elements.front() = { { 0.5f, -0.5f },{ 0.8f, 0.3f, 1.0f},{ 0.7f, 0.25f }, 0.0f };
 		elements.at(1) = { {0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, { 0.7f, 0.7f }, 0.0f };
 		active_texture = 0;
