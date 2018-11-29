@@ -219,7 +219,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 		player_host.receive(snapshots[client]);
 		inputs[client].ack = snapshots[client].seq;
 
-		int i = 0;
+		int i = 1;
 		int i2 = 0;
 		auto& value = snapshots[client];
 		for (auto&[key_p, value_p] : inputs)
@@ -238,7 +238,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 	{	
 		for (auto&[key, value] : snapshots)
 		{
-			int i = 0;
+			int i = 1;
 			int i2 = 0;
 			for (auto&[key_p, value_p] : inputs)
 			{
@@ -258,7 +258,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 
 		for (auto&[key, value] : snapshots)
 		{
-			int i = 0;
+			int i = 1;
 			int i2 = 0;
 			for (auto&[key_p, value_p] : inputs)
 			{
