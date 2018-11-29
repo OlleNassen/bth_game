@@ -1,5 +1,6 @@
 #include "host.hpp"
 #include <iostream>
+#include "network.hpp"
 
 namespace network
 {
@@ -65,63 +66,84 @@ Host& Host::operator=(const Host& other)
 
 bool Host::connected() const
 {
-	for (auto* peer : peers)
-		if (peer)
-			return true;
-
-	return false;
+	return peers.size();
 }
 
 bool Host::client() const
 {
-	return is_client;
+	return peers.size() == 1u;
 }
 
-void Host::send(GameInput& input)
+void Host::send(UserInput& input)
 {
 	if (enet_host)
 	{
-		auto* peer = peers[0];
-		if (peer)
+		uint32 data[320] = {};
+		bit_writer writer{ data, 100 / 32 };
+		input.seq = ++input.seq % 4096;
+		writer << input;
+
+		ENetPacket* enet_packet = enet_packet_create(
+			writer.data(),
+			writer.size(),
+			ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
+		enet_peer_send(peers.front(), 0, enet_packet);
+		enet_host_flush(enet_host);
+	}
+}
+
+void Host::receive(Snapshot& snapshot)
+{
+	if (enet_host)
+	{
+		ENetEvent eevent;
+		while (enet_host_service(enet_host, &eevent, 0) > 0)
 		{
-			ENetPacket* enet_packet =
-				enet_packet_create(&input,
-					sizeof(GameInput),
-					ENET_PACKET_FLAG_UNSEQUENCED
-					| ENET_PACKET_FLAG_NO_ALLOCATE);
+			switch (eevent.type)
+			{
+			case ENET_EVENT_TYPE_RECEIVE:
+			{
+				recieve(eevent, snapshot);
+				break;
+			}
+			case ENET_EVENT_TYPE_CONNECT:
+			{
+				connect(eevent);
+				break;
+			}
+			case ENET_EVENT_TYPE_DISCONNECT:
+			{
+				disconnect(eevent);
+				break;
+			}
+			}
+			enet_packet_destroy(eevent.packet);
+		}
+	}
+}
+
+void Host::send(snapshot_map& snapshots)
+{
+	if (enet_host)
+	{
+		for (const auto& peer : peers)
+		{
+			uint32 data[320] = {};
+			bit_writer writer{ data , 100 / 32 };
+			snapshots[peer->connectID].seq = ++snapshots[peer->connectID].seq % 4096;
+			writer << snapshots[peer->connectID];
+
+			ENetPacket* enet_packet = enet_packet_create(
+				writer.data(),
+				writer.size(),
+				ENET_PACKET_FLAG_UNSEQUENCED | ENET_PACKET_FLAG_NO_ALLOCATE);
 			enet_peer_send(peer, 0, enet_packet);
 			enet_host_flush(enet_host);
 		}
 	}
 }
 
-void Host::send(GameState& state)
-{
-	if (enet_host)
-	{
-		state.sequence = ++sequence;
-		state.player_count = player_count;
-
-		int index = 0;
-		for (auto* peer : peers)
-		{
-			if (peer)
-			{
-				state.player_id = ++index;
-				ENetPacket* enet_packet =
-					enet_packet_create(&state,
-						sizeof(GameState),
-						ENET_PACKET_FLAG_UNSEQUENCED
-						| ENET_PACKET_FLAG_NO_ALLOCATE);
-				enet_peer_send(peer, 0, enet_packet);
-				enet_host_flush(enet_host);
-			}
-		}
-		state.player_id = 0;
-	}
-}
-
-void Host::receive(logic::input* input)
+void Host::receive(input_map& input)
 {
 	if (enet_host)
 	{
@@ -132,66 +154,52 @@ void Host::receive(logic::input* input)
 			{
 			case ENET_EVENT_TYPE_RECEIVE:
 			{
-				GameInput g = *reinterpret_cast<GameInput*>(eevent.packet->data);
-				input[g.id] = g.data;
+				recieve(eevent, input[eevent.peer->connectID]);
 				break;
 			}
-			case ENET_EVENT_TYPE_CONNECT: connect(eevent); break;
-			case ENET_EVENT_TYPE_DISCONNECT: disconnect(eevent); break;
+			case ENET_EVENT_TYPE_CONNECT:
+			{
+				connect(eevent);
+				break;
+			}
+			case ENET_EVENT_TYPE_DISCONNECT:
+			{
+				disconnect(eevent);
+				break;
+			}
 			}
 			enet_packet_destroy(eevent.packet);
 		}
 	}
 }
 
-void Host::receive(GameState& state)
+void Host::recieve(const ENetEvent& eevent, UserInput& input)
 {
-	if (enet_host)
-	{
-		ENetEvent eevent;
-		while (enet_host_service(enet_host, &eevent, 0) > 0)
-		{
-			switch (eevent.type)
-			{
-			case ENET_EVENT_TYPE_RECEIVE:
-			{
-				state = *reinterpret_cast<GameState*>(eevent.packet->data);
-				break;
-			}			
-			case ENET_EVENT_TYPE_CONNECT: connect(eevent); break;
-			case ENET_EVENT_TYPE_DISCONNECT: disconnect(eevent); break;
-			}
-			enet_packet_destroy(eevent.packet);
-		}
-	}
+	uint32* data = reinterpret_cast<uint32*>(eevent.packet->data);
+	int size = static_cast<int>(eevent.packet->dataLength / 32);
+	bit_reader reader{ data, size };
+	reader >> input;
+}
+
+void Host::recieve(const ENetEvent& eevent, Snapshot& snapshot)
+{
+	uint32* data = reinterpret_cast<uint32*>(eevent.packet->data);
+	int size = static_cast<int>(eevent.packet->dataLength / 32);
+	bit_reader reader{ data, size };
+	reader >> snapshot;
 }
 
 void Host::connect(const ENetEvent& eevent)
 {
 	std::cout << "Connected." << '\n';
-	++player_count;
-	for (auto& peer : peers)
-	{
-		if (peer == nullptr)
-		{
-			peer = eevent.peer;
-			break;
-		}
-	}			
+	peers.push_back(eevent.peer);
 }
 
 void Host::disconnect(const ENetEvent& eevent)
 {
 	std::cout << "Diconnected." << '\n';
-	--player_count;
-	for (auto& peer : peers)
-	{
-		if (peer == eevent.peer)
-		{
-			peer = nullptr;
-			break;
-		}
-	}			
+	auto position = std::find(peers.begin(), peers.end(), eevent.peer);
+	if (position != peers.end()) peers.erase(position);
 }
 
 
