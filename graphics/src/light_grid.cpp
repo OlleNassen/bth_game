@@ -15,7 +15,7 @@ LightGrid::LightGrid()
 {	
 	glGenTextures(1, &light_texture);
 	glBindTexture(GL_TEXTURE_2D, light_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R, block_size * 16, block_size, 0, GL_R, GL_INT, indices);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, block_size * 16, block_size, 0, GL_R32I, GL_INT, indices);
 
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -70,7 +70,7 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> li
 		}
 	}
 	glBindTexture(GL_TEXTURE_2D, light_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R, block_size * 16, block_size, 0, GL_R, GL_INT, indices);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, block_size * 16, block_size, 0, GL_R32I, GL_INT, indices);
 }
 
 glm::vec4 screen_to_view(const glm::mat4& inv_proj, const glm::vec4& screen)
