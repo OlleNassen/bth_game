@@ -71,9 +71,10 @@ public:
 	
 	int seq;
 	int ack;
-	int level;
 	float clock;
-	
+
+	int level;
+		
 	int types[count];
 	float scores[count];
 	
@@ -85,6 +86,9 @@ public:
 
 bit_writer& operator<<(bit_writer& writer, const glm::vec2& value);
 bit_reader& operator>>(bit_reader& reader, glm::vec2& value);
+
+bit_writer& operator<<(bit_writer& writer, const glm::vec3& value);
+bit_reader& operator>>(bit_reader& reader, glm::vec3& value);
 
 bit_writer& operator<<(bit_writer& writer, const Snapshot& value);
 bit_reader& operator>>(bit_reader& reader, Snapshot& value);

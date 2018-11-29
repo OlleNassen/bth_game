@@ -34,20 +34,80 @@ bit_reader& operator>>(bit_reader& reader, glm::vec2& value)
 	return reader;
 }
 
+bit_writer& operator<<(bit_writer& writer, const glm::vec3& value)
+{
+	bool has_value = value.z > 0.01f;
+	if (has_value)
+		writer << value.z;
+	writer << has_value;
+
+	has_value = value.y > 0.01f;
+	if (has_value)
+		writer << value.y;
+	writer << has_value;
+
+	has_value = value.x > 0.01f;
+	if (has_value)
+		writer << value.x;
+	writer << has_value;
+
+	return writer;
+}
+
+bit_reader& operator>>(bit_reader& reader, glm::vec3& value)
+{
+	bool has_value = false;
+
+	reader >> has_value;
+	if (has_value)
+		reader >> value.x;
+
+	reader >> has_value;
+	if (has_value)
+		reader >> value.y;
+
+	reader >> has_value;
+	if (has_value)
+		reader >> value.z;
+
+	return reader;
+}
+
 
 bit_writer& operator<<(bit_writer& writer, const Snapshot& value)
 {
-	for (int i = value.object_count - 1; i >= 0; ++i)
+	for (int i = value.count - 2; i >= 0; --i)
+		writer << value.players[i];
+		
+	for (int i = value.count - 1; i >= 0; --i)
+		writer << value.velocities[i];
+
+	for (int i = value.count - 1; i >= 0; --i)
+		writer << value.positions[i];
+
+	
+	for (int i = value.count - 1; i >= 0; --i)
 	{
-		const Object& object = value.objects[i];
-		bool has_value =
-			object.velocity.x > 0.01f && object.velocity.y > 0.01f &&
-			object.position.x > 0.01f && object.position.y;
+		bool has_value = value.scores[i] > 0.01f;
 		if (has_value)
-			writer << object;
+			writer << value.level;
 		writer << has_value;
 	}
 
+	for (int i = value.count - 1; i >= 0; --i)
+	{
+		bool has_value = value.types[i] != 0;
+		if (has_value)
+			writer << value.level;
+		writer << has_value;
+	}
+
+	bool has_value = value.level != 0;
+	if (has_value)
+		writer << value.level;
+	writer << has_value;	
+	
+	writer << value.clock;
 	writer << value.ack;
 	writer << value.seq;
 
@@ -58,24 +118,44 @@ bit_reader& operator>>(bit_reader& reader, Snapshot& value)
 {
 	reader >> value.seq;
 	reader >> value.ack;
+	reader >> value.clock;
+	
+	bool has_value = false;
+	
+	reader >> has_value;
+	if (has_value)
+		reader >> value.level;
 
-	for (int i = 0; i < value.object_count; ++i)
+	for (int i = 0; i <= value.count - 1; ++i)
 	{
-		Object& object = value.objects[i];
 		bool has_value = false;
 		reader >> has_value;
 		if (has_value)
-			reader >> object;
+			reader >> value.types[i];
 	}
 
+	for (int i = 0; i <= value.count - 1; ++i)
+	{
+		bool has_value = false;
+		reader >> has_value;
+		if (has_value)
+			reader >> value.scores[i];
+	}
+
+	for (int i = 0; i <= value.count - 1; ++i)
+		reader >> value.positions[i];
+
+	for (int i = 0; i <= value.count - 1; ++i)
+		reader >> value.velocities[i];
+
+	for (int i = 0; i <= value.count - 2; ++i)
+		reader >> value.players[i];
+	
 	return reader;
 }
 
 bit_writer& operator<<(bit_writer& writer, const UserInput& value)
 {
-	//logic::input input;
-	//glm::vec3 color;
-
 	for (int i = 0; i <= (int)logic::button::quit; ++i)
 	{
 		writer << (value.input[(logic::button)i] == logic::button_state::held);		
@@ -93,7 +173,9 @@ bit_reader& operator>>(bit_reader& reader, UserInput& value)
 	reader >> value.seq;
 	reader >> value.ack;
 
-	for (int i = (int)logic::button::quit; i >= 0; ++i)
+	reader >> value.color;		
+
+	for (int i = (int)logic::button::quit; i >= 0; --i)
 	{
 		bool held = false;
 		reader >> held;
@@ -101,9 +183,6 @@ bit_reader& operator>>(bit_reader& reader, UserInput& value)
 		if (held)
 			value.input[(logic::button)i] = logic::button_state::held;
 	}
-
-	reader >> value.color; //vec2!!!
-
 
 	return reader;
 }
@@ -115,11 +194,13 @@ int Messenger::id() const
 
 bool Messenger::connected() const
 {
-	return /*player_host.connected();*/ true;
+	return true; //player_host.connected();
 }
 
 void Messenger::update(GameState& state, const char* ip_address)
 {
+	
+	
 	if (ip_address)
 	{
 		player_host = Host{ ip_address };
@@ -129,18 +210,51 @@ void Messenger::update(GameState& state, const char* ip_address)
 		inputs[client] = dummy_i;
 	}
 
-
 	if (player_host.client())
 	{
+		inputs[client].input = state.inputs[0];
+		
 		player_host.send(inputs[client]);
 		player_host.receive(snapshots[client]);
 		inputs[client].ack = snapshots[client].seq;
 	}
 	else
-	{
+	{	
+		for (auto&[key, value] : snapshots)
+		{
+			int i = 0;
+			for (auto&[key_p, value_p] : inputs)
+			{
+				value.types[i] = 0;
+				value.scores[i] = 0.0f;
+				value.positions[i] = state.game_objects[i].position;
+				value.velocities[i] = state.game_objects[i].velocity;
+				
+				if (key != key_p)
+					value.players[i++] = value_p;
+			}
+		}
+		
 		player_host.send(snapshots);
 		player_host.receive(inputs);
+
+		for (auto&[key, value] : snapshots)
+		{
+			int i = 0;
+			for (auto&[key_p, value_p] : inputs)
+			{
+				int type = value.types[i];
+				int score = value.scores[i];
+				state.game_objects[i].position = value.positions[i];
+				state.game_objects[i].velocity = value.velocities[i];
+
+				if (key != key_p)
+					value_p = value.players[i++];
+			}
+		}
 	}
+
+	//Snapshot -> GameState
 }
 
 }
