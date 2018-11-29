@@ -76,7 +76,7 @@ bool Host::client() const
 
 void Host::send(UserInput& input)
 {
-	if (enet_host)
+	if (enet_host && connected())
 	{
 		uint32 data[320] = {};
 		bit_writer writer{ data, 320 * 32 };
