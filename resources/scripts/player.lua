@@ -1,7 +1,12 @@
+
 function setup(entity)
 	entity.can_jump = true
 	entity.can_walljump = true
 	entity.can_move = true -- instead of playable
+
+	entity.states = {"idle", "moving", "jumping", "falling",
+	"landing", "hanging_left", "hanging_right", "sliding"}
+	entity.current_state = entity.states[1]
 	
 	entity.jump_timer = 0
 	entity.jump_impulse_x = 0
@@ -14,7 +19,7 @@ function setup(entity)
 	entity.jump_forgiveness_time = 0.5
 	entity.velocity_y_last = 0
 
-	--trigger
+	--TriGGerS---------------------------------------------------------------
 
 	--shock_trap
 	entity.stun_trap_timer = 0.0
@@ -399,27 +404,34 @@ end
 
 function update_control(delta_seconds, entity)
 	
-	
+	--print(entity.current_state)
+	--print(entity.states.idle)
 
-	if entity.button.right 
+	--Movement
+	if entity.current_state == entity.states[1] or entity.current_state == entity.states[2]
 	then
-		entity.anim.current = entity.anim.running
-		accelerate(delta_seconds, entity, entity.max_speed, entity.ground_acceleration)
-		print("A")
-	end
-	
-	if entity.button.left
-	then
-		entity.anim.current = entity.anim.in_jump
-		accelerate(delta_seconds, entity, -entity.max_speed, entity.ground_acceleration)
-		print("B")
+		entity.current_state = entity.states[1]
+		entity.anim.current = entity.anim.idle
+		if entity.button.right 
+		then
+			accelerate(delta_seconds, entity, entity.max_speed, entity.ground_acceleration)
+			entity.anim.current = entity.anim.running
+			entity.current_state = entity.states[2]
+		end
+
+		if entity.button.left
+		then
+			accelerate(delta_seconds, entity, -entity.max_speed, entity.ground_acceleration)
+			entity.anim.current = entity.anim.running
+			entity.current_state = entity.states[2]
+		end
 	end
 
-	if entity.can_jump and entity.button.jump 
+	if entity.button.jump 
 	then
 		--entity.jump_speed = entity.jump_speed + 1.1
 		--entity.jump_timer = entity.jump_timer + delta_seconds
-			
+		entity.anim.current = entity.anim.start_jump
 		if entity.jump_speed
 		then
 			entity.impulse.y = 29
