@@ -176,7 +176,7 @@ void Host::receive(input_map& input)
 void Host::recieve(const ENetEvent& eevent, UserInput& input)
 {
 	uint32* data = reinterpret_cast<uint32*>(eevent.packet->data);
-	int size = static_cast<int>(eevent.packet->dataLength / 32);
+	int size = static_cast<int>(eevent.packet->dataLength * 4);
 	bit_reader reader{ data, size };
 	reader >> input;
 }
@@ -184,7 +184,7 @@ void Host::recieve(const ENetEvent& eevent, UserInput& input)
 void Host::recieve(const ENetEvent& eevent, Snapshot& snapshot)
 {
 	uint32* data = reinterpret_cast<uint32*>(eevent.packet->data);
-	int size = static_cast<int>(eevent.packet->dataLength / 32);
+	int size = static_cast<int>(eevent.packet->dataLength * 4);
 	bit_reader reader{ data, size };
 	reader >> snapshot;
 }
