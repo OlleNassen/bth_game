@@ -430,11 +430,14 @@ void Renderer::render(
 
 				text_shader.uniform("text_color", players_colors[i]);*/
 				
-				out_text << (i + 1) << " " << sorted_infos[i].name << " \t: " << std::setprecision(0) << sorted_infos[i].score;
+				out_text << (i + 1) << " " << sorted_infos[i].name; // << " \t: " << std::setprecision(0) << sorted_infos[i].score;
 
 				text_shader.uniform("text_color", sorted_infos[i].color);
-
 				build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
+
+				out_text.str("");
+				out_text << std::setprecision(0) << sorted_infos[i].score;s
+				build_text.render_text(out_text.str(), (screen_width * 0.5f) + 150, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 			}
 		}
 
