@@ -32,7 +32,6 @@ private:
 	std::array<glm::vec2, 4> player_positions;
 	std::array<glm::vec2, 4> player_vector;
 	std::array<bool, 4> is_invisible;
-	const double pi{ atan(1) * 4 };
 	const unsigned int stage_width{ 28 };
 };
 

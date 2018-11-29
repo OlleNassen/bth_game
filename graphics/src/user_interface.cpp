@@ -139,7 +139,6 @@ namespace graphics
 			{
 				player_positions[i] = glm::vec2(models.at(i).get_position());
 
-				//if (abs(player_positions[i].x - camera_pos.x) > 23 || 
 				if	(abs(player_positions[i].y - camera_pos.y) > 16)
 				{
 					if (player_positions[i].y > camera_pos.y)
@@ -152,16 +151,7 @@ namespace graphics
 						elements.at(i + 2).angle = pi;
 						elements.at(i + 2).position.y = -0.95;
 					}
-					//player_vector[i] = player_positions[i] - glm::vec2(camera_pos.x, camera_pos.y);
-					/*
-					elements.at(i + 2).position = (glm::normalize(player_vector[i]) * 0.95f);
-					elements.at(i + 2).position.x *= 0.6f;
-					player_vector[i].y *= -1;
-
-					elements.at(i + 2).angle = std::atan2(player_vector[i].y, player_vector[i].x);
-					*/
 					
-
 					elements.at(i + 2).position.x = player_positions[i].x / stage_width;
 					elements.at(i + 2).color = models.at(i).get_color();
 				}
