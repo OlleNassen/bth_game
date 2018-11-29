@@ -199,7 +199,7 @@ bool Messenger::connected() const
 
 void Messenger::update(GameState& state, const char* ip_address)
 {
-	
+	state.player_count = 2;
 	
 	if (ip_address)
 	{
@@ -208,7 +208,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 		UserInput dummy_i = {};
 		snapshots[client] = dummy_s;
 		inputs[client] = dummy_i;
-		player_id = 1;
+		player_id = 1;	
 	}
 
 	if (player_host.client())
