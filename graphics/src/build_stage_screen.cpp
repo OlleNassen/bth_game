@@ -3,7 +3,7 @@
 namespace graphics
 {
 	BuildStageScreen::BuildStageScreen()
-		:build_1("../resources/textures/build_stage_screen/build_stage_2.png")
+		:build_1("../resources/textures/build_stage_screen/build_stage.png", true)
 
 	{
 		this->transparency = 0.8f;

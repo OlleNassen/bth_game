@@ -11,11 +11,7 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-uniform vec3 light_pos[14];
-uniform vec3 light_color[14];
-uniform float light_intensity[14];
-
-const int JOINT_SIZE = 20;
+const int JOINT_SIZE = 40;
 uniform mat4 bone_mats[JOINT_SIZE];
 
 out VS_OUT{
@@ -36,11 +32,9 @@ void main()
 
 	vec3 using_position = (bone_matrix * vec4(position, 1.0)).xyz;
 	vec4 view_pos = (view * model * vec4(using_position, 1.0));
-	vs_out.world_pos = vec3(model * bone_matrix * vec4(position, 1.0));
-	vs_out.world_normal = (model *bone_matrix* vec4(normal, 0)).xyz;
 
-	vs_out.world_pos = vec3(model * bone_matrix * vec4(position, 1.0));
-	vs_out.world_normal = (model * bone_matrix * vec4(normal, 0)).xyz;
+	vs_out.world_pos = vec3(model * vec4(using_position, 1.0));
+	vs_out.world_normal = (model * bone_matrix * vec4(normal, 0.0)).xyz;
 
 	gl_Position = projection * view_pos;
 }

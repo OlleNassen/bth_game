@@ -13,9 +13,9 @@ void main()
 	vec4 final_texture = vec4(loading_screen_texture.rgb, transparency);
 	
 	frag_color = vec4(loading_screen_texture);
-	if (frag_color.w < 0.3f)
+	if (frag_color.w < 0.25f)
 	{
-	discard;
+		discard;
 	}
 	frag_color = vec4(frag_color.rgb, transparency);
 }

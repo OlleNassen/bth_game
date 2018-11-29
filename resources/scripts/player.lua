@@ -1,379 +1,719 @@
 function setup(entity)
-	--player_playable = true -- 1 should be thought as a playable player 
-	entity.jump_timer = 1.0
 	entity.can_jump = true
 	entity.can_walljump = true
 	entity.can_move = true -- instead of playable
-	entity.maxSpeed = 8700
-	entity.max_velocity = 16
-	entity.max_air_speed = 14
- 	entity.acceleration = 580000
+	
 	entity.jump_timer = 0
-
-	--trigger
-	entity.speed_boost_timer = 0.0
-	entity.speed_boost_triggerd = false
-	entity.max_speed_boost = entity.maxSpeed * 2
-	entity.max_velocity_boost = entity.max_velocity * 1.3
-
-
+	entity.jump_impulse_x = 0
+	entity.max_speed = 16
+	entity.max_air_speed = 16
+	entity.ground_acceleration = 130
+	entity.deceleration = 50
+	entity.air_acceleration = 130
 	entity.ungrounded_time = 0
 	entity.jump_forgiveness_time = 0.5
+	entity.velocity_y_last = 0
+
+	--trigger
+
+	--shock_trap
+	entity.stun_trap_timer = 0.0
+	entity.stun_trap_immune_timer = 0.0
+	entity.stun_trap_triggered = false
+	entity.stun_trap_immune = false
+	entity.temp = 0
+ 	entity.shock_trap_max_timer = 3
+	entity.shock_trap_immune_max_timer = 5
+	
+
+	--speed boost
+	entity.speed_boost_timer = 0.0
+	entity.speed_boost_triggered = false
+	entity.max_speed_boost = entity.max_speed * 1.5
+	entity.max_speed_boost_air = entity.max_air_speed * 1.5
+	entity.speed_boost_acceleration = entity.ground_acceleration * 4
+	entity.speed_boost_air_acceleration = entity.air_acceleration * 2
+	entity.speed_boost_max_timer = 10
+	
+
+	--double jump
+	entity.double_jump_timer = 0.0
+	entity.double_jump_triggered = false --triggered
+	entity.have_double_jumped = false
+	entity.can_double_jump = false --if have_double_jumped = false, can_double_jump = true
+	entity.jump_pushed_last_frame = false --if jump button pressed last frame = pressed this frame, if released last frame, released now
+	entity.now_you_can_jump = false --if was in jump last frame
+	entity.in_wall_jump_state = false --in air after hanging r/l anim
+	entity.set_once = false
+	entity.double_jump_impulse = 40
+	entity.double_jump_timer_max = 10
+
+	--glide_trap
+	entity.glide_trap_triggered = false
+	entity.glide_trap_timer = 0.0
+	entity.friction = 0
+	entity.friction_slowrate = 0
+	entity.glide_trap_max_timer = 10
+	entity.glide_decrease = 0.0055
+
+	--shield
+	entity.is_stun_trap = false
+
+	--random_buff
+	entity.random_buff_triggered = false
+	entity.random_assigned = false
+	entity.random_last = 0
+	entity.random_buff_timer = 0.0
+	entity.random_buff_max_timer = 10
+	entity.buffs_id = { 3, 4, 5, 6 }
+
+
+
+	entity.jump_speed = 0
+	entity.gravity = 115
+	entity.max_gravity = 1800
+
 end
 
-function update(delta_seconds, entity)
 
+
+--[[local max_speed = 16
+local max_air_speed = 16
+local ground_acceleration = 100
+local deceleration = 60
+local   = 100
+]]--
+
+
+function update(delta_seconds, entity)
+	
+	if entity.stun_trap_triggered == false
+	then
+		update_controls(delta_seconds, entity)
+	end
+
+	update_triggers(delta_seconds, entity)
+
+
+	--Gravity 
+	if entity.anim.current == entity.anim.hanging_left and entity.velocity.y < 0 or entity.anim.current == entity.anim.hanging_right and entity.velocity.y < 0
+	then
+		entity.velocity.y = entity.velocity.y - entity.gravity * 0.2 * delta_seconds
+		
+	else
+		entity.velocity.y = entity.velocity.y - entity.gravity * delta_seconds
+		if entity.velocity.y < -entity.max_gravity * delta_seconds
+		then
+			entity.velocity.y = -entity.max_gravity * delta_seconds
+		end
+	end
+
+	--triggers
+
+	entity.jump_pushed_last_frame = entity.button.jump
+
+	if entity.can_double_jump and entity.jump_pushed_last_frame == false and entity.now_you_can_jump == false
+	then
+		entity.now_you_can_jump = true
+
+	elseif entity.can_double_jump == false
+	then
+		entity.now_you_can_jump = false
+	end
+end
+
+
+function update_controls(delta_seconds, entity)
 	
 
+	--Running
 	if entity.anim.current == entity.anim.running
 	then
-	
 		entity.anim.current = entity.anim.idle
 		if entity.button.right 
 		then
-			if entity.velocity.x < entity.max_velocity
-			then
-				--entity.forces.x = 8900
-				entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)
-			elseif  entity.velocity.x > entity.max_velocity
-			then
-				entity.forces.x = entity.forces.x
-			end
+			accelerate(delta_seconds, entity, entity.max_speed, entity.ground_acceleration)
+
 		end
-		
 		if entity.button.left
 		then
-			if entity.velocity.x > -entity.max_velocity
-			then
-				--entity.forces.x = -8900
-				entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds)
-			elseif  entity.velocity.x < -entity.max_velocity
-			then
-				entity.forces.x = entity.forces.x
-			end
-		end
+			accelerate(delta_seconds, entity, -entity.max_speed, entity.ground_acceleration)
 
+		end
 		if entity.button.jump
 		then
 			entity.anim.current = entity.anim.start_jump
 		end
-		if entity.velocity.y < -1.4
+		if entity.velocity.y < -0.3
 		then 
 			entity.anim.current = entity.anim.falling
 		end
 	end
 
+	--Idle
 	if entity.anim.current == entity.anim.idle
 	then
 		if entity.button.right 
 		then
-			if entity.velocity.x < entity.max_velocity
-			then
-				--entity.forces.x = 8900
-				entity.forces.x = entity.forces.x + 6500 + (entity.maxSpeed*entity.acceleration*delta_seconds)
-			elseif  entity.velocity.x > entity.max_velocity
-			then
-				entity.forces.x = entity.forces.x 
-			end	
+			accelerate(delta_seconds, entity, entity.max_speed, entity.ground_acceleration)
 			entity.anim.current = entity.anim.running
 		end
 		if entity.button.left 
 		then
-			if entity.velocity.x > -entity.max_velocity
-			then
-				--entity.forces.x = -8900
-				entity.forces.x = entity.forces.x + -6500 + (-entity.maxSpeed*entity.acceleration*delta_seconds)
-			elseif  entity.velocity.x < -entity.max_velocity
-			then
-				entity.forces.x = entity.forces.x
-			end
+			accelerate(delta_seconds, entity, -entity.max_speed, entity.ground_acceleration)
 			entity.anim.current = entity.anim.running
 		end
 		if entity.button.jump
 		then
 			entity.anim.current = entity.anim.start_jump
 		end
-		--if entity.velocity.y < -0.4
-		--then 
-		--	entity.anim.current = entity.anim.falling
-		--end
-	end
-
-	if entity.anim.current == entity.anim.start_jump
-	then
-		if entity.can_jump
-		then
-			entity.forces.x = 0
-			entity.forces.y = 0
-			entity.velocity.x = 0
-			entity.velocity.y = 0
-			entity.impulse.y = 0
-			entity.impulse.x = 0
-			
-
-			entity.impulse.y = 40
-			entity.can_jump = false
-		end	
-
-	end
-
-	if entity.anim.current == entity.anim.in_jump
-	then
-		if entity.can_jump
-		then
-			entity.impulse.y = 40
-			entity.can_jump = false
-		end
-		if entity.button.right 
-		then
-			if entity.velocity.x < entity.max_air_speed
-			then
-				entity.forces.x = (entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) )/ 3
-			elseif entity.velocity.x > entity.max_air_speed
-			then
-				entity.forces.x = entity.forces.x /3
-			end
-		end
-
-		if entity.button.left
-		then
-			if entity.velocity.x > -entity.max_air_speed
-			then
-				entity.forces.x = (entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) )/3
-			elseif  entity.velocity.x < -entity.max_air_speed
-			then
-				entity.forces.x = entity.forces.x/3
-			end
-			
-			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
-		end
-		if entity.velocity.y < -0.8
+		if entity.velocity.y < -0.3
 		then 
 			entity.anim.current = entity.anim.falling
 		end
 	end
 
-	if entity.anim.current == entity.anim.landing
+	--Start jump
+	if entity.anim.current == entity.anim.start_jump
 	then
-		entity.ungrounded_time = 0
-		entity.can_jump = true
-		entity.can_walljump = true
-		if entity.button.right
+		if entity.can_jump and entity.button.jump == true
 		then
-			if entity.velocity.x < entity.max_air_speed
-			then
-				entity.forces.x = (entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)) / 3
-			elseif entity.velocity.x > entity.max_air_speed
-			then
-				entity.forces.x = entity.forces.x /3
-			end
+			entity.jump_speed = entity.jump_speed + 1.1
+			entity.jump_timer = entity.jump_timer + delta_seconds
 			
-			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
-		end
-		if entity.button.left
-		then
-			if entity.velocity.x > -entity.max_air_speed
+			if entity.jump_speed < 2.2
 			then
-				entity.forces.x = (entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) )/3
-			elseif  entity.velocity.x < -entity.max_air_speed
+				entity.impulse.y = 29
+			elseif entity.jump_speed > 2.2 and entity.jump_speed < 6.6
 			then
-				entity.forces.x = entity.forces.x /3
+				
+				entity.impulse.y = entity.jump_speed
 			end
 
-			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		elseif entity.jump_speed > 0 and entity.button.jump == false or entity.jump_timer > 0.17 
+		then
+			entity.anim.current = entity.anim.in_jump
 		end
 	end
 
-
-	--Test for jumpforgiveness Doesn't work at the moment
-	--[[if entity.ungrounded_time > entity.jump_forgiveness_time and entity.anim.current == entity.anim.falling and  entity.can_jump == false
-	then
+	--In Jump
+	if entity.anim.current == entity.anim.in_jump
+	then 
+		if entity.can_jump
+		then
+			entity.impulse.y = entity.jump_speed
 			entity.can_jump = false
-	else
-			entity.ungrounded_time = entity.ungrounded_time + delta_seconds
-			entity.can_jump = true
-	end]]--
-	
+		end
 
+		if entity.double_jump_triggered and entity.can_double_jump == false --trigger
+		then
+			entity.can_double_jump = true
+		end
 
-
-
-
-	if entity.anim.current == entity.anim.falling 
-	then
 		if entity.button.right 
 		then
-			if entity.velocity.x < entity.max_air_speed
+			if math.abs(entity.velocity.x) < 0.001 and entity.velocity.x ~= 0 and entity.velocity.y < 20
 			then
-				entity.forces.x = (entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds)) / 3
-			elseif entity.velocity.x > entity.max_air_speed
-			then
-				entity.forces.x = entity.forces.x 
+				entity.velocity.y = entity.velocity_y_last - entity.gravity * delta_seconds
+				--entity.impulse.y = 7
+				--entity.velocity.y = entity.velocity.y - entity.gravity * delta_seconds
 			end
+			accelerate(delta_seconds, entity,  entity.max_air_speed, entity.air_acceleration)
+		elseif entity.button.left
+		then
+			if math.abs(entity.velocity.x) < 0.001 and entity.velocity.x ~= 0 and entity.velocity.y < 20
+			then
+				entity.velocity.y = entity.velocity_y_last - entity.gravity * delta_seconds
+				--entity.impulse.y = 7
+				--entity.velocity.y = entity.velocity.y - entity.gravity * delta_seconds
+			end
+			accelerate(delta_seconds, entity, - entity.max_air_speed, entity.air_acceleration)
+		else
+			decelerate(delta_seconds, entity)
+		end
 
-			--entity.forces.x = entity.forces.x + (entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+		if entity.velocity.y < -0.0
+		then 
+			entity.anim.current = entity.anim.falling
+		end
+
+		if entity.velocity.y == 0
+		then 
+			entity.anim.current = entity.anim.idle
+		end
+		if entity.velocity.y > 0
+		then
+		entity.velocity_y_last = entity.velocity.y
+		end
+		--print(entity.velocity.y)
+	end
+
+	--Landing
+	if entity.anim.current == entity.anim.landing
+	then
+		entity.jump_speed = 0
+		entity.ungrounded_time = 0	
+		entity.jump_timer = 0
+		entity.can_jump = true
+		entity.can_walljump = true
+
+
+		if entity.double_jump_triggered --trigger
+		then
+			entity.have_double_jumped = false
+			entity.can_double_jump = false
+			entity.in_wall_jump_state = false
+			entity.set_once = false
+		end
+
+		
+		if entity.button.right
+		then
+			entity.velocity.x = 0
+			entity.velocity.x =  entity.max_air_speed
 		end
 		if entity.button.left
 		then
-			if entity.velocity.x > -entity.max_air_speed
-			then
-				entity.forces.x = (entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) )/ 3
-			elseif entity.velocity.x < -entity.max_air_speed
-			then
-				entity.forces.x = entity.forces.x /3
-			end
-			--entity.forces.x = entity.forces.x + (-entity.maxSpeed*entity.acceleration*delta_seconds) / 3
+			entity.velocity.x = 0
+			entity.velocity.x = - entity.max_air_speed
 		end
 	end
 
+	--Falling
+
+	if entity.anim.current == entity.anim.falling
+	then
+		--print("Y: ", entity.velocity.y)
+
+		if entity.velocity.y >= -1.0934910278593e-3 and entity.velocity.y < 0 
+		then
+			entity.velocity.x = -5
+		elseif entity.velocity.y >= -1.0934910278593e-3 and entity.velocity.y < 0 and entity.button.right == true
+		then	
+			entity.velocity.x = 5
+		end
+
+
+		
+		if entity.button.left
+		then
+			if math.abs(entity.velocity.x) > 0.001 or entity.velocity.x == 0
+			then
+				accelerate(delta_seconds, entity, - entity.max_air_speed, entity.air_acceleration)
+			end
+		elseif entity.button.right 
+		then
+			if math.abs(entity.velocity.x) > 0.001 or entity.velocity.x == 0
+			then
+				accelerate(delta_seconds, entity,  entity.max_air_speed, entity.air_acceleration)
+			end
+		else
+			decelerate(delta_seconds, entity)
+		end
+
+		if entity.velocity.y > -0.01 and entity.velocity.y < 0 
+		then 
+			entity.velocity.y = 0
+			entity.anim.current = entity.anim.idle
+		end
+
+
+		if entity.have_double_jumped == false --trigger
+		then
+			entity.can_double_jump = true
+		end
+
+	end
+
+
+	--jump_from_wall
+	if entity.anim.current == entity.anim.jump_from_wall
+	then
+		if entity.set_once == false
+		then
+			entity.now_you_can_jump = false
+			entity.in_wall_jump_state = false
+			entity.set_once = true
+		end
+	end
+
+
+
+	--Hanging_Right
 	if entity.anim.current == entity.anim.hanging_right
 	then
-		--Test for jumpforgiveness
-		entity.ungrounded_time = 0
 
+		entity.ungrounded_time = 0
 		entity.jump_timer = entity.jump_timer + delta_seconds
-		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
+		
+		entity.in_wall_jump_state = true
+
+		if entity.button.jump and entity.button.left and entity.can_walljump and entity.jump_timer > 0.2
 		then
-			entity.jump_timer = 0
 			entity.forces.x = 0
 			entity.forces.y = 0
 			entity.velocity.x = 0
 			entity.velocity.y = 0
 			entity.impulse.y = 0
 			entity.impulse.x = 0
-			
+
+
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 37
-			entity.impulse.x = -25
-			entity.can_walljump = true --false
+			entity.impulse.y = 45
+			entity.impulse.x = -26
+			entity.can_walljump = true
+			entity.jump_timer = 0
 		end
-		entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 18) 
 	end
 
+	--Hanging_Left
 	if entity.anim.current == entity.anim.hanging_left
 	then
-		--Test for jumpforgiveness
 		entity.ungrounded_time = 0
-
 		entity.jump_timer = entity.jump_timer + delta_seconds
-		if entity.button.jump and entity.can_walljump and entity.jump_timer > 0.2
+
+		entity.in_wall_jump_state = true
+
+		if entity.button.jump and entity.button.right and entity.can_walljump and entity.jump_timer > 0.2
 		then
-			entity.jump_timer = 0
 			entity.forces.x = 0
 			entity.forces.y = 0
 			entity.velocity.x = 0
 			entity.velocity.y = 0
 			entity.impulse.y = 0
 			entity.impulse.x = 0
-			
+				
+
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 37
-			entity.impulse.x = 25
-			entity.can_walljump = true --false
+			entity.impulse.y = 45
+			entity.impulse.x = 26
+			entity.can_walljump = true
+			entity.jump_timer = 0
 		end
-		entity.forces.y = entity.forces.y + (delta_seconds * entity.maxSpeed * 18) 
 	end
+end
 
-	--Cap the velocity/entity.forces.x
-	if entity.anim.current ~= entity.anim.hanging_left or entity.anim.current ~= entity.anim.hanging_right or entity.anim.current ~= entity.anim.jump_from_wall 
-	then
-		if entity.forces.x > entity.maxSpeed
+function accelerate(delta_seconds, entity, top_speed, acceleration)
+
+	if top_speed > 0
+	then		
+		if entity.velocity.x < top_speed	
 		then
-			entity.forces.x = entity.maxSpeed
-		elseif entity.forces.x < -entity.maxSpeed
-		then 
-			entity.forces.x = -entity.maxSpeed
+			entity.velocity.x = entity.velocity.x +(acceleration*delta_seconds )
+			--entity.anim.current = entity.anim.running
+		else
+			entity.velocity.x = top_speed
+		end
+	elseif top_speed < 0
+	then
+		if entity.velocity.x > top_speed
+		then
+			entity.velocity.x = entity.velocity.x -(acceleration*delta_seconds )
+		else	
+			entity.velocity.x = top_speed
 		end
 	end
+end
+
+function decelerate(delta_seconds, entity)
 	
-	--if entity.anim.current == entity.anim.jump_from_wall
-	--then
-	--	if 
-	--	then
-	--
-	--	end
-	--end
-	--entity.anim.current = entity.anim.running
-	--entity.jump_timer = entity.jump_timer - delta_seconds
-	--entity.forces.x = -1000
-	--entity.size.x = 2045
-	--entity.impulse.y =  50
+		if entity.velocity.x > 1 
+		then
+			entity.velocity.x = entity.velocity.x -(entity.deceleration*delta_seconds )
+		elseif entity.velocity.x < -1 
+		then
+			entity.velocity.x = entity.velocity.x +(entity.deceleration*delta_seconds )
+		else	
+			entity.velocity.x = 0
+		end
+end
 
-	--entity.velocity.y = delta_seconds * 100 * entity.direction.z
-
-
-
-
-
+function update_triggers(delta_seconds, entity)
 	--trigger
 	if entity.triggered >= 4
 	then
-		--sticky_platform
-		if entity.triggered_type == 3
-		then
-			
-			if entity.velocity.x >= entity.max_velocity and entity.velocity.x > 0 --right
-			then
-				--entity.velocity.x = 1
-				entity.forces.x = entity.forces.x - (entity.forces.x / 1.5) 
-			
-			elseif entity.velocity.x <= -entity.max_velocity and entity.velocity.x < 0 --left
-			then
-				--entity.velocity.x = -1
-				entity.forces.x = entity.forces.x - (entity.forces.x / 1.5)
-			end
-		end
+		
 
-		----standard_platform
-		--if entity.triggered_type == 6
-		--then
-		--
-		--end
+		--stun_trap
+		if entity.triggered_type == 2 and entity.shield_active == true 
+		then
+			entity.is_stun_trap = true
+
+		elseif entity.triggered_type == 2 and entity.stun_trap_triggered == false and entity.stun_trap_immune == false
+		then
+			entity.stun_trap_triggered = true
+			entity.is_stund = true
+			entity.stun_trap_timer = 0.0
+
+			--print("stun_trap")
+		end
 
 		--speed_boost
-		if entity.triggered_type == 7 and entity.speed_boost_triggerd == false
+		if entity.triggered_type == 4 and entity.speed_boost_triggered == false
 		then
-			entity.speed_boost_triggerd = true
+			entity.speed_boost_triggered = true
 			entity.speed_boost_timer = 0.0
 
-			print("Sprint_boost")
-		end
-	end
+			if entity.double_jump_triggered or entity.glide_trap_triggered or entity.shield_active
+			then
+				entity.double_jump_triggered = false
+				entity.glide_trap_triggered = false
+				entity.shield_active = false
+			end
 
-	if	entity.speed_boost_triggerd == true and entity.speed_boost_timer <= 5.0
-	then
-		if entity.velocity.x < entity.max_velocity_boost and entity.velocity.x > -entity.max_velocity_boost and entity.button.right
+			--print("Sprint_boost")
+		end
+
+		--double_jump
+		if entity.triggered_type == 5 and entity.double_jump_triggered == false
 		then
-			if entity.velocity.x > 0
+			entity.double_jump_triggered = true
+			entity.can_double_jump = false
+			entity.double_jump_timer = 0.0
+
+			if entity.speed_boost_triggered or entity.glide_trap_triggered or entity.shield_active
 			then
-				entity.forces.x = entity.max_speed_boost * 1.2 --right
-			else
-				entity.forces.x = entity.max_speed_boost * 0.6
+				entity.speed_boost_triggered = false
+				entity.glide_trap_triggered = false
+				entity.shield_active = false
 			end
 
-		elseif entity.velocity.x > -entity.max_velocity_boost and entity.velocity.x < entity.max_velocity_boost and entity.button.left
-		then 
-			if entity.velocity.x < 0
+			--print("double_jump")
+		end
+
+		--glide_trap
+		if entity.triggered_type == 3 and entity.glide_trap_triggered == false
+		then
+			entity.glide_trap_triggered = true
+			entity.glide_trap_timer = 0.0
+
+			if entity.speed_boost_triggered or entity.double_jump_triggered or entity.shield_active
 			then
-				entity.forces.x = -entity.max_speed_boost * 1.2 --left
-			else
-				entity.forces.x = -entity.max_speed_boost * 0.6
+				entity.speed_boost_triggered = false
+				entity.double_jump_triggered = false
+				entity.shield_active = false
 			end
+
+			--print("glide_trap")
 
 		end
+
+		--random_buff
+		if entity.triggered_type == 7 and entity.random_buff_triggered == false
+		then
+			entity.random_buff_triggered = true
+			entity.random_buff_timer = 0.0
+				
+			if entity.speed_boost_triggered or entity.glide_trap_triggered or entity.double_jump_triggered or entity.shield_active
+			then
+				entity.speed_boost_triggered = false
+				entity.glide_trap_triggered = false
+				entity.double_jump_triggered = false
+				entity.shield_active = false
+			end
+
+			random_assignment(entity)
+
+			--print("random_buff")
+		end
+
+		--shield
+		if entity.shield_active == true
+		then
+			if entity.speed_boost_triggered or entity.double_jump_triggered or entity.glide_trap_triggered
+			then
+				entity.speed_boost_triggered = false
+				entity.double_jump_triggered = false
+				entity.glide_trap_triggered = false
+			end
+		end
+	elseif entity.shield_active == true and entity.is_stun_trap == true
+	then
+		entity.shield_active = false
+		entity.is_stun_trap = false
 	end
 
-	if	entity.speed_boost_timer <= 5.0
+	--trap and boost "functions"
+
+	--stun trap
+	if	entity.stun_trap_triggered == true and entity.stun_trap_timer <= entity.shock_trap_max_timer --stun timer
+	then
+		entity.stun_trap_timer = entity.stun_trap_timer + delta_seconds
+
+	elseif	entity.stun_trap_triggered == true
+	then
+		entity.stun_trap_triggered = false
+		entity.is_stund = false
+
+		entity.stun_trap_immune_timer = 0.0
+		entity.stun_trap_immune = true
+	end
+
+	if	entity.stun_trap_immune_timer <= entity.shock_trap_immune_max_timer and entity.stun_trap_immune == true --immune timer
+	then
+		entity.stun_trap_immune_timer = entity.stun_trap_immune_timer + delta_seconds
+
+	elseif entity.stun_trap_immune == true
+	then
+		entity.stun_trap_immune = false
+	end
+
+
+	--glide_trap
+	if entity.glide_trap_triggered == true and entity.glide_trap_timer <= entity.glide_trap_max_timer
+	then
+		entity.glide_trap_timer = entity.glide_trap_timer + delta_seconds
+
+
+
+		if entity.button.right or entity.button.left or entity.anim.current == entity.anim.falling
+		then
+			entity.friction = entity.velocity.x
+			entity.friction_slowrate = entity.velocity.x * entity.glide_decrease
+		end
+	
+		if entity.button.right == false and entity.button.left == false
+		then
+			if entity.velocity.x > 0.1
+			then
+				entity.friction = entity.friction - entity.friction_slowrate
+				entity.velocity.x = entity.friction
+	
+			elseif entity.velocity.x < -0.1
+			then
+				entity.friction = entity.friction - entity.friction_slowrate
+				entity.velocity.x = entity.friction
+			
+			elseif entity.velocity.x > -0.1 and entity.velocity.x < 0.1
+			then
+				entity.velocity.x = 0
+				entity.friction = 0
+			end
+		end
+	elseif entity.glide_trap_triggered == true
+	then
+		entity.glide_trap_triggered = false
+	end
+
+
+	--speed_boost
+	if entity.speed_boost_triggered == true and entity.speed_boost_timer <= entity.speed_boost_max_timer
 	then
 		entity.speed_boost_timer = entity.speed_boost_timer + delta_seconds
 
-	elseif	entity.speed_boost_timer >= 5.0
+		if entity.anim.current ~= entity.anim.jump_from_wall and entity.anim.current ~= entity.anim.hanging_left and entity.anim.current ~= entity.anim.hanging_right and entity.stun_trap_triggered == false
+		then
+			if entity.anim.current == entity.anim.falling
+			then
+				if entity.button.right
+				then
+					accelerate(delta_seconds, entity, entity.max_speed_boost_air, entity.speed_boost_air_acceleration) --right
+
+				elseif entity.button.left
+				then 
+					accelerate(delta_seconds, entity, -entity.max_speed_boost_air, entity.speed_boost_air_acceleration) --left
+				end
+			else
+				if entity.button.right
+				then
+					accelerate(delta_seconds, entity, entity.max_speed_boost, entity.speed_boost_acceleration) --right
+
+				elseif entity.button.left
+				then 
+					accelerate(delta_seconds, entity, -entity.max_speed_boost, entity.speed_boost_acceleration) --left
+				end
+			end
+		end
+
+	elseif entity.speed_boost_triggered == true
 	then
-		entity.speed_boost_triggerd = false
+		entity.speed_boost_triggered = false
 	end
 
 
+	--double_jump
+	if entity.double_jump_triggered == true and entity.double_jump_timer <= entity.double_jump_timer_max
+	then 
+
+		entity.double_jump_timer = entity.double_jump_timer + delta_seconds
+
+		if entity.can_double_jump
+		then
+			if entity.button.jump and entity.now_you_can_jump and entity.have_double_jumped == false and entity.in_wall_jump_state == false 
+			then
+				entity.velocity.y = entity.double_jump_impulse
+				entity.can_double_jump = false
+				entity.have_double_jumped = true
+
+				entity.now_you_can_jump = false
+
+			end
+
+			--if entity.button.jump and entity.anim.current == entity.anim.jump_from_wall
+			--then
+			--
+			--	if entity.now_you_can_jump
+			--	then
+			--		entity.velocity.y = double_jump_impulse
+			--		entity.can_double_jump = false
+			--		entity.have_double_jumped = true
+			--
+			--		entity.now_you_can_jump = false
+			--	end
+			--end
+		end
+	elseif entity.double_jump_triggered == true
+	then
+		entity.double_jump_triggered = false
+	end
 
 
-	entity.forces.y = entity.forces.y - 6400 --gravity
+	--random_buff
+	if entity.random_buff_triggered == true and entity.random_buff_timer <= entity.random_buff_max_timer
+	then
+		entity.random_buff_timer = entity.random_buff_timer + delta_seconds
+	else
+		entity.random_buff_triggered = false
+		entity.random_assigned = false
+	end
 end
+
+function random_assignment(entity)
+
+	if entity.random_assigned == false
+	then
+		entity.random_assigned = true
+
+		id = entity.buffs_id[3]
+
+		entity.random_last = id
+
+		if id == entity.buffs_id[1] --glide_trap
+		then
+			--print("glide trap")
+			entity.glide_trap_triggered = true
+			entity.glide_trap_timer = 0.0
+
+		elseif id == entity.buffs_id[2] --speed_boost
+		then
+			--print("speed boost")
+			entity.speed_boost_triggered = true
+			entity.speed_boost_timer = 0.0
+
+		elseif id == entity.buffs_id[3] --double_jump
+		then
+			--print("double jump")
+			entity.double_jump_triggered = true
+			entity.double_jump_timer = 0.0
+			entity.can_double_jump = false
+
+		elseif id == entity.buffs_id[4] --shield
+		then
+			--print("shield player")
+			entity.shield_active = true;
+		end
+	end
+end
+
+
+

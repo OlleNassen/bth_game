@@ -62,7 +62,6 @@ void Skybox::render(const Shader& shader, const Camera& camera) const
 	glDepthFunc(GL_LEQUAL);
 	glBindVertexArray(vao_id);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
 	glDepthFunc(GL_LESS);
 }
 

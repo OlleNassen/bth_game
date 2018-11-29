@@ -37,6 +37,15 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+	int dynamic_id = -1;
+	int model_id = -1;
+	int objects_type_id = -1;
+	bool is_stund;
+
+	int player_moving_object_type_id = -1;
+	int player_moving_object_id = -1;
+	bool shield_active = false;
+	//bool spike_active = false;
 };
 
 using objects_array = std::array<objects, 100>;
@@ -49,7 +58,7 @@ class World
 {
 public:
 	int add_dynamic_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, glm::vec2 start_force, int trigger_type = -1);
-	int add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
+	void add_static_body(glm::vec2 start_position, glm::vec2 offset, float width, float height, bool _is_trigger);
 
 	//Dynamic
 	std::vector<Rigidbody_old> dynamic_rigidbodies;
@@ -79,13 +88,16 @@ public:
 	std::vector<glm::vec3> get_debug_for(int id)const;
 
 	void clear_object();
+	void clear_static_object();
 
-	void rotate_static_box(int id);
+	void set_rotation(int id, int index);
 
 	bool rw[4];
 	bool lw[4];
 
+	void remove_body(int at);
 
+	glm::vec3 get_closest_wall_point(int player_id);
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 

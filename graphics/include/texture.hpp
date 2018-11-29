@@ -13,13 +13,13 @@ class Texture
 {
 public:
 	Texture() = default;
-	Texture(const std::string& path);
+	Texture(const std::string& path, bool alpha);
 	~Texture() = default;
 
 	void bind(unsigned int index, 
 		GLenum type = GL_TEXTURE_2D)const;
 	
-	void load_texture(const std::string& path);
+	void load_texture(const std::string& path, bool alpha);
 
 protected:
 	unsigned int texture_id;

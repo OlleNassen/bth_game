@@ -10,26 +10,37 @@ Model::Model(const glm::mat4& model, const glm::vec3& emissive_color, Mesh* mesh
 	, emissive_color{emissive_color}
 {
 	std::string animationPath = mesh->name + "_anim" + ".sspAnim";
-	bool animated = animation_handler.create_animation_data(animationPath, anim::falling);
-	if (animated == true)
-		is_animated = true;
+	animation_handler = new Animation_handler();
+	is_animated = animation_handler->create_animation_data(animationPath, anim::falling);
+	if (!is_animated)
+	{
+		delete animation_handler;
+		animation_handler = 0;
+	}			
 }
 
 void Model::create_animation_data(const std::string & file_path, anim enm)
 {
-	is_animated = this->animation_handler.create_animation_data(file_path, enm);
+	if (!animation_handler)
+		animation_handler = new Animation_handler();
+	is_animated = animation_handler->create_animation_data(file_path, enm);
 }
 anim Model::get_state()
 {
-	return this->animation_handler.current_state;
+	return animation_handler->current_state;
 }
 bool Model::get_animation_done(anim state)
 {
-	return this->animation_handler.get_animation_finished(state);
+	return animation_handler->get_animation_finished(state);
 }
 void Model::switch_animation(anim enm)
 {
-	this->animation_handler.switch_animation(enm);
+	animation_handler->switch_animation(enm);
+}
+
+int Model::getCurrentKeyframe()
+{
+	return animation_handler->current_keyframe;
 }
 
 void Model::move(glm::vec2 offset)
@@ -49,21 +60,16 @@ void Model::set_position(glm::vec2 position)
 
 void Model::rotate(float degree)
 {
-	/*glm::mat3 rotation{ model };
-	glm::vec3 translation{ model[3][0], model[3][1], model[3][2] };
-
-	model = glm::mat4{ 1.0f };
-	model = glm::translate(model, translation);
-	model = glm::rotate(model, glm::radians(degree), {0.0f, 0.0f, 1.0f});
-	model = model * glm::mat4{rotation};*/
-
-
-	//Works but not for all
-	/*model = glm::translate(model, { 0.0, center_pivot.x / 2, 0.0 });
-	model = glm::rotate(model, glm::radians(degree), { 1,0,0 });
-	model = glm::translate(model, { 0.0, -center_pivot.x / 2, 0.0 });*/
-
 	model = glm::rotate(model, glm::radians(degree), { 0, 0, 1 });
+}
+
+void Model::set_rotation(float degree)
+{
+	glm::vec3 position = { model[3][0], model[3][1], model[3][2] };
+	glm::mat4 ident = glm::mat4(1.0f);
+	ident = glm::rotate(ident, glm::radians(degree), { 0, 0, 1 });
+	ident = glm::translate(ident, position);
+	model = ident;
 }
 
 glm::vec3 Model::get_position()const
@@ -75,7 +81,6 @@ glm::vec3 Model::get_color() const
 {
 	return emissive_color;
 }
-
 
 float Model::get_y_position() const
 {
@@ -96,8 +101,8 @@ void Model::render(const Shader & shader) const
 	shader.uniform("emissive_map", 3);
 	shader.uniform("player_color", emissive_color);
 	
-	if (is_animated)
-		shader.uniform("bone_mats", this->animation_handler.bone_mat_vector);
+	if (animation_handler)
+		shader.uniform("bone_mats", animation_handler->bone_mat_vector);
 	
 	mesh->textures[0].bind(0);
 	mesh->textures[1].bind(1);
@@ -110,7 +115,7 @@ void Model::render(const Shader & shader) const
 
 void Model::update_animation(float time, anim& play_anim)
 {
-	this->animation_handler.update_animation(time, play_anim);
+	animation_handler->update_animation(time, play_anim);
 }
 
 }

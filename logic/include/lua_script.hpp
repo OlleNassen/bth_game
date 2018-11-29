@@ -27,7 +27,8 @@ public:
 	std::array<float, 4> scores;
 	std::array<bool, 4> died;
 	std::array<bool, 4> finished;
-	bool game_over;
+	std::array<int, 4> trigger_type;
+	bool game_over = false;
 	float time;
 	float goal_height;
 };
@@ -40,6 +41,8 @@ public:
 	glm::vec2 size;
 	glm::vec2 forces;
 	glm::vec2 impulse;
+	bool is_stund;
+	bool shield_active = false;
 
 };
 
@@ -79,11 +82,15 @@ public:
 		const input& i,
 		const trigger_array& triggers,
 		const trigger_type_array& types,
-		objects* players);
+		objects* players,
+		int player_count,
+		int spike_frame,
+		int turret_frame);
 
 	void update_export();
 	float get_time();
 	LuaExport data;
+	void reset_time();
 private:
 	LuaStack stack;
 };

@@ -5,6 +5,8 @@
 namespace physics
 {
 
+bool CMP(float x, float y) { return std::fabsf(x - y) <= (glm::epsilon<float>() * std::fmaxf(1.0f, std::fmaxf(std::fabsf(x), std::fabsf(y)))); }
+
 Ray::Ray(const Point& origin, const glm::vec3 direction)
 	: origin{origin}
 	, direction{glm::normalize(direction)}
@@ -572,9 +574,9 @@ float raycast(const OBB& obb, const Ray& ray)
 
 	for (int i = 0; i < 3; ++i)
 	{
-		if (glm::abs(f[i]) > glm::epsilon<float>()) //kanske fel
+		if (CMP(f[i], 0)) //kanske fel
 		{
-			if (-e[i] - size[i] > 0.0f || -e[i] + size[i] > 0.0f)
+			if (-e[i] - size[i] > 0.0f || -e[i] + size[i] < 0.0f)
 			{
 				return -1;
 			}
@@ -584,13 +586,13 @@ float raycast(const OBB& obb, const Ray& ray)
 		t[i * 2 + 1] = (e[i] - size[i]) / f[i];
 	}
 
-	float t_min = glm::max(
-		glm::max(glm::min(t[0], t[1]), glm::min(t[2], t[3])),
-		glm::min(t[3], t[4]));
+	float t_min = std::fmaxf(
+		std::fmaxf(std::fminf(t[0], t[1]), std::fminf(t[2], t[3])),
+		std::fminf(t[4], t[5]));
 
-	float t_max = glm::min(
-		glm::min(glm::max(t[0], t[1]), glm::max(t[2], t[3])),
-		glm::max(t[3], t[4]));
+	float t_max = std::fminf(
+		std::fminf(std::fmaxf(t[0], t[1]), std::fmaxf(t[2], t[3])),
+		std::fmaxf(t[4], t[5]));
 
 	if (t_max < 0.0f)
 		return -1;

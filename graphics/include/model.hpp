@@ -28,9 +28,11 @@ public:
 	anim get_state();
 	bool get_animation_done(anim state);
 	void switch_animation(anim enm);
+	int getCurrentKeyframe();
 	void move(glm::vec2 offset);
 	void set_position(glm::vec2 position);
 	void rotate(float degree);
+	void set_rotation(float degree);
 	glm::vec3 get_position()const;
 	glm::vec3 get_color()const;
 	void rotate(const glm::vec3 axis, float angle);	
@@ -39,12 +41,11 @@ public:
 
 	void render(const Shader & shader) const;
 	void update_animation(float time, anim& play_anim);
+	Mesh* mesh; //Change where this is created and implement flyweight pattern
 
 private:
-	Mesh* mesh; //Change where this is created and implement flyweight pattern
-	Animation_handler animation_handler;
+	Animation_handler* animation_handler;
 	glm::mat4 model;
-	glm::vec3 light_pos{ 0, 3, 1 };
 };
 
 }

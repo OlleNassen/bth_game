@@ -22,6 +22,7 @@ enum class button	//DONT CHANGE!!!
 	cancel,
 	rotate,
 	refresh,
+	score,
 	menu,
 	quit
 		

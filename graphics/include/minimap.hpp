@@ -25,12 +25,10 @@ public:
 	void update(const std::vector<Model>& models, int players, float goal_height);
 	void render(const Shader& shader) const;
 	std::array<GuiElement, 10> map_elements;
-	
 
 private:
-	
-	VertexArray vao_id;
-	Buffer vbo_id;
+	unsigned int vao_id;
+	unsigned int vbo_id;
 	glm::mat4 transform = glm::mat4(1.0f);
 	unsigned int player_count = 0;
 	unsigned int height = 100;

@@ -18,20 +18,11 @@
 #include "primitive_factory.hpp"
 #include "skybox.hpp"
 #include "minimap.hpp"
-#include "loading_screen.hpp"
-#include "death_screen.hpp"
-#include "main_menu_screen.hpp"
-#include "finish_screen.hpp"
 #include "build_stage_screen.hpp"
+#include "overlays.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
-
-struct build_information
-{
-	std::vector<glm::vec3> build_positions;
-	int place_state = 1;
-};
 
 namespace graphics
 {
@@ -75,7 +66,12 @@ public:
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
-		float print_time) const;
+		std::array<int, 4> trigger_type,
+		float print_time,
+		int player_id,
+		int player_object_id,
+		std::vector<glm::vec3> remove_lines,
+		bool view_score) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -84,13 +80,33 @@ public:
 		const std::string& data,
 		int num_players,
 		int id,
-		int new_game_state,
-		std::string scoreboard, 
+		int new_game_state, 
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
+		std::array<int, 4> trigger_type,
 		float print_time,
-		float goal_height);
+		float goal_height,
+		std::vector<build_information>& all_placed_objects,
+		int spectator_id,
+		std::array<int, 4> moving_objects_id,
+		bool view_score);
+
+	static void point_debug(const std::vector<glm::vec3>& lines)
+	{
+		VertexArray vao;
+		Buffer vertex_buffer;
+
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+		gl_buffer_data(GL_ARRAY_BUFFER, lines, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
+
+		glPointSize(5.0f);
+		glDrawArrays(GL_LINES, 0, lines.size());
+		//glDrawArrays(GL_POINTS, 0, lines.size());
+	}
 
 	static void line_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -105,7 +121,11 @@ public:
 
 		glPointSize(5.0f);
 		glDrawArrays(GL_POINTS, 0, lines.size());
-		glBindVertexArray(0);
+	}
+
+	void switch_scene(GameScene* scene)
+	{
+		this->scene = scene;
 	}
 
 private:
@@ -124,6 +144,9 @@ private:
 	Shader text_shader{ 
 		"../resources/shaders/text.vs", 
 		"../resources/shaders/text.fs" };
+	Shader world_text_shader{ 
+		"../resources/shaders/world_text.vs",
+		"../resources/shaders/world_text.fs" };
 	Shader gui{ 
 		"../resources/shaders/gui.vs",
 		"../resources/shaders/gui.fs" };
@@ -154,6 +177,15 @@ private:
 	Shader fx_fire{
 		"../resources/shaders/fx_fire.vs",
 		"../resources/shaders/fx_fire.fs" };
+	Shader fx_godray{
+		"../resources/shaders/fx_godray.vs",
+		"../resources/shaders/fx_godray.fs" };
+	Shader fx_gust{
+		"../resources/shaders/fx_gust.vs",
+		"../resources/shaders/fx_gust.fs" };
+	Shader fx_stun{
+		"../resources/shaders/fx_stun.vs",
+		"../resources/shaders/fx_stun.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
@@ -198,8 +230,7 @@ private:
 
 	PostProcessingEffects post_processing_effects;
 
-	std::array<PointLight, 14> lights;
-	std::array<SpotLight, 1> spotlights;
+
 	DirectionalLight dir_light;
 
 	ModelsToRender s_to_render;
@@ -211,14 +242,13 @@ private:
 	bool show_start{false};
 	Minimap minimap;
 
-	LoadingScreen loading_screen;
-	DeathScreen death_screen;
-	MainMenuScreen main_menu_screen;
-	//BuildStageScreen build_stage_screen;
-	FinishScreen finish_screen;
+	
+	BuildStageScreen build_stage_screen;
+	Overlays overlays;
 	int player_id;
 
 	FX fx_emitter;
+	std::vector<build_information> build_info_vec;
 
 	int game_state;
 
@@ -226,12 +256,57 @@ private:
 	//Test of leaderboard
 	glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
 	Leaderboard leaderboard;
-	
-	//Timer text
+
+	//Placing
+	int places = 1;
+	std::array<int, 4> placing = { -1, -1, -1, -1 };
+	std::array<int, 4> scores_to_give = { 4, 3, 2, 1 };
+
+	//Timer info
 	Text timer_text;
 
 	//Build instructions
 	Text build_text;
+
+	//Arrays of strings and vec3
+	std::array<std::string, 8> objects_description =
+	{ 	
+		"Spike Trap - Kills if hit",
+		"Turret - Shoots a projectile that kills",
+		"Stun Trap - Stuns the player",
+		"Glide Trap - Makes the player glide",
+		"Speed Boost - Increases running speed",
+		"Double Jump - Enables double jump",
+		"Shield - Invulnerable for one hit",
+		"Random Buff - Random buff"
+	};
+
+	std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };
+
+	std::array<glm::vec3, 4> players_colors = { glm::vec3{ 1.0f, 0.0f, 0.0f},
+												glm::vec3{ 0.2f, 0.9f, 0.1f},
+												glm::vec3{ 0.1f, 0.1f, 0.9f},
+												glm::vec3{ 0.9f, 0.8f, 0.1f} };
+
+
+	struct player_info
+	{
+		int my_id = 0;
+		float score = 0.f;
+		std::string name = "";
+		glm::vec3 color = { 0, 0, 0 };
+	};
+
+	struct {
+		bool operator() (const player_info& left, const player_info& right) const
+		{
+			return left.score > right.score;
+		}
+	} sort_by_score;
+
+	std::array<player_info, 4> player_infos;
+
+	LightGrid grid;
 };
 
 }

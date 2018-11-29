@@ -37,62 +37,61 @@ void PlayerScript::update(
 	anim& anim_state)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	int top = stack.top();
 
+	if (lua_istable(stack.lua_state, top))
 	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("button");
-		stack.push(i);
-		stack.rawset(top);
-		stack.clear();
-	}
+		{
+			stack.push("button");
+			stack.push(i);
+			stack.rawset(top);
+		}
 
-	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("anim");
-		stack.push(anim_state);
-		stack.rawset(top);
-		stack.clear();
-	}
+		{
+			
+			stack.push("anim");
+			stack.push(anim_state);
+			stack.rawset(top);
+		}
 
-	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("position");
-		stack.push(object.position);
-		stack.rawset(top);
-		stack.push("velocity");
-		stack.push(object.velocity);
-		stack.rawset(top);
-		stack.push("size");
-		stack.push(object.size);
-		stack.rawset(top);
-		stack.push("forces");
-		stack.push(object.forces);
-		stack.rawset(top);
-		stack.push("impulse");
-		stack.push(object.impulse);
-		stack.rawset(top);
-		stack.clear();
-	}
+		{
+			stack.push("position");
+			stack.push(object.position);
+			stack.rawset(top);
+			stack.push("velocity");
+			stack.push(object.velocity);
+			stack.rawset(top);
+			stack.push("size");
+			stack.push(object.size);
+			stack.rawset(top);
+			stack.push("forces");
+			stack.push(object.forces);
+			stack.rawset(top);
+			stack.push("impulse");
+			stack.push(object.impulse);
+			stack.rawset(top);
+		}
 
-	//test for trigger
-	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("triggered");
-		stack.push(trigger);
-		stack.rawset(top);
-		stack.clear();
-	}
+		//test for trigger
+		{
+			stack.push("triggered");
+			stack.push(trigger);
+			stack.rawset(top);
+		}
 
-	{
-		stack.getglobal(name.c_str());
-		int top = stack.top();
-		stack.push("triggered_type");
-		stack.push(type);
-		stack.rawset(top);
+		{
+			stack.push("triggered_type");
+			stack.push(type);
+			stack.rawset(top);
+		}
+
+		{
+			stack.push("shield_active");
+			stack.push(object.shield_active);
+			stack.rawset(top);
+			
+		}
 		stack.clear();
 	}
 
@@ -144,6 +143,12 @@ void PlayerScript::update(
 		object.impulse.x = stack.tonumber(-2);
 		object.impulse.y = stack.tonumber(-1);
 		
+		stack.getfield(top, "is_stund");
+		object.is_stund = stack.toboolean(-1);
+
+		stack.getfield(top, "shield_active");
+		object.shield_active = stack.toboolean(-1);
+
 		stack.clear();
 	}	
 }
@@ -238,13 +243,16 @@ void GameScript::update(
 	const input& i,
 	const trigger_array& triggers,
 	const trigger_type_array& types,
-	objects* players)
+	objects* players,
+	int player_count,
+	int spike_frame, 
+	int turret_frame)
 {
 	{
 		stack.getglobal("game");
 		stack.clear();
 	}
-
+	
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
@@ -263,7 +271,6 @@ void GameScript::update(
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
-
 		for (int i = 1; i <= 4; i++)
 		{
 			stack.rawget(top, i);
@@ -279,7 +286,6 @@ void GameScript::update(
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
-
 		for (int i = 1; i <= 4; i++)
 		{
 			stack.rawget(top, i);
@@ -295,7 +301,6 @@ void GameScript::update(
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
-
 		for (int i = 1; i <= 4; i++)
 		{
 			stack.rawget(top, i);
@@ -311,7 +316,6 @@ void GameScript::update(
 	{
 		stack.getglobal("entities");
 		int top = stack.top();
-
 		for (int i = 1; i <= 4; i++)
 		{
 			stack.rawget(top, i);
@@ -324,12 +328,38 @@ void GameScript::update(
 		stack.clear();
 	}
 
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+
+			stack.push("shield_active");
+			stack.push(players[i - 1].shield_active);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+	{
+		stack.getglobal("game");
+
+		int top_pos = stack.top();
+
+		stack.push("spike_frame");
+		stack.push(spike_frame);
+		stack.rawset(top_pos);
+
+		stack.clear();
+	}
 
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);
 	stack.getglobal("game");
 	stack.getglobal("entities");
-	stack.call(3, 0);
+	stack.push(player_count);
+	stack.call(4, 0);
 
 	{
 		stack.getglobal("entities");
@@ -362,6 +392,23 @@ void GameScript::update(
 
 		stack.clear();
 	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+
+		for (int i = 1; i <= 4; ++i)
+		{
+			stack.rawget(top, i);
+			stack.getfield(-1, "shield_active");
+			players[i - 1].shield_active = stack.toboolean(-1);
+		}
+
+		stack.clear();
+
+
+	}
+
 
 	/*{
 		stack.getglobal("entities");
@@ -424,6 +471,10 @@ void GameScript::update_export()
 		stack.rawget(-1, i);
 		data.finished[i - 1] = stack.toboolean(-1);
 
+		stack.getfield(top, "triggered_type");
+		stack.rawget(-1, i);
+		data.trigger_type[i - 1] = stack.tointeger(-1);
+
 		//std::cout<< data.died[i - 1] << '\n';
 		//std::cout << data.finished[i - 1] << '\n';
 
@@ -451,6 +502,19 @@ float GameScript::get_time()
 	stack.clear();
 
 	return temp;
+}
+
+void GameScript::reset_time()
+{
+	{
+		stack.getglobal("game");
+	}
+
+	stack.getglobal("reset_time");
+	stack.getglobal("game");
+	stack.call(1, 0);
+
+	stack.clear();
 }
 
 PlacingScript::PlacingScript(const std::string& path)

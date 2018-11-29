@@ -12,7 +12,12 @@ enum state : int
 	chat = 1 << 5,
 	render_physics = 1 << 6,
 	playing = 1 << 7,
-	pre_playing = 1 << 8
+	pre_playing = 1 << 8,
+	lobby = 1 << 9,
+	game_over = 1 << 10,
+	pre_building = 1 << 11,
+	score = 1 << 12,
+	loading = 1 << 13
 };
 
 enum class anim 
