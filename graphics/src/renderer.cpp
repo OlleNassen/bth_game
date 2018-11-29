@@ -235,7 +235,7 @@ void Renderer::render(
 			build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
 
 			if (total_players_ready == player_count)
-				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);
+				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, (screen_height * 0.5f) - 150.f, 0.75f);
 		}
 
 		if (game_state & state::pre_building)
@@ -401,7 +401,7 @@ void Renderer::render(
 
 			if ((died[player_id] || finish[player_id]) && (overlays.finished_timer >= 5000ms || overlays.death_timer >= 500ms))
 			{				
-				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
+				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, (screen_height * 0.5f) - 150.f, 0.75f);
 			}
 			else
 			{
@@ -425,19 +425,35 @@ void Renderer::render(
 			for (int i = 0; i < player_count; i++)
 			{
 				out_text.str("");
-				out_text << (i + 1) << ":";
+
+				switch (i)
+				{
+				case 0:
+					out_text << (i + 1) << "st:";
+					break;
+				case 1:
+					out_text << (i + 1) << "nd:";
+					break;
+				case 2:
+					out_text << (i + 1) << "rd:";
+					break;
+				case 3:
+					out_text << (i + 1) << "th:";
+					break;
+				}
+
 				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 				build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 
 				out_text.str("");
 				out_text << sorted_infos[i].name;
 				text_shader.uniform("text_color", sorted_infos[i].color);
-				build_text.render_text(out_text.str(), (screen_width * 0.5f) + 30.f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
+				build_text.render_text(out_text.str(), (screen_width * 0.5f) + 70.f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 
 				out_text.str("");
 				out_text << ": " << std::setprecision(0) << sorted_infos[i].score;
 				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-				build_text.render_text(out_text.str(), (screen_width * 0.5f) + 170.f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
+				build_text.render_text(out_text.str(), (screen_width * 0.5f) + 210.f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 			}
 		}
 
