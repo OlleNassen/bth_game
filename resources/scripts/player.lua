@@ -77,21 +77,25 @@ end
 
 
 
---[[local max_speed = 16
-local max_air_speed = 16
-local ground_acceleration = 100
-local deceleration = 60
-local   = 100
+--[[
+	local max_speed = 16
+	local max_air_speed = 16
+	local ground_acceleration = 100
+	local deceleration = 60
+	local   = 100
 ]]--
 
 
 function update(delta_seconds, entity)
 	
-	if entity.stun_trap_triggered == false
+	--[[if entity.stun_trap_triggered == false
 	then
-		update_controls(delta_seconds, entity)
-	end
+		--update_control(delta_seconds, entity)
+		--update_controls(delta_seconds, entity)
+	end]]--
 
+
+	update_control(delta_seconds, entity)
 	update_triggers(delta_seconds, entity)
 
 
@@ -392,6 +396,46 @@ function update_controls(delta_seconds, entity)
 		end
 	end
 end
+
+function update_control(delta_seconds, entity)
+	
+	
+
+	if entity.button.right 
+	then
+		entity.anim.current = entity.anim.running
+		accelerate(delta_seconds, entity, entity.max_speed, entity.ground_acceleration)
+		print("A")
+	end
+	
+	if entity.button.left
+	then
+		entity.anim.current = entity.anim.in_jump
+		accelerate(delta_seconds, entity, -entity.max_speed, entity.ground_acceleration)
+		print("B")
+	end
+
+	if entity.can_jump and entity.button.jump 
+	then
+		--entity.jump_speed = entity.jump_speed + 1.1
+		--entity.jump_timer = entity.jump_timer + delta_seconds
+			
+		if entity.jump_speed
+		then
+			entity.impulse.y = 29
+		--elseif entity.jump_speed > 2.2 and entity.jump_speed < 6.6
+		--then
+			--entity.impulse.y = entity.jump_speed
+		--elseif entity.jump_speed > 0 and entity.button.jump == false or entity.jump_timer > 0.17 
+		--then
+			entity.anim.current = entity.anim.in_jump
+			entity.can_jump = false
+
+		end
+	end
+
+end
+
 
 function accelerate(delta_seconds, entity, top_speed, acceleration)
 
@@ -714,6 +758,3 @@ function random_assignment(entity)
 		end
 	end
 end
-
-
-
