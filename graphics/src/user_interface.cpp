@@ -149,7 +149,7 @@ namespace graphics
 					}
 					else
 					{
-						elements.at(i + 2).angle = atan(1) * 2;
+						elements.at(i + 2).angle = atan(1) * 4;
 						elements.at(i + 2).position.y = -0.95;
 					}
 					//player_vector[i] = player_positions[i] - glm::vec2(camera_pos.x, camera_pos.y);
