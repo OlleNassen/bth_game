@@ -1,7 +1,6 @@
 #include "..\include\fx.hpp"
 namespace graphics
 {
-
 FX::FX()
 	:dust("../resources/textures/fx/dust_texture_1.png", true)
 	,spark("../resources/textures/fx/dust_texture_1.png", true)
