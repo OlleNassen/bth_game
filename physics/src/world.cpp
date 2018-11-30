@@ -144,7 +144,7 @@ void World::update(
 		}
 	}
 
-	/*for (auto& left : bodies)
+	for (auto& left : bodies)
 	{
 		for (auto& right : bodies)
 		{
@@ -163,7 +163,7 @@ void World::update(
 				}
 			}		
 		}
-	}*/
+	}
 	
 	int index = 0;
 	for (auto& body : bodies)
