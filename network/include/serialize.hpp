@@ -17,12 +17,6 @@ using uint16 = std::uint16_t;
 using uint32 = std::uint32_t;
 using uint64 = std::uint64_t;
 
-union FloatInt
-{
-    float float_value;
-    uint32 int_value;
-};
-
 class bit_writer
 {
 public:

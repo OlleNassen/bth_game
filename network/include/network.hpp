@@ -1,6 +1,7 @@
 #ifndef NETWORK_HPP
 #define NETWORK_HPP
 
+#include <iostream>
 #include <map>
 #include <glm/glm.hpp>
 #include "serialize.hpp"
@@ -99,6 +100,19 @@ bit_reader& operator>>(bit_reader& reader, UserInput& value);
 class Messenger
 {
 public:
+	Messenger()
+	{
+		uint32 data[320] = {};
+		bit_writer w{ data, 320 * 32 };
+		bit_reader r{ data, 320 * 32 };
+
+		w << 55.63f;
+		w << 55.63f;
+		float i = 9.82f;
+		r >> i;
+		std::cout << i << '\n';
+	}
+
 	int id() const;
 	bool connected() const;
 	void update(GameState& state, const char* ip_address);

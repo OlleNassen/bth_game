@@ -1,4 +1,5 @@
 #include "serialize.hpp"
+#include <iostream>
 
 namespace network
 {
@@ -24,7 +25,7 @@ void bit_writer::write_bits(uint32 value, int bits)
     if (scratch_bits >= 32)
     {
         assert(word_index < num_words);
-        buffer[word_index] = static_cast<uint32>(scratch & 0xFFFFFF);
+        buffer[word_index] = static_cast<uint32>(scratch & 0xFFFFFFFF);
         scratch >>= 32;
         scratch_bits -= 32;
         ++word_index;
@@ -73,9 +74,9 @@ bit_writer& operator<<(bit_writer& writer, int value)
 
 bit_writer& operator<<(bit_writer& writer, float value)
 {
-    FloatInt temp;
-    temp.float_value = value;
-    writer.write_bits(temp.int_value, 32);
+	uint32 unsigned_value = 0;
+	memcpy(&unsigned_value, &value, 4);
+    writer.write_bits(unsigned_value, 32);
     return writer;
 }
 
@@ -156,9 +157,9 @@ bit_reader& operator>>(bit_reader& reader, int& value)
 
 bit_reader& operator>>(bit_reader& reader, float& value)
 {
-    FloatInt temp;
-    temp.int_value = reader.read_bits(32);
-    value = static_cast<float>(temp.float_value);
+	uint32 unsigned_value = 0;
+	unsigned_value = reader.read_bits(32);
+	memcpy(&value, &unsigned_value, 4);
     return reader;
 }
 
