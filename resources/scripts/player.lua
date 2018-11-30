@@ -25,6 +25,8 @@ function setup(entity)
 	entity.gravity = 115
 	entity.max_gravity = 1800
 
+	entity.cooldown = 0.0
+
 	--TriGGerS---------------------------------------------------------------
 
 	--shock_trap
@@ -305,8 +307,23 @@ function update_control(delta_seconds, entity)
 	--Sliding
 	if entity.current_state == entity.states[8]
 	then
-
+	
 	end
+
+	if entity.button.rotate and entity.cooldown < 0
+	then
+		if entity.velocity.x > 0
+		then
+			entity.velocity.x = 100
+		else
+			entity.velocity.x = -100
+		end
+		entity.cooldown = 2
+	end
+
+	print(entity.cooldown)
+
+	entity.cooldown = entity.cooldown - delta_seconds
 
 end
 
