@@ -6,69 +6,34 @@ namespace network
 
 bit_writer& operator<<(bit_writer& writer, const glm::vec2& value)
 {
-	bool has_value = value.y > 0.01f;
-	if (has_value)
-		writer << value.y;
-	writer << has_value;
-
-	has_value = value.x > 0.01f;
-	if (has_value)
-		writer << value.x;
-	writer << has_value;
+	writer << value.x;
+	writer << value.y;	
 
 	return writer;
 }
 
 bit_reader& operator>>(bit_reader& reader, glm::vec2& value)
 {
-	bool has_value = false;
-
-	reader >> has_value;
-	if (has_value)
-		reader >> value.x;
-
-	reader >> has_value;
-	if (has_value)
-		reader >> value.y;
+	reader >> value.x;
+	reader >> value.y;
 
 	return reader;
 }
 
 bit_writer& operator<<(bit_writer& writer, const glm::vec3& value)
 {
-	bool has_value = value.z > 0.01f;
-	if (has_value)
-		writer << value.z;
-	writer << has_value;
-
-	has_value = value.y > 0.01f;
-	if (has_value)
-		writer << value.y;
-	writer << has_value;
-
-	has_value = value.x > 0.01f;
-	if (has_value)
-		writer << value.x;
-	writer << has_value;
-
+	writer << value.x;
+	writer << value.y;
+	writer << value.z;
+		
 	return writer;
 }
 
 bit_reader& operator>>(bit_reader& reader, glm::vec3& value)
 {
-	bool has_value = false;
-
-	reader >> has_value;
-	if (has_value)
-		reader >> value.x;
-
-	reader >> has_value;
-	if (has_value)
-		reader >> value.y;
-
-	reader >> has_value;
-	if (has_value)
-		reader >> value.z;
+	reader >> value.x;
+	reader >> value.y;
+	reader >> value.z;
 
 	return reader;
 }
@@ -76,40 +41,26 @@ bit_reader& operator>>(bit_reader& reader, glm::vec3& value)
 
 bit_writer& operator<<(bit_writer& writer, const Snapshot& value)
 {
-	for (int i = value.count - 2; i >= 0; --i)
-		writer << value.players[i];
-		
-	for (int i = value.count - 1; i >= 0; --i)
-		writer << value.velocities[i];
+	writer << value.seq;
+	writer << value.ack;
+	writer << value.clock;
 
-	for (int i = value.count - 1; i >= 0; --i)
+	writer << value.level;
+
+	for (int i = 0; i < value.count; ++i)
+		writer << value.types[i];
+
+	for (int i = 0; i < value.count; ++i)
+		writer << value.scores[i];
+
+	for (int i = 0; i < value.count; ++i)
 		writer << value.positions[i];
 
-	
-	for (int i = value.count - 1; i >= 0; --i)
-	{
-		bool has_value = value.scores[i] > 0.01f;
-		if (has_value)
-			writer << value.level;
-		writer << has_value;
-	}
+	for (int i = 0; i < value.count; ++i)
+		writer << value.velocities[i];
 
-	for (int i = value.count - 1; i >= 0; --i)
-	{
-		bool has_value = value.types[i] != 0;
-		if (has_value)
-			writer << value.level;
-		writer << has_value;
-	}
-
-	bool has_value = value.level != 0;
-	if (has_value)
-		writer << value.level;
-	writer << has_value;	
-	
-	writer << value.clock;
-	writer << value.ack;
-	writer << value.seq;
+	for (int i = 0; i < value.count - 1; ++i)
+		writer << value.players[i];
 
 	return writer;
 }
@@ -120,35 +71,21 @@ bit_reader& operator>>(bit_reader& reader, Snapshot& value)
 	reader >> value.ack;
 	reader >> value.clock;
 	
-	bool has_value = false;
-	
-	reader >> has_value;
-	if (has_value)
-		reader >> value.level;
+	reader >> value.level;
 
-	for (int i = 0; i <= value.count - 1; ++i)
-	{
-		bool has_value = false;
-		reader >> has_value;
-		if (has_value)
-			reader >> value.types[i];
-	}
+	for (int i = 0; i < value.count; ++i)
+		reader >> value.types[i];
 
-	for (int i = 0; i <= value.count - 1; ++i)
-	{
-		bool has_value = false;
-		reader >> has_value;
-		if (has_value)
-			reader >> value.scores[i];
-	}
+	for (int i = 0; i < value.count; ++i)
+		reader >> value.scores[i];
 
-	for (int i = 0; i <= value.count - 1; ++i)
+	for (int i = 0; i < value.count; ++i)
 		reader >> value.positions[i];
 
-	for (int i = 0; i <= value.count - 1; ++i)
+	for (int i = 0; i < value.count; ++i)
 		reader >> value.velocities[i];
 
-	for (int i = 0; i <= value.count - 2; ++i)
+	for (int i = 0; i < value.count - 1; ++i)
 		reader >> value.players[i];
 	
 	return reader;
@@ -156,15 +93,16 @@ bit_reader& operator>>(bit_reader& reader, Snapshot& value)
 
 bit_writer& operator<<(bit_writer& writer, const UserInput& value)
 {
-	for (int i = 0; i <= (int)logic::button::quit; ++i)
-	{
-		writer << (value.input[(logic::button)i] == logic::button_state::held);		
-	}
+	writer << value.seq;
+	writer << value.ack;
 
 	writer << value.color;
 
-	writer << value.ack;
-	writer << value.seq;
+	for (int i = 0; i <= (int)logic::button::quit; ++i)
+	{
+		writer << (value.input[(logic::button)i] == logic::button_state::held);
+	}
+
 	return writer;
 }
 
@@ -175,7 +113,7 @@ bit_reader& operator>>(bit_reader& reader, UserInput& value)
 
 	reader >> value.color;		
 
-	for (int i = (int)logic::button::quit; i >= 0; --i)
+	for (int i = 0; i <= (int)logic::button::quit; ++i)
 	{
 		bool held = false;
 		reader >> held;
