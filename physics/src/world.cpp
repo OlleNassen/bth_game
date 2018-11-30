@@ -272,7 +272,7 @@ void World::update(
 					{
 						if (point_in_obb(points[1], walls.box))
 						{
-							anim_states[i] = anim::hanging_left;
+							//anim_states[i] = anim::hanging_left;
 							lw[i] = true;
 						}
 
@@ -282,7 +282,7 @@ void World::update(
 					{
 						if (point_in_obb(points[2], walls.box))
 						{
-							anim_states[i] = anim::hanging_right;
+							//anim_states[i] = anim::hanging_right;
    							rw[i] = true;
 						}
 	

@@ -608,7 +608,7 @@ void Game::update(std::chrono::milliseconds delta)
 			spikeframe,
 			turretframe,
 			triggers_types},
-			game_state);
+			game_state, physics.rw, physics.lw);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
 		{

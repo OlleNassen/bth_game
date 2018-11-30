@@ -137,6 +137,7 @@ end
 
 function update_controls(delta_seconds, entity)
 	
+	
 
 	--Running
 	if entity.anim.current == entity.anim.running
@@ -410,6 +411,16 @@ function update_control(delta_seconds, entity)
 	--print(entity.current_state)
 	--print(entity.states.idle)
 
+	if entity.lw then
+		entity.current_state = entity.states[6]
+		entity.anim.current = entity.anim.hanging_left
+	end
+
+	if entity.rw then
+		entity.current_state = entity.states[7]
+		entity.anim.current = entity.anim.hanging_right
+	end
+
 	--Movement
 	if entity.current_state == entity.states[1] or entity.current_state == entity.states[2]
 	then
@@ -447,8 +458,11 @@ function update_control(delta_seconds, entity)
 			if entity.jump_timer < 0.2
 			then
 				entity.impulse.y = 29
+				print("Hallo")
 			elseif entity.jump_timer >= 0.2
 			then
+				print("YES")
+
 				entity.impulse.y = 45
 			end
 			
@@ -537,7 +551,7 @@ function update_control(delta_seconds, entity)
 	end
 
 	--Hanging left
-	if entity.anim.current == entity.anim.hanging_left
+	if entity.current_state == entity.states[6]
 	then
 		if entity.button.jump
 		then
@@ -552,11 +566,13 @@ function update_control(delta_seconds, entity)
 			entity.anim.current = entity.anim.jump_from_wall
 			entity.impulse.y = 45
 			entity.impulse.x = 26
+
+			entity.current_state = entity.states[3]
 		end
 	end
 
 	--Hanging right
-	if entity.anim.current == entity.anim.hanging_right
+	if entity.current_state == entity.states[7]
 	then
 		if entity.button.jump
 		then
@@ -571,6 +587,8 @@ function update_control(delta_seconds, entity)
 			entity.anim.current = entity.anim.jump_from_wall
 			entity.impulse.y = 45
 			entity.impulse.x = -26
+			entity.current_state = entity.states[3]
+
 		end
 	end
 
