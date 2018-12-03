@@ -25,6 +25,8 @@ function setup(entity)
 	entity.gravity = 115
 	entity.max_gravity = 1800
 
+	entity.dash_timer = 0.0
+
 	--TriGGerS---------------------------------------------------------------
 
 	--shock_trap
@@ -345,6 +347,25 @@ function update_control(delta_seconds, entity)
 
 		print("Kalle")
 	end
+
+	if entity.button.rotate and entity.dash_timer < 0
+	then
+
+		local length = math.sqrt(entity.velocity.x * entity.velocity.x + entity.velocity.y * entity.velocity.y)
+
+		local new_x = entity.velocity.x / length
+		local new_y = entity.velocity.y / length
+
+		local dash_speed = 150
+
+		entity.velocity.x = entity.velocity.x + dash_speed * new_x
+		entity.velocity.y = entity.velocity.x + dash_speed * new_y
+
+		entity.dash_timer = 2.0
+	end
+
+	entity.dash_timer = entity.dash_timer - delta_seconds
+
 end
 
 
