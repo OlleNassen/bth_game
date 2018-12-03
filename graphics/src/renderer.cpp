@@ -94,35 +94,33 @@ void Renderer::render(
 
 	if (!is_menu && connected)
 	{
-		render_character(robot_shader, game_camera, scene->moving_models, player_count); 
+		render_character(robot_shader, db_camera, scene->moving_models, player_count);
 
 		if (scene->moving_models.size() > 4)
-			render_type(pbra, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
+			render_type(pbra, db_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbra, game_camera,a_to_render.first, a_to_render.last);
-		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
-		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
+		render_type(pbra, db_camera,a_to_render.first, a_to_render.last);
+		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
+		render_type(pbr, db_camera,&scene->models[0], &scene->models[9]);
 		
-		if (!(game_state & state::lobby))
-		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer);
-		}
-		if (debug_active)
+		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, fx_soft_particles, scene_texture, db_camera, fx_emitter.timer);
+		
+		/*if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
 			lines.use();
-			lines.uniform("projection", game_camera.projection);
-			lines.uniform("view", game_camera.view());
+			lines.uniform("projection", db_camera.projection);
+			lines.uniform("view", db_camera.view());
 			lines.uniform("line_color", glm::vec3(0.2f, 1.0f, 0.2f));
 			point_debug(debug_positions);
 			glEnable(GL_DEPTH_TEST);
-		}
-		
+		}*/
+
 	}
 	else if (!is_menu)
 	{
 		if(debug)
-			render_character(robot_shader, game_camera, scene->moving_models, 4);
+			render_character(robot_shader, db_camera, scene->moving_models, 4);
 
 		if (scene->moving_models.size() > 4)
 			render_type(pbr, db_camera,
@@ -132,10 +130,6 @@ void Renderer::render(
 		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, db_camera, &scene->models[0], &scene->models[9]);
 
-		if (!(game_state & state::lobby))
-		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer);
-		}
 
 		if (debug_active)
 		{
@@ -168,6 +162,7 @@ void Renderer::render(
 
 		scene_texture.bind_texture(0);
 		scene_texture.bind_texture(1);
+
 		post_processing_effects.texture.bind(2);
 
 		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
@@ -184,7 +179,6 @@ void Renderer::render(
 			}
 			glEnable(GL_DEPTH_TEST);
 		}
-
 
 		glDisable(GL_DEPTH_TEST);
 		std::stringstream out_text;
@@ -598,35 +592,38 @@ void Renderer::update(std::chrono::milliseconds delta,
 	fx_emitter.timer += delta;
 	if (!is_chat_on)
 	{
-		//Dust
-		fx_emitter.calculate_dust_data(delta, game_camera);
+		//Soft Particles
+		fx_emitter.calculate_soft_particles_data(delta, db_camera);
 
-		//Spark
-		fx_emitter.calculate_spark_data(delta, game_camera);
+		////Dust
+		//fx_emitter.calculate_dust_data(delta, game_camera);
 
-		//Steam
-		fx_emitter.calculate_steam_data(delta, game_camera);
+		////Spark
+		//fx_emitter.calculate_spark_data(delta, game_camera);
 
-		//Blitz
-		fx_emitter.calculate_blitz_data(delta, game_camera);
+		////Steam
+		//fx_emitter.calculate_steam_data(delta, game_camera);
 
-		//Fire
-		fx_emitter.calculate_fire_data(delta, game_camera);
+		////Blitz
+		//fx_emitter.calculate_blitz_data(delta, game_camera);
 
-		//Godray
-		fx_emitter.calculate_godray_data(delta, game_camera);
+		////Fire
+		//fx_emitter.calculate_fire_data(delta, game_camera);
+
+		////Godray
+		//fx_emitter.calculate_godray_data(delta, game_camera);
  
-		//Lava Light
-		fx_emitter.calculate_lava_light_data(delta, game_camera);
+		////Lava Light
+		//fx_emitter.calculate_lava_light_data(delta, game_camera);
 
-		//Furnace Light
-		fx_emitter.calculate_furnace_light_data(delta, game_camera);
+		////Furnace Light
+		//fx_emitter.calculate_furnace_light_data(delta, game_camera);
 
-		//Gust
-		fx_emitter.calculate_gust_data(delta, game_camera);
+		////Gust
+		//fx_emitter.calculate_gust_data(delta, game_camera);
 
-		
-		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects);
+		////Objects
+		//fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects);
 		
 
 		db_camera.update(delta, directions[0], cursor);

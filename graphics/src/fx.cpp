@@ -28,10 +28,7 @@ FX::FX()
 	auto& fx_doublejump = *fx_doublejump_ptr;
 	auto& fx_shield = *fx_shield_ptr;
 	auto& fx_random = *fx_random_ptr;
-	//auto& fx_object_1 = *fx_object_1_ptr;
-	//auto& fx_object_2 = *fx_object_2_ptr;
-	//auto& fx_object_3 = *fx_object_3_ptr;
-	//auto& fx_object_4 = *fx_object_4_ptr;
+	auto& fx_soft_particles = *fx_soft_particles_ptr;
 	gen_particle_buffer(fx_dust);
 	gen_particle_buffer(fx_spark);
 	gen_particle_buffer(fx_steam);
@@ -47,10 +44,7 @@ FX::FX()
 	gen_particle_buffer(fx_doublejump);
 	gen_particle_buffer(fx_shield);
 	gen_particle_buffer(fx_random);
-	//gen_particle_buffer(fx_object_1);
-	//gen_particle_buffer(fx_object_2);
-	//gen_particle_buffer(fx_object_3);
-	//gen_particle_buffer(fx_object_4);
+	gen_particle_buffer(fx_soft_particles);
 }
 
 void FX::gen_particle_buffer(FXdata & particle)
@@ -78,6 +72,8 @@ void FX::render_particles(const Shader& dust,
 	const Shader& godray,
 	const Shader& gust,
 	const Shader& stun,
+	const Shader& soft_particles,
+	const Framebuffer& scene_texture,
 	const Camera& camera,
 	std::chrono::milliseconds delta) const
 {
@@ -96,12 +92,10 @@ void FX::render_particles(const Shader& dust,
 	auto& fx_doublejump = *fx_doublejump_ptr;
 	auto& fx_shield = *fx_shield_ptr;
 	auto& fx_random = *fx_random_ptr;
-	//auto& fx_object_1 = *fx_object_1_ptr;
-	//auto& fx_object_2 = *fx_object_2_ptr;
-	//auto& fx_object_3 = *fx_object_3_ptr;
-	//auto& fx_object_4 = *fx_object_4_ptr;
 
-	glm::vec3 start_point = glm::vec3(0, 0, 0);
+	auto& fx_soft_particles = *fx_soft_particles_ptr;
+
+	glm::vec3 start_point_sp = glm::vec3(fx_soft_particles.default_x, fx_soft_particles.default_y, fx_soft_particles.default_z);
 	glm::mat4 view_matrix = camera.view();
 	glm::vec3 camera_right_vector = glm::vec3(view_matrix[0][0], view_matrix[1][0], view_matrix[2][0]);
 	glm::vec3 camera_up_vector = glm::vec3(view_matrix[0][1], view_matrix[1][1], view_matrix[2][1]);
@@ -130,155 +124,156 @@ void FX::render_particles(const Shader& dust,
 		}
 	}
 
-	//FX Spark
-	spark.use();
-	spark.uniform("particle_texture", 0);
-	this->spark.bind(0);
-	spark.uniform("camera_right_worldspace", camera_right_vector);
-	spark.uniform("camera_up_worldspace", camera_up_vector);
-	spark.uniform("view", camera.view());
-	spark.uniform("projection", camera.projection);
-	//spark.uniform("view_position", scene->v[0]);
-	spark.uniform("particle_pivot", start_point);
-	render_particles(fx_spark);
-
-	//FX - Blitz
-	blitz.use();
-	blitz.uniform("particle_texture", 0);
-	this->blitz.bind(0);
-	blitz.uniform("camera_right_worldspace", camera_right_vector);
-	blitz.uniform("camera_up_worldspace", camera_up_vector);
-	blitz.uniform("view", camera.view());
-	blitz.uniform("projection", camera.projection);
-	//steam.uniform("view_position", scene->v[0]);
-	blitz.uniform("particle_pivot", start_point);
-	render_particles(fx_blitz);
-
-	////FX - Fire
-	fire.use();
-	fire.uniform("particle_texture", 0);
-	this->fire.bind(0);
-	fire.uniform("camera_right_worldspace", camera_right_vector);
-	fire.uniform("camera_up_worldspace", camera_up_vector);
-	fire.uniform("view", camera.view());
-	fire.uniform("projection", camera.projection);
-	//steam.uniform("view_position", scene->v[0]);
-	fire.uniform("particle_pivot", start_point);
-	render_particles(fx_fire);
-
-	//FX - Godray
-	godray.use();
-	godray.uniform("particle_texture", 0);
-	this->godray.bind(0);
-	godray.uniform("camera_right_worldspace", camera_right_vector);
-	godray.uniform("camera_up_worldspace", camera_up_vector);
-	godray.uniform("view", camera.view());
-	godray.uniform("projection", camera.projection);
-	//steam.uniform("view_position", scene->v[0]);
-	godray.uniform("particle_pivot", start_point);
-	godray.uniform("type", 0);
-	render_particles(fx_godray);
-
-	//FX - Lava light
-	godray.use();
-	godray.uniform("particle_texture", 0);
-	this->godray.bind(0);
-	godray.uniform("camera_right_worldspace", camera_right_vector);
-	godray.uniform("camera_up_worldspace", camera_up_vector);
-	godray.uniform("view", camera.view());
-	godray.uniform("projection", camera.projection);
-	//steam.uniform("view_position", scene->v[0]);
-	godray.uniform("particle_pivot", start_point);
-	godray.uniform("type", 1);
-	render_particles(fx_lava_light);
-
-	//FX - Furnace light
-	godray.use();
-	godray.uniform("particle_texture", 0);
-	this->furnace.bind(0);
-	godray.uniform("camera_right_worldspace", camera_right_vector);
-	godray.uniform("camera_up_worldspace", camera_up_vector);
-	godray.uniform("view", camera.view());
-	godray.uniform("projection", camera.projection);
-	//steam.uniform("view_position", scene->v[0]);
-	godray.uniform("particle_pivot", start_point);
-	godray.uniform("type", 0);
-	render_particles(fx_furnace_light);
-
-	//FX - Gust
-	gust.use();
-	gust.uniform("particle_texture", 0);
-	this->gust.bind(0);
-	gust.uniform("camera_right_worldspace", camera_right_vector);
-	gust.uniform("camera_up_worldspace", camera_up_vector);
-	gust.uniform("view", camera.view());
-	gust.uniform("projection", camera.projection);
-	gust.uniform("paning", temp_timer_gust);
-	//steam.uniform("view_position", scene->v[0]);
-	gust.uniform("particle_pivot", start_point);
-	render_particles(fx_gust);
-
-	//FX - Steam
-	steam.use();
-	steam.uniform("particle_texture", 0);
-	this->steam.bind(0);
-	steam.uniform("camera_right_worldspace", camera_right_vector);
-	steam.uniform("camera_up_worldspace", camera_up_vector);
-	steam.uniform("view", camera.view());
-	steam.uniform("projection", camera.projection);
-	//steam.uniform("view_position", scene->v[0]);
-	steam.uniform("particle_pivot", start_point);
-	render_particles(fx_steam);
-
-	//FX Stun
-	stun.use();
-	stun.uniform("particle_texture", 0);
-	this->stun.bind(0);
-	stun.uniform("camera_right_worldspace", camera_right_vector);
-	stun.uniform("camera_up_worldspace", camera_up_vector);
-	stun.uniform("view", camera.view());
-	stun.uniform("projection", camera.projection);
-	stun.uniform("view_position", camera.position);
-	stun.uniform("particle_pivot", start_point);
-	stun.uniform("paning", temp_timer_stun);
-	if (temp_timer_stun <= 0.5f)
-		stun.uniform("type", 0);
-	else
-		stun.uniform("type", 1);
-
-	render_particles(fx_stun);
-
-	//FX Dust & all objects
-	dust.use();
-	dust.uniform("particle_texture", 0);
+	//FX Soft Particles
+	soft_particles.use();
+	soft_particles.uniform("particle_texture", 0);
+	soft_particles.uniform("depth_texture", 1);
 	this->dust.bind(0);
-	dust.uniform("camera_right_worldspace", camera_right_vector);
-	dust.uniform("camera_up_worldspace", camera_up_vector);
-	dust.uniform("view", camera.view());
-	dust.uniform("projection", camera.projection);
-	dust.uniform("view_position", camera.position);
-	dust.uniform("particle_pivot", start_point);
-	render_particles(fx_dust);
-	render_particles(fx_glide);
-	render_particles(fx_speedboost);
-	render_particles(fx_doublejump);
-	render_particles(fx_shield);
-	render_particles(fx_random);
-	
-	///FX - Objects
+	scene_texture.bind_texture(1);
+	soft_particles.uniform("camera_right_worldspace", camera_right_vector);
+	soft_particles.uniform("camera_up_worldspace", camera_up_vector);
+	soft_particles.uniform("view", camera.view());
+	soft_particles.uniform("projection", camera.projection);
+	soft_particles.uniform("view_position", camera.position);
+	soft_particles.uniform("particle_pivot", start_point_sp);
+	soft_particles.uniform("particle_distance", fx_soft_particles.average_camera_distance);
+	soft_particles.uniform("particle_size", (int)fx_soft_particles.size);
+	render_particles(fx_soft_particles);
+
+	////FX Spark
+	//spark.use();
+	//spark.uniform("particle_texture", 0);
+	//this->spark.bind(0);
+	//spark.uniform("camera_right_worldspace", camera_right_vector);
+	//spark.uniform("camera_up_worldspace", camera_up_vector);
+	//spark.uniform("view", camera.view());
+	//spark.uniform("projection", camera.projection);
+	////spark.uniform("view_position", scene->v[0]);
+	//spark.uniform("particle_pivot", start_point);
+	//render_particles(fx_spark);
+
+	////FX - Blitz
+	//blitz.use();
+	//blitz.uniform("particle_texture", 0);
+	//this->blitz.bind(0);
+	//blitz.uniform("camera_right_worldspace", camera_right_vector);
+	//blitz.uniform("camera_up_worldspace", camera_up_vector);
+	//blitz.uniform("view", camera.view());
+	//blitz.uniform("projection", camera.projection);
+	////steam.uniform("view_position", scene->v[0]);
+	//blitz.uniform("particle_pivot", start_point);
+	//render_particles(fx_blitz);
+
+	//////FX - Fire
+	//fire.use();
+	//fire.uniform("particle_texture", 0);
+	//this->fire.bind(0);
+	//fire.uniform("camera_right_worldspace", camera_right_vector);
+	//fire.uniform("camera_up_worldspace", camera_up_vector);
+	//fire.uniform("view", camera.view());
+	//fire.uniform("projection", camera.projection);
+	////steam.uniform("view_position", scene->v[0]);
+	//fire.uniform("particle_pivot", start_point);
+	//render_particles(fx_fire);
+
+	////FX - Godray
+	//godray.use();
+	//godray.uniform("particle_texture", 0);
+	//this->godray.bind(0);
+	//godray.uniform("camera_right_worldspace", camera_right_vector);
+	//godray.uniform("camera_up_worldspace", camera_up_vector);
+	//godray.uniform("view", camera.view());
+	//godray.uniform("projection", camera.projection);
+	////steam.uniform("view_position", scene->v[0]);
+	//godray.uniform("particle_pivot", start_point);
+	//godray.uniform("type", 0);
+	//render_particles(fx_godray);
+
+	////FX - Lava light
+	//godray.use();
+	//godray.uniform("particle_texture", 0);
+	//this->godray.bind(0);
+	//godray.uniform("camera_right_worldspace", camera_right_vector);
+	//godray.uniform("camera_up_worldspace", camera_up_vector);
+	//godray.uniform("view", camera.view());
+	//godray.uniform("projection", camera.projection);
+	////steam.uniform("view_position", scene->v[0]);
+	//godray.uniform("particle_pivot", start_point);
+	//godray.uniform("type", 1);
+	//render_particles(fx_lava_light);
+
+	////FX - Furnace light
+	//godray.use();
+	//godray.uniform("particle_texture", 0);
+	//this->furnace.bind(0);
+	//godray.uniform("camera_right_worldspace", camera_right_vector);
+	//godray.uniform("camera_up_worldspace", camera_up_vector);
+	//godray.uniform("view", camera.view());
+	//godray.uniform("projection", camera.projection);
+	////steam.uniform("view_position", scene->v[0]);
+	//godray.uniform("particle_pivot", start_point);
+	//godray.uniform("type", 0);
+	//render_particles(fx_furnace_light);
+
+	////FX - Gust
+	//gust.use();
+	//gust.uniform("particle_texture", 0);
+	//this->gust.bind(0);
+	//gust.uniform("camera_right_worldspace", camera_right_vector);
+	//gust.uniform("camera_up_worldspace", camera_up_vector);
+	//gust.uniform("view", camera.view());
+	//gust.uniform("projection", camera.projection);
+	//gust.uniform("paning", temp_timer_gust);
+	////steam.uniform("view_position", scene->v[0]);
+	//gust.uniform("particle_pivot", start_point);
+	//render_particles(fx_gust);
+
+	////FX - Steam
+	//steam.use();
+	//steam.uniform("particle_texture", 0);
+	//this->steam.bind(0);
+	//steam.uniform("camera_right_worldspace", camera_right_vector);
+	//steam.uniform("camera_up_worldspace", camera_up_vector);
+	//steam.uniform("view", camera.view());
+	//steam.uniform("projection", camera.projection);
+	////steam.uniform("view_position", scene->v[0]);
+	//steam.uniform("particle_pivot", start_point);
+	//render_particles(fx_steam);
+
+	////FX Stun
+	//stun.use();
+	//stun.uniform("particle_texture", 0);
+	//this->stun.bind(0);
+	//stun.uniform("camera_right_worldspace", camera_right_vector);
+	//stun.uniform("camera_up_worldspace", camera_up_vector);
+	//stun.uniform("view", camera.view());
+	//stun.uniform("projection", camera.projection);
+	//stun.uniform("view_position", camera.position);
+	//stun.uniform("particle_pivot", start_point);
+	//stun.uniform("paning", temp_timer_stun);
+	//if (temp_timer_stun <= 0.5f)
+	//	stun.uniform("type", 0);
+	//else
+	//	stun.uniform("type", 1);
+
+	//render_particles(fx_stun);
+
+	////FX Dust & all objects
 	//dust.use();
-	//this->dust.bind(0);
 	//dust.uniform("particle_texture", 0);
+	//this->dust.bind(0);
 	//dust.uniform("camera_right_worldspace", camera_right_vector);
 	//dust.uniform("camera_up_worldspace", camera_up_vector);
 	//dust.uniform("view", camera.view());
 	//dust.uniform("projection", camera.projection);
 	//dust.uniform("view_position", camera.position);
 	//dust.uniform("particle_pivot", start_point);
-	//render_particles(fx_object_1);
-	//render_particles(fx_object_2);
-	//render_particles(fx_object_3);
-	//render_particles(fx_object_4);
+	//render_particles(fx_dust);
+	//render_particles(fx_glide);
+	//render_particles(fx_speedboost);
+	//render_particles(fx_doublejump);
+	//render_particles(fx_shield);
+	//render_particles(fx_random);
 }
 
 void FX::render_particles(const FXdata& data) const
@@ -314,6 +309,13 @@ void FX::render_particles(const FXdata& data) const
 
 int FX::find_unused_particle(Particle * container, int lastUsedParticle)
 {
+	for (int i = 0; i < lastUsedParticle; i++)
+	{
+		if (container[i].life <= 0)
+		{
+			return i;
+		}
+	}
 	for (int i = lastUsedParticle; i < MAX_PARTICLES; i++)
 	{
 		if (container[i].life <= 0)
@@ -322,13 +324,6 @@ int FX::find_unused_particle(Particle * container, int lastUsedParticle)
 		}
 	}
 
-	for (int i = 0; i < lastUsedParticle; i++)
-	{
-		if (container[i].life <= 0)
-		{
-			return i;
-		}
-	}
 	return 0;
 }
 
@@ -3020,6 +3015,139 @@ void FX::calculate_object_data(std::chrono::milliseconds delta, const Camera & c
 		calculate_shield_data(delta, camera);
 		calculate_random_data(delta, camera);
 	}
+}
+
+void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Camera & camera)
+{
+	std::chrono::duration<float> seconds = delta;
+	auto& fx_soft_particles = *fx_soft_particles_ptr;
+
+	fx_soft_particles.default_x = 0.0f;
+	fx_soft_particles.default_y = 0.0f;
+	fx_soft_particles.default_z = 0.0f;
+	fx_soft_particles.nr_of_particles = 1;
+	fx_soft_particles.size = 10;
+	randomizer = rand() % 100;
+
+	//Update data for particles
+	if (fx_soft_particles.total_particle_count <= MAX_PARTICLES)
+	{
+		if (randomizer <= 2)
+		{
+			for (auto i = 0u; i < fx_soft_particles.nr_of_particles; i++)
+			{
+				//Create a random position here
+				fx_soft_particles.default_x =  16.941f;
+				fx_soft_particles.default_y =  21.461f;
+				fx_soft_particles.default_z = -11.708f;
+
+				//Find and update the last used particle
+				fx_soft_particles.last_used_particle = find_unused_particle(fx_soft_particles.particle_container, fx_soft_particles.last_used_particle);
+				int particle_index = fx_soft_particles.last_used_particle;
+
+				//Set default values for the particles, first off life and position.
+				fx_soft_particles.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10);
+				fx_soft_particles.particle_container[particle_index].life = 1.0f;
+				fx_soft_particles.particle_container[particle_index].pos = glm::vec3(fx_soft_particles.default_x, fx_soft_particles.default_y, fx_soft_particles.default_z);
+
+				//Create a direction for the particles to travel
+				//glm::vec3 main_dir = glm::vec3(0);
+				glm::vec3 random_dir_up = glm::vec3(0, 20, 0);
+				glm::vec3 random_dir_down = glm::vec3(0, -20, 0);
+				glm::vec3 random_dir_right = glm::vec3(15, 0, 0);
+				glm::vec3 random_dir_left = glm::vec3(10, 0, 0);
+				glm::vec3 random_dir_forward = glm::vec3(0, 0, -5);
+				glm::vec3 random_dir_back = glm::vec3(0, 0, -10);
+				float spread_x = (rand() % 100 / 100.0f);
+				float spread_y = (rand() % 100 / 100.0f);
+				float spread_z = (rand() % 100 / 100.0f);
+
+
+				int randomizer = rand() % 8;
+
+				if (randomizer == 0)
+					fx_soft_particles.particle_container[particle_index].speed = (random_dir_up   * spread_y) + (random_dir_right * spread_x) + (random_dir_forward * spread_z);
+				else if (randomizer == 1)
+					fx_soft_particles.particle_container[particle_index].speed = (random_dir_down * spread_y) + (random_dir_right * spread_x) + (random_dir_forward * spread_z);
+				else if (randomizer == 2)
+					fx_soft_particles.particle_container[particle_index].speed = (random_dir_down * spread_y) + (random_dir_left  * spread_x) + (random_dir_forward * spread_z);
+				else if (randomizer == 3)
+					fx_soft_particles.particle_container[particle_index].speed = (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_forward * spread_z);
+				else if (randomizer == 4)
+					fx_soft_particles.particle_container[particle_index].speed = (random_dir_up   * spread_y) + (random_dir_right * spread_x) + (random_dir_back	* spread_z);
+				else if (randomizer == 5)
+					fx_soft_particles.particle_container[particle_index].speed = (random_dir_down * spread_y) + (random_dir_right * spread_x) + (random_dir_back    * spread_z);
+				else if (randomizer == 6)
+					fx_soft_particles.particle_container[particle_index].speed = (random_dir_down * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
+				else if (randomizer == 7)
+					fx_soft_particles.particle_container[particle_index].speed = (random_dir_up   * spread_y) + (random_dir_left  * spread_x) + (random_dir_back    * spread_z);
+
+				//Set colors, if you want color from texture, don't change the color
+				fx_soft_particles.particle_container[particle_index].r = 255;
+				fx_soft_particles.particle_container[particle_index].g = 255;
+				fx_soft_particles.particle_container[particle_index].b = 255;
+
+				fx_soft_particles.particle_container[particle_index].a = 255;
+				fx_soft_particles.particle_container[particle_index].size = 10.0;
+
+			}
+		}
+	}
+
+	fx_soft_particles.total_particle_count = 0;
+	fx_soft_particles.total_camera_distance = 0;
+	fx_soft_particles.total_alive = 0;
+	//Update movement
+	for (int i = 0; i < MAX_PARTICLES; i++)
+	{
+		//Update life with delta time
+		fx_soft_particles.particle_container[i].life -= (seconds.count() / fx_soft_particles.particle_container[i].random_amp);
+		//data.particle_container[i].life -= (seconds.count() / 3.0f);
+
+		if (fx_soft_particles.particle_container[i].life > 0.0f)
+		{
+			//data.particle_container[i].speed += * seconds.count();
+			fx_soft_particles.particle_container[i].pos += fx_soft_particles.particle_container[i].speed / 20.0f * seconds.count();
+			fx_soft_particles.particle_container[i].camera_distance = glm::length(fx_soft_particles.particle_container[i].pos - camera.position);
+
+			//Set positions in the position data
+			fx_soft_particles.position_data[4 * fx_soft_particles.total_particle_count + 0] = fx_soft_particles.particle_container[i].pos.x;
+			fx_soft_particles.position_data[4 * fx_soft_particles.total_particle_count + 1] = fx_soft_particles.particle_container[i].pos.y;
+			fx_soft_particles.position_data[4 * fx_soft_particles.total_particle_count + 2] = fx_soft_particles.particle_container[i].pos.z;
+			fx_soft_particles.position_data[4 * fx_soft_particles.total_particle_count + 3] = fx_soft_particles.particle_container[i].size;
+
+			//Set colors in the color data
+			fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 0] = fx_soft_particles.particle_container[i].r;
+			fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 1] = fx_soft_particles.particle_container[i].g;
+			fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 2] = fx_soft_particles.particle_container[i].b;
+			fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 3] = fx_soft_particles.particle_container[i].a;
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_soft_particles.particle_container[i].camera_distance = -1.0f;
+			fx_soft_particles.position_data[4 * fx_soft_particles.total_particle_count + 3] = 0;
+		}
+
+		if (fx_soft_particles.particle_container[i].camera_distance != -1.0f)
+		{
+			fx_soft_particles.total_alive++;
+			fx_soft_particles.total_camera_distance += fx_soft_particles.particle_container[i].camera_distance;
+		}
+
+		fx_soft_particles.total_particle_count++;
+	}
+
+	fx_soft_particles.average_camera_distance = fx_soft_particles.total_camera_distance / fx_soft_particles.total_alive;
+
+	//Update particle information
+	glBindBuffer(GL_ARRAY_BUFFER, fx_soft_particles.position_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_soft_particles.total_particle_count * 4 * sizeof(GLfloat), fx_soft_particles.position_data);
+
+	glBindBuffer(GL_ARRAY_BUFFER, fx_soft_particles.color_buffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_soft_particles.total_particle_count * 4 * sizeof(GLubyte), fx_soft_particles.color_data);
 }
 
 }

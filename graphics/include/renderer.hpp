@@ -186,6 +186,9 @@ private:
 	Shader fx_stun{
 		"../resources/shaders/fx_stun.vs",
 		"../resources/shaders/fx_stun.fs" };
+	Shader fx_soft_particles{
+		"../resources/shaders/fx_soft_particles.vs",
+		"../resources/shaders/fx_soft_particles.fs" };
 	Shader pre_filter{ 
 		"../resources/shaders/irradiance.vs",
 		"../resources/shaders/pre_filter.fs" };
@@ -227,6 +230,7 @@ private:
 	Framebuffer irradiance_buffer;
 	Framebuffer prefilter_buffer;
 	Framebuffer brdf_buffer;
+	Framebuffer depth_buffer;
 
 	PostProcessingEffects post_processing_effects;
 

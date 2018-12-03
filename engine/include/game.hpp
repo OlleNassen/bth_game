@@ -47,7 +47,7 @@ private:
 	
 	graphics::GameScene level1{"../resources/level/level_1.ssp", &mesh_lib, &object_lib};
 	graphics::GameScene level2{"../resources/level/level_1.ssp", &mesh_lib, &object_lib};
-	graphics::GameScene lobby{"../resources/level/lobby.ssp", &mesh_lib, &object_lib};
+	graphics::GameScene lobby{"../resources/level/fx_map.ssp", &mesh_lib, &object_lib};
 
 	graphics::GameScene* level{&lobby};
 

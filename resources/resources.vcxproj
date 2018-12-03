@@ -142,6 +142,8 @@
     <None Include="shaders\fx_godray.vs" />
     <None Include="shaders\fx_gust.fs" />
     <None Include="shaders\fx_gust.vs" />
+    <None Include="shaders\fx_soft_particles.fs" />
+    <None Include="shaders\fx_soft_particles.vs" />
     <None Include="shaders\fx_spark.fs" />
     <None Include="shaders\fx_spark.vs" />
     <None Include="shaders\fx_steam.fs" />

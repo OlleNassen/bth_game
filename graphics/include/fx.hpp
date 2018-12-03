@@ -6,6 +6,7 @@
 #include "texture.hpp"
 #include "camera.hpp"
 #include "shader.hpp"
+#include "framebuffer.hpp"
 #include <chrono>
 
 #define MAX_PARTICLES 1000
@@ -61,15 +62,19 @@ public:
 	struct FXdata {
 		unsigned int last_used_particle = 0;
 		unsigned int total_particle_count = 0;
+		unsigned int total_alive;
 		unsigned int vao, vbo;
 		unsigned int position_buffer, color_buffer;
 		unsigned int nr_of_particles;
 		unsigned int texture_buffer;
+		unsigned int size;
 		int fx_object_id;
 		float g_vertex_buffer_data[12] = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, -0.5f,  0.5f, 0.0f, 0.5f,  0.5f, 0.0f };
 		float default_x, default_y, default_z;
 		float random_x, random_y, random_z;
 		float offset;
+		float average_camera_distance;
+		float total_camera_distance;
 		float position_data[MAX_PARTICLES * 4];
 		GLubyte color_data[MAX_PARTICLES * 4];
 		Particle particle_container[MAX_PARTICLES];
@@ -86,13 +91,9 @@ public:
 	Texture stun;
 	
 	unsigned int randomizer = 0;
-	//unsigned int color_picker[4];
 	unsigned int color_picker;
 	std::chrono::milliseconds timer;
 
-	//unsigned char random_color_r[4] = { 0 };
-	//unsigned char random_color_g[4] = { 0 };
-	//unsigned char random_color_b[4] = { 0 };
 	unsigned char random_color_r = 0;
 	unsigned char random_color_g = 0;
 	unsigned char random_color_b = 0;
@@ -106,6 +107,8 @@ public:
 		const Shader& godray,
 		const Shader& gust,
 		const Shader& stun,
+		const Shader& soft_particles,
+		const Framebuffer& scene_texture,
 		const Camera& camera,
 		std::chrono::milliseconds delta) const;
 	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
@@ -118,10 +121,8 @@ public:
 	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_object_data(std::chrono::milliseconds delta, const Camera& camera, std::vector<build_information> &build_info);
-	//void calculate_object_1_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	//void calculate_object_2_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	//void calculate_object_3_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	//void calculate_object_4_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+
+	void calculate_soft_particles_data(std::chrono::milliseconds delta, const Camera& camera);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
@@ -138,10 +139,8 @@ public:
 	FXdata* fx_doublejump_ptr = new FXdata{};
 	FXdata* fx_shield_ptr = new FXdata{};
 	FXdata* fx_random_ptr = new FXdata{};
-	//FXdata* fx_object_1_ptr = new FXdata{};
-	//FXdata* fx_object_2_ptr = new FXdata{};
-	//FXdata* fx_object_3_ptr = new FXdata{};
-	//FXdata* fx_object_4_ptr = new FXdata{};
+
+	FXdata* fx_soft_particles_ptr = new FXdata{};
 
 private:
 	int nr_of_stun = 0;
