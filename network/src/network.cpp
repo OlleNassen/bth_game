@@ -200,14 +200,14 @@ void Messenger::update(GameState& state, const char* ip_address)
 		{
 			if (i == self)
 			{
-				int type = value.types[self] = 0;
+				int type = value.types[self];
 				float score = value.scores[self];
 				state.game_objects[self].position = value.positions[self];
 				state.game_objects[self].velocity = value.velocities[self];
 			}
 			else
 			{
-				int type = value.types[i] = 0;
+				int type = value.types[i];
 				float score = value.scores[i];
 				state.game_objects[i].position = value.positions[i];
 				state.game_objects[i].velocity = value.velocities[i];
