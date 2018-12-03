@@ -155,6 +155,7 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::lobby);
 		gameplay.refresh();
 
+
 		load_map(&lobby);
 	}
 
@@ -213,7 +214,10 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				lua_data.finished[i] = false;
 			}
+
 		}
+
+		have_placed_random_platforms = false;
 
 		game_state = (game_state | state::lobby);
 		
@@ -913,7 +917,7 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 
 	int width = static_cast<int>(40 / 6.0f);
 
-	startPosition = { width * 2, 40 };
+	startPosition = { width * 2, start_height};
 
 	for (int i = 0; i < totalY; i++)
 	{
@@ -950,15 +954,19 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 		}
 	}
 
+	int platform_id = 8;
+
 	for (int i = 99; i > 99 - number_of_randoms; i--)
 	{
 		collision_data data;
 
-		int model_id = level->add_object(data, 8);
+		int model_id = level->add_object(data, platform_id);
 		data.position = positions[rand_numb[abs(i - 99)]];
 		level->moving_models[model_id].set_position(data.position);
 
-		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 }, 8);
+		//int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 }, platform_id);
+		physics.add_static_body(data.position,
+			glm::vec2{ 0.0f, 0.0f }, data.width, data.height, false);
 
 		//dynamics[dynamic_id].position = positions[rand_numb[abs(i - 99)]];
 		//dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
@@ -966,14 +974,14 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 		//dynamics[dynamic_id].forces = { 0.0f, 0.0f };
 		//dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
 
-		dynamics[dynamic_id].position = data.position;
+		/*dynamics[dynamic_id].position = data.position;
 		dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 		dynamics[dynamic_id].size = { data.width, data.height };
 		dynamics[dynamic_id].forces = { 0.0f, 0.0f };
 		dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
 		dynamics[dynamic_id].dynamic_id = dynamic_id;
 		dynamics[dynamic_id].model_id = model_id;
-		dynamics[dynamic_id].objects_type_id = 8;
+		dynamics[dynamic_id].objects_type_id = platform_id;*/
 	}
 }
 
