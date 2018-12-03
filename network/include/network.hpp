@@ -107,6 +107,7 @@ public:
 	void update(GameState& state, const char* ip_address);
 
 private:
+	id_map ids;
 	snapshot_map snapshots;
 	input_map inputs;
 	EnetInit init;

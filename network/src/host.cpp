@@ -143,7 +143,7 @@ void Host::send(snapshot_map& snapshots)
 	}
 }
 
-void Host::receive(input_map& inputs, snapshot_map& snapshots)
+void Host::receive(input_map& inputs, snapshot_map& snapshots, id_map& ids)
 {
 	if (enet_host)
 	{
@@ -161,6 +161,7 @@ void Host::receive(input_map& inputs, snapshot_map& snapshots)
 			{
 				snapshots[eevent.peer->connectID] = {};
 				inputs[eevent.peer->connectID] = {};
+				ids[eevent.peer->connectID] = peers.size();
 				connect(eevent);
 				break;
 			}
@@ -168,6 +169,7 @@ void Host::receive(input_map& inputs, snapshot_map& snapshots)
 			{
 				snapshots.erase(eevent.peer->connectID);
 				inputs.erase(eevent.peer->connectID);
+				ids.erase(eevent.peer->connectID);
 				disconnect(eevent);
 				break;
 			}

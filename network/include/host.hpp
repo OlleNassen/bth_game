@@ -14,6 +14,7 @@ class Snapshot;
 
 using snapshot_map = std::map<enet_uint32, Snapshot>;
 using input_map = std::map<enet_uint32, UserInput>;
+using id_map = std::map<enet_uint32, int>;
 
 class EnetInit
 {
@@ -39,7 +40,7 @@ public:
 	void receive(Snapshot& snapshot);
 
 	void send(snapshot_map& snapshots);
-	void receive(input_map& inputs, snapshot_map& snapshots);
+	void receive(input_map& inputs, snapshot_map& snapshots, id_map& ids);
 
 private:
 	void recieve(const ENetEvent& eevent, UserInput& input);

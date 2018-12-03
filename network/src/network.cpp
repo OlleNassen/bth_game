@@ -151,7 +151,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 		player_id = 1;	
 	}
 
-	if (player_id /*player_host.client()*/)
+	if (player_id)
 	{
 		inputs[self].input = state.inputs[1];
 		
@@ -163,46 +163,61 @@ void Messenger::update(GameState& state, const char* ip_address)
 	{	
 		for (auto&[key, value] : snapshots)
 		{
-			int i = 0;
-			int i2 = 0;
 			for (auto&[key_p, value_p] : inputs)
 			{
-				value.types[i] = 0;
-				value.scores[i] = 0.0f;
-				value.positions[i] = state.game_objects[i].position;
-				value.velocities[i] = state.game_objects[i].velocity;		
-				++i;
-				if (key != key_p)
-					value.players[i2++] = value_p;
+				for (int i = 0; i < Snapshot::count; ++i)
+				{
+					if (i == 0)
+					{
+						value.types[0] = 0;
+						value.scores[0] = 0.0f;
+						value.positions[0] = state.game_objects[ids[key_p]].position;
+						value.velocities[0] = state.game_objects[ids[key_p]].velocity;
+					}
+					else
+					{
+						value.types[i] = 0;
+						value.scores[i] = 0.0f;
+						value.positions[i] = state.game_objects[ids[key_p]].position;
+						value.velocities[i] = state.game_objects[ids[key_p]].velocity;
+						value.players[i - 1] = value_p;
+					}
+				}
+				
 			}
 		}
 		
 		player_host.send(snapshots);
-		player_host.receive(inputs, snapshots);
+		player_host.receive(inputs, snapshots, ids);
 
 		
 	}
 
 	for (auto&[key, value] : snapshots)
 	{
-		int i = 0;
-		int i2 = 0;
 		for (auto&[key_p, value_p] : inputs)
 		{
-			int type = value.types[i];
-			int score = value.scores[i];
-			state.game_objects[i].position = value.positions[i];
-			state.game_objects[i].velocity = value.velocities[i];
-			//std::cout << i << ": " << value.positions[i].x << '\n';
-			++i;
+			for (int i = 0; i < Snapshot::count; ++i)
+			{
+				if (i == 0)
+				{
+					value.types[self] = 0;
+					value.scores[self] = 0.0f;
+					value.positions[self] = state.game_objects[ids[key_p]].position;
+					value.velocities[self] = state.game_objects[ids[key_p]].velocity;
+				}
+				else
+				{
+					value.types[i] = 0;
+					value.scores[i] = 0.0f;
+					value.positions[i] = state.game_objects[ids[key_p]].position;
+					value.velocities[i] = state.game_objects[ids[key_p]].velocity;
+					value.players[i - 1] = value_p;
+				}
+			}
 
-			if (key != key_p)
-				value_p = value.players[i2++];
 		}
 	}
-
-	std::cout << "snapshots: " << snapshots.size() << '\n';
-	std::cout << "inputs: " << inputs.size() << '\n';
 
 	state.player_count = 2;
 }
