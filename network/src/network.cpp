@@ -174,6 +174,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 						value.positions[0] = state.game_objects[ids[key_p]].position;
 						value.velocities[0] = state.game_objects[ids[key_p]].velocity;
 						value_p.input = state.inputs[i];
+						value.players[0] = value_p;
 					}
 					else
 					{
