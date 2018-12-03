@@ -138,7 +138,7 @@ void Game::render()
 		net.id(),
 		players_placed_objects_id[net.id()].model_type_id,
 		remove_lines,
-		view_score);
+		view_score, menu.get_how_to_play());
 }
 
 void Game::update(std::chrono::milliseconds delta)

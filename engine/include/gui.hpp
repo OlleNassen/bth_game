@@ -64,11 +64,12 @@ public:
 
 	bool exit() const;
 	bool get_fullscreen_pressed() const;
+	bool get_how_to_play()const;
 private:
 	bool is_debug = false;
 	bool is_on = true;
 	bool want_exit = false;
-	button_array buttons[4];
+	button_array buttons[5];
 	button_array* current_buttons{&buttons[0]};
 	bool fullscreen_pressed = false;
 	std::array<std::string, 12> strings;

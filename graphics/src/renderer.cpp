@@ -75,7 +75,8 @@ void Renderer::render(
 	int player_id,
 	int player_object_id,
 	std::vector<glm::vec3> remove_lines,
-	bool view_score)const
+	bool view_score,
+	bool how_to_play)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -155,7 +156,7 @@ void Renderer::render(
 
 	if (is_menu)
 	{
-		overlays.render(overlay_shader);
+		overlays.render(overlay_shader, how_to_play);
 	}
 
 	//Text rendering
@@ -173,7 +174,7 @@ void Renderer::render(
 		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 		post_processing_effects.render();
 
-		overlays.render(overlay_shader);
+		overlays.render(overlay_shader, how_to_play);
 		
 		if (game_state & state::pre_building)
 		{

@@ -41,7 +41,7 @@ public:
 		int player
 	);
 
-	void render(const Shader& shader) const;
+	void render(const Shader& shader, bool how_to_play) const;
 	
 	std::chrono::milliseconds main_menu_timer{0};
 	std::chrono::milliseconds finished_timer{0};
@@ -59,6 +59,7 @@ private:
 	OverlayScreen overlay;
 	
 	Texture empty{ "../resources/textures/black_pixel.png", true };
+
 	std::vector<Texture> main_menu;
 	std::vector<Texture> finish;
 	std::vector<Texture> waiting;
