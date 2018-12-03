@@ -163,32 +163,28 @@ void Messenger::update(GameState& state, const char* ip_address)
 	{	
 		for (auto&[key, value] : snapshots)
 		{
-			for (auto&[key_p, value_p] : inputs)
+			for (int i = 0; i < Snapshot::count; ++i)
 			{
-				for (int i = 0; i < Snapshot::count; ++i)
+				int other = 1;
+				if (i == ids[key])
 				{
-					int other = 1;
-					if (i == ids[key_p])
-					{
-						value.types[0] = 0;
-						value.scores[0] = 0.0f;
-						value.positions[0] = state.game_objects[i].position;
-						value.velocities[0] = state.game_objects[i].velocity;
-						value_p.input = state.inputs[i];
-						value.players[0] = value_p;
-					}
-					else
-					{
-						value.types[other] = 0;
-						value.scores[other] = 0.0f;
-						value.positions[other] = state.game_objects[i + 1].position;
-						value.velocities[other] = state.game_objects[i + 1].velocity;
-						value_p.input = state.inputs[other];
-						value.players[other - 1] = value_p;
-						++other;
-					}
+					value.types[0] = 0;
+					value.scores[0] = 0.0f;
+					value.positions[0] = state.game_objects[i].position;
+					value.velocities[0] = state.game_objects[i].velocity;
+					inputs[key].input = state.inputs[i];
+					value.players[0] = inputs[key];
 				}
-				
+				else
+				{
+					value.types[other] = 0;
+					value.scores[other] = 0.0f;
+					value.positions[other] = state.game_objects[i + 1].position;
+					value.velocities[other] = state.game_objects[i + 1].velocity;
+					inputs[key].input = state.inputs[other];
+					value.players[other - 1] = inputs[key];
+					++other;
+				}
 			}
 		}
 		
@@ -200,28 +196,24 @@ void Messenger::update(GameState& state, const char* ip_address)
 
 	for (auto&[key, value] : snapshots)
 	{
-		for (auto&[key_p, value_p] : inputs)
+		for (int i = 0; i < Snapshot::count; ++i)
 		{
-			for (int i = 0; i < Snapshot::count; ++i)
+			if (i == self)
 			{
-				if (i == self)
-				{
-					int type = value.types[self] = 0;
-					float score = value.scores[self];
-					state.game_objects[self].position = value.positions[self];
-					state.game_objects[self].velocity = value.velocities[self];
-				}
-				else
-				{
-					int type = value.types[i] = 0;
-					float score = value.scores[i];
-					state.game_objects[i].position = value.positions[i];
-					state.game_objects[i].velocity = value.velocities[i];
-					value_p = value.players[i - 1];
-					state.inputs[i] = value_p.input;
-				}
+				int type = value.types[self] = 0;
+				float score = value.scores[self];
+				state.game_objects[self].position = value.positions[self];
+				state.game_objects[self].velocity = value.velocities[self];
 			}
-
+			else
+			{
+				int type = value.types[i] = 0;
+				float score = value.scores[i];
+				state.game_objects[i].position = value.positions[i];
+				state.game_objects[i].velocity = value.velocities[i];
+				inputs[key] = value.players[i - 1];
+				state.inputs[i] = inputs[key].input;
+			}
 		}
 	}
 
