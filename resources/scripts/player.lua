@@ -356,16 +356,15 @@ function update_control(delta_seconds, entity)
 
 	if entity.button.rotate and entity.dash_timer < 0
 	then
-
 		local length = math.sqrt(entity.velocity.x * entity.velocity.x + entity.velocity.y * entity.velocity.y)
 
-		local new_x = entity.velocity.x / length
-		local new_y = entity.velocity.y / length
+		local dir_x = entity.velocity.x / length
+		local dir_y = entity.velocity.y / length
 
-		local dash_speed = 150
+		local dash_speed = 100
 
-		entity.velocity.x = entity.velocity.x + dash_speed * new_x
-		entity.velocity.y = entity.velocity.x + dash_speed * new_y
+		entity.velocity.x = entity.velocity.x + dash_speed * dir_x
+		entity.velocity.y = entity.velocity.y + dash_speed * dir_y
 
 		entity.dash_timer = 2.0
 	end
