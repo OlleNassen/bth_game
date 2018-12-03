@@ -38,7 +38,7 @@ checkpoints[3].x = 0.0
 checkpoints[3].y = 140.0
 
 checkpoints[4].x = 0.0
-checkpoints[4].y = 200.0
+checkpoints[4].y = 194.0
 			
 respawn_timer = { 0.0, 0.0, 0.0, 0.0 }
 last_checkpoint = { 0, 0, 0, 0 }
@@ -47,8 +47,6 @@ function update(delta_seconds, game, entities, player_count)
 
 	game.clock = game.clock + delta_seconds
 	game.time = game.max_time - game.clock
-
-	--print(entities[1].position.x, entities[1].position.y)
 
 	if game.start_round
 	then
@@ -68,6 +66,7 @@ function update(delta_seconds, game, entities, player_count)
 
 			game.finished[i] = false
 			game.died[i] = false
+			last_checkpoint[i] = 0
 		end
 
 		--game.max_points = player_count * 3
@@ -211,7 +210,7 @@ function update(delta_seconds, game, entities, player_count)
 	--Update checkpoints
 	for i = 1, player_count, 1
 	do
-		for j = 1, 3, 1
+		for j = 1, 4, 1
 		do
 			if entities[i].position.y > checkpoints[j].y and j >= last_checkpoint[i]
 			then
