@@ -583,8 +583,8 @@ glm::vec3 find_closest_wall(
 	else if (index == 2)
 		width_height.x = player.box.size.x;
 	else if (index == 3)
-		width_height.y = player.box.size.y;*/
-
+		width_height.y = player.box.size.y;
+	*/
 	if (index == 0)
 		width_height.x = -player.original_size.y;
 	else if (index == 1)
