@@ -158,6 +158,28 @@ void Messenger::update(GameState& state, const char* ip_address)
 		player_host.send(inputs[self]);
 		player_host.receive(snapshots[self]);
 		inputs[self].ack = snapshots[self].seq;
+
+		Snapshot& value = snapshots[self];
+		int other = 1;
+		for (int i = 0; i < Snapshot::count; ++i)
+		{
+			if (i == self)
+			{
+				int type = value.types[self];
+				float score = value.scores[self];
+				state.game_objects[self].position = value.positions[self];
+				state.game_objects[self].velocity = value.velocities[self];
+			}
+			else
+			{
+				int type = value.types[i];
+				float score = value.scores[i];
+				state.game_objects[other].position = value.positions[i];
+				state.game_objects[other].velocity = value.velocities[i];
+				state.inputs[other]				   = value.players[i].input;
+				++other;
+			}
+		}
 	}
 	else
 	{	
@@ -192,29 +214,6 @@ void Messenger::update(GameState& state, const char* ip_address)
 		player_host.receive(inputs, snapshots, ids);
 
 		
-	}
-
-	for (auto&[key, value] : snapshots)
-	{
-		for (int i = 0; i < Snapshot::count; ++i)
-		{
-			if (i == self)
-			{
-				int type = value.types[self];
-				float score = value.scores[self];
-				state.game_objects[self].position = value.positions[self];
-				state.game_objects[self].velocity = value.velocities[self];
-			}
-			else
-			{
-				int type = value.types[i];
-				float score = value.scores[i];
-				state.game_objects[i].position = value.positions[i];
-				state.game_objects[i].velocity = value.velocities[i];
-				inputs[key] = value.players[i - 1];
-				state.inputs[i] = inputs[key].input;
-			}
-		}
 	}
 
 	state.player_count = 2;
