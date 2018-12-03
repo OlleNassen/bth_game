@@ -201,7 +201,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 		}
 	}
 
-	state.player_count = inputs.size();
+	state.player_count = 2;
 }
 
 }
