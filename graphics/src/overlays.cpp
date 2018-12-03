@@ -270,12 +270,15 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 	using namespace std::chrono_literals;
 	shader.use();
 	shader.uniform("overlay_texture", 0);
+	shader.uniform("cooldown_texture", 1);
 	shader.uniform("pulse", pulse);
 
 	empty.bind(0);
+	empty.bind(1);
 
 	if (current_state & state::playing)
 	{
+		this->dash.bind(1);
 		//Render death screen
 		if (is_dead && has_finished && death_timer <= 2000ms)
 		{
@@ -318,6 +321,8 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 	}
 	if (current_state & state::menu)
 	{
+		empty.bind(1);
+
 		if (how_to_play)
 		{
 			speedboost.front().bind(0);
@@ -332,8 +337,6 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 			this->main_menu.at(1).bind(0);
 		}
 	}
-
-
 
 	overlay.render(shader);
 }
