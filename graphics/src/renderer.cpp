@@ -401,7 +401,14 @@ void Renderer::render(
 				}
 			}
 
-			if ((died[player_id] || finish[player_id]) && (overlays.finished_timer >= 5000ms || overlays.death_timer >= 500ms))
+			if (died[player_id])
+			{
+				out_text.str("");
+				out_text << "Respawning at last checkpoint in " << std::fixed << std::setprecision(0) << spawn_timer << " seconds";
+				build_text.render_text(out_text.str(), (screen_width * 0.5f) - 400.f, (screen_height * 0.5f) - 70.f, 0.75f);
+			}
+
+			if ((died[player_id] && finish[player_id]) && (overlays.finished_timer >= 5000ms))
 			{				
 				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 			}
@@ -504,7 +511,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	bool view_score)
 {
 	bool is_menu = (new_game_state & state::menu);
-	
+	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(delta).count();
+
 	if (game_state & state::building)
 	{
 		if (moving_objects_id[id] < scene->moving_models.size())
@@ -647,6 +655,13 @@ void Renderer::update(std::chrono::milliseconds delta,
 		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	else
 		game_camera.update(delta, &scene->v[spectator_id], &scene->v[spectator_id + 1]);
+
+	if (died[player_id])
+	{
+		spawn_timer -= dt;
+	}
+	else
+		spawn_timer = 3.5f;
 
 	ui.update(scene->moving_models, 
 		player_count, 
