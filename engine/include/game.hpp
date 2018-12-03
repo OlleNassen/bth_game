@@ -76,7 +76,11 @@ private:
 	//Build info
 	std::vector<build_information> build_info;
 
-	void place_random_objects(float start_height, float map_width, int number_of_randoms);
+
+	//Random Platforms
+	void place_random_objects(float start_height, int number_of_randoms);
+	bool have_placed_random_platforms = false;
+
 
 	std::array<anim, 4> anim_states;
 

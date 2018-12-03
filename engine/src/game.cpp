@@ -259,6 +259,14 @@ void Game::update(std::chrono::milliseconds delta)
 		game_state = (game_state | state::pre_building);
 		static float pre_build_timer = 3.5f;
 
+		//For host only
+		if (!have_placed_random_platforms)
+		{
+			place_random_objects(0, 3);
+
+			have_placed_random_platforms = true;
+		}
+
 		for (int i = 0; i < 4; i++)
 		{
 			dynamics[i].player_moving_object_id = -1;
@@ -884,30 +892,34 @@ void Game::unpack_data()
 	}
 }
 
-void Game::place_random_objects(float start_height, float map_width, int number_of_randoms)
+void Game::place_random_objects(float start_height, int number_of_randoms)
 {
 	/*for (int i = 0; i < 15; i++)
 	{
 		input.physics->random_placed_objects_pos[i] = glm::vec2{ 0.0, hight };
 	}*/
 
+	//bool placed_1 = false;
+	//bool placed_2 = false;
+	//bool placed_3 = false;
+
 	collision_data data;
 
 	glm::vec2 startPosition = { 0.0, 0.0 };
 	std::vector<glm::vec2> positions;
 
-	int totalX = 5;
+	int totalX = 3;
 	int totalY = 3;
 
-	int width = static_cast<int>(map_width / 6.0f);
+	int width = static_cast<int>(40 / 6.0f);
 
-	startPosition = { width * 2, map_width };
+	startPosition = { width * 2, 40 };
 
 	for (int i = 0; i < totalY; i++)
 	{
 		for (int j = 0; j < totalX; j++)
 		{
-			positions.push_back({ startPosition.x - (j * width),  startPosition.y + (i * 8) });
+			positions.push_back({ startPosition.x - (j * width),  startPosition.y + (i * 6) });
 		}
 	}
 
@@ -915,6 +927,11 @@ void Game::place_random_objects(float start_height, float map_width, int number_
 
 	bool same_number = false;
 	int randum_number;
+
+	if (number_of_randoms > 10)
+	{
+		number_of_randoms = 10;
+	}
 
 	while (rand_numb.size() < number_of_randoms)
 	{
@@ -936,18 +953,27 @@ void Game::place_random_objects(float start_height, float map_width, int number_
 	for (int i = 99; i > 99 - number_of_randoms; i--)
 	{
 		collision_data data;
-		int model_id = level->add_object(data, 6);
-		data.position = positions[rand_numb[abs(i - 99)]];
-		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 });
 
-		dynamics[dynamic_id].position = positions[rand_numb[abs(i - 99)]];
+		int model_id = level->add_object(data, 8);
+		data.position = positions[rand_numb[abs(i - 99)]];
+		level->moving_models[model_id].set_position(data.position);
+
+		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 }, 8);
+
+		//dynamics[dynamic_id].position = positions[rand_numb[abs(i - 99)]];
+		//dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
+		//dynamics[dynamic_id].size = { data.width, data.height };
+		//dynamics[dynamic_id].forces = { 0.0f, 0.0f };
+		//dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+
+		dynamics[dynamic_id].position = data.position;
 		dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
 		dynamics[dynamic_id].size = { data.width, data.height };
 		dynamics[dynamic_id].forces = { 0.0f, 0.0f };
 		dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
-
-		level->moving_models[model_id].set_position(dynamics[dynamic_id].position);
-
+		dynamics[dynamic_id].dynamic_id = dynamic_id;
+		dynamics[dynamic_id].model_id = model_id;
+		dynamics[dynamic_id].objects_type_id = 8;
 	}
 }
 
