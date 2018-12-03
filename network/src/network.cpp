@@ -167,23 +167,23 @@ void Messenger::update(GameState& state, const char* ip_address)
 			{
 				for (int i = 0; i < Snapshot::count; ++i)
 				{
-					if (i == 0)
+					if (i == ids[key_p])
 					{
 						value.types[0] = 0;
 						value.scores[0] = 0.0f;
-						value.positions[0] = state.game_objects[ids[key_p]].position;
-						value.velocities[0] = state.game_objects[ids[key_p]].velocity;
-						value_p.input = state.inputs[ids[key_p]];
+						value.positions[0] = state.game_objects[i].position;
+						value.velocities[0] = state.game_objects[i].velocity;
+						value_p.input = state.inputs[i];
 						value.players[0] = value_p;
 					}
 					else
 					{
-						value.types[i] = 0;
-						value.scores[i] = 0.0f;
-						value.positions[i] = state.game_objects[i].position;
-						value.velocities[i] = state.game_objects[i].velocity;
-						value_p.input = state.inputs[i];
-						value.players[i - 1] = value_p;
+						value.types[i + 1] = 0;
+						value.scores[i + 1] = 0.0f;
+						value.positions[i + 1] = state.game_objects[i + 1].position;
+						value.velocities[i + 1] = state.game_objects[i + 1].velocity;
+						value_p.input = state.inputs[i + 1];
+						value.players[i] = value_p;
 					}
 				}
 				
