@@ -49,12 +49,19 @@ LuaExport Gameplay::update(Input inputs,
 	if (current_state & state::lobby)
 	{
 		glm::vec2 level_1_door = { -19.7, 26.1 };
+		glm::vec2 level_2_door = { 19.7, 26.1 };
 		for (int i = 0; i < inputs.player_count; i++)
 		{
 			auto& dyn = inputs.dynamics[i];
 			if (glm::distance(level_1_door, glm::vec2(dyn.position)) < 0.5f || dyn.position.x < -22)
 			{
 				dyn.position.x = -40;
+				game_script.data.finished[i] = true;
+			}
+
+			if (glm::distance(level_2_door, glm::vec2(dyn.position)) < 0.5f || dyn.position.x > 22)
+			{
+				dyn.position.x = 40;
 				game_script.data.finished[i] = true;
 			}
 		}

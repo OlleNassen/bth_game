@@ -213,6 +213,9 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				lua_data.finished[i] = false;
 			}
+
+			door_1_votes = 0;
+			door_2_votes = 0;
 		}
 
 		game_state = (game_state | state::lobby);
@@ -228,6 +231,24 @@ void Game::update(std::chrono::milliseconds delta)
 
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu) && all_ready)
 		{
+			for (int i = 0; i < 4; i++)
+			{
+				if (dynamics[i].position.x > -22)
+				{
+					door_1_votes++;
+
+					if (net.id() == 0)
+						door_2_votes++;
+				}
+				else if (dynamics[i].position.x > 22)
+				{
+					door_2_votes++;
+
+					if (net.id() == 0)
+						door_2_votes++;
+				}
+			}
+
 			if (net.id() == 0)
 				net_state.state = network::SessionState::pre_building;
 			game_state = (game_state | state::pre_building);
@@ -251,8 +272,16 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		if (level != &level1)
 		{ 
-			gameplay.refresh();
-			load_map(&level1);
+			if (door_1_votes > door_2_votes)
+			{
+				gameplay.refresh();
+				load_map(&level1);
+			}
+			else
+			{
+				/*gameplay.refresh();
+				load_map(&level2);*/
+			}
 		}
 
 		//Render text of state and what to do.

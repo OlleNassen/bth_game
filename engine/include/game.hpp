@@ -80,6 +80,10 @@ private:
 
 	std::array<anim, 4> anim_states;
 
+	//Door voting
+	int door_1_votes = 0;
+	int door_2_votes = 0;
+
 	//Temp leaderboards
 	std::vector<int> leader_board;
 	bool showleaderboard = false;
