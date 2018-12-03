@@ -173,6 +173,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 						value.scores[0] = 0.0f;
 						value.positions[0] = state.game_objects[ids[key_p]].position;
 						value.velocities[0] = state.game_objects[ids[key_p]].velocity;
+						value_p.input = state.inputs[i];
 					}
 					else
 					{
@@ -180,6 +181,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 						value.scores[i] = 0.0f;
 						value.positions[i] = state.game_objects[i].position;
 						value.velocities[i] = state.game_objects[i].velocity;
+						value_p.input = state.inputs[i];
 						value.players[i - 1] = value_p;
 					}
 				}
@@ -212,7 +214,8 @@ void Messenger::update(GameState& state, const char* ip_address)
 					float score = value.scores[i];
 					state.game_objects[i].position = value.positions[i];
 					state.game_objects[i].velocity = value.velocities[i];
-					value_p = value.players[i - 1];					
+					value_p = value.players[i - 1];
+					state.inputs[i] = value_p.input;
 				}
 			}
 
