@@ -558,12 +558,12 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 				switch_animation(anim::in_jump);
 				play_anim = current_state;
 			}
-			/*else if (current_state == anim::landing)
+			/*else if (current_state == anim::landing)		//Makes the player.lua work better if commented out
 			{
 				switch_animation(anim::idle);
 				play_anim = current_state;
 			}
-			else
+			else											//Makes the player.lua work better if commented out
 			{
 				switch_animation(anim::idle);
 				play_anim = current_state;

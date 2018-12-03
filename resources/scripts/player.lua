@@ -281,6 +281,7 @@ function update_control(delta_seconds, entity)
 		then
 			entity.current_state = entity.states[1]
 		end
+
 		if entity.button.jump
 		then
 			entity.forces.x = 0
@@ -291,7 +292,7 @@ function update_control(delta_seconds, entity)
 			entity.impulse.x = 0
 				
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 40
+			entity.impulse.y = 45
 			entity.impulse.x = 25
 
 			entity.current_state = entity.states[9]
@@ -317,7 +318,7 @@ function update_control(delta_seconds, entity)
 			entity.impulse.x = 0
 				
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 40
+			entity.impulse.y = 45
 			entity.impulse.x = -25
 			entity.current_state = entity.states[9]
 
@@ -335,6 +336,8 @@ function update_control(delta_seconds, entity)
 	if entity.current_state == entity.states[9]
 	then
 		--entity.current_state = entity.states[2]
+		accelerate(delta_seconds, entity, entity.max_air_speed, entity.air_acceleration)
+
 		if entity.velocity.y < -0.0
 		then
 			entity.current_state = entity.states[4]
