@@ -135,6 +135,9 @@ function update(delta_seconds, entity)
 end
 
 function update_control(delta_seconds, entity)
+	
+	print( entity.current_state)
+
 
 	if entity.lw then
 		entity.current_state = entity.states[6]
@@ -182,7 +185,7 @@ function update_control(delta_seconds, entity)
 			entity.current_state = entity.states[3]
 			entity.anim.current = entity.anim.start_jump
 
-			entity.impulse.y = 45
+			entity.impulse.y = 46
 			entity.can_jump = false
 		end
 	end
@@ -258,7 +261,6 @@ function update_control(delta_seconds, entity)
 		if entity.velocity.y > -0.1 and entity.velocity.y <= 0 
 		then 
 			entity.velocity.y = 0
-			entity.can_jump = true
 			entity.current_state = entity.states[5]
 			entity.anim.current = entity.anim.landing
 		end
@@ -275,6 +277,10 @@ function update_control(delta_seconds, entity)
 	--Hanging left
 	if entity.current_state == entity.states[6]
 	then
+		if entity.velocity.y > -epsilon and entity.velocity.y <= 0
+		then
+			entity.current_state = entity.states[1]
+		end
 		if entity.button.jump
 		then
 			entity.forces.x = 0
@@ -285,21 +291,22 @@ function update_control(delta_seconds, entity)
 			entity.impulse.x = 0
 				
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 1
+			entity.impulse.y = 40
 			entity.impulse.x = 25
 
 			entity.current_state = entity.states[9]
 		end
 
-		if entity.velocity.y > -epsilon and entity.velocity.y <= 0
-		then
-			entity.current_state = entity.states[1]
-		end
 	end
 
 	--Hanging right
 	if entity.current_state == entity.states[7]
 	then
+		if entity.velocity.y > -epsilon and entity.velocity.y <= 0
+		then
+			entity.current_state = entity.states[1]
+		end
+		
 		if entity.button.jump
 		then
 			entity.forces.x = 0
@@ -310,16 +317,10 @@ function update_control(delta_seconds, entity)
 			entity.impulse.x = 0
 				
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 1
+			entity.impulse.y = 40
 			entity.impulse.x = -25
 			entity.current_state = entity.states[9]
 
-		end
-
-		
-		if entity.velocity.y > -epsilon and entity.velocity.y <= 0
-		then
-			entity.current_state = entity.states[1]
 		end
 	end
 
@@ -329,6 +330,18 @@ function update_control(delta_seconds, entity)
 
 	end
 
+
+	--New stage in the states(U.S)
+	if entity.current_state == entity.states[9]
+	then
+		--entity.current_state = entity.states[2]
+		if entity.velocity.y < -0.0
+		then
+			entity.current_state = entity.states[4]
+		end
+
+		print("Kalle")
+	end
 end
 
 
@@ -339,7 +352,6 @@ function accelerate(delta_seconds, entity, top_speed, acceleration)
 		if entity.velocity.x < top_speed	
 		then
 			entity.velocity.x = entity.velocity.x +(acceleration*delta_seconds )
-			--entity.anim.current = entity.anim.running
 		else
 			entity.velocity.x = top_speed
 		end
