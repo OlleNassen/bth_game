@@ -152,6 +152,7 @@ function update_control(delta_seconds, entity)
 	then
 		entity.current_state = entity.states[1]
 		entity.anim.current = entity.anim.idle
+		entity.can_jump = true
 		if entity.button.right 
 		then
 			accelerate(delta_seconds, entity, entity.max_speed, entity.ground_acceleration)
@@ -164,6 +165,11 @@ function update_control(delta_seconds, entity)
 			accelerate(delta_seconds, entity, -entity.max_speed, entity.ground_acceleration)
 			entity.current_state = entity.states[2]
 			entity.anim.current = entity.anim.running
+		end
+		if entity.velocity.y < -1.0 -- if falling
+		then
+			entity.current_state = entity.states[4]
+			entity.anim.current = entity.anim.falling
 		end
 	end
 
@@ -206,22 +212,12 @@ function update_control(delta_seconds, entity)
 		end
 	
 	
-		if entity.velocity.y < -0.0 -- DOES THIS WORK? <-- Nope
+		if entity.velocity.y < -1.0 -- switch to falling
 		then
 			entity.current_state = entity.states[4]
 			entity.anim.current = entity.anim.falling
 		end
 	end
-
-	--Landing
-	if entity.current_state == entity.states[5]
-	then
-		print("Lisa")
-		entity.can_jump = true
-		entity.current_state = entity.states[2]
-	end
-
-
 
 	--Falling
 	if entity.current_state == entity.states[4]
@@ -259,13 +255,21 @@ function update_control(delta_seconds, entity)
 		]]
 		
 
-		if entity.velocity.y > -0.01 and entity.velocity.y <= 0 
+		if entity.velocity.y > -0.1 and entity.velocity.y <= 0 
 		then 
 			entity.velocity.y = 0
 			entity.can_jump = true
-			entity.current_state = entity.states[2]
+			entity.current_state = entity.states[5]
 			entity.anim.current = entity.anim.landing
 		end
+	end
+
+	--Landing
+	if entity.current_state == entity.states[5]
+	then
+		print("Lisa")
+		entity.can_jump = true
+		entity.current_state = entity.states[2]
 	end
 
 	--Hanging left
@@ -280,10 +284,10 @@ function update_control(delta_seconds, entity)
 			entity.impulse.y = 0
 			entity.impulse.x = 0
 				
-
+			entity.can_jump = false
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 45
-			entity.impulse.x = 26
+			entity.impulse.y = 35
+			entity.impulse.x = 35
 
 			entity.current_state = entity.states[3]
 		end
@@ -306,10 +310,10 @@ function update_control(delta_seconds, entity)
 			entity.impulse.y = 0
 			entity.impulse.x = 0
 				
-
+			entity.can_jump = false
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 45
-			entity.impulse.x = -26
+			entity.impulse.y = 35
+			entity.impulse.x = -35
 			entity.current_state = entity.states[3]
 
 		end
