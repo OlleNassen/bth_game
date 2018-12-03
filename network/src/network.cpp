@@ -151,7 +151,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 		player_id = 1;	
 	}
 
-	if (player_host.client())
+	if (player_id /*player_host.client()*/)
 	{
 		inputs[self].input = state.inputs[1];
 		
