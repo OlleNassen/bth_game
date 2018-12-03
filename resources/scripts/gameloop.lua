@@ -25,6 +25,19 @@ end
 
 round = 0
 death_height = { 0.0, 0.0, 0.0, 0.0 }
+
+checkpoints = { {},{},{} }
+checkpoints[1].x = 0.0
+checkpoints[1].y = 100.0
+
+checkpoints[2].x = 0.0
+checkpoints[2].y = 150.0
+
+checkpoints[3].x = 0.0
+checkpoints[3].y = 200.0
+
+respawn_timer = { 0.0, 0.0, 0.0, 0.0 }
+
 total_players = 0;
 
 function update(delta_seconds, game, entities, player_count)
@@ -36,6 +49,8 @@ function update(delta_seconds, game, entities, player_count)
 
 	game.clock = game.clock + delta_seconds
 	game.time = game.max_time - game.clock
+
+	print(entities[1].position.x, entities[1].position.y)
 
 	if game.start_round
 	then
@@ -195,6 +210,7 @@ function update(delta_seconds, game, entities, player_count)
 		end
 	end
 
+	--If player is dead
 	for i = 1, 4, 1
 	do
 		if game.died[i] and game.finished[i]
@@ -207,6 +223,19 @@ function update(delta_seconds, game, entities, player_count)
 
 			entities[i].velocity.x = 0
 			entities[i].velocity.y = 0
+
+			respawn_timer[i] = respawn_timer[i] + delta_seconds
+
+			if respawn_timer[i] > 5.0 
+			then
+				respawn_timer[i] = 0.0
+
+				game.died[i] = false
+				game.finished[i] = false
+				
+				entities[i].position.x = checkpoints[2].x
+				entities[i].position.y = checkpoints[2].y
+			end
 		end
 	end
 
