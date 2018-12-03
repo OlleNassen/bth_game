@@ -11,7 +11,7 @@ function setup(entity)
 	entity.can_walljump = true
 
 	entity.states = {"idle", "moving", "jumping", "falling",
-	"landing", "hanging_left", "hanging_right", "sliding"}
+	"landing", "hanging_left", "hanging_right", "sliding", "wall_jumping"}
 	entity.current_state = entity.states[1]
 	
 	entity.max_speed = 16
@@ -284,12 +284,11 @@ function update_control(delta_seconds, entity)
 			entity.impulse.y = 0
 			entity.impulse.x = 0
 				
-			entity.can_jump = false
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 25
-			entity.impulse.x = 35
+			entity.impulse.y = 1
+			entity.impulse.x = 25
 
-			entity.current_state = entity.states[3]
+			entity.current_state = entity.states[9]
 		end
 
 		if entity.velocity.y > -epsilon and entity.velocity.y <= 0
@@ -310,11 +309,10 @@ function update_control(delta_seconds, entity)
 			entity.impulse.y = 0
 			entity.impulse.x = 0
 				
-			entity.can_jump = false
 			entity.anim.current = entity.anim.jump_from_wall
-			entity.impulse.y = 25
-			entity.impulse.x = -35
-			entity.current_state = entity.states[3]
+			entity.impulse.y = 1
+			entity.impulse.x = -25
+			entity.current_state = entity.states[9]
 
 		end
 
