@@ -100,18 +100,7 @@ bit_reader& operator>>(bit_reader& reader, UserInput& value);
 class Messenger
 {
 public:
-	Messenger()
-	{
-		uint32 data[320] = {};
-		bit_writer w{ data, 320 * 32 };
-		bit_reader r{ data, 320 * 32 };
-
-		w << 55.63f;
-		w << 55.63f;
-		float i = 9.82f;
-		r >> i;
-		std::cout << i << '\n';
-	}
+	Messenger();
 
 	int id() const;
 	bool connected() const;
@@ -124,7 +113,7 @@ private:
 	Host player_host;
 	int player_id = 0;
 
-	static constexpr enet_uint32 client = 0;
+	static constexpr enet_uint32 self = 0;
 };
 
 }

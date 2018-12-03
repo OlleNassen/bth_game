@@ -125,6 +125,14 @@ bit_reader& operator>>(bit_reader& reader, UserInput& value)
 	return reader;
 }
 
+Messenger::Messenger()
+{
+	Snapshot dummy_s = {};
+	UserInput dummy_i = {};
+	snapshots[self] = dummy_s;
+	inputs[self] = dummy_i;
+}
+
 int Messenger::id() const
 {
 	return player_id;
@@ -136,32 +144,26 @@ bool Messenger::connected() const
 }
 
 void Messenger::update(GameState& state, const char* ip_address)
-{
-	state.player_count = 2;
-	
+{	
 	if (ip_address)
 	{
-		player_host = Host{ ip_address };
-		Snapshot dummy_s = {};
-		UserInput dummy_i = {};
-		snapshots[client] = dummy_s;
-		inputs[client] = dummy_i;
+		player_host = Host{ip_address};
 		player_id = 1;	
 	}
 
-	if (/*player_host.client()*/player_id)
+	if (player_host.client())
 	{
-		inputs[client].input = state.inputs[1];
+		inputs[self].input = state.inputs[1];
 		
-		player_host.send(inputs[client]);
-		player_host.receive(snapshots[client]);
-		inputs[client].ack = snapshots[client].seq;
+		player_host.send(inputs[self]);
+		player_host.receive(snapshots[self]);
+		inputs[self].ack = snapshots[self].seq;
 	}
 	else
 	{	
 		for (auto&[key, value] : snapshots)
 		{
-			int i = 1;
+			int i = 0;
 			int i2 = 0;
 			for (auto&[key_p, value_p] : inputs)
 			{
@@ -183,7 +185,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 
 	for (auto&[key, value] : snapshots)
 	{
-		int i = 1;
+		int i = 0;
 		int i2 = 0;
 		for (auto&[key_p, value_p] : inputs)
 		{
@@ -198,6 +200,8 @@ void Messenger::update(GameState& state, const char* ip_address)
 				value_p = value.players[i2++];
 		}
 	}
+
+	state.player_count = inputs.size();
 }
 
 }
