@@ -176,7 +176,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 						value_p.input = state.inputs[i];
 						value.players[0] = value_p;
 					}
-					else
+					else if (i < (Snapshot::count - 1))
 					{
 						value.types[i + 1] = 0;
 						value.scores[i + 1] = 0.0f;
