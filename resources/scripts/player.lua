@@ -215,7 +215,11 @@ function update_control(delta_seconds, entity)
 			end
 			accelerate(delta_seconds, entity, -entity.max_air_speed, entity.air_acceleration)
 		end
-	
+		
+		if entity.button.right == false and entity.button.left == false
+		then
+			decelerate(delta_seconds, entity)
+		end
 	
 		if entity.velocity.y < -1.0 -- switch to falling
 		then
@@ -232,8 +236,7 @@ function update_control(delta_seconds, entity)
 			if math.abs(entity.velocity.x) > 0.001 or entity.velocity.x == 0
 			then
 				accelerate(delta_seconds, entity, - entity.max_air_speed, entity.air_acceleration)
-			else
-				decelerate(delta_seconds, entity)
+			
 			end
 		end
 
@@ -242,11 +245,14 @@ function update_control(delta_seconds, entity)
 			if math.abs(entity.velocity.x) > 0.001 or entity.velocity.x == 0
 			then
 				accelerate(delta_seconds, entity,  entity.max_air_speed, entity.air_acceleration)
-			else
-				decelerate(delta_seconds, entity)
+			
 			end
 		end
 
+		if entity.button.right == false and entity.button.left == false
+		then
+			decelerate(delta_seconds, entity)
+		end
 
 		--[[ Not needed? Edge landing fix
 			if entity.velocity.y >= -epsilon and entity.velocity.y < 0
@@ -256,8 +262,8 @@ function update_control(delta_seconds, entity)
 			and entity.button.right
 			then	
 			entity.velocity.x = 5
-			end
-		]]
+			end]]
+		
 		
 
 		if entity.velocity.y > -0.1 and entity.velocity.y <= 0 
@@ -338,7 +344,7 @@ function update_control(delta_seconds, entity)
 	if entity.current_state == entity.states[9]
 	then
 		--entity.current_state = entity.states[2]
-		accelerate(delta_seconds, entity, entity.max_air_speed, entity.air_acceleration)
+		
 
 		if entity.velocity.y < -0.0
 		then
