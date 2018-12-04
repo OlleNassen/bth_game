@@ -231,6 +231,7 @@ function update(delta_seconds, game, entities, player_count)
 			then
 				entities[entities[i].triggered + 1].impulse.x = 40
 			elseif entities[i].velocity.x < 0
+			then
 				entities[entities[i].triggered + 1].impulse.x = -40
 			end
 			--entities[entities[i].triggered + 1].impulse.x = entities[i].velocity.x * 10
