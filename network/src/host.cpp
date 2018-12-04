@@ -162,7 +162,6 @@ void Host::receive(input_map& inputs, snapshot_map& snapshots, id_map& ids)
 				snapshots[eevent.peer->connectID] = {};
 				inputs[eevent.peer->connectID] = {};
 				ids[eevent.peer->connectID] = peers.size() + 1;
-				std::cout << peers.size() + 1 << '\n';
 				connect(eevent);
 				break;
 			}
@@ -204,7 +203,7 @@ void Host::connect(const ENetEvent& eevent)
 
 void Host::disconnect(const ENetEvent& eevent)
 {
-	std::cout << "Diconnected." << '\n';
+	std::cout << "Disconnected." << '\n';
 	auto position = std::find(peers.begin(), peers.end(), eevent.peer);
 	if (position != peers.end()) peers.erase(position);
 }
