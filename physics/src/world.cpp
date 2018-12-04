@@ -125,7 +125,7 @@ void World::update(
 	}
 
 	for (auto& t : triggers)
-		t = 0;
+		t = -1;
 
 	for (auto& t : triggers_types) //test for triggers
 		t = -1;

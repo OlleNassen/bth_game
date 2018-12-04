@@ -225,7 +225,7 @@ function update(delta_seconds, game, entities, player_count)
 
 	for i = 1, 4, 1
 	do
-		if entities[i].dash_active and entities[i].triggered < 4
+		if entities[i].dash_active and entities[i].triggered < 4 and entities[i].triggered ~= -1 
 		then
 			entities[entities[i].triggered + 1].impulse.x = entities[i].velocity.x * 1000
 
