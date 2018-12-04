@@ -56,10 +56,40 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 		model = glm::rotate(model, glm::radians(level.levelObjects[i].rotation[1]), glm::vec3{ 0,1,0 });
 		model = glm::rotate(model, glm::radians(level.levelObjects[i].rotation[0]), glm::vec3{ 1,0,0 });
 
-		models.emplace_back(model, glm::vec3(0, 0, 0), mesh_lib->get_mesh(level.levelObjects[i].id));
+		if (emissive_counter < 6)
+		{
+			current_emissive = 0;
+		}
+		else if (emissive_counter >= 6 && emissive_counter <= 17)
+		{
+			current_emissive = 1;
+		}
+		else if (emissive_counter >= 18 && emissive_counter <= 25)
+		{
+			current_emissive = 2;
+		}
+
+		if (level.levelObjects[i].id == 62)
+		{
+			models.emplace_back(model, emissive_colors[current_emissive], mesh_lib->get_mesh(level.levelObjects[i].id));
+			emissive_counter++;
+		}
+		else
+		{
+			models.emplace_back(model, glm::vec3(1, 1, 1), mesh_lib->get_mesh(level.levelObjects[i].id));
+		}
+
 		if (models.back().is_animated)
 		{
-			animated_models.emplace_back(model, glm::vec3(0, 0, 0), mesh_lib->get_mesh(level.levelObjects[i].id));
+			if (level.levelObjects[i].id == 63)
+			{
+					animated_models.emplace_back(model, emissive_colors[current_emissive], mesh_lib->get_mesh(level.levelObjects[i].id));
+					emissive_counter++;
+			}
+			else
+			{
+				animated_models.emplace_back(model, glm::vec3(1, 1, 1), mesh_lib->get_mesh(level.levelObjects[i].id));
+			}
 			models.pop_back();
 		}
 

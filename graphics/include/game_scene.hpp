@@ -28,6 +28,9 @@ class GameScene
 	};
 
 private:
+	int emissive_counter = 0;
+	int current_emissive = 0;
+	glm::vec3 emissive_colors[5] = { glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.2f, 0.9f, 0.1f), glm::vec3(0.1f, 0.1f, 0.9f), glm::vec3(0.9f, 0.8f, 0.1f) };
 
 public:
 	GameScene();
