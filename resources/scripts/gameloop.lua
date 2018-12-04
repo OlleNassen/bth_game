@@ -223,9 +223,9 @@ function update(delta_seconds, game, entities, player_count)
 		game.triggered_type[i] = entities[i].triggered_type
 	end
 
-	for i = 1, player_count, 1
+	for i = 1, 4, 1
 	do
-		if entities[i].triggered_type < 4
+		if entities[i].triggered < 4
 		then
 			entities[i].position.x = -10000
 		end
