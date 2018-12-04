@@ -5,7 +5,7 @@ function setup(entity)
 	entity.jump_timer = 0.0
 	entity.jump_impulse_x = 0
 	entity.jump_impulse_y = 0
-	entity.jump_forgiveness_time = 0.1
+	entity.jump_forgiveness_time = 0.125
 
 	--Walljump stuff
 	entity.can_walljump = true
@@ -13,6 +13,7 @@ function setup(entity)
 	entity.states = {"idle", "moving", "jumping", "falling",
 	"landing", "hanging_left", "hanging_right", "sliding", "wall_jumping"}
 	entity.current_state = entity.states[1]
+	entity.prev_frme = entity.states[1]
 	
 	entity.max_speed = 16
 	entity.max_air_speed = 16
@@ -96,14 +97,13 @@ local epsilon = 0.001
 
 function update(delta_seconds, entity)
 	
-	--[[if entity.stun_trap_triggered == false
+	if entity.stun_trap_triggered == false
 	then
-		--update_control(delta_seconds, entity)
-		--update_controls(delta_seconds, entity)
-	end]]--
+		update_control(delta_seconds, entity)
+	end
 
 
-	update_control(delta_seconds, entity)
+	
 	update_triggers(delta_seconds, entity)
 
 
@@ -181,7 +181,7 @@ function update_control(delta_seconds, entity)
 	or entity.current_state == entity.states[2]
 	then
 
-		if entity.button.jump and entity.can_jump == true
+		if entity.button.jump and entity.can_jump == true and prev_frme
 		then
 			entity.current_state = entity.states[3]
 			entity.anim.current = entity.anim.start_jump
@@ -281,6 +281,7 @@ function update_control(delta_seconds, entity)
 	then
 		entity.can_jump = true
 		entity.jump_timer = 0.0
+		--prev state set
 		entity.current_state = entity.states[2]
 	end
 
@@ -345,15 +346,13 @@ function update_control(delta_seconds, entity)
 	--Wall jumping
 	if entity.current_state == entity.states[9]
 	then
-		--entity.current_state = entity.states[2]
-		
-
 		if entity.velocity.y < -0.0
 		then
 			entity.current_state = entity.states[4]
 		end
-
 	end
+
+
 end
 
 
