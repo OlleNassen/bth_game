@@ -36,6 +36,12 @@ void Gameplay::refresh()
 		placement_script.setup(i);
 	}
 
+	//test for moving platforms
+	for (int i = 0; i < 3; ++i)
+	{
+		moving_platforms_script.setup(i);
+	}
+
 	game_script.setup();
 }
 
@@ -140,7 +146,17 @@ LuaExport Gameplay::update(Input inputs,
 			}
 		}
 		
+		for (int i = 0; i < inputs.moving_platform_ids.size(); i++)
+		{
+			moving_platforms_script.update(
+				inputs.delta,
+				inputs.dynamics[inputs.moving_platform_ids[i]],
+				i);
+		}
+
 		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0], inputs.player_count, spike_frame, turret_frame);
+
+
 
 		time = game_script.get_time();
 	}

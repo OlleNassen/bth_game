@@ -607,7 +607,8 @@ void Game::update(std::chrono::milliseconds delta)
 			static_cast<int>(player_count),
 			spikeframe,
 			turretframe,
-			triggers_types},
+			triggers_types,
+			moving_platform_ids },
 			game_state);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -999,4 +1000,29 @@ void Game::load_map(graphics::GameScene* scene)
 	give_players_objects = false;
 	give_players_objects = false;
 	watching = net.id();
+}
+
+void Game::add_moving_platforms(glm::vec2 pos)
+{
+	for (int i = 99; i > 99 - 1; i--)
+	{
+		collision_data data;
+		int model_id = level->add_object(data, 6);
+		data.position = pos;
+		level->moving_models[model_id].set_position(data.position);
+
+		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 });
+
+		moving_platform_ids.push_back(dynamic_id);
+
+		dynamics[dynamic_id].position = data.position;
+		dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
+		dynamics[dynamic_id].size = { data.width, data.height };
+		dynamics[dynamic_id].forces = { 0.0f, 0.0f };
+		dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+		dynamics[dynamic_id].dynamic_id = dynamic_id;
+		dynamics[dynamic_id].model_id = model_id;
+		dynamics[dynamic_id].objects_type_id = 9;
+
+	}
 }

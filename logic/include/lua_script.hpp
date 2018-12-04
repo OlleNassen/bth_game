@@ -23,7 +23,7 @@ struct LuaExport
 {
 public:
 	//For each player
-	std::array<std::string,4> names;
+	std::array<std::string, 4> names;
 	std::array<float, 4> scores;
 	std::array<bool, 4> died;
 	std::array<bool, 4> finished;
@@ -50,17 +50,17 @@ class PlayerScript
 {
 public:
 	PlayerScript(const std::string& path);
-	
+
 	void setup(int entity);
 	void update(
-		std::chrono::milliseconds delta, 
-		objects& object, 
-		const input& i, 
+		std::chrono::milliseconds delta,
+		objects& object,
+		const input& i,
 		int index,
 		const int& trigger,
 		const int& type,
 		anim& anim_state);
-		bool rw[4], lw[4];
+	bool rw[4], lw[4];
 
 	bool build_stage_done(int index);
 	bool build_stage_force_done(int index);
@@ -118,6 +118,23 @@ private:
 	LuaStack stack;
 };
 
+class MovingPlatformsScript
+{
+public:
+	MovingPlatformsScript(const std::string& path);
+	void setup(int entity);
+	void update(
+		std::chrono::milliseconds delta,
+		objects& object,
+		int index);
+
+private:
+	LuaStack stack;
+};
+
 }
+
+
+
 
 #endif
