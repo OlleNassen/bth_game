@@ -320,6 +320,9 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 		}
 	}
 
+	if (how_to_play)
+		dash.bind(0);
+
 	overlay.render(shader);
 }
 
