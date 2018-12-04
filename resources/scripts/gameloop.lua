@@ -227,6 +227,7 @@ function update(delta_seconds, game, entities, player_count)
 	do
 		local left = entities[i]
 		if left.dash_active and left.triggered < 4
+		then
 			local right = entities[left.triggered + 1]
 			
 			right.position.x = -10000
