@@ -227,7 +227,7 @@ function update(delta_seconds, game, entities, player_count)
 	do
 		if left.dash_active and left.triggered < 4
 		then
-			entities[left.triggered + 1].velocity.x = entities[i].velocity.x * 1000
+			entities[entities[i].triggered + 1].velocity.x = entities[i].velocity.x * 1000
 
 			print("DASSSSSSH")
 			--right.position.x = -10000
