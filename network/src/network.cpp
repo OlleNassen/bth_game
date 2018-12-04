@@ -218,7 +218,10 @@ void Messenger::update(GameState& state, const char* ip_address)
 		player_host.send(snapshots);
 		player_host.receive(inputs, snapshots, ids);
 
-		
+		for (auto&[key, value] : snapshots)
+		{
+			state.inputs[ids[key]] = inputs[key].input;
+		}		
 	}
 
 	state.player_count = 2;
