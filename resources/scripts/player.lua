@@ -417,7 +417,6 @@ function update_triggers(delta_seconds, entity)
 	if entity.triggered >= 4
 	then
 		
-
 		--stun_trap
 		if entity.triggered_type == 2 and entity.shield_active == true 
 		then
