@@ -1,4 +1,7 @@
 
+printf = print
+print = function() end
+
 function setup(entity)
 	--Jump stuff
 	entity.can_jump = true
@@ -25,6 +28,8 @@ function setup(entity)
 
 	entity.gravity = 115
 	entity.max_gravity = 1800
+
+	entity.dash_timer = 0.0
 
 	--TriGGerS---------------------------------------------------------------
 
@@ -120,6 +125,9 @@ function update(delta_seconds, entity)
 			entity.velocity.y = -entity.max_gravity * delta_seconds
 		end
 	end
+
+	--Dash timer
+	entity.dash_timer = entity.dash_timer - delta_seconds
 	
 	--triggers
 	entity.jump_pushed_last_frame = entity.button.jump
@@ -172,6 +180,8 @@ function update_control(delta_seconds, entity)
 			entity.current_state = entity.states[4]
 			entity.anim.current = entity.anim.falling
 		end
+
+		dash(delta_seconds, entity)
 	end
 
 	--Jump
@@ -237,6 +247,8 @@ function update_control(delta_seconds, entity)
 		then
 			entity.velocity_y_last = entity.velocity.y
 		end
+
+		dash(delta_seconds, entity)
 	end
 
 	--Falling
@@ -282,6 +294,8 @@ function update_control(delta_seconds, entity)
 			entity.current_state = entity.states[5]
 			entity.anim.current = entity.anim.landing
 		end
+
+		dash(delta_seconds, entity)
 	end
 
 	--Landing
@@ -354,10 +368,15 @@ function update_control(delta_seconds, entity)
 		end
 	end
 
-	--Sliding
+	--Dash cooldown
 	if entity.current_state == entity.states[8]
 	then
-
+		if entity.dash_timer < 0
+		then
+			entity.current_state = entity.states[2]
+		else
+			entity.velocity.y = 0
+		end
 	end
 
 
@@ -375,8 +394,29 @@ function update_control(delta_seconds, entity)
 			entity.jumped_last = false
 	end
 
+
 end
 
+function dash(delta_seconds, entity)
+
+	if entity.button.rotate and entity.dash_timer < 0 and math.abs(entity.velocity.x) > epsilon
+	then
+	
+		local length = math.sqrt(entity.velocity.x * entity.velocity.x + entity.velocity.y * entity.velocity.y)
+
+		local dir_x = entity.velocity.x / length
+		local dir_y = entity.velocity.y / length
+
+		local dash_speed = 100
+
+		entity.velocity.x = dash_speed * dir_x
+		entity.velocity.y = 0
+
+		entity.dash_timer = 2.0
+		entity.current_state = entity.states[9]
+
+	end
+end
 
 function accelerate(delta_seconds, entity, top_speed, acceleration)
 

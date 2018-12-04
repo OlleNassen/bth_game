@@ -213,6 +213,19 @@ float PlayerScript::get_time(int index)
 	return temp;
 }
 
+double PlayerScript::dash_timer(int index)
+{
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	stack.getfield(-1, "dash_timer");
+
+	double temp = stack.tonumber(-1);
+
+	stack.clear();
+
+	return temp;
+}
+
 GameScript::GameScript()
 	: stack{ "../resources/scripts/gameloop.lua" }
 {
@@ -255,7 +268,8 @@ void GameScript::update(
 	objects* players,
 	int player_count,
 	int spike_frame, 
-	int turret_frame)
+	int turret_frame,
+	bool dash_active[])
 {
 	{
 		stack.getglobal("game");
@@ -271,6 +285,21 @@ void GameScript::update(
 			int top_pos = stack.top();
 			stack.push("position");
 			stack.push(players[i - 1].position);
+			stack.rawset(top_pos);
+		}
+
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+			stack.push("dash_active");
+			stack.push(dash_active[i - 1]);
 			stack.rawset(top_pos);
 		}
 
