@@ -32,7 +32,7 @@ public:
 	void move(glm::vec2 offset);
 	void set_position(glm::vec2 position);
 	void rotate(float degree);
-	void set_rotation(float degree);
+	void set_rotation(glm::vec3 axis, glm::vec3 degrees);
 	glm::vec3 get_position()const;
 	glm::vec3 get_color()const;
 	void rotate(const glm::vec3 axis, float angle);	

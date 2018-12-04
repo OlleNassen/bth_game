@@ -63,11 +63,20 @@ void Model::rotate(float degree)
 	model = glm::rotate(model, glm::radians(degree), { 0, 0, 1 });
 }
 
-void Model::set_rotation(float degree)
+void Model::set_rotation(glm::vec3 axis, glm::vec3 degrees)
 {
 	glm::vec3 position = { model[3][0], model[3][1], model[3][2] };
 	glm::mat4 ident = glm::mat4(1.0f);
-	ident = glm::rotate(ident, glm::radians(degree), { 0, 0, 1 });
+
+	if (axis.x != 0.0f)
+		ident = glm::rotate(ident, glm::radians(degrees.x), { axis.x, 0, 0 });
+
+	if (axis.y != 0.0f)
+		ident = glm::rotate(ident, glm::radians(degrees.y), { 0, axis.y, 0 });
+
+	if (axis.z != 0.0f)
+		ident = glm::rotate(ident, glm::radians(degrees.z), { 0, 0, axis.z });
+
 	ident = glm::translate(ident, position);
 	model = ident;
 }
