@@ -388,7 +388,6 @@ function dash(delta_seconds, entity)
 
 		entity.dash_timer = 2.0
 		entity.current_state = entity.states[9]
-		anim.current_state = anim.states.sliding
 
 	end
 end
