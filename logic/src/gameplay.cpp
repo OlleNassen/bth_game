@@ -40,7 +40,7 @@ void Gameplay::refresh()
 }
 
 LuaExport Gameplay::update(Input inputs,
-	int& current_state)
+	int& current_state, bool rw[], bool lw[])
 {
 	float time = -1.0f;
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(inputs.delta).count();
@@ -69,7 +69,8 @@ LuaExport Gameplay::update(Input inputs,
 					i,
 					inputs.triggers[i],
 					inputs.triggers_types[i],
-					inputs.anim_states[i]);
+					inputs.anim_states[i],
+					rw[i], lw[i]);
 		}
 	}
 
@@ -136,11 +137,17 @@ LuaExport Gameplay::update(Input inputs,
 					i,
 					inputs.triggers[i],
 					inputs.triggers_types[i],
-					inputs.anim_states[i]);
+					inputs.anim_states[i],
+					rw[i], lw[i]);
 			}
 		}
+
+		bool test[4] = {player_script.dash_timer(0) > 0.0, player_script.dash_timer(1) > 0.0,
+			player_script.dash_timer(2) > 0.0 , player_script.dash_timer(3) > 0.0 };
 		
-		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0], inputs.player_count, spike_frame, turret_frame);
+		game_script.update(inputs.delta, inputs.player_inputs[0],
+			inputs.triggers, inputs.triggers_types, &inputs.dynamics[0],
+			inputs.player_count, spike_frame, turret_frame, test);
 
 		time = game_script.get_time();
 	}

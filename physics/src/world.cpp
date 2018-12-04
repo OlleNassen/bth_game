@@ -125,7 +125,7 @@ void World::update(
 	}
 
 	for (auto& t : triggers)
-		t = 0;
+		t = -1;
 
 	for (auto& t : triggers_types) //test for triggers
 		t = -1;
@@ -272,7 +272,7 @@ void World::update(
 					{
 						if (point_in_obb(points[1], walls.box))
 						{
-							anim_states[i] = anim::hanging_left;
+							//anim_states[i] = anim::hanging_left;
 							lw[i] = true;
 						}
 
@@ -282,7 +282,7 @@ void World::update(
 					{
 						if (point_in_obb(points[2], walls.box))
 						{
-							anim_states[i] = anim::hanging_right;
+							//anim_states[i] = anim::hanging_right;
    							rw[i] = true;
 						}
 	
@@ -583,8 +583,8 @@ glm::vec3 find_closest_wall(
 	else if (index == 2)
 		width_height.x = player.box.size.x;
 	else if (index == 3)
-		width_height.y = player.box.size.y;*/
-
+		width_height.y = player.box.size.y;
+	*/
 	if (index == 0)
 		width_height.x = -player.original_size.y;
 	else if (index == 1)

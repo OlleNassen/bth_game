@@ -223,6 +223,23 @@ function update(delta_seconds, game, entities, player_count)
 		game.triggered_type[i] = entities[i].triggered_type
 	end
 
+	for i = 1, 4, 1
+	do
+		if entities[i].dash_active and entities[i].triggered < 4 and entities[i].triggered ~= -1 
+		then
+			if entities[i].velocity.x  > 0
+			then
+				entities[entities[i].triggered + 1].impulse.x = 20
+			elseif entities[i].velocity.x < 0
+			then
+				entities[entities[i].triggered + 1].impulse.x = -20
+			end
+			--entities[entities[i].triggered + 1].impulse.x = entities[i].velocity.x * 10
+			--right.position.x = -10000
+		end
+
+	end
+
 	--for i = 1, 4, 1
 	--do
 	--	if game.died[i] == true or game.finished[i]
