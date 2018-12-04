@@ -131,6 +131,13 @@ void Game::render()
 
 	bool view_score = (*local_input)[logic::button::score] == logic::button_state::held;
 
+	std::array<glm::vec2, 4> player_positions;
+
+	for (int i = 0; i < 4; i++)
+	{
+		player_positions[i] = dynamics[i].position;
+	}
+
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
@@ -138,7 +145,8 @@ void Game::render()
 		net.id(),
 		players_placed_objects_id[net.id()].model_type_id,
 		remove_lines,
-		view_score);
+		view_score,
+		player_positions);
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -233,7 +241,7 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				if (dynamics[i].position.x > -22)
+				if (dynamics[i].position.x < -22)
 				{
 					door_1_votes++;
 
@@ -279,8 +287,8 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 			else
 			{
-				/*gameplay.refresh();
-				load_map(&level2);*/
+				gameplay.refresh();
+				load_map(&level2);
 			}
 		}
 

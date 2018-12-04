@@ -75,7 +75,8 @@ void Renderer::render(
 	int player_id,
 	int player_object_id,
 	std::vector<glm::vec3> remove_lines,
-	bool view_score)const
+	bool view_score,
+	std::array<glm::vec2, 4> player_positions)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -218,6 +219,8 @@ void Renderer::render(
 			}
 			
 			int total_players_ready = 0;
+			int level_1_index = 0;
+			int level_2_index = 0;
 			for (int i = 0; i < player_count; i++)
 			{
 				if (finish[i])
@@ -225,16 +228,33 @@ void Renderer::render(
 					text_shader.uniform("text_color", player_infos[i].color);
 
 					out_text.str("");
-					out_text << player_infos[i].name << " is ready";
-					build_text.render_text(out_text.str(), 10.f, screen_height - (45.f * (i + 2)), 1.f);
+
+					if (player_positions[i].x > 22)
+					{
+						out_text << player_infos[i].name << " has voted for level 2";
+
+						float width = build_text.get_text_width(out_text.str(), 1.f);
+						build_text.render_text(out_text.str(), screen_width - width, screen_height - (45.f * (level_1_index + 2)), 1.f);
+
+						level_1_index++;
+					}
+					else if (player_positions[i].x < -22)
+					{
+						out_text << player_infos[i].name << " has voted for level 1";
+
+						build_text.render_text(out_text.str(), 10.f, screen_height - (45.f * (level_2_index + 2)), 1.f);
+
+						level_2_index++;
+					}
+
 					total_players_ready++;
 				}
 			}
 
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			out_text.str("");
-			out_text << total_players_ready << "/" << player_count;
-			build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
+			//out_text.str("");
+			//out_text << total_players_ready << "/" << player_count;
+			//build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
 
 			if (total_players_ready == player_count)
 				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);
