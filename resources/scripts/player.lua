@@ -246,7 +246,7 @@ function update_control(delta_seconds, entity)
 
 		if entity.jump_forgiveness_time > entity.jump_timer and entity.button.jump and entity.can_jump and entity.jumped_last == false
 		then
-			entity.impulse.y = 46
+			entity.impulse.y = 48
 			entity.can_jump = false
 			entity.jumped_last = true
 		end
