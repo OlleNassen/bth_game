@@ -50,7 +50,7 @@ Renderer::Renderer(GameScene* scene)
 
 	dir_light.direction = glm::vec3(0, -0.7, -1);
 	dir_light.color = glm::vec3(1.0, 0.8, 0.8);
-	dir_light.intensity = 0.7f;
+	dir_light.intensity = 0.0f;
 
 	//spotlights[0].position = glm::vec3(0, 30, 0);
 	//spotlights[0].color = glm::vec3(1.f, 1.0f, 0.0f);
@@ -103,7 +103,7 @@ void Renderer::render(
 		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
 		
-		if (!(game_state & state::lobby))
+		if ((game_state & state::lobby))
 		{
 			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer);
 		}
@@ -132,7 +132,7 @@ void Renderer::render(
 		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, db_camera, &scene->models[0], &scene->models[9]);
 
-		if (!(game_state & state::lobby))
+		if ((game_state & state::lobby))
 		{
 			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer);
 		}

@@ -178,36 +178,55 @@ void GameScene::light_level_1()
 	lights[3].radius = 30;
 
 	//Map Light
-	lights[4].position = glm::vec3{ -0.145,-6.289,8.929 };
-	lights[4].color = glm::vec3{ 1,0.2,0 };
-	lights[5].position = glm::vec3{ -7.73,23.368,-22.735 };
-	lights[5].color = glm::vec3{ 1,0.2,0 };
-	lights[6].position = glm::vec3{ -7.74,44,-22.984 };
-	lights[6].color = glm::vec3{ 1,0.2,0 };
-	lights[7].position = glm::vec3{ 0, 123.035, -23.725 };
-	lights[7].color = glm::vec3{ 0, 0.82, 1 };
-	lights[8].position = glm::vec3{ 0, 187.484, -18.185 };
-	lights[8].color = glm::vec3{ 1, 0.2, 0 };
-	lights[9].position = glm::vec3{ 0, 208.400, -34.226 };
-	lights[9].color = glm::vec3{ 1, 0.2, 0 };
-	lights[10].position = glm::vec3{ 0, 260.169, 5.0 };
-	lights[10].color = glm::vec3{ 1, 1, 1 };
-	lights[11].position = glm::vec3{ 0, 88.553, -29.053 };
-	lights[11].color = glm::vec3{ 1, 0.2, 0 };
-	lights[12].position = glm::vec3{ 0, 141.359, -31.505 };
-	lights[12].color = glm::vec3{ 1, 0.2, 0 };
-
-	for (int i = 4; i < 13; i++)
-	{
-		lights[i].intensity = 400;
-	}
-
+	lights[4].position = glm::vec3{ -4.4, 19.689, -8.873 };
+	lights[4].color = glm::vec3{ 0.8, 0.3, 0.1 };
+	lights[5].position = glm::vec3{ 2.73, 116.368,-32.735 };
+	lights[5].color = glm::vec3{ 0.2 ,0.56, 0.9 };
+	lights[6].position = glm::vec3{ -0.24, 136,-33.984 };
+	lights[6].color = glm::vec3{ 0.1, 0.7, 0.9 };
+	lights[7].position = glm::vec3{ 13, 56.035, -2.725 };
+	lights[7].color = glm::vec3{ 0.1, 0.82, 1 };
+	lights[8].position = glm::vec3{ 0, 190.484, -8.785 };
+	lights[8].color = glm::vec3{ 0.3, 0.9, 1.0 };
+	lights[9].position = glm::vec3{ 0, 198.484, -8.785 };
+	lights[9].color = glm::vec3{ 0.3, 0.9, 1.0 };
+	lights[10].position = glm::vec3{ 0, 206.484, -8.785 };
+	lights[10].color = glm::vec3{ 0.3, 0.9, 1.0 };
+	lights[11].position = glm::vec3{ 0, 214.484, -8.785 };
+	lights[11].color = glm::vec3{ 0, 0.8, 1.0 };
+	lights[12].position = glm::vec3{ 3, -5.53, 3.053 };
+	lights[12].color = glm::vec3{ 1, 0.2, 0.2 };
+	//lights[12].position = glm::vec3{ 0, 141.359, -31.505 };
+	//lights[12].color = glm::vec3{ 1, 0.2, 0 };
+	//
+	//for (int i = 4; i < 13; i++)
+	//{
+	//	lights[i].intensity = 400;
+	//}
+	//
+	//lights[6].intensity = 700;
+	lights[4].intensity = 400;
+	lights[4].radius = 400;
+	lights[5].intensity = 700;
+	lights[5].radius = 700;
 	lights[6].intensity = 700;
-
-	for (int i = 4; i < 13; i++)
-	{
-		lights[i].radius = 60;
-	}
+	lights[6].radius = 700;
+	lights[7].intensity = 400;
+	lights[7].radius = 400;
+	lights[8].intensity = 700;
+	lights[8].radius = 400;
+	lights[9].intensity = 700;
+	lights[9].radius = 400;
+	lights[10].intensity = 400;
+	lights[10].radius = 400;
+	lights[11].intensity = 400;
+	lights[11].radius = 400;
+	lights[12].intensity = 700;
+	lights[12].radius = 700;
+	//for (int i = 4; i < 13; i++)
+	//{
+	//	lights[i].radius = 60;
+	//}
 
 }
 
