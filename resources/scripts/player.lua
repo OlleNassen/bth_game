@@ -136,7 +136,7 @@ end
 
 function update_control(delta_seconds, entity)
 	
-	print( entity.current_state)
+--	print( entity.current_state)
 
 
 	if entity.lw then
@@ -269,7 +269,6 @@ function update_control(delta_seconds, entity)
 	--Landing
 	if entity.current_state == entity.states[5]
 	then
-		print("Lisa")
 		entity.can_jump = true
 		entity.current_state = entity.states[2]
 	end
@@ -331,16 +330,15 @@ function update_control(delta_seconds, entity)
 	end
 
 
-	--New stage in the states(U.S)
+	--Wall jumping
 	if entity.current_state == entity.states[9]
 	then
 		--entity.current_state = entity.states[2]
-		if entity.velocity.y < -0.0
+		if entity.velocity.y < 0.0
 		then
 			entity.current_state = entity.states[4]
 		end
 
-		print("Kalle")
 	end
 end
 
