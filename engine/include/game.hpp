@@ -99,7 +99,7 @@ private:
 		int rotation; 
 		int direction;
 	};
-	std::array<turret_info, 4> object_directions;
+	std::array<turret_info, 4> turret_infos;
 
 	void remove_object(int id);
 

@@ -322,7 +322,7 @@ void Game::update(std::chrono::milliseconds delta)
 				total_nr_objects++;
 			}
 
-			object_directions.fill({ 0, 0 });
+			turret_infos.fill({ 0, 0 });
 			give_players_objects = true;
 		}
 
@@ -364,7 +364,7 @@ void Game::update(std::chrono::milliseconds delta)
 				}
 			}
 
-			object_directions.fill({ 0, 0 });
+			turret_infos.fill({ 0, 0 });
 		}
 		
 		for (int i = 0; i < static_cast<int>(player_count); i++)
@@ -383,64 +383,64 @@ void Game::update(std::chrono::milliseconds delta)
 					{
 						if ((*local_input)[logic::button::up] == logic::button_state::held)
 						{
-							object_directions[i].direction = 1;
+							turret_infos[i].direction = 1;
 						}
 						else if ((*local_input)[logic::button::down] == logic::button_state::held)
 						{
-							object_directions[i].direction = 0;
+							turret_infos[i].direction = 0;
 						}
 
-						if (object_directions[i].direction == 0)
+						if (turret_infos[i].direction == 0)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 0, 0, degree });
-						else if (object_directions[i].direction == 1)
+						else if (turret_infos[i].direction == 1)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 180.f, 0, degree });
 					}
 					else if (pos.z == 2)
 					{
 						if ((*local_input)[logic::button::right] == logic::button_state::held)
 						{
-							object_directions[i].direction = 1;
+							turret_infos[i].direction = 1;
 						}
 						else if ((*local_input)[logic::button::left] == logic::button_state::held)
 						{
-							object_directions[i].direction = 0;
+							turret_infos[i].direction = 0;
 						}
 
-						if (object_directions[i].direction == 0)
+						if (turret_infos[i].direction == 0)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 180.f, degree });
-						else if (object_directions[i].direction == 1)
+						else if (turret_infos[i].direction == 1)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 0, degree });
 					}
 					else if (pos.z == 3)
 					{
 						if ((*local_input)[logic::button::up] == logic::button_state::held)
 						{
-							object_directions[i].direction = 1;
+							turret_infos[i].direction = 1;
 						}
 						else if ((*local_input)[logic::button::down] == logic::button_state::held)
 						{
-							object_directions[i].direction = 0;
+							turret_infos[i].direction = 0;
 						}
 
-						if (object_directions[i].direction == 0)
+						if (turret_infos[i].direction == 0)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 180.f, 0, degree });
-						else if (object_directions[i].direction == 1)
+						else if (turret_infos[i].direction == 1)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 0, 0, degree });
 					}
 					else if (pos.z == 4)
 					{
 						if ((*local_input)[logic::button::right] == logic::button_state::held)
 						{
-							object_directions[i].direction = 1;
+							turret_infos[i].direction = 1;
 						}
 						else if ((*local_input)[logic::button::left] == logic::button_state::held)
 						{
-							object_directions[i].direction = 0;
+							turret_infos[i].direction = 0;
 						}
 
-						if (object_directions[i].direction == 0)
+						if (turret_infos[i].direction == 0)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 0, degree });
-						else if (object_directions[i].direction == 1)
+						else if (turret_infos[i].direction == 1)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 180.f, degree });
 					}
 				}
@@ -522,10 +522,10 @@ void Game::update(std::chrono::milliseconds delta)
 
 					if (players_placed_objects_id[i].model_type_id == 1)
 					{
-						object_directions[i].direction;
-						object_directions[i].rotation = static_cast<int>(pos.z);
+						turret_infos[i].direction;
+						turret_infos[i].rotation = static_cast<int>(pos.z);
 
-						std::cout << object_directions[i].rotation << " : " << object_directions[i].direction << "\n";
+						std::cout << turret_infos[i].rotation << " : " << turret_infos[i].direction << "\n";
 					}
 				}
 			}
