@@ -158,7 +158,7 @@ void Messenger::update(GameState& state, const char* ip_address)
 
 	if (client)
 	{
-		inputs[self].input = state.inputs[1];
+		inputs[self].input = state.inputs[self];
 		
 		player_host.send(inputs[self]);
 		player_host.receive(snapshots[self]);
