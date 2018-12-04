@@ -266,7 +266,7 @@ void Game::update(std::chrono::milliseconds delta)
 		//For host only
 		if (!have_placed_random_platforms)
 		{
-			place_random_objects(0, 3);
+			place_random_objects(0, 9);
 
 			have_placed_random_platforms = true;
 		}
@@ -911,13 +911,14 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 
 	glm::vec2 startPosition = { 0.0, 0.0 };
 	std::vector<glm::vec2> positions;
+	float width_of_map = 40;
 
-	int totalX = 3;
+	int totalX = 5;
 	int totalY = 3;
 
-	int width = static_cast<int>(40 / 6.0f);
+	int width = static_cast<int>(width_of_map / totalX + 1);
 
-	startPosition = { width * 2, start_height};
+	startPosition = { width, start_height};
 
 	for (int i = 0; i < totalY; i++)
 	{
@@ -968,11 +969,7 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 		physics.add_static_body(data.position,
 			glm::vec2{ 0.0f, 0.0f }, data.width, data.height, false);
 
-		//dynamics[dynamic_id].position = positions[rand_numb[abs(i - 99)]];
-		//dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
-		//dynamics[dynamic_id].size = { data.width, data.height };
-		//dynamics[dynamic_id].forces = { 0.0f, 0.0f };
-		//dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+
 
 		/*dynamics[dynamic_id].position = data.position;
 		dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
@@ -983,6 +980,14 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 		dynamics[dynamic_id].model_id = model_id;
 		dynamics[dynamic_id].objects_type_id = platform_id;*/
 	}
+
+	auto beg = level->models.begin();
+	beg += 9;
+
+	std::sort(beg, level->models.end(), [](const auto& left, const auto& right)
+	{
+		return left.get_y_position() < right.get_y_position();
+	});
 }
 
 std::array<int, 4> Game::random_indexes()
