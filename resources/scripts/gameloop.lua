@@ -230,7 +230,7 @@ function update(delta_seconds, game, entities, player_count)
 		if left.dash_active and left.triggered < 4
 		then
 			local right = entities[left.triggered + 1]
-			right.velocity.x = left.velocity.x
+			right.velocity.x = left.velocity.x * 1000
 
 			--right.position.x = -10000
 		end
