@@ -135,17 +135,17 @@ Messenger::Messenger()
 
 bool Messenger::is_client()
 {
-
+	return client;
 }
 
 int Messenger::id() const
 {
-	return client;
+	return 0;
 }
 
 bool Messenger::connected() const
 {
-	return true; //player_host.connected();
+	return true;
 }
 
 void Messenger::update(GameState& state, const char* ip_address)
