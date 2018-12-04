@@ -94,6 +94,12 @@ private:
 
 	std::vector<build_information> all_placed_objects;
 	int total_nr_objects = 0;
+	struct turret_info
+	{
+		int rotation; 
+		int direction;
+	};
+	std::array<turret_info, 4> turret_infos;
 
 	void remove_object(int id);
 
@@ -103,7 +109,7 @@ private:
 	//test trigger
 	int placed_objects_list_id = 7;
 	//int placed_objects_array[4] = {7/*random*/, 2/*glide*/, 7/*speed*/, 6/*shield*/ };
-	int placed_objects_array[8] = { 0, 0, 2, 3, 4, 5, 6, 7 };
+	int placed_objects_array[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
 	int random_picked_object() { return placed_objects_array[rand() % level1.objects.size()]; };
 	std::array<int, 4> random_indexes();
