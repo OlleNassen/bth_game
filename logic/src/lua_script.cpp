@@ -34,7 +34,7 @@ void PlayerScript::update(
 	int index,
 	const int& trigger,
 	const int& type,
-	anim& anim_state)
+	anim& anim_state, bool rw, bool lw)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
 	stack.getglobal(name.c_str());
@@ -45,6 +45,15 @@ void PlayerScript::update(
 		{
 			stack.push("button");
 			stack.push(i);
+			stack.rawset(top);
+		}
+
+		{
+			stack.push("lw");
+			stack.push(lw);
+			stack.rawset(top);
+			stack.push("rw");
+			stack.push(rw);
 			stack.rawset(top);
 		}
 

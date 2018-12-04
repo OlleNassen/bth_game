@@ -59,8 +59,8 @@ public:
 		int index,
 		const int& trigger,
 		const int& type,
-		anim& anim_state);
-		bool rw[4], lw[4];
+		anim& anim_state,
+		bool rw, bool lw);
 
 	bool build_stage_done(int index);
 	bool build_stage_force_done(int index);
