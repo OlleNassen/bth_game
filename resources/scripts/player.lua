@@ -179,6 +179,11 @@ function update_control(delta_seconds, entity)
 	or entity.current_state == entity.states[2]
 	then
 
+		if entity.double_jump_triggered and entity.can_double_jump == false --trigger
+		then
+			entity.can_double_jump = true
+		end
+
 		if entity.button.jump and entity.can_jump and entity.jumped_last == false
 		then
 			entity.current_state = entity.states[3]
@@ -195,6 +200,8 @@ function update_control(delta_seconds, entity)
 	--In Jump
 	if entity.current_state == entity.states[3]
 	then
+
+		
 
 		if entity.button.right 
 		then
@@ -284,6 +291,15 @@ function update_control(delta_seconds, entity)
 		entity.can_jump = true
 		entity.jump_timer = 0.0
 		entity.current_state = entity.states[2]
+
+
+		if entity.double_jump_triggered --trigger
+		then
+			entity.have_double_jumped = false
+			entity.can_double_jump = false
+			entity.in_wall_jump_state = false
+			entity.set_once = false
+		end
 
 
 	end
@@ -437,7 +453,7 @@ function update_triggers(delta_seconds, entity)
 		if entity.triggered_type == 5 and entity.double_jump_triggered == false
 		then
 			entity.double_jump_triggered = true
-			entity.can_double_jump = false
+			entity.can_double_jump = false--test
 			entity.double_jump_timer = 0.0
 
 			if entity.speed_boost_triggered or entity.glide_trap_triggered or entity.shield_active
