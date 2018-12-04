@@ -452,7 +452,7 @@ function update_triggers(delta_seconds, entity)
 		if entity.triggered_type == 5 and entity.double_jump_triggered == false
 		then
 			entity.double_jump_triggered = true
-			entity.can_double_jump = false--test
+			entity.can_double_jump = false
 			entity.double_jump_timer = 0.0
 
 			if entity.speed_boost_triggered or entity.glide_trap_triggered or entity.shield_active
@@ -550,7 +550,7 @@ function update_triggers(delta_seconds, entity)
 
 
 
-		if entity.button.right or entity.button.left or entity.anim.current == entity.anim.falling
+		if entity.button.right or entity.button.left or entity.current_state == entity.states[4]		--entity.anim.current == entity.anim.falling
 		then
 			entity.friction = entity.velocity.x
 			entity.friction_slowrate = entity.velocity.x * entity.glide_decrease
@@ -585,9 +585,9 @@ function update_triggers(delta_seconds, entity)
 	then
 		entity.speed_boost_timer = entity.speed_boost_timer + delta_seconds
 
-		if entity.anim.current ~= entity.anim.jump_from_wall and entity.anim.current ~= entity.anim.hanging_left and entity.anim.current ~= entity.anim.hanging_right and entity.stun_trap_triggered == false
+		if entity.current_state ~= entity.states[9] and entity.current_state == entity.states[6] and entity.current_state == entity.states[7] and entity.stun_trap_triggered == false--if entity.anim.current ~= entity.anim.jump_from_wall and entity.anim.current ~= entity.anim.hanging_left and entity.anim.current ~= entity.anim.hanging_right and entity.stun_trap_triggered == false
 		then
-			if entity.anim.current == entity.anim.falling
+			if entity.current_state == entity.states[4] --current_state == falling
 			then
 				if entity.button.right
 				then
