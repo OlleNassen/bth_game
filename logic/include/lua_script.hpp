@@ -66,6 +66,7 @@ public:
 	bool build_stage_force_done(int index);
 	void set_build_stage_done(int index, bool state);
 	float get_time(int index);
+	double dash_timer(int index);
 
 private:
 	LuaStack stack;
@@ -85,7 +86,8 @@ public:
 		objects* players,
 		int player_count,
 		int spike_frame,
-		int turret_frame);
+		int turret_frame,
+		bool dash_active[]);
 
 	void update_export();
 	float get_time();

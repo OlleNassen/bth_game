@@ -373,7 +373,7 @@ end
 
 function dash(delta_seconds, entity)
 
-	if entity.button.rotate and entity.dash_timer < 0
+	if entity.button.rotate and entity.dash_timer < 0 and math.abs(entity.velocity.x) > epsilon
 	then
 	
 		local length = math.sqrt(entity.velocity.x * entity.velocity.x + entity.velocity.y * entity.velocity.y)
