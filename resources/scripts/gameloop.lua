@@ -225,18 +225,17 @@ function update(delta_seconds, game, entities, player_count)
 
 	for i = 1, 4, 1
 	do
+
 		local left = entities[i]
 		if left.dash_active and left.triggered < 4
 		then
-			--local right = entities[left.triggered + 1]
-			
+			local right = entities[left.triggered + 1]
+			right.velocity.x = left.velocity.x
+
 			--right.position.x = -10000
 		end
 
-		print(entities[i].dash_active)
-
 	end
-		print(" ")
 
 	--for i = 1, 4, 1
 	--do
