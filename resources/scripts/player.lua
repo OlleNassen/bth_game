@@ -153,7 +153,7 @@ function update_control(delta_seconds, entity)
 	then
 		entity.current_state = entity.states[1]
 		entity.anim.current = entity.anim.idle
-		--entity.can_jump = true
+		entity.can_jump = true
 		if entity.button.right 
 		then
 			accelerate(delta_seconds, entity, entity.max_speed, entity.ground_acceleration)
