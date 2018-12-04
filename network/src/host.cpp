@@ -161,7 +161,8 @@ void Host::receive(input_map& inputs, snapshot_map& snapshots, id_map& ids)
 			{
 				snapshots[eevent.peer->connectID] = {};
 				inputs[eevent.peer->connectID] = {};
-				ids[eevent.peer->connectID] = peers.size();
+				ids[eevent.peer->connectID] = peers.size() + 1;
+				std::cout << peers.size() + 1 << '\n';
 				connect(eevent);
 				break;
 			}
