@@ -244,16 +244,22 @@ void Game::update(std::chrono::milliseconds delta)
 				if (dynamics[i].position.x < -22)
 				{
 					door_1_votes++;
-
-					if (net.id() == 0)
-						door_2_votes++;
 				}
 				else if (dynamics[i].position.x > 22)
 				{
 					door_2_votes++;
+				}
+			}
 
-					if (net.id() == 0)
-						door_2_votes++;
+			if (door_1_votes == door_2_votes)
+			{
+				if (dynamics[0].position.x < -22)
+				{
+					door_1_votes++;
+				}
+				else if (dynamics[0].position.x > 22)
+				{
+					door_2_votes++;
 				}
 			}
 
