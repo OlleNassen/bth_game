@@ -5,7 +5,7 @@ namespace graphics
 {
 
 PostProcessingEffects::PostProcessingEffects()
-:texture("../resources/textures/screen_warning.png")
+:texture("../resources/textures/screen_warning.png", true)
 {
 	glGenVertexArrays(1, &vao_id);
 	glBindVertexArray(vao_id);

@@ -77,7 +77,7 @@ public:
 	void refresh();
 
 	LuaExport update(Input input,
-		int& current_state);
+		int& current_state, bool rw[], bool lw[]);
 	bool build_stage(int player_count) const;
 	bool pre_playing_stage() const;
 	bool is_new_round = false;

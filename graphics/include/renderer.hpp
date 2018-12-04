@@ -66,11 +66,12 @@ public:
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
+		std::array<int, 4> trigger_type,
 		float print_time,
 		int player_id,
 		int player_object_id,
 		std::vector<glm::vec3> remove_lines,
-		bool view_score) const;
+		bool view_score, bool how_to_play) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -83,6 +84,7 @@ public:
 		std::array<bool, 4> died,
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
+		std::array<int, 4> trigger_type,
 		float print_time,
 		float goal_height,
 		std::vector<build_information>& all_placed_objects,

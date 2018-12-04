@@ -3,15 +3,15 @@ namespace graphics
 {
 
 FX::FX()
-	:dust("../resources/textures/fx/dust_texture_1.png")
-	,spark("../resources/textures/fx/dust_texture_1.png")
-	,steam("../resources/textures/fx/steam_texture_1.png")
-	,blitz("../resources/textures/fx/blitz_texture_1.png")
-	,fire("../resources/textures/fx/fire_texture_1.png")
-	,godray("../resources/textures/fx/godray_1.png")
-	,furnace("../resources/textures/fx/godray_2.png")
-	,gust("../resources/textures/fx/gust_1.png")
-	,stun("../resources/textures/fx/stun_1.png")
+	:dust("../resources/textures/fx/dust_texture_1.png", true)
+	,spark("../resources/textures/fx/dust_texture_1.png", true)
+	,steam("../resources/textures/fx/steam_texture_1.png", true)
+	,blitz("../resources/textures/fx/blitz_texture_1.png", true)
+	,fire("../resources/textures/fx/fire_texture_1.png", true)
+	,godray("../resources/textures/fx/godray_1.png", true)
+	,furnace("../resources/textures/fx/godray_2.png", true)
+	,gust("../resources/textures/fx/gust_1.png", true)
+	,stun("../resources/textures/fx/stun_1.png", true)
 {
 	auto& fx_dust = *fx_dust_ptr;
 	auto& fx_spark = *fx_spark_ptr;
@@ -2889,8 +2889,6 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 
 			//Alpha
 			fx_random.color_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].a;
-			
-
 		}
 		else
 		{

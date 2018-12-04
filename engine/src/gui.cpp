@@ -98,8 +98,9 @@ static void current_menu(int index, std::array<std::string, 12>& strings, const 
 
 Menu::Menu() 
 {
-	buttons[0][10] = { "DEBUG", button_state::none };
-	
+	buttons[0][10] = { "haow tu plej", button_state::none };
+	buttons[4][6] = { "BACK", button_state::none };
+
 	buttons[0][8] = { "START", button_state::none };
 	buttons[0][7] = { "OPTIONS", button_state::none };
 	buttons[0][6] = { "EXIT", button_state::none };
@@ -107,6 +108,7 @@ Menu::Menu()
 	buttons[1][8] = { "HOST", button_state::none };
 	buttons[1][7] = { "JOIN", button_state::none };
 	buttons[1][6] = { "BACK", button_state::none };
+
 
 	buttons[2][10] = { "FULLSCREEN", button_state::none };
 	buttons[2][6] = { "BACK", button_state::none };
@@ -147,9 +149,7 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 	{
 		if (current_buttons == &buttons[0] && index == 10)
 		{
-			is_on = false;
-			is_debug = true;
-			current_buttons = &buttons[3];
+			current_buttons = &buttons[4];
 		}
 		else if (current_buttons == &buttons[0] && index == 8)
 		{
@@ -194,6 +194,10 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 		{
 			current_buttons = &buttons[0];
 		}
+		else if (current_buttons == &buttons[4] && index == 6)
+		{
+			current_buttons = &buttons[0];
+		}
 	}
 	else if (i[logic::button::select] >= logic::button_state::pressed)
 	{
@@ -221,6 +225,11 @@ bool Menu::exit() const
 bool Menu::get_fullscreen_pressed() const
 {
 	return fullscreen_pressed;
+}
+
+bool Menu::get_how_to_play() const
+{
+	return current_buttons == &buttons[4];
 }
 
 }

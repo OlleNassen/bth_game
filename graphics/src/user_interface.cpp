@@ -7,7 +7,7 @@ namespace graphics
 
 	UserInterface::UserInterface()
 	{
-		elements.fill({ {2.0f, 2.0f}, {1.0f, 1.0f, 1.0f}, { 0.05f, 0.05f }, 0.0f });
+		elements.fill({ {2.0f, 2.0f}, {1.0f, 1.0f, 1.0f}, { 0.03f, 0.03f }, 0.0f });
 		elements.front() = { { 0.5f, -0.5f },{ 0.8f, 0.3f, 1.0f},{ 0.7f, 0.25f }, 0.0f };
 		elements.at(1) = { {0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, { 0.7f, 0.7f }, 0.0f };
 		active_texture = 0;
@@ -22,8 +22,8 @@ namespace graphics
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2) * 2, (void*)sizeof(glm::vec2));
 
 		rebind_buffers();
-		gui_textures.at(0).load_texture("../resources/textures/player_arrow_2.png");
-		gui_textures.at(1).load_texture("../resources/textures/chat_texture.png");
+		gui_textures.at(0).load_texture("../resources/textures/player_arrow.png", true);
+		gui_textures.at(1).load_texture("../resources/textures/chat_texture.png", true);
 
 	}
 
@@ -132,22 +132,27 @@ namespace graphics
 
 	void PlayerArrows::update(const std::vector<Model> &models, int players, std::array<GuiElement, 100> &elements, glm::vec3 &camera_pos)
 	{
-		for (int i = 0; i < players; i++)
+		static const auto pi{ atan(1) * 4 };
+		for (auto i = 0u; i < players; ++i)
 		{
 			if (!is_invisible[i])
 			{
 				player_positions[i] = glm::vec2(models.at(i).get_position());
 
-
-				if (abs(player_positions[i].x - camera_pos.x) > 23
-					|| abs(player_positions[i].y - camera_pos.y) > 16)
+				if	(abs(player_positions[i].y - camera_pos.y) > screen_height)
 				{
-					player_vector[i] = player_positions[i] - glm::vec2(camera_pos.x, camera_pos.y);
-					elements.at(i + 2).position = (glm::normalize(player_vector[i]) * 0.9f);
-					elements.at(i + 2).position.x *= 0.6f;
-					player_vector[i].y *= -1;
-
-					elements.at(i + 2).angle = std::atan2(player_vector[i].y, player_vector[i].x);
+					if (player_positions[i].y > camera_pos.y)
+					{
+						elements.at(i + 2).angle = 0.0;
+						elements.at(i + 2).position.y = 0.95;
+					}
+					else
+					{
+						elements.at(i + 2).angle = pi;
+						elements.at(i + 2).position.y = -0.95;
+					}
+					
+					elements.at(i + 2).position.x = player_positions[i].x / stage_width;
 					elements.at(i + 2).color = models.at(i).get_color();
 				}
 				else

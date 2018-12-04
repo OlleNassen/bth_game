@@ -134,11 +134,11 @@ void Game::render()
 	renderer.render(chat.begin(), chat.end(),
 		menu.button_strings(),
 		db_coll, build_info, lua_data.game_over, lua_data.died, 
-		lua_data.finished, lua_data.scores, lua_data.time,
+		lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time,
 		net.id(),
 		players_placed_objects_id[net.id()].model_type_id,
 		remove_lines,
-		view_score);
+		view_score, menu.get_how_to_play());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -208,11 +208,25 @@ void Game::update(std::chrono::milliseconds delta)
 		if (level != &lobby)
 		{
 			load_map(&lobby);
+
+			for (int i = 0; i < static_cast<int>(player_count); i++)
+			{
+				lua_data.finished[i] = false;
+			}
 		}
 
 		game_state = (game_state | state::lobby);
+		
+		bool all_ready = true;
+		for (int i = 0; i < static_cast<int>(player_count); i++)
+		{
+			if (!lua_data.finished[i])
+			{
+				all_ready = false;
+			}
+		}
 
-		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu))
+		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu) && all_ready)
 		{
 			if (net.id() == 0)
 				net_state.state = network::SessionState::pre_building;
@@ -283,7 +297,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-				placed_objects_list_id = random_picked_object();
+				placed_objects_list_id = 5;//random_picked_object(); //Test
 				collision_data data;
 				int m_id = level->add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
@@ -608,7 +622,7 @@ void Game::update(std::chrono::milliseconds delta)
 			turretframe,
 			triggers_types,
 			player_hit_array},
-			game_state);
+			game_state, physics.rw, physics.lw);
 
 		//add laser hit array
 
@@ -674,28 +688,54 @@ void Game::update(std::chrono::milliseconds delta)
 				level->moving_models[i].set_position(pos);
 			}
 		}
-	}
+		anim idle = anim::falling;
+
+		for (auto& model : level->animated_models)
+			model.update_animation((float)delta.count(), idle);
+
+		bool spike = false, jump = false, speed = false, random = false, shield = false, turret = false, stun = false;
+
+		for (int i = 4; i < level->moving_models.size(); i++)
+			if (level->moving_models[i].is_animated)
+			{
+				if (level->moving_models[i].mesh->name == "spike_trap" && spike == false ||
+					level->moving_models[i].mesh->name == "double_jump" && jump == false ||
+					level->moving_models[i].mesh->name == "turret" && turret == false ||
+					level->moving_models[i].mesh->name == "stun_trap" && stun == false ||
+					level->moving_models[i].mesh->name == "speed_boost" && speed == false ||
+					level->moving_models[i].mesh->name == "random_buff" && random == false ||
+					level->moving_models[i].mesh->name == "shield" && shield == false)
+				{
+					level->moving_models[i].update_animation((float)delta.count(), idle);
+					if (level->moving_models[i].mesh->name == "spike_trap")
+					{
+						spike = true;
+						spikeframe = level->moving_models[i].getCurrentKeyframe();
+					}
+					if (level->moving_models[i].mesh->name == "double_jump")
+						jump = true;
+					if (level->moving_models[i].mesh->name == "turret")
+					{
+						turret = true;
+						//	turretframe = level->moving_models[i].getCurrentKeyframe();
+					}
+					if (level->moving_models[i].mesh->name == "stun_trap")
+						stun = true;
+					if (level->moving_models[i].mesh->name == "random_buff")
+						random = true;
+					if (level->moving_models[i].mesh->name == "shield")
+						shield = true;
+					if (level->moving_models[i].mesh->name == "speed_boost")
+						speed = true;
+				}	  	
+			}		   
+	}				   
 
 	if ((game_state & state::building) && players_placed_objects_id[net.id()].dynamics_id != -1)
 	{
 		level->v[net.id()] = { level->v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
 	}
 
-	anim idle = anim::falling;
-
-	for (auto& model : level->animated_models)
-		model.update_animation((float)delta.count(), idle);
-
-	for (int i = 4; i < level->moving_models.size(); i++)
-		if (level->moving_models[i].is_animated)
-		{
-			level->moving_models[i].update_animation((float)delta.count(), idle);
-			if (level->moving_models[i].mesh->name == "spike_trap")
-				spikeframe = level->moving_models[i].getCurrentKeyframe();
-
-			//if (level->moving_models[i].mesh->name == "turret")
-			//	turretframe = level->moving_models[i].getCurrentKeyframe();
-		}
 
 	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 
@@ -794,7 +834,7 @@ void Game::update(std::chrono::milliseconds delta)
 			directions,
 			chat[1], static_cast<int>(player_count),
 			net.id(), game_state, lua_data.died, 
-			lua_data.finished, lua_data.scores, lua_data.time, lua_data.goal_height, all_placed_objects,
+			lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
 			moving_objects_id,
 			view_score);

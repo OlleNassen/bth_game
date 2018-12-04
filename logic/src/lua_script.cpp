@@ -34,7 +34,7 @@ void PlayerScript::update(
 	int index,
 	const int& trigger,
 	const int& type,
-	anim& anim_state)
+	anim& anim_state, bool rw, bool lw)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
 	stack.getglobal(name.c_str());
@@ -45,6 +45,15 @@ void PlayerScript::update(
 		{
 			stack.push("button");
 			stack.push(i);
+			stack.rawset(top);
+		}
+
+		{
+			stack.push("lw");
+			stack.push(lw);
+			stack.rawset(top);
+			stack.push("rw");
+			stack.push(rw);
 			stack.rawset(top);
 		}
 
@@ -204,6 +213,19 @@ float PlayerScript::get_time(int index)
 	return temp;
 }
 
+double PlayerScript::dash_timer(int index)
+{
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	stack.getfield(-1, "dash_timer");
+
+	double temp = stack.tonumber(-1);
+
+	stack.clear();
+
+	return temp;
+}
+
 GameScript::GameScript()
 	: stack{ "../resources/scripts/gameloop.lua" }
 {
@@ -247,6 +269,7 @@ void GameScript::update(
 	int player_count,
 	int spike_frame, 
 	int turret_frame,
+	bool dash_active[],
 	bool laser_hit)
 {
 	{
@@ -263,6 +286,21 @@ void GameScript::update(
 			int top_pos = stack.top();
 			stack.push("position");
 			stack.push(players[i - 1].position);
+			stack.rawset(top_pos);
+		}
+
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+			stack.push("dash_active");
+			stack.push(dash_active[i - 1]);
 			stack.rawset(top_pos);
 		}
 
@@ -487,6 +525,10 @@ void GameScript::update_export()
 		stack.getfield(top, "finished");
 		stack.rawget(-1, i);
 		data.finished[i - 1] = stack.toboolean(-1);
+
+		stack.getfield(top, "triggered_type");
+		stack.rawget(-1, i);
+		data.trigger_type[i - 1] = stack.tointeger(-1);
 
 		//std::cout<< data.died[i - 1] << '\n';
 		//std::cout << data.finished[i - 1] << '\n';

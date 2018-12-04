@@ -3,11 +3,15 @@ out vec4 frag_color;
 
 in vec2 tex_coords;
 
+uniform float pulse;
 uniform sampler2D overlay_texture;
+uniform sampler2D cooldown_texture;
 
 void main()
 {
-	vec4 loading_screen_texture = texture(overlay_texture, tex_coords).rgba;
+	vec4 screen_texture = texture(overlay_texture, tex_coords).rgba * abs(texture(cooldown_texture, tex_coords).w - 1);
 
-	frag_color = vec4(loading_screen_texture);
+	screen_texture += texture(cooldown_texture, tex_coords).rgba * texture(cooldown_texture, tex_coords).w;
+
+	frag_color = vec4(screen_texture);
 }

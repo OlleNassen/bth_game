@@ -63,9 +63,6 @@
     <ClCompile Include="src\minimap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation_logic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\leaderboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -138,9 +135,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\animation_handler.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\animation_logic.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\leaderboard.hpp">

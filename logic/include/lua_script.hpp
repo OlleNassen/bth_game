@@ -27,6 +27,7 @@ public:
 	std::array<float, 4> scores;
 	std::array<bool, 4> died;
 	std::array<bool, 4> finished;
+	std::array<int, 4> trigger_type;
 	bool game_over = false;
 	float time;
 	float goal_height;
@@ -58,13 +59,14 @@ public:
 		int index,
 		const int& trigger,
 		const int& type,
-		anim& anim_state);
-		bool rw[4], lw[4];
+		anim& anim_state,
+		bool rw, bool lw);
 
 	bool build_stage_done(int index);
 	bool build_stage_force_done(int index);
 	void set_build_stage_done(int index, bool state);
 	float get_time(int index);
+	double dash_timer(int index);
 
 private:
 	LuaStack stack;
@@ -85,6 +87,7 @@ public:
 		int player_count,
 		int spike_frame,
 		int turret_frame,
+		bool dash_active[],
 		bool laser_hit);
 
 	void update_export();

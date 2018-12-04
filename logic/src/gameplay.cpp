@@ -40,7 +40,7 @@ void Gameplay::refresh()
 }
 
 LuaExport Gameplay::update(Input inputs,
-	int& current_state)
+	int& current_state, bool rw[], bool lw[])
 {
 	float time = -1.0f;
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(inputs.delta).count();
@@ -48,16 +48,29 @@ LuaExport Gameplay::update(Input inputs,
 	int turret_frame = inputs.turret_keyframe;
 	if (current_state & state::lobby)
 	{
+		glm::vec2 level_1_door = { -19.7, 26.1 };
 		for (int i = 0; i < inputs.player_count; i++)
 		{
-			player_script.update(
-				inputs.delta,
-				inputs.dynamics[i],
-				inputs.player_inputs[i],
-				i,
-				inputs.triggers[i],
-				inputs.triggers_types[i],
-				inputs.anim_states[i]);
+			auto& dyn = inputs.dynamics[i];
+			if (glm::distance(level_1_door, glm::vec2(dyn.position)) < 0.5f || dyn.position.x < -22)
+			{
+				dyn.position.x = -40;
+				game_script.data.finished[i] = true;
+			}
+		}
+
+		for (int i = 0; i < inputs.player_count; i++)
+		{
+			if (!game_script.data.finished[i])
+				player_script.update(
+					inputs.delta,
+					inputs.dynamics[i],
+					inputs.player_inputs[i],
+					i,
+					inputs.triggers[i],
+					inputs.triggers_types[i],
+					inputs.anim_states[i],
+					rw[i], lw[i]);
 		}
 	}
 
@@ -124,15 +137,17 @@ LuaExport Gameplay::update(Input inputs,
 					i,
 					inputs.triggers[i],
 					inputs.triggers_types[i],
-					inputs.anim_states[i]);
+					inputs.anim_states[i],
+					rw[i], lw[i]);
 			}
 		}
+
+		bool test[4] = {player_script.dash_timer(0) > 0.0, player_script.dash_timer(1) > 0.0,
+			player_script.dash_timer(2) > 0.0 , player_script.dash_timer(3) > 0.0 };
 		
-		//laser function
-
-		//physics::World::laser_ray_cast();
-
-		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0], inputs.player_count, spike_frame, turret_frame, inputs.laser_hit_array[0]);
+		game_script.update(inputs.delta, inputs.player_inputs[0],
+			inputs.triggers, inputs.triggers_types, &inputs.dynamics[0],
+			inputs.player_count, spike_frame, turret_frame, test, inputs.laser_hit_array[0]);
 
 		time = game_script.get_time();
 	}
@@ -142,9 +157,11 @@ LuaExport Gameplay::update(Input inputs,
 		new_round();
 	}
 	
-	game_script.update_export();
-
-	game_script.data.time = time;
+	if (!(current_state & state::lobby))
+	{
+		game_script.update_export();
+		game_script.data.time = time;
+	}
 
 	return game_script.data;
 }
