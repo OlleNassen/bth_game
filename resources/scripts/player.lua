@@ -5,7 +5,8 @@ function setup(entity)
 	entity.jump_timer = 0.0
 	entity.jump_impulse_x = 0
 	entity.jump_impulse_y = 0
-	entity.jump_forgiveness_time = 0.1
+	entity.jump_forgiveness_time = 0.125
+	entity.jumped_last = false
 
 	--Walljump stuff
 	entity.can_walljump = true
@@ -96,14 +97,13 @@ local epsilon = 0.001
 
 function update(delta_seconds, entity)
 	
-	--[[if entity.stun_trap_triggered == false
+	if entity.stun_trap_triggered == false
 	then
-		--update_control(delta_seconds, entity)
-		--update_controls(delta_seconds, entity)
-	end]]--
+		update_control(delta_seconds, entity)
+	end
 
 
-	update_control(delta_seconds, entity)
+	
 	update_triggers(delta_seconds, entity)
 
 
@@ -136,8 +136,6 @@ end
 
 function update_control(delta_seconds, entity)
 	
-	--print( entity.current_state)
-
 
 	if entity.lw then
 		entity.current_state = entity.states[6]
@@ -181,13 +179,19 @@ function update_control(delta_seconds, entity)
 	or entity.current_state == entity.states[2]
 	then
 
-		if entity.button.jump and entity.can_jump == true
+		if entity.button.jump and entity.can_jump and entity.jumped_last == false
 		then
 			entity.current_state = entity.states[3]
 			entity.anim.current = entity.anim.start_jump
 
 			entity.impulse.y = 46
 			entity.can_jump = false
+			entity.jumped_last = true
+
+		end
+		if entity.button.jump == false
+		then
+			entity.jumped_last = false
 		end
 	end
 
@@ -239,10 +243,11 @@ function update_control(delta_seconds, entity)
 	--jump_forgivenes
 		entity.jump_timer = entity.jump_timer + delta_seconds
 
-		if entity.jump_forgiveness_time > entity.jump_timer and entity.button.jump and entity.can_jump
+		if entity.jump_forgiveness_time > entity.jump_timer and entity.button.jump and entity.can_jump and entity.jumped_last == false
 		then
 			entity.impulse.y = 46
 			entity.can_jump = false
+			entity.jumped_last = true
 		end
 
 		if entity.button.left
@@ -345,15 +350,13 @@ function update_control(delta_seconds, entity)
 	--Wall jumping
 	if entity.current_state == entity.states[9]
 	then
-		--entity.current_state = entity.states[2]
-		
-
 		if entity.velocity.y < -0.0
 		then
 			entity.current_state = entity.states[4]
 		end
-
 	end
+
+
 end
 
 
