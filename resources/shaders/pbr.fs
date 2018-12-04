@@ -246,7 +246,7 @@ void main()
 
 	vec3 ambient = vec3(0.03) * albedo * ao;
 
-	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb;// * player_color;
+	vec3 emission = texture(emissive_map, fs_in.tex_coord).rgb* player_color;
     
     vec3 color = ambient + Lo; //emissive here?
 
