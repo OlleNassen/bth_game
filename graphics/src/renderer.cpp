@@ -45,7 +45,7 @@ Renderer::Renderer(GameScene* scene)
 	, leaderboard(projection)
 {
 	grid.calculate_grid(game_camera);
-	db_camera.position.z = 20.0f;
+	db_camera.position = glm::vec3(-0.56f, 14.62f, 17.32f);
 	glViewport(0, 0, 1920, 1080); // don't forget to configure the viewport to the capture dimensions.
 
 	dir_light.direction = glm::vec3(0, -0.7, -1);
@@ -103,8 +103,10 @@ void Renderer::render(
 		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, db_camera,&scene->models[0], &scene->models[9]);
 		
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
 		fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, fx_soft_particles, scene_texture, db_camera, fx_emitter.timer);
-		
+		glDepthMask(GL_TRUE);
 		/*if (debug_active)
 		{
 			glDisable(GL_DEPTH_TEST);
@@ -159,12 +161,12 @@ void Renderer::render(
 		post_proccessing.uniform("scene_texture", 0);
 		post_proccessing.uniform("depth_texture", 1);
 		post_proccessing.uniform("screen_warning", 2);
-
+		
 		scene_texture.bind_texture(0);
 		scene_texture.bind_texture(1);
-
+		
 		post_processing_effects.texture.bind(2);
-
+		
 		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 		post_processing_effects.render();
 
@@ -228,7 +230,7 @@ void Renderer::render(
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 			out_text.str("");
 			out_text << total_players_ready << "/" << player_count;
-			build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
+			//build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
 
 			if (total_players_ready == player_count)
 				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);

@@ -5,7 +5,7 @@ namespace graphics
 FX::FX()
 	:dust("../resources/textures/fx/dust_texture_1.png", true)
 	,spark("../resources/textures/fx/dust_texture_1.png", true)
-	,steam("../resources/textures/fx/steam_texture_1.png", true)
+	,steam("../resources/textures/fx/fire.png", true)
 	,blitz("../resources/textures/fx/blitz_texture_1.png", true)
 	,fire("../resources/textures/fx/fire_texture_1.png", true)
 	,godray("../resources/textures/fx/godray_1.png", true)
@@ -128,7 +128,7 @@ void FX::render_particles(const Shader& dust,
 	soft_particles.use();
 	soft_particles.uniform("particle_texture", 0);
 	soft_particles.uniform("depth_texture", 1);
-	this->dust.bind(0);
+	this->steam.bind(0);
 	scene_texture.bind_texture(1);
 	soft_particles.uniform("camera_right_worldspace", camera_right_vector);
 	soft_particles.uniform("camera_up_worldspace", camera_up_vector);
@@ -3032,14 +3032,17 @@ void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Ca
 	//Update data for particles
 	if (fx_soft_particles.total_particle_count <= MAX_PARTICLES)
 	{
-		if (randomizer <= 2)
+		if (randomizer <= 50)
 		{
 			for (auto i = 0u; i < fx_soft_particles.nr_of_particles; i++)
 			{
 				//Create a random position here
-				fx_soft_particles.default_x =  16.941f;
+				/*fx_soft_particles.default_x =  16.941f;
 				fx_soft_particles.default_y =  21.461f;
-				fx_soft_particles.default_z = -11.708f;
+				fx_soft_particles.default_z = -11.708f;*/
+				fx_soft_particles.default_x = (((rand() % 100) / 100.0) * 40.0) - 20.0;
+				fx_soft_particles.default_y = (((rand() % 100) / 100.0) * 40.0) - 20.0;
+				fx_soft_particles.default_z = (((rand() % 100) / 100.0) * 40.0) - 20.0;
 
 				//Find and update the last used particle
 				fx_soft_particles.last_used_particle = find_unused_particle(fx_soft_particles.particle_container, fx_soft_particles.last_used_particle);
@@ -3054,9 +3057,9 @@ void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Ca
 				//glm::vec3 main_dir = glm::vec3(0);
 				glm::vec3 random_dir_up = glm::vec3(0, 20, 0);
 				glm::vec3 random_dir_down = glm::vec3(0, -20, 0);
-				glm::vec3 random_dir_right = glm::vec3(15, 0, 0);
-				glm::vec3 random_dir_left = glm::vec3(10, 0, 0);
-				glm::vec3 random_dir_forward = glm::vec3(0, 0, -5);
+				glm::vec3 random_dir_right = glm::vec3(10, 0, 0);
+				glm::vec3 random_dir_left = glm::vec3(-10, 0, 0);
+				glm::vec3 random_dir_forward = glm::vec3(0, 0, 10);
 				glm::vec3 random_dir_back = glm::vec3(0, 0, -10);
 				float spread_x = (rand() % 100 / 100.0f);
 				float spread_y = (rand() % 100 / 100.0f);
@@ -3087,8 +3090,8 @@ void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Ca
 				fx_soft_particles.particle_container[particle_index].g = 255;
 				fx_soft_particles.particle_container[particle_index].b = 255;
 
-				fx_soft_particles.particle_container[particle_index].a = 255;
-				fx_soft_particles.particle_container[particle_index].size = 10.0;
+				fx_soft_particles.particle_container[particle_index].a = 1;
+				fx_soft_particles.particle_container[particle_index].size = 20;
 
 			}
 		}
@@ -3107,7 +3110,7 @@ void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Ca
 		if (fx_soft_particles.particle_container[i].life > 0.0f)
 		{
 			//data.particle_container[i].speed += * seconds.count();
-			fx_soft_particles.particle_container[i].pos += fx_soft_particles.particle_container[i].speed / 20.0f * seconds.count();
+			fx_soft_particles.particle_container[i].pos += fx_soft_particles.particle_container[i].speed / 10.0f * seconds.count();
 			fx_soft_particles.particle_container[i].camera_distance = glm::length(fx_soft_particles.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
@@ -3120,7 +3123,17 @@ void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Ca
 			fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 0] = fx_soft_particles.particle_container[i].r;
 			fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 1] = fx_soft_particles.particle_container[i].g;
 			fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 2] = fx_soft_particles.particle_container[i].b;
-			fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 3] = fx_soft_particles.particle_container[i].a;
+
+			if (fx_soft_particles.particle_container[i].life >= 0.5)
+			{
+				fx_soft_particles.particle_container[i].a = abs(fx_soft_particles.particle_container[i].life - 1) * 255;
+				fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 3] = fx_soft_particles.particle_container[i].a;
+			}
+			else
+			{
+				fx_soft_particles.particle_container[i].a = fx_soft_particles.particle_container[i].life * 255;
+				fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 3] = fx_soft_particles.particle_container[i].a;
+			}
 		}
 		else
 		{

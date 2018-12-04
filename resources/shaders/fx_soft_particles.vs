@@ -8,6 +8,7 @@ layout(location = 2) in vec4 color;
 // Output data ; will be interpolated for each fragment.
 out vec2 uv;
 out vec4 particle_color;
+out float depth_value;
 
 // Values that stay constant for the whole mesh.
 uniform vec3 camera_right_worldspace;
@@ -25,6 +26,8 @@ void main()
 	// Output position of the vertex test 2
 	gl_Position = projection * view * vec4(vertex_position_worldspace, 1.0f);
 	//gl_Position.w = 0.1;
+
+	depth_value = gl_Position.z / gl_Position.w;
 	
 	// UVs
 	uv = square_vertices.xy + vec2(0.5, 0.5);
