@@ -179,11 +179,6 @@ function update_control(delta_seconds, entity)
 	or entity.current_state == entity.states[2]
 	then
 
-		if entity.double_jump_triggered and entity.can_double_jump == false --trigger
-		then
-			entity.can_double_jump = true
-		end
-
 		if entity.button.jump and entity.can_jump and entity.jumped_last == false
 		then
 			entity.current_state = entity.states[3]
@@ -201,7 +196,11 @@ function update_control(delta_seconds, entity)
 	if entity.current_state == entity.states[3]
 	then
 
-		
+		--double jump boost
+		if entity.double_jump_triggered and entity.can_double_jump == false --trigger
+		then
+			entity.can_double_jump = true
+		end
 
 		if entity.button.right 
 		then
