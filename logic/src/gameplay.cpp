@@ -142,8 +142,8 @@ LuaExport Gameplay::update(Input inputs,
 			}
 		}
 
-		bool test[4] = {player_script.dash_timer(0) < 0.0, player_script.dash_timer(1) < 0.0,
-			player_script.dash_timer(2) < 0.0 , player_script.dash_timer(3) < 0.0 };
+		bool test[4] = {player_script.dash_timer(0) > 0.0, player_script.dash_timer(1) > 0.0,
+			player_script.dash_timer(2) > 0.0 , player_script.dash_timer(3) > 0.0 };
 		
 		game_script.update(inputs.delta, inputs.player_inputs[0],
 			inputs.triggers, inputs.triggers_types, &inputs.dynamics[0],
