@@ -287,7 +287,6 @@ void Game::update(std::chrono::milliseconds delta)
 
 		watching = net.id();
 
-		static std::array<int, 4> object_directions = { 0, 0, 0, 0 };
 		std::array <physics::objects, 4> player_place_objects_info;
 
 		//For host only //Send Objects
@@ -298,7 +297,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
-				placed_objects_list_id = random_picked_object() % 2;
+				placed_objects_list_id = 1; //random_picked_object() % 2;
 				collision_data data;
 				int m_id = level->add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
@@ -323,7 +322,7 @@ void Game::update(std::chrono::milliseconds delta)
 				total_nr_objects++;
 			}
 
-			object_directions = { 0, 0, 0, 0 };
+			object_directions.fill({ 0, 0 });
 			give_players_objects = true;
 		}
 
@@ -365,7 +364,7 @@ void Game::update(std::chrono::milliseconds delta)
 				}
 			}
 
-			object_directions = { 0, 0, 0, 0 };
+			object_directions.fill({ 0, 0 });
 		}
 		
 		for (int i = 0; i < static_cast<int>(player_count); i++)
@@ -384,64 +383,64 @@ void Game::update(std::chrono::milliseconds delta)
 					{
 						if ((*local_input)[logic::button::up] == logic::button_state::held)
 						{
-							object_directions[i] = 1;
+							object_directions[i].direction = 1;
 						}
 						else if ((*local_input)[logic::button::down] == logic::button_state::held)
 						{
-							object_directions[i] = 0;
+							object_directions[i].direction = 0;
 						}
 
-						if (object_directions[i] == 0)
+						if (object_directions[i].direction == 0)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 0, 0, degree });
-						else if (object_directions[i] == 1)
+						else if (object_directions[i].direction == 1)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 180.f, 0, degree });
 					}
 					else if (pos.z == 2)
 					{
 						if ((*local_input)[logic::button::right] == logic::button_state::held)
 						{
-							object_directions[i] = 1;
+							object_directions[i].direction = 1;
 						}
 						else if ((*local_input)[logic::button::left] == logic::button_state::held)
 						{
-							object_directions[i] = 0;
+							object_directions[i].direction = 0;
 						}
 
-						if (object_directions[i] == 0)
+						if (object_directions[i].direction == 0)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 180.f, degree });
-						else if (object_directions[i] == 1)
+						else if (object_directions[i].direction == 1)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 0, degree });
 					}
 					else if (pos.z == 3)
 					{
 						if ((*local_input)[logic::button::up] == logic::button_state::held)
 						{
-							object_directions[i] = 1;
+							object_directions[i].direction = 1;
 						}
 						else if ((*local_input)[logic::button::down] == logic::button_state::held)
 						{
-							object_directions[i] = 0;
+							object_directions[i].direction = 0;
 						}
 
-						if (object_directions[i] == 0)
+						if (object_directions[i].direction == 0)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 180.f, 0, degree });
-						else if (object_directions[i] == 1)
+						else if (object_directions[i].direction == 1)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 0, 0, degree });
 					}
 					else if (pos.z == 4)
 					{
 						if ((*local_input)[logic::button::right] == logic::button_state::held)
 						{
-							object_directions[i] = 1;
+							object_directions[i].direction = 1;
 						}
 						else if ((*local_input)[logic::button::left] == logic::button_state::held)
 						{
-							object_directions[i] = 0;
+							object_directions[i].direction = 0;
 						}
 
-						if (object_directions[i] == 0)
+						if (object_directions[i].direction == 0)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 0, degree });
-						else if (object_directions[i] == 1)
+						else if (object_directions[i].direction == 1)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 180.f, degree });
 					}
 				}
@@ -520,6 +519,14 @@ void Game::update(std::chrono::milliseconds delta)
 					glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
 					dynamics[players_placed_objects_id[i].dynamics_id].position = { pos.x, pos.y };
 					level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
+
+					if (players_placed_objects_id[i].model_type_id == 1)
+					{
+						object_directions[i].direction;
+						object_directions[i].rotation = static_cast<int>(pos.z);
+
+						std::cout << object_directions[i].rotation << " : " << object_directions[i].direction << "\n";
+					}
 				}
 			}
 

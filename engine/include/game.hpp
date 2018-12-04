@@ -94,6 +94,12 @@ private:
 
 	std::vector<build_information> all_placed_objects;
 	int total_nr_objects = 0;
+	struct turret_info
+	{
+		int rotation; 
+		int direction;
+	};
+	std::array<turret_info, 4> object_directions;
 
 	void remove_object(int id);
 
