@@ -102,6 +102,7 @@ class Messenger
 public:
 	Messenger();
 
+	bool is_client();
 	int id() const;
 	bool connected() const;
 	void update(GameState& state, const char* ip_address);
@@ -112,7 +113,7 @@ private:
 	input_map inputs;
 	EnetInit init;
 	Host player_host;
-	int player_id = 0;
+	bool client = false;
 
 	static constexpr enet_uint32 self = 0;
 };

@@ -133,9 +133,14 @@ Messenger::Messenger()
 	inputs[self] = dummy_i;
 }
 
+bool Messenger::is_client()
+{
+
+}
+
 int Messenger::id() const
 {
-	return player_id;
+	return client;
 }
 
 bool Messenger::connected() const
@@ -148,10 +153,10 @@ void Messenger::update(GameState& state, const char* ip_address)
 	if (ip_address)
 	{
 		player_host = Host{ip_address};
-		player_id = 1;	
+		client = true;	
 	}
 
-	if (player_id)
+	if (client)
 	{
 		inputs[self].input = state.inputs[1];
 		
