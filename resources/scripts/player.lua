@@ -179,6 +179,11 @@ function update_control(delta_seconds, entity)
 	or entity.current_state == entity.states[2]
 	then
 
+		if entity.button.jump == false
+		then
+			entity.jumped_last = false
+		end
+
 		if entity.button.jump and entity.can_jump and entity.jumped_last == false
 		then
 			entity.current_state = entity.states[3]
@@ -188,10 +193,6 @@ function update_control(delta_seconds, entity)
 			entity.can_jump = false
 			entity.jumped_last = true
 
-		end
-		if entity.button.jump == false
-		then
-			entity.jumped_last = false
 		end
 	end
 
