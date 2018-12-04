@@ -298,6 +298,21 @@ void GameScript::update(
 		{
 			stack.rawget(top, i);
 			int top_pos = stack.top();
+			stack.push("dash_active");
+			stack.push(dash_active[i]);
+			stack.rawset(top_pos);
+		}
+
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
 
 			stack.push("triggered");
 			stack.push(triggers[i - 1]);
