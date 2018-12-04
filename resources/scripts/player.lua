@@ -1,4 +1,7 @@
 
+printf = print
+print = function() end
+
 function setup(entity)
 	--Jump stuff
 	entity.can_jump = true

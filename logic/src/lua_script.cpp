@@ -299,7 +299,7 @@ void GameScript::update(
 			stack.rawget(top, i);
 			int top_pos = stack.top();
 			stack.push("dash_active");
-			stack.push(dash_active[i]);
+			stack.push(dash_active[i - 1]);
 			stack.rawset(top_pos);
 		}
 
