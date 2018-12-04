@@ -319,24 +319,6 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 			}
 		}
 	}
-	if (current_state & state::menu)
-	{
-		empty.bind(1);
-
-		if (how_to_play)
-		{
-			speedboost.front().bind(0);
-		}
-		//Render main menu screen
-		else if (main_menu_timer <= 800ms)
-		{
-			this->main_menu.at(0).bind(0);
-		}
-		else if (main_menu_timer > 800ms)
-		{
-			this->main_menu.at(1).bind(0);
-		}
-	}
 
 	overlay.render(shader);
 }
