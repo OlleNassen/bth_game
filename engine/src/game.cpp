@@ -293,8 +293,8 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 			else
 			{
-				gameplay.refresh();
-				load_map(&level2);
+				/*gameplay.refresh();
+				load_map(&level2);*/
 			}
 		}
 
