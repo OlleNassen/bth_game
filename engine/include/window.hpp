@@ -220,7 +220,6 @@ private:
 
 	int input_index = 0;
 	bool using_controller = false;
-	glm::ivec2 window_size;
 };
 
 #endif

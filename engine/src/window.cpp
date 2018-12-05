@@ -17,8 +17,15 @@ int screen_height()
 
 using std::cout;
 
-Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string& title)
+void resize_window(GLFWwindow* window, int new_width, int new_height)
 {
+	width = new_width;
+	height = new_height;
+	glViewport(0, 0, new_width, new_height);
+}
+
+Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string& title)
+{	
 	width = window_size.x;
 	height = window_size.y;
 	
@@ -45,8 +52,9 @@ Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string
 	glfwMakeContextCurrent(glfw_window);
 	glfwSetCharCallback(glfw_window, gui::character_callback);
 	glfwSetKeyCallback(glfw_window, gui::key_callback);
+	glfwSetWindowSizeCallback(glfw_window, resize_window);
 
-	glViewport(0, 0, window_size.x, window_size.y);
+	glViewport(0, 0, screen_width(), screen_height());
 
 	glewExperimental = GL_TRUE;
 
@@ -61,7 +69,6 @@ Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);	
 	glEnable(GL_CULL_FACE);
-	this->window_size = window_size;
 }
 
 Window::~Window()
@@ -145,14 +152,11 @@ void Window::update_input(logic::input& input)
 			button = logic::button_state::none;
 		}
 
-		glm::ivec2 window_size;
-		glfwGetWindowSize(glfw_window, &window_size.x, &window_size.y);
-
 		double x = 0.0;
 		double y = 0.0;
 		glfwGetCursorPos(glfw_window, &x, &y);
 
-		input.index = static_cast<int>((y / window_size.y) * (logic::input::indices - 1));
+		input.index = static_cast<int>((y / screen_height()) * (logic::input::indices - 1));
 		input.cursor = { x, y };
 
 		if (input.index < 0) input.index = 0;
@@ -241,13 +245,13 @@ void Window::set_screen_mode(bool fullscreen)
 		// backup windwo position and window size
 		glfwGetWindowPos(glfw_window, &window_pos.x, &window_pos.y);
 		// swithc to full screen
-		glfwSetWindowMonitor(glfw_window, glfwGetPrimaryMonitor(), 0, 0, window_size.x, window_size.y, 0);
+		glfwSetWindowMonitor(glfw_window, glfwGetPrimaryMonitor(), 0, 0, screen_width(), screen_height(), 0);
 	}
 	else
 	{
 		// restore last window size and position
-		glfwSetWindowMonitor(glfw_window, nullptr, window_pos.x, window_pos.y, window_size.x, window_size.y, 0);
+		glfwSetWindowMonitor(glfw_window, nullptr, window_pos.x, window_pos.y, screen_width(), screen_height(), 0);
 	}
-	glViewport(0, 0, window_size.x, window_size.y);
+	glViewport(0, 0, screen_width(), screen_height());
 }
 

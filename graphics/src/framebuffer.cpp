@@ -202,6 +202,12 @@ Framebuffer::~Framebuffer()
 
 void Framebuffer::bind_framebuffer() const
 {
+	glBindTexture(GL_TEXTURE_2D, fbo_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, screen_width(), screen_height(), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, depth_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, screen_width(), screen_height(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 }
 
