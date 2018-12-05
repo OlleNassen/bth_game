@@ -569,7 +569,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		places = 1;
 		placing = { -1, -1, -1, -1 };
-		scores_to_give = { player_count, player_count - 1, player_count - 2, player_count - 3 };
+		scores_to_give = { 4, 3, 2, 1 };
 	}
 
 	if (!(game_state & state::playing))
