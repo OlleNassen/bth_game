@@ -107,12 +107,16 @@ private:
 	struct turret
 	{
 		int dynamic_id;
-		//int model_id;
-		turret_info direction;
+		//turret_info info;
+		glm::vec2 direction;
+		glm::vec2 barrel_position;
+		glm::vec2 end_position;
+		float range;
 	};
 	std::vector<turret> turrets;
-	void laser_update(const glm::vec2 turret_position, turret_info info, int index, std::array<bool, 4>& hit_array);
 	std::array<bool, 4> player_hit_array = { false, false, false, false };
+	void laser_update(turret turret, std::array<bool, 4>& hit_array);
+	void add_turret(const int dyn_id, const turret_info dir_info, const glm::vec2 turret_pos);
 
 	//Random placed objects
 	std::array <id_and_model_place, 4> random_placed_objects_id;

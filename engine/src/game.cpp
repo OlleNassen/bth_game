@@ -525,8 +525,7 @@ void Game::update(std::chrono::milliseconds delta)
 						turret_infos[i].direction;
 						turret_infos[i].rotation = static_cast<int>(pos.z);
 
-						//std::cout << "add a turret. size: " << dynamics[players_placed_objects_id[i].dynamics_id].size.y << std::endl;
-						turrets.push_back(turret{ players_placed_objects_id[i].dynamics_id, turret_infos[i] });
+						add_turret(players_placed_objects_id[i].dynamics_id, turret_infos[i], dynamics[players_placed_objects_id[i].dynamics_id].position);
 
 						//std::cout << turret_infos[i].rotation << " : " << turret_infos[i].direction << "\n";
 						
@@ -673,12 +672,12 @@ void Game::update(std::chrono::milliseconds delta)
 
 	player_hit_array = { false, false, false, false };
 
-	if (turretframe <= 1)
+	if (turretframe >= 90 && turretframe <= 92)
 	{
 		//std::cout << "shoot" << std::endl;
 		for (auto i = 0; i < turrets.size(); ++i)
 		{
-			laser_update(dynamics[turrets[i].dynamic_id].position, turrets[i].direction, turrets[i].dynamic_id, player_hit_array);
+			laser_update(turrets[i], player_hit_array);
 		}
 	}
 
@@ -1104,73 +1103,85 @@ void Game::load_map(graphics::GameScene* scene)
 	watching = net.id();
 }
 
-void Game::laser_update(const glm::vec2 turret_position, turret_info info, int index, std::array<bool, 4>& hit_array)
+void Game::laser_update(turret turret, std::array<bool, 4>& hit_array)
 {
+	physics.laser_ray_cast(glm::vec3{ turret.barrel_position, 0 }, glm::vec3{ turret.direction, 0 }, hit_array);
+}
+
+void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::vec2 turret_pos)
+{	
 	glm::vec2 direction;
-	glm::vec2 barrel_position = turret_position;
+	glm::vec2 barrel_position = turret_pos;
+	glm::vec2 end_pos;
+	turret temp;
+	float temp_range;
 
-
-	if (info.rotation == 1)//attach to R wall
+	if (dir_info.rotation == 1)//attach to R wall
 	{
-		if (info.direction == 1) //look UP
-		{
-			direction = glm::vec2{ 0, 1 }; 
-
-			barrel_position += glm::vec2{ -0.833, dynamics[index].size.y };
-		}
-		else if (info.direction == 0) //look DOWN
-		{
-			direction = glm::vec2{ 0, -1 };
-
-			barrel_position -= glm::vec2{ 0.833, dynamics[index].size.y };
-		}
-	}
-	else if (info.rotation == 2) //attach to roof
-	{
-		if (info.direction == 1) //look RIGHT
-		{
-			direction = glm::vec2{ 1, 0 };
-
-			barrel_position += glm::vec2{ dynamics[index].size.x, -0.833 };
-		}
-		else if (info.direction == 0) //look LEFT
-		{
-			direction = glm::vec2{ -1, 0 };
-
-			barrel_position -= glm::vec2{ dynamics[index].size.x, 0.833 };
-		}
-	}
-	else if (info.rotation == 3) //attach to L wall
-	{
-		if (info.direction == 1) //look UP
+		if (dir_info.direction == 1) //look UP
 		{
 			direction = glm::vec2{ 0, 1 };
 
-			barrel_position += glm::vec2{ 0.833, dynamics[index].size.y };
+			barrel_position += glm::vec2{ -0.833, dynamics[dyn_id].size.y };
 		}
-		else if (info.direction == 0) //look DOWN
+		else if (dir_info.direction == 0) //look DOWN
 		{
 			direction = glm::vec2{ 0, -1 };
 
-			barrel_position -= glm::vec2{ -0.833, dynamics[index].size.y };
+			barrel_position -= glm::vec2{ 0.833, dynamics[dyn_id].size.y };
 		}
 	}
-	else if (info.rotation == 4) //attach to floor
+	else if (dir_info.rotation == 2) //attach to roof
 	{
-		if (info.direction == 1) //look RIGHT
+		if (dir_info.direction == 1) //look RIGHT
 		{
 			direction = glm::vec2{ 1, 0 };
 
-			barrel_position += glm::vec2{ dynamics[index].size.x, 0.833 };
+			barrel_position += glm::vec2{ dynamics[dyn_id].size.x, -0.833 };
 		}
-		else if (info.direction == 0) //look LEFT
+		else if (dir_info.direction == 0) //look LEFT
 		{
 			direction = glm::vec2{ -1, 0 };
 
-			barrel_position -= glm::vec2{ dynamics[index].size.x, -0.833 };
+			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x, 0.833 };
+		}
+	}
+	else if (dir_info.rotation == 3) //attach to L wall
+	{
+		if (dir_info.direction == 1) //look UP
+		{
+			direction = glm::vec2{ 0, 1 };
+
+			barrel_position += glm::vec2{ 0.833, dynamics[dyn_id].size.y };
+		}
+		else if (dir_info.direction == 0) //look DOWN
+		{
+			direction = glm::vec2{ 0, -1 };
+
+			barrel_position -= glm::vec2{ -0.833, dynamics[dyn_id].size.y };
+		}
+	}
+	else if (dir_info.rotation == 4) //attach to floor
+	{
+		if (dir_info.direction == 1) //look RIGHT
+		{
+			direction = glm::vec2{ 1, 0 };
+
+			barrel_position += glm::vec2{ dynamics[dyn_id].size.x, 0.833 };
+		}
+		else if (dir_info.direction == 0) //look LEFT
+		{
+			direction = glm::vec2{ -1, 0 };
+
+			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x, -0.833 };
 		}
 	}
 
-	physics.laser_ray_cast(glm::vec3{ barrel_position, 0 }, glm::vec3{ direction, 0 }, hit_array);
+	temp_range = physics.laser_range(glm::vec3{ barrel_position, 0 }, glm::vec3{ direction, 0 });
+	end_pos = barrel_position + (direction * temp_range);
+
+	temp = turret{ dyn_id, direction, barrel_position, end_pos, temp_range };
+
+	turrets.push_back(temp);
 
 }
