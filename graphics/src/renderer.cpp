@@ -45,7 +45,8 @@ Renderer::Renderer(GameScene* scene)
 	, leaderboard(projection)
 {
 	grid.calculate_grid(game_camera);
-	db_camera.position = glm::vec3(-0.56f, 14.62f, 17.32f);
+	//db_camera.position = glm::vec3(-0.56f, 14.62f, 17.32f);
+	db_camera.position = glm::vec3(10.49f, 16.79f, -3.48f);
 	glViewport(0, 0, 1920, 1080); // don't forget to configure the viewport to the capture dimensions.
 
 	dir_light.direction = glm::vec3(0, -0.7, -1);
@@ -91,6 +92,8 @@ void Renderer::render(
 
 	if (print_time < 0.0)
 		print_time = 0.0f;
+
+	//std::cout << db_camera.position.x << "\t" << db_camera.position.y << "\t" << db_camera.position.z << std::endl;
 
 	if (!is_menu && connected)
 	{

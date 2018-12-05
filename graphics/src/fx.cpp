@@ -3032,14 +3032,14 @@ void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Ca
 	//Update data for particles
 	if (fx_soft_particles.total_particle_count <= MAX_PARTICLES)
 	{
-		if (randomizer <= 50)
+		if (randomizer <= 100)
 		{
 			for (auto i = 0u; i < fx_soft_particles.nr_of_particles; i++)
 			{
 				//Create a random position here
-				/*fx_soft_particles.default_x =  16.941f;
-				fx_soft_particles.default_y =  21.461f;
-				fx_soft_particles.default_z = -11.708f;*/
+				//fx_soft_particles.default_x =  16.941f;
+				//fx_soft_particles.default_y =  21.461f;
+				//fx_soft_particles.default_z = -11.708f;
 				fx_soft_particles.default_x = (((rand() % 100) / 100.0) * 40.0) - 20.0;
 				fx_soft_particles.default_y = (((rand() % 100) / 100.0) * 40.0) - 20.0;
 				fx_soft_particles.default_z = (((rand() % 100) / 100.0) * 40.0) - 20.0;

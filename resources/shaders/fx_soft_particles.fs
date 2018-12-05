@@ -19,14 +19,13 @@ void main()
 {
 	float z_far = 100.0;
 	float z_near = 0.1;
-	float test_values = 1.0;
-	float contrast_power = 1.5;
+	float contrast_power = 2.5;
 
 	//Get Particle texture
 	vec4 color = texture(particle_texture, uv).rgba;
 
 	//Get the depth value of the screen
-	float z = (2 * z_near) / (z_far + z_near - texture(depth_texture, gl_FragCoord.xy / vec2(1920, 1080)).r * (z_far - z_near));// * (z_far - z_near);
+	float z = (2 * z_near) / (z_far + z_near - texture(depth_texture, gl_FragCoord.xy / vec2(1920, 1080)).r * (z_far - z_near));
 	
 	//Get the depth value of the fragments of the particle
 	float f_z = depth_value;
@@ -42,5 +41,4 @@ void main()
 	//Apply the fade and set it to the alpha of the particle
 	color.w *= weight;
 	frag_color = color * particle_color;
-
 }
