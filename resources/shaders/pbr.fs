@@ -128,6 +128,9 @@ void main()
 	for(int j = 0; j < elem_count; ++j) 
     {
 		int i = texture(light_indices, vec2(lights.x * 16 + j, lights.y)).r;
+		
+		frag_color = vec4(vec3(elem_count / 15.0, elem_count / 15.0, elem_count / 15.0), 1.0);
+		return;
 			
 		// calculate per-light radiance
 		vec3 L = normalize(light_pos[i] - fs_in.world_pos);
