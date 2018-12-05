@@ -213,6 +213,8 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				lua_data.finished[i] = false;
 			}
+
+			turrets.clear();
 		}
 
 		game_state = (game_state | state::lobby);
@@ -1105,7 +1107,7 @@ void Game::load_map(graphics::GameScene* scene)
 
 void Game::laser_update(turret turret, std::array<bool, 4>& hit_array)
 {
-	physics.laser_ray_cast(glm::vec3{ turret.barrel_position, 0 }, glm::vec3{ turret.direction, 0 }, hit_array);
+	physics.laser_ray_cast(glm::vec3{ turret.barrel_position, 0 }, glm::vec3{ turret.direction, 0 }, turret.range, hit_array);
 }
 
 void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::vec2 turret_pos)

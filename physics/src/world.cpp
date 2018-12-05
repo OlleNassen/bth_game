@@ -611,18 +611,19 @@ glm::vec3 World::get_closest_wall_point(int player_id)
 void World::laser_ray_cast(
 	const glm::vec3 turret_position,
 	const glm::vec3 direction,
+	float range,
 	std::array<bool, 4>& hit_array)
 {
 
-	float t = laser_range(turret_position, direction);
+	float t = range + 0.02;
 
 	for (int i = 0; i < 4; i++)
 	{
 		float temp = raycast(bodies[i].box, Ray(turret_position, direction));
-		if (temp != -1 && temp < t)
+		if (temp != -1 && temp <= t)
 		{
 			hit_array[i] = true;
-			//std::cout << "hit" << std::endl;
+			std::cout << "temp:"<< temp << " range: " << t << std::endl;
 		}
 	}
 }

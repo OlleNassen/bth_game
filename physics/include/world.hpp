@@ -100,7 +100,7 @@ public:
 	glm::vec3 get_closest_wall_point(int player_id);
 
 	//Turret
-	void laser_ray_cast(const glm::vec3 turret, const glm::vec3 direction, std::array<bool, 4>& hit_array);
+	void laser_ray_cast(const glm::vec3 turret, const glm::vec3 direction, float range, std::array<bool, 4>& hit_array);
 	float laser_range(const glm::vec3 turret, const glm::vec3 direction);
 
 private:
