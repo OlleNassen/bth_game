@@ -12,7 +12,7 @@ max_time = 15.0
 
 function update(delta_seconds, entity)
 
-	if entity.start_height == 0
+	if entity.start_height == 0 and entity.position.y > 0.0
 	then
 		entity.start_height = entity.position.y
 	end
