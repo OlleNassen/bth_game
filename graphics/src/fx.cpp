@@ -3014,7 +3014,7 @@ void FX::calculate_object_data(
 	glm::vec3 player_pos)
 {	
 	//Hard reset
-	if (!(game_state & state::playing))
+	if (game_state & state::pre_building)
 	{
 		previous_trigger = -1;
 		glide_active = false;
@@ -3022,63 +3022,78 @@ void FX::calculate_object_data(
 		doublejump_active = false;
 		shield_active = false;
 		random_active = false;
+		nr_of_stun = 0;
+		nr_of_glide = 0;
+		nr_of_speedboost = 0;
+		nr_of_doublejump = 0;
+		nr_of_shield = 0;
+		nr_of_random = 0;
+		stun_loc.clear();
+		glide_loc.clear();
+		speedboost_loc.clear();
+		doublejump_loc.clear();
+		shield_loc.clear();
+		random_loc.clear();
 	}
-	//Reset object locations before iterator
-	nr_of_stun = 0;
-	nr_of_glide = 0;
-	nr_of_speedboost = 0;
-	nr_of_doublejump = 0;
-	nr_of_shield = 0;
-	nr_of_random = 0;
-	stun_loc.clear();
-	glide_loc.clear();
-	speedboost_loc.clear();
-	doublejump_loc.clear();
-	shield_loc.clear();
-	random_loc.clear();
-
-
-	//Iterate through all the objects and collect needed data
-	for (int object = 0; object < build_info.size(); object++)
+	else
 	{
-		if (build_info[object].object_id == STUNTRAP)
+		//Reset object locations before iterator
+		nr_of_stun = 0;
+		nr_of_glide = 0;
+		nr_of_speedboost = 0;
+		nr_of_doublejump = 0;
+		nr_of_shield = 0;
+		nr_of_random = 0;
+		stun_loc.clear();
+		glide_loc.clear();
+		speedboost_loc.clear();
+		doublejump_loc.clear();
+		shield_loc.clear();
+		random_loc.clear();
+
+		//Iterate through all the objects and collect needed data
+		for (int object = 0; object < build_info.size(); object++)
 		{
-			nr_of_stun++;
-			stun_loc.push_back(build_info[object].local_position);
+			if (build_info[object].object_id == STUNTRAP)
+			{
+				nr_of_stun++;
+				stun_loc.push_back(build_info[object].local_position);
+			}
+			else if (build_info[object].object_id == GLIDETRAP)
+			{
+				nr_of_glide++;
+				glide_loc.push_back(build_info[object].local_position);
+			}
+			else if (build_info[object].object_id == SPEEDBOOST)
+			{
+				nr_of_speedboost++;
+				speedboost_loc.push_back(build_info[object].local_position);
+			}
+			else if (build_info[object].object_id == DOUBLEJUMP)
+			{
+				nr_of_doublejump++;
+				doublejump_loc.push_back(build_info[object].local_position);
+			}
+			else if (build_info[object].object_id == SHIELD)
+			{
+				nr_of_shield++;
+				shield_loc.push_back(build_info[object].local_position);
+			}
+			else if (build_info[object].object_id == RANDOM)
+			{
+				nr_of_random++;
+				random_loc.push_back(build_info[object].local_position);
+			}
 		}
-		else if (build_info[object].object_id == GLIDETRAP)
-		{
-			nr_of_glide++;
-			glide_loc.push_back(build_info[object].local_position);
-		}
-		else if (build_info[object].object_id == SPEEDBOOST)
-		{
-			nr_of_speedboost++;
-			speedboost_loc.push_back(build_info[object].local_position);
-		}
-		else if (build_info[object].object_id == DOUBLEJUMP)
-		{
-			nr_of_doublejump++;
-			doublejump_loc.push_back(build_info[object].local_position);
-		}
-		else if (build_info[object].object_id == SHIELD)
-		{
-			nr_of_shield++;
-			shield_loc.push_back(build_info[object].local_position);
-		}
-		else if (build_info[object].object_id == RANDOM)
-		{
-			nr_of_random++;
-			random_loc.push_back(build_info[object].local_position);
-		}
+		//Calculate the objects' particles
+		calculate_stun_data(delta, camera, trigger_type, player_pos);
+		calculate_glide_data(delta, camera, trigger_type, game_state, player_pos);
+		calculate_speedboost_data(delta, camera, trigger_type, game_state, player_pos);
+		calculate_doublejump_data(delta, camera, trigger_type, game_state, player_pos);
+		calculate_shield_data(delta, camera, trigger_type, game_state, player_pos);
+		calculate_random_data(delta, camera, trigger_type, game_state, player_pos);
 	}
-	//Calculate the objects' particles
-	calculate_stun_data(delta, camera, trigger_type, player_pos);
-	calculate_glide_data(delta, camera, trigger_type, game_state, player_pos);
-	calculate_speedboost_data(delta, camera, trigger_type, game_state, player_pos);
-	calculate_doublejump_data(delta, camera, trigger_type, game_state, player_pos);
-	calculate_shield_data(delta, camera, trigger_type, game_state, player_pos);
-	calculate_random_data(delta, camera, trigger_type, game_state, player_pos);
+
 }
 
 }
