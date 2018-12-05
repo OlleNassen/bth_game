@@ -629,9 +629,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Gust
 		fx_emitter.calculate_gust_data(delta, game_camera);
 
-		
-		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects);
-		
+		//Objects
+		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects, trigger_type[player_id], scene->moving_models[player_id].get_position());
+
+		scene->moving_models[player_id].get_position();
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();

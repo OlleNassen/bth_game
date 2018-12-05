@@ -2313,7 +2313,7 @@ void FX::calculate_gust_data(std::chrono::milliseconds delta, const Camera & cam
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_gust.total_particle_count * 4 * sizeof(GLubyte), fx_gust.color_data);
 }
 
-void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & camera)
+void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2402,7 +2402,7 @@ void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & cam
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_stun.total_particle_count * 4 * sizeof(GLubyte), fx_stun.color_data);
 }
-void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & camera)
+void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2414,28 +2414,37 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 	fx_glide.nr_of_particles = nr_of_glide;
 	randomizer = rand() % 100;
 
+	if (trigger_type == 3)
+	{
+		previous_trigger = 3;
+	}
+
 	//Update data for particles
 	if (fx_glide.total_particle_count <= MAX_PARTICLES)
 	{
-		if (randomizer <= 100)
+		for (auto i = 0u; i < fx_glide.nr_of_particles; i++)
 		{
-			for (auto i = 0u; i < fx_glide.nr_of_particles; i++)
+			//Set default values for the particles, first off life and position.
+			fx_glide.particle_container[i].life = 1.0f;
+
+			//Set colors, if you want color from texture, don't change the color
+			fx_glide.particle_container[i].r = 151;
+			fx_glide.particle_container[i].g = 0;
+			fx_glide.particle_container[i].b = 255;
+			fx_glide.particle_container[i].a = 180;
+			fx_glide.particle_container[i].size = 4.0f;
+		}
+		if (previous_trigger == 3)
+		{
+			if (fx_glide.particle_container[nr_of_glide + 1].life <= 0.0f)
 			{
-				//Find and update the last used particle
-				fx_glide.last_used_particle = find_unused_particle(fx_glide.particle_container, fx_glide.last_used_particle);
-				int particle_index = fx_glide.last_used_particle;
-
-				//Set default values for the particles, first off life and position.
-				fx_glide.particle_container[i].life = 1.0f;
-
-				//Set colors, if you want color from texture, don't change the color
-
-				fx_glide.particle_container[i].r = 151;
-				fx_glide.particle_container[i].g = 0;
-				fx_glide.particle_container[i].b = 255;
-				fx_glide.particle_container[i].a = 180;
-
-				fx_glide.particle_container[i].size = 4.0f;
+				fx_glide.particle_container[nr_of_glide + 1].life = 1.0f;
+				fx_glide.particle_container[nr_of_glide + 1].random_amp = 1.0f;
+				fx_glide.particle_container[nr_of_glide + 1].r = 151;
+				fx_glide.particle_container[nr_of_glide + 1].g = 0;
+				fx_glide.particle_container[nr_of_glide + 1].b = 255;
+				fx_glide.particle_container[nr_of_glide + 1].a = 220;
+				fx_glide.particle_container[nr_of_glide + 1].size = 5.0f;
 			}
 		}
 	}
@@ -2465,17 +2474,62 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 
 			//Alpha
 			fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].a;
+			
+			fx_glide.total_particle_count++;
 		}
 		else
 		{
 			//They ded, hide 'em
 			fx_glide.particle_container[i].camera_distance = -1.0f;
-			fx_glide.position_data[4 * fx_glide.total_particle_count + 0] = 0;
-			fx_glide.position_data[4 * fx_glide.total_particle_count + 1] = 0;
-			fx_glide.position_data[4 * fx_glide.total_particle_count + 2] = 0;
 			fx_glide.position_data[4 * fx_glide.total_particle_count + 3] = 0;
 		}
-		fx_glide.total_particle_count++;
+	}
+
+	if (previous_trigger == 3)
+	{
+		fx_glide.particle_container[nr_of_glide + 1].life -= (seconds.count() / 10.0f);
+
+		if (fx_glide.particle_container[nr_of_glide + 1].life > 0.0f)
+		{
+			fx_glide.particle_container[nr_of_glide + 1].pos = player_pos + glm::vec3(0, -1, -1);
+			fx_glide.particle_container[nr_of_glide + 1].camera_distance = glm::length(fx_glide.particle_container[nr_of_glide + 1].pos - camera.position);
+
+			//Set positions in the position data
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 0] = fx_glide.particle_container[nr_of_glide + 1].pos.x;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 1] = fx_glide.particle_container[nr_of_glide + 1].pos.y;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 2] = fx_glide.particle_container[nr_of_glide + 1].pos.z;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[nr_of_glide + 1].size;
+
+			//Set colors in the color data
+			fx_glide.color_data[4 * fx_glide.total_particle_count + 0] = fx_glide.particle_container[nr_of_glide + 1].r;
+			fx_glide.color_data[4 * fx_glide.total_particle_count + 1] = fx_glide.particle_container[nr_of_glide + 1].g;
+			fx_glide.color_data[4 * fx_glide.total_particle_count + 2] = fx_glide.particle_container[nr_of_glide + 1].b;
+
+			//Alpha
+			if (fx_glide.particle_container[nr_of_glide + 1].life <= 0.1f)
+			{
+				fx_glide.particle_container[nr_of_glide + 1].random_amp -= (seconds.count());
+				fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[nr_of_glide + 1].a * fx_glide.particle_container[nr_of_glide + 1].random_amp;
+			}
+			else
+			{
+				fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[nr_of_glide + 1].a;
+			}
+			
+			fx_glide.total_particle_count++;
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_glide.particle_container[nr_of_glide + 1].camera_distance = -1.0f;
+			fx_glide.position_data[4 * fx_glide.total_particle_count + 3] = 0;
+			previous_trigger = -1;
+		}
+	}
+	else
+	{
+		fx_glide.particle_container[nr_of_glide + 1].life = 0.0f;
+		fx_glide.particle_container[nr_of_glide + 1].size = 0.0f;
 	}
 
 	//Update particle information
@@ -2487,7 +2541,7 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_glide.total_particle_count * 4 * sizeof(GLubyte), fx_glide.color_data);
 }
-void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera & camera)
+void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2499,28 +2553,37 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 	fx_speedboost.nr_of_particles = nr_of_speedboost;
 	randomizer = rand() % 100;
 
+	if (trigger_type == 4)
+	{
+		previous_trigger = 4;
+	}
+
 	//Update data for particles
 	if (fx_speedboost.total_particle_count <= MAX_PARTICLES)
 	{
-		if (randomizer <= 100)
+		for (auto i = 0u; i < fx_speedboost.nr_of_particles; i++)
 		{
-			for (auto i = 0u; i < fx_speedboost.nr_of_particles; i++)
+			//Set default values for the particles, first off life and position.
+			fx_speedboost.particle_container[i].life = 1.0f;
+
+			//Set colors, if you want color from texture, don't change the color
+			fx_speedboost.particle_container[i].r = 255;
+			fx_speedboost.particle_container[i].g = 222;
+			fx_speedboost.particle_container[i].b = 34;
+			fx_speedboost.particle_container[i].a = 180;
+			fx_speedboost.particle_container[i].size = 4.0f;
+		}
+		if (previous_trigger == 4)
+		{
+			if (fx_speedboost.particle_container[nr_of_speedboost + 1].life <= 0.0f)
 			{
-				//Find and update the last used particle
-				fx_speedboost.last_used_particle = find_unused_particle(fx_speedboost.particle_container, fx_speedboost.last_used_particle);
-				int particle_index = fx_speedboost.last_used_particle;
-
-				//Set default values for the particles, first off life and position.
-				fx_speedboost.particle_container[i].life = 1.0f;
-
-				//Set colors, if you want color from texture, don't change the color
-
-				fx_speedboost.particle_container[i].r = 255;
-				fx_speedboost.particle_container[i].g = 222;
-				fx_speedboost.particle_container[i].b = 34;
-				fx_speedboost.particle_container[i].a = 180;
-
-				fx_speedboost.particle_container[i].size = 4.0f;
+				fx_speedboost.particle_container[nr_of_speedboost + 1].life = 1.0f;
+				fx_speedboost.particle_container[nr_of_speedboost + 1].random_amp = 1.0f;
+				fx_speedboost.particle_container[nr_of_speedboost + 1].r = 255;
+				fx_speedboost.particle_container[nr_of_speedboost + 1].g = 222;
+				fx_speedboost.particle_container[nr_of_speedboost + 1].b = 34;
+				fx_speedboost.particle_container[nr_of_speedboost + 1].a = 220;
+				fx_speedboost.particle_container[nr_of_speedboost + 1].size = 5.0f;
 			}
 		}
 	}
@@ -2550,19 +2613,62 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 
 			//Alpha
 			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].a;
-			
 
+			fx_speedboost.total_particle_count++;
 		}
 		else
 		{
 			//They ded, hide 'em
 			fx_speedboost.particle_container[i].camera_distance = -1.0f;
-			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 0] = 0;
-			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 1] = 0;
-			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 2] = 0;
 			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 3] = 0;
 		}
-		fx_speedboost.total_particle_count++;
+	}
+
+	if (previous_trigger == 4)
+	{
+		fx_speedboost.particle_container[nr_of_speedboost + 1].life -= (seconds.count() / 10.0f);
+
+		if (fx_speedboost.particle_container[nr_of_speedboost + 1].life > 0.0f)
+		{
+			fx_speedboost.particle_container[nr_of_speedboost + 1].pos = player_pos + glm::vec3(0, -1, -1);
+			fx_speedboost.particle_container[nr_of_speedboost + 1].camera_distance = glm::length(fx_speedboost.particle_container[nr_of_speedboost + 1].pos - camera.position);
+
+			//Set positions in the position data
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 0] = fx_speedboost.particle_container[nr_of_speedboost + 1].pos.x;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 1] = fx_speedboost.particle_container[nr_of_speedboost + 1].pos.y;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 2] = fx_speedboost.particle_container[nr_of_speedboost + 1].pos.z;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[nr_of_speedboost + 1].size;
+
+			//Set colors in the color data
+			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 0] = fx_speedboost.particle_container[nr_of_speedboost + 1].r;
+			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 1] = fx_speedboost.particle_container[nr_of_speedboost + 1].g;
+			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 2] = fx_speedboost.particle_container[nr_of_speedboost + 1].b;
+
+			//Alpha
+			if (fx_speedboost.particle_container[nr_of_speedboost + 1].life <= 0.1f)
+			{
+				fx_speedboost.particle_container[nr_of_speedboost + 1].random_amp -= (seconds.count());
+				fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[nr_of_speedboost + 1].a * fx_speedboost.particle_container[nr_of_speedboost + 1].random_amp;
+			}
+			else
+			{
+				fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[nr_of_speedboost + 1].a;
+			}
+
+			fx_speedboost.total_particle_count++;
+		}
+		else
+		{
+			//They ded, hide 'em
+			fx_speedboost.particle_container[nr_of_speedboost + 1].camera_distance = -1.0f;
+			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 3] = 0;
+			previous_trigger = -1;
+		}
+	}
+	else
+	{
+		fx_speedboost.particle_container[nr_of_speedboost + 1].life = 0.0f;
+		fx_speedboost.particle_container[nr_of_speedboost + 1].size = 0.0f;
 	}
 
 	//Update particle information
@@ -2574,7 +2680,7 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_speedboost.total_particle_count * 4 * sizeof(GLubyte), fx_speedboost.color_data);
 }
-void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera & camera)
+void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2661,7 +2767,7 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_doublejump.total_particle_count * 4 * sizeof(GLubyte), fx_doublejump.color_data);
 }
-void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & camera)
+void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2746,7 +2852,7 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_shield.total_particle_count * 4 * sizeof(GLubyte), fx_shield.color_data);
 }
-void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & camera)
+void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2912,7 +3018,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_random.total_particle_count * 4 * sizeof(GLubyte), fx_random.color_data);
 }
 
-void FX::calculate_object_data(std::chrono::milliseconds delta, const Camera & camera, std::vector<build_information> &build_info)
+void FX::calculate_object_data(std::chrono::milliseconds delta, const Camera & camera, std::vector<build_information> &build_info, int trigger_type, glm::vec3 player_pos)
 {	
 	//Reset object locations before iterator
 	nr_of_stun = 0;
@@ -2963,12 +3069,12 @@ void FX::calculate_object_data(std::chrono::milliseconds delta, const Camera & c
 		}
 
 		//Calculate the objects' particles
-		calculate_stun_data(delta, camera);
-		calculate_glide_data(delta, camera);
-		calculate_speedboost_data(delta, camera);
-		calculate_doublejump_data(delta, camera);
-		calculate_shield_data(delta, camera);
-		calculate_random_data(delta, camera);
+		calculate_stun_data(delta, camera, trigger_type, player_pos);
+		calculate_glide_data(delta, camera, trigger_type, player_pos);
+		calculate_speedboost_data(delta, camera, trigger_type, player_pos);
+		calculate_doublejump_data(delta, camera, trigger_type, player_pos);
+		calculate_shield_data(delta, camera, trigger_type, player_pos);
+		calculate_random_data(delta, camera, trigger_type, player_pos);
 	}
 }
 

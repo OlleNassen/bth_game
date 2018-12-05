@@ -299,7 +299,7 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 		{
 			this->shield.at(0).bind(0);
 		}
-		else if (overall_trigger && pulse_timer <= 10000ms)
+		/*else if (overall_trigger && pulse_timer <= 10000ms)
 		{
 			if (glide_trigger)
 			{
@@ -317,7 +317,7 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 			{
 				this->random.at(0).bind(0);
 			}
-		}
+		}*/
 	}
 
 	if (how_to_play)
