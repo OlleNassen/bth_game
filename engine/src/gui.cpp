@@ -98,8 +98,8 @@ static void current_menu(int index, std::array<std::string, 12>& strings, const 
 
 Menu::Menu() 
 {
-	buttons[0][10] = { "haow tu plej", button_state::none };
-	buttons[4][6] = { "BACK", button_state::none };
+	buttons[0][10] = { "HOW TO PLAY", button_state::none };
+	buttons[4][1] = { "BACK", button_state::none };
 
 	buttons[0][8] = { "START", button_state::none };
 	buttons[0][7] = { "OPTIONS", button_state::none };
@@ -194,7 +194,7 @@ void Menu::update(std::chrono::milliseconds delta, const logic::input& i)
 		{
 			current_buttons = &buttons[0];
 		}
-		else if (current_buttons == &buttons[4] && index == 6)
+		else if (current_buttons == &buttons[4] && index == 1)
 		{
 			current_buttons = &buttons[0];
 		}
