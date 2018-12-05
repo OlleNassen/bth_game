@@ -3,8 +3,8 @@ settings =
     window = 
     {
         fullscreen = false,
-        width = 1920,
-        height = 1080,
+        width = 1600,
+        height = 900,
     },
 
     sound =

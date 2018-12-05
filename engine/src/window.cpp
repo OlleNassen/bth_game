@@ -2,8 +2,8 @@
 #include <iostream>
 #include <screen.hpp>
 
-int width = 1920;
-int height = 1080;
+int width = 1280;
+int height = 720;
 
 int screen_width()
 {
@@ -19,6 +19,9 @@ using std::cout;
 
 Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string& title)
 {
+	width = window_size.x;
+	height = window_size.y;
+	
 	if (!glfwInit())
 	{
 		cout << "Failed to init glfw";
@@ -28,10 +31,10 @@ Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	if(fullscreen)
-		glfw_window = glfwCreateWindow(window_size.x, window_size.y,
+		glfw_window = glfwCreateWindow(screen_width(), screen_height(),
 			title.c_str(), glfwGetPrimaryMonitor(), nullptr);
 	else
-		glfw_window = glfwCreateWindow(window_size.x, window_size.y,
+		glfw_window = glfwCreateWindow(screen_width(), screen_height(),
 			title.c_str(), nullptr, nullptr);
 
 	if (!glfw_window)
