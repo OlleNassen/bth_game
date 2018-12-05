@@ -2788,7 +2788,7 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 	}
 
 	//If it hits a spike trap
-	if (trigger_type == 0 && previous_trigger == 6)
+	if ((trigger_type == 0 || trigger_type == 1 || trigger_type == 2) && previous_trigger == 6)
 	{
 		previous_trigger = -1;
 	}
@@ -3014,7 +3014,7 @@ void FX::calculate_object_data(
 	glm::vec3 player_pos)
 {	
 	//Hard reset
-	if (game_state & state::pre_building)
+	if (game_state & state::pre_building || game_state & state::lobby)
 	{
 		previous_trigger = -1;
 		glide_active = false;
