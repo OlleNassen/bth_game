@@ -681,7 +681,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		player_id);
 
 	vramUsage();
-
 	ramUsage();
 }
 
