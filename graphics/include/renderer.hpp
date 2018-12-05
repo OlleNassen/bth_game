@@ -72,7 +72,8 @@ public:
 		int player_object_id,
 		std::vector<glm::vec3> remove_lines,
 		bool view_score,
-		std::array<glm::vec2, 4> player_positions) const;
+		std::array<glm::vec2, 4> player_positions,
+		bool how_to_play) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,

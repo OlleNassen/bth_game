@@ -146,7 +146,8 @@ void Game::render()
 		players_placed_objects_id[net.id()].model_type_id,
 		remove_lines,
 		view_score,
-		player_positions);
+		player_positions,
+		menu.get_how_to_play());
 }
 
 void Game::update(std::chrono::milliseconds delta)
@@ -651,7 +652,7 @@ void Game::update(std::chrono::milliseconds delta)
 			spikeframe,
 			turretframe,
 			triggers_types},
-			game_state);
+			game_state, physics.rw, physics.lw);
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
 		{

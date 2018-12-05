@@ -41,7 +41,7 @@ public:
 		int player
 	);
 
-	void render(const Shader& shader) const;
+	void render(const Shader& shader, bool how_to_play) const;
 	
 	std::chrono::milliseconds main_menu_timer{0};
 	std::chrono::milliseconds finished_timer{0};
@@ -54,11 +54,14 @@ public:
 	std::chrono::milliseconds doublejump_timer{ 0 };
 	std::chrono::milliseconds shield_timer{ 0 };
 	std::chrono::milliseconds pulse_timer{0};
+	float pulse;
 
 private:
 	OverlayScreen overlay;
 	
 	Texture empty{ "../resources/textures/black_pixel.png", true };
+
+	Texture dash{ "../resources/textures/how_to_play.png", true };
 	std::vector<Texture> main_menu;
 	std::vector<Texture> finish;
 	std::vector<Texture> waiting;
@@ -73,7 +76,6 @@ private:
 	int player_id;
 	int current_state = 0;
 	int previous_trigger = -1;
-	float pulse;
 	float overall_modulus;
 	float stun_modulus;
 	bool is_dead = false;

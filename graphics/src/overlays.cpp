@@ -265,17 +265,20 @@ void Overlays::update(
 	stun_modulus = stun_timer.count() % 300;
 }
 
-void Overlays::render(const Shader & shader) const
+void Overlays::render(const Shader & shader, bool how_to_play) const
 {
 	using namespace std::chrono_literals;
 	shader.use();
 	shader.uniform("overlay_texture", 0);
+	shader.uniform("cooldown_texture", 1);
 	shader.uniform("pulse", pulse);
 
 	empty.bind(0);
+	empty.bind(1);
 
 	if (current_state & state::playing)
 	{
+		this->dash.bind(1);
 		//Render death screen
 		if (is_dead && has_finished && death_timer <= 2000ms)
 		{
@@ -316,18 +319,9 @@ void Overlays::render(const Shader & shader) const
 			}
 		}
 	}
-	if (current_state & state::menu)
-	{
-		//Render main menu screen
-		if (main_menu_timer <= 800ms)
-		{
-			this->main_menu.at(0).bind(0);
-		}
-		else if (main_menu_timer > 800ms)
-		{
-			this->main_menu.at(1).bind(0);
-		}
-	}
+
+	if (how_to_play)
+		dash.bind(0);
 
 	overlay.render(shader);
 }

@@ -76,7 +76,8 @@ void Renderer::render(
 	int player_object_id,
 	std::vector<glm::vec3> remove_lines,
 	bool view_score,
-	std::array<glm::vec2, 4> player_positions)const
+	std::array<glm::vec2, 4> player_positions,
+	bool how_to_play)const
 {
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
@@ -93,9 +94,12 @@ void Renderer::render(
 	if (print_time < 0.0)
 		print_time = 0.0f;
 
-	if (!is_menu && connected)
+	if (!is_menu && connected || is_menu)
 	{
-		render_character(robot_shader, game_camera, scene->moving_models, player_count); 
+		if (!is_menu)
+		{
+			render_character(robot_shader, game_camera, scene->moving_models, player_count); 
+		}
 
 		if (scene->moving_models.size() > 4)
 			render_type(pbra, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
@@ -156,11 +160,10 @@ void Renderer::render(
 
 	if (is_menu)
 	{
-		overlays.render(overlay_shader);
+		overlays.render(overlay_shader, how_to_play);
 	}
 
 	//Text rendering
-	if (!is_menu)
 	{ 
 		post_proccessing.use();
 		post_proccessing.uniform("scene_texture", 0);
@@ -174,7 +177,7 @@ void Renderer::render(
 		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 		post_processing_effects.render();
 
-		overlays.render(overlay_shader);
+		overlays.render(overlay_shader, how_to_play);
 		
 		if (game_state & state::pre_building)
 		{
@@ -191,7 +194,7 @@ void Renderer::render(
 		std::stringstream out_text;
 		out_text << std::fixed << std::setprecision(1) << print_time;
 
-		if (game_state & state::lobby)
+		if (game_state & state::lobby && !is_menu)
 		{
 			text_shader.use();
 			text_shader.uniform("projection", projection);
@@ -482,7 +485,7 @@ void Renderer::render(
 			[this, &offset, begin](const auto& s)
 		{
 			if (&s == begin || is_chat_visible)
-				text.render_text(s.c_str(), 10.0f, (offset += 25.0f), 0.5f);
+				text.render_text(s.c_str(), 1920.0f / 2, (offset += 25.0f), 0.5f);
 		});
 
 		constexpr float size_y = static_cast<int>(1080 / 12);
