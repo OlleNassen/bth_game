@@ -266,6 +266,7 @@ private:
 
 	//Timer info
 	Text timer_text;
+	float spawn_timer = 3.5f;
 
 	//Build instructions
 	Text build_text;

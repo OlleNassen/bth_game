@@ -299,6 +299,8 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 		}
 
+
+
 		//Render text of state and what to do.
 		game_state = (game_state | state::pre_building);
 		static float pre_build_timer = 3.5f;
@@ -337,10 +339,11 @@ void Game::update(std::chrono::milliseconds delta)
 		if (!give_players_objects && net.id() == 0)
 		{
 			players_placed_objects_id.fill({ -1, -1, -1, -1 });
-			std::array<int, 4> random_position = random_indexes(); //{ 0, 0, 0, 0 };
+			std::array<int, 4> random_position = random_indexes();
+			std::array<glm::vec2, 4> start_positons = { glm::vec2{0.f, 60.5f}, glm::vec2{0.f, 113.5}, glm::vec2{0.f, 167.f}, glm::vec2{0.f, 224.5f} };
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
-				glm::vec2 start_position = { 0, 20 + (random_position[i] * 64) };
+				glm::vec2 start_position = start_positons[random_position[i]];
 				placed_objects_list_id = random_picked_object();
 				collision_data data;
 				int m_id = level->add_object(data, placed_objects_list_id);
@@ -532,7 +535,7 @@ void Game::update(std::chrono::milliseconds delta)
 		int total_finished = 0;
 		for (int i = 0; i < static_cast<int>(player_count); i++)
 		{
-			if (lua_data.finished[i] || lua_data.died[i])
+			if (lua_data.finished[i] && !lua_data.died[i])
 			{
 				total_finished++;
 			}
@@ -543,10 +546,12 @@ void Game::update(std::chrono::milliseconds delta)
 			all_finished_timer -= dt;
 			lua_data.time = all_finished_timer;
 		}
+		else
+			all_finished_timer = 6.5f;
 
 		if (lua_data.time <= 0.0f)
 		{
-			all_finished_timer = 3.5f;
+			all_finished_timer = 6.5f;
 			if (net.id() == 0)
 				net_state.state = network::SessionState::score;
 			game_state = (game_state | state::score);
@@ -794,7 +799,7 @@ void Game::update(std::chrono::milliseconds delta)
 				direction.x += 1.0f;
 		}	
 		
-		if ((lua_data.died[net.id()] || lua_data.finished[net.id()]) && (net_state.state == network::SessionState::playing))
+		if ((lua_data.died[net.id()] && lua_data.finished[net.id()]) && (net_state.state == network::SessionState::playing))
 		{
 			//Spectator
 			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
