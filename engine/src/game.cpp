@@ -379,7 +379,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 				if (players_placed_objects_id[i].model_type_id == 1)
 				{
-					if ((*local_input)[logic::button::rotate] == logic::button_state::pressed)
+					if ((player_inputs[i])[logic::button::rotate] == logic::button_state::pressed)
+						//(*local_input)[logic::button::rotate] == logic::button_state::pressed)
 					{
 						turret_infos[i].direction++;
 						turret_infos[i].direction %= 2;
