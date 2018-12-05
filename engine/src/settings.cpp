@@ -61,11 +61,13 @@ void Settings::create(bool fullscreen)
 {
 	std::string fullscreen_string = (fullscreen) ? "true" : "false";
 	std::ofstream out("../resources/scripts/setup/settings.lua");
+	std::string width = std::to_string(window.resolution.x);
+	std::string height = std::to_string(window.resolution.y);
 
 	std::string tab = "    ";
 
 	out << "settings = \n" << "{\n" << "    window = \n" << "    {\n" << "        fullscreen = " << fullscreen_string << ",\n"
-		<< "        width = 1920,\n" << "        height = 1080,\n" << "    },\n\n" << "    sound =\n" << "    {\n"
+		<< "        width = " << width << ",\n" << "        height = " <<  height <<",\n" << "    },\n\n" << "    sound =\n" << "    {\n"
 		<< "        quality = 9.0 -- 10 is max\n" << "    },\n\n" << "    graphics =\n"
 		<< "    {\n" << "        debug_fov = 90.0,\n" << "        depth_of_field = true\n" << "    }\n"
 		<< "}\n";
