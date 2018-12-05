@@ -15,13 +15,17 @@ LightGrid::LightGrid()
 {	
 	glGenTextures(1, &light_texture);
 	glBindTexture(GL_TEXTURE_2D, light_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, block_size * 16, block_size, 0, GL_R32I, GL_INT, indices);
-
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	
+	std::cout << glGetError() << '\n';
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, block_size * 16, block_size, 0, GL_RED_INTEGER, GL_INT, indices);
+	std::cout << glGetError() << '\n';
+
+	
 }
 
 void LightGrid::bind(int index) const
@@ -46,6 +50,8 @@ void LightGrid::calculate_grid(const Camera& camera)
 void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> lights)
 {
 	memset(indices, 0, sizeof(indices));
+	float dx = 1920 / block_size;
+	float dy = 1080 / block_size;
 	
 	for (int light_id = 0; light_id < lights.size(); ++light_id)
 	{
@@ -60,17 +66,20 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> li
 		{
 			for (int i = 0; i < block_size; ++i)
 			{
-				int* elem_count = &indices[i * 16 + j * block_size];
-				if (sphere_inside_frustum(sphere, grid[i][j]) && *elem_count < 10)
+				int x = i * 16;
+				int y = j * block_size;
+				int count = indices[x + y];
+
+				if (sphere_inside_frustum(sphere, grid[i][j]) && count < 10)
 				{			
-					indices[i * 16 + j * block_size + *elem_count] = light_id;
-					*elem_count = *elem_count + 1;
+					indices[x + y + count] = light_id;
+					++indices[x + y];
 				}
 			}
 		}
 	}
 	glBindTexture(GL_TEXTURE_2D, light_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, block_size * 16, block_size, 0, GL_R32I, GL_INT, indices);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, block_size * 16, block_size, 0, GL_RED_INTEGER, GL_INT, indices);
 }
 
 glm::vec4 screen_to_view(const glm::mat4& inv_proj, const glm::vec4& screen)
