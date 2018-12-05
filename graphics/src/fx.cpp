@@ -2402,21 +2402,17 @@ void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & cam
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_stun.total_particle_count * 4 * sizeof(GLubyte), fx_stun.color_data);
 }
-void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
+void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
 	auto& fx_glide = *fx_glide_ptr;
 
-	fx_glide.default_x = 0.0f;
-	fx_glide.default_y = 0.0f;
-	fx_glide.default_z = 0.0f;
 	fx_glide.nr_of_particles = nr_of_glide;
-	randomizer = rand() % 100;
 
 	if (trigger_type == 3)
 	{
-		previous_trigger = 3;
+		previous_trigger = trigger_type;
 	}
 
 	//Update data for particles
@@ -2434,7 +2430,7 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 			fx_glide.particle_container[i].a = 180;
 			fx_glide.particle_container[i].size = 4.0f;
 		}
-		if (previous_trigger == 3)
+		if (previous_trigger == 3 && !glide_active)
 		{
 			if (fx_glide.particle_container[nr_of_glide + 1].life <= 0.0f)
 			{
@@ -2443,8 +2439,9 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 				fx_glide.particle_container[nr_of_glide + 1].r = 151;
 				fx_glide.particle_container[nr_of_glide + 1].g = 0;
 				fx_glide.particle_container[nr_of_glide + 1].b = 255;
-				fx_glide.particle_container[nr_of_glide + 1].a = 220;
+				fx_glide.particle_container[nr_of_glide + 1].a = 180;
 				fx_glide.particle_container[nr_of_glide + 1].size = 5.0f;
+				glide_active = true;
 			}
 		}
 	}
@@ -2453,35 +2450,23 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 	//Update movement
 	for (int i = 0; i < fx_glide.nr_of_particles; i++)
 	{
-		//Update life with delta time
-		fx_glide.particle_container[i].life -= (seconds.count() / 2.0f);
+		fx_glide.particle_container[i].pos = glide_loc[i] + glm::vec3(0, 0, -1.0f);
+		fx_glide.particle_container[i].camera_distance = glm::length(fx_glide.particle_container[i].pos - camera.position);
 
-		if (fx_glide.particle_container[i].life > 0.0f)
-		{
-			fx_glide.particle_container[i].pos = glide_loc[i] + glm::vec3(0, 0, -1.0f);
-			fx_glide.particle_container[i].camera_distance = glm::length(fx_glide.particle_container[i].pos - camera.position);
+		//Set positions in the position data
+		fx_glide.position_data[4 * fx_glide.total_particle_count + 0] = fx_glide.particle_container[i].pos.x;
+		fx_glide.position_data[4 * fx_glide.total_particle_count + 1] = fx_glide.particle_container[i].pos.y;
+		fx_glide.position_data[4 * fx_glide.total_particle_count + 2] = fx_glide.particle_container[i].pos.z;
+		fx_glide.position_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].size;
 
-			//Set positions in the position data
-			fx_glide.position_data[4 * fx_glide.total_particle_count + 0] = fx_glide.particle_container[i].pos.x;
-			fx_glide.position_data[4 * fx_glide.total_particle_count + 1] = fx_glide.particle_container[i].pos.y;
-			fx_glide.position_data[4 * fx_glide.total_particle_count + 2] = fx_glide.particle_container[i].pos.z;
-			fx_glide.position_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].size;
+		//Set colors in the color data
+		fx_glide.color_data[4 * fx_glide.total_particle_count + 0] = fx_glide.particle_container[i].r;
+		fx_glide.color_data[4 * fx_glide.total_particle_count + 1] = fx_glide.particle_container[i].g;
+		fx_glide.color_data[4 * fx_glide.total_particle_count + 2] = fx_glide.particle_container[i].b;
 
-			//Set colors in the color data
-			fx_glide.color_data[4 * fx_glide.total_particle_count + 0] = fx_glide.particle_container[i].r;
-			fx_glide.color_data[4 * fx_glide.total_particle_count + 1] = fx_glide.particle_container[i].g;
-			fx_glide.color_data[4 * fx_glide.total_particle_count + 2] = fx_glide.particle_container[i].b;
+		//Alpha
+		fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].a;
 
-			//Alpha
-			fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[i].a;
-			
-		}
-		else
-		{
-			//They ded, hide 'em
-			fx_glide.particle_container[i].camera_distance = -1.0f;
-			fx_glide.position_data[4 * fx_glide.total_particle_count + 3] = 0;
-		}
 		fx_glide.total_particle_count++;
 	}
 
@@ -2515,20 +2500,21 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 			{
 				fx_glide.color_data[4 * fx_glide.total_particle_count + 3] = fx_glide.particle_container[nr_of_glide + 1].a;
 			}
+			fx_glide.total_particle_count++;
 		}
 		else
 		{
 			//They ded, hide 'em
+			fx_glide.particle_container[nr_of_glide + 1].life = 0.0f;
 			fx_glide.particle_container[nr_of_glide + 1].camera_distance = -1.0f;
 			fx_glide.position_data[4 * fx_glide.total_particle_count + 3] = 0;
 			previous_trigger = -1;
+			glide_active = false;
 		}
-		fx_glide.total_particle_count++;
 	}
 	else
 	{
-		fx_glide.particle_container[nr_of_glide + 1].life = 0.0f;
-		fx_glide.particle_container[nr_of_glide + 1].size = 0.0f;
+		glide_active = false;
 	}
 
 	//Update particle information
@@ -2540,21 +2526,17 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_glide.total_particle_count * 4 * sizeof(GLubyte), fx_glide.color_data);
 }
-void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
+void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
 	auto& fx_speedboost = *fx_speedboost_ptr;
 
-	fx_speedboost.default_x = 0.0f;
-	fx_speedboost.default_y = 0.0f;
-	fx_speedboost.default_z = 0.0f;
 	fx_speedboost.nr_of_particles = nr_of_speedboost;
-	randomizer = rand() % 100;
 
 	if (trigger_type == 4)
 	{
-		previous_trigger = 4;
+		previous_trigger = trigger_type;
 	}
 
 	//Update data for particles
@@ -2572,7 +2554,7 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 			fx_speedboost.particle_container[i].a = 180;
 			fx_speedboost.particle_container[i].size = 4.0f;
 		}
-		if (previous_trigger == 4)
+		if (previous_trigger == 4 && !speedboost_active)
 		{
 			if (fx_speedboost.particle_container[nr_of_speedboost + 1].life <= 0.0f)
 			{
@@ -2581,8 +2563,9 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 				fx_speedboost.particle_container[nr_of_speedboost + 1].r = 255;
 				fx_speedboost.particle_container[nr_of_speedboost + 1].g = 222;
 				fx_speedboost.particle_container[nr_of_speedboost + 1].b = 34;
-				fx_speedboost.particle_container[nr_of_speedboost + 1].a = 220;
+				fx_speedboost.particle_container[nr_of_speedboost + 1].a = 180;
 				fx_speedboost.particle_container[nr_of_speedboost + 1].size = 5.0f;
+				speedboost_active = true;
 			}
 		}
 	}
@@ -2591,34 +2574,23 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 	//Update movement
 	for (int i = 0; i < fx_speedboost.nr_of_particles; i++)
 	{
-		//Update life with delta time
-		fx_speedboost.particle_container[i].life -= (seconds.count() / 2.0f);
+		fx_speedboost.particle_container[i].pos = speedboost_loc[i] + glm::vec3(0, 0, -1.0f);
+		fx_speedboost.particle_container[i].camera_distance = glm::length(fx_speedboost.particle_container[i].pos - camera.position);
 
-		if (fx_speedboost.particle_container[i].life > 0.0f)
-		{
-			fx_speedboost.particle_container[i].pos = speedboost_loc[i] + glm::vec3(0, 0, -1.0f);
-			fx_speedboost.particle_container[i].camera_distance = glm::length(fx_speedboost.particle_container[i].pos - camera.position);
+		//Set positions in the position data
+		fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 0] = fx_speedboost.particle_container[i].pos.x;
+		fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 1] = fx_speedboost.particle_container[i].pos.y;
+		fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 2] = fx_speedboost.particle_container[i].pos.z;
+		fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].size;
 
-			//Set positions in the position data
-			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 0] = fx_speedboost.particle_container[i].pos.x;
-			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 1] = fx_speedboost.particle_container[i].pos.y;
-			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 2] = fx_speedboost.particle_container[i].pos.z;
-			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].size;
+		//Set colors in the color data
+		fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 0] = fx_speedboost.particle_container[i].r;
+		fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 1] = fx_speedboost.particle_container[i].g;
+		fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 2] = fx_speedboost.particle_container[i].b;
 
-			//Set colors in the color data
-			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 0] = fx_speedboost.particle_container[i].r;
-			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 1] = fx_speedboost.particle_container[i].g;
-			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 2] = fx_speedboost.particle_container[i].b;
+		//Alpha
+		fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].a;
 
-			//Alpha
-			fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[i].a;
-		}
-		else
-		{
-			//They ded, hide 'em
-			fx_speedboost.particle_container[i].camera_distance = -1.0f;
-			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 3] = 0;
-		}
 		fx_speedboost.total_particle_count++;
 	}
 
@@ -2652,20 +2624,21 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 			{
 				fx_speedboost.color_data[4 * fx_speedboost.total_particle_count + 3] = fx_speedboost.particle_container[nr_of_speedboost + 1].a;
 			}
+			fx_speedboost.total_particle_count++;
 		}
 		else
 		{
 			//They ded, hide 'em
+			fx_speedboost.particle_container[nr_of_speedboost + 1].life = 0.0f;
 			fx_speedboost.particle_container[nr_of_speedboost + 1].camera_distance = -1.0f;
 			fx_speedboost.position_data[4 * fx_speedboost.total_particle_count + 3] = 0;
 			previous_trigger = -1;
+			speedboost_active = false;
 		}
-		fx_speedboost.total_particle_count++;
 	}
 	else
 	{
-		fx_speedboost.particle_container[nr_of_speedboost + 1].life = 0.0f;
-		fx_speedboost.particle_container[nr_of_speedboost + 1].size = 0.0f;
+		speedboost_active = false;
 	}
 
 	//Update particle information
@@ -2677,21 +2650,17 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_speedboost.total_particle_count * 4 * sizeof(GLubyte), fx_speedboost.color_data);
 }
-void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
+void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
 	auto& fx_doublejump = *fx_doublejump_ptr;
 
-	fx_doublejump.default_x = 0.0f;
-	fx_doublejump.default_y = 0.0f;
-	fx_doublejump.default_z = 0.0f;
 	fx_doublejump.nr_of_particles = nr_of_doublejump;
-	randomizer = rand() % 100;
 
 	if (trigger_type == 5)
 	{
-		previous_trigger = 5;
+		previous_trigger = trigger_type;
 	}
 
 	//Update data for particles
@@ -2709,7 +2678,7 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 			fx_doublejump.particle_container[i].a = 180;
 			fx_doublejump.particle_container[i].size = 4.0f;
 		}
-		if (previous_trigger == 5)
+		if (previous_trigger == 5 && !doublejump_active)
 		{
 			if (fx_doublejump.particle_container[nr_of_doublejump + 1].life <= 0.0f)
 			{
@@ -2718,8 +2687,9 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 				fx_doublejump.particle_container[nr_of_doublejump + 1].r = 0;
 				fx_doublejump.particle_container[nr_of_doublejump + 1].g = 255;
 				fx_doublejump.particle_container[nr_of_doublejump + 1].b = 0;
-				fx_doublejump.particle_container[nr_of_doublejump + 1].a = 220;
+				fx_doublejump.particle_container[nr_of_doublejump + 1].a = 180;
 				fx_doublejump.particle_container[nr_of_doublejump + 1].size = 5.0f;
+				doublejump_active = true;
 			}
 		}
 	}
@@ -2728,34 +2698,23 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 	//Update movement
 	for (int i = 0; i < fx_doublejump.nr_of_particles; i++)
 	{
-		//Update life with delta time
-		fx_doublejump.particle_container[i].life -= (seconds.count() / 2.0f);
+		fx_doublejump.particle_container[i].pos = doublejump_loc[i] + glm::vec3(0, 0, -1.0f);
+		fx_doublejump.particle_container[i].camera_distance = glm::length(fx_doublejump.particle_container[i].pos - camera.position);
 
-		if (fx_doublejump.particle_container[i].life > 0.0f)
-		{
-			fx_doublejump.particle_container[i].pos = doublejump_loc[i] + glm::vec3(0, 0, -1.0f);
-			fx_doublejump.particle_container[i].camera_distance = glm::length(fx_doublejump.particle_container[i].pos - camera.position);
+		//Set positions in the position data
+		fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 0] = fx_doublejump.particle_container[i].pos.x;
+		fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 1] = fx_doublejump.particle_container[i].pos.y;
+		fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 2] = fx_doublejump.particle_container[i].pos.z;
+		fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[i].size;
 
-			//Set positions in the position data
-			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 0] = fx_doublejump.particle_container[i].pos.x;
-			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 1] = fx_doublejump.particle_container[i].pos.y;
-			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 2] = fx_doublejump.particle_container[i].pos.z;
-			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[i].size;
+		//Set colors in the color data
+		fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 0] = fx_doublejump.particle_container[i].r;
+		fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 1] = fx_doublejump.particle_container[i].g;
+		fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 2] = fx_doublejump.particle_container[i].b;
 
-			//Set colors in the color data
-			fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 0] = fx_doublejump.particle_container[i].r;
-			fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 1] = fx_doublejump.particle_container[i].g;
-			fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 2] = fx_doublejump.particle_container[i].b;
+		//Alpha
+		fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[i].a;
 
-			//Alpha
-			fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[i].a;
-		}
-		else
-		{
-			//They ded, hide 'em
-			fx_doublejump.particle_container[i].camera_distance = -1.0f;
-			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 3] = 0;
-		}
 		fx_doublejump.total_particle_count++;
 	}
 
@@ -2789,20 +2748,21 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 			{
 				fx_doublejump.color_data[4 * fx_doublejump.total_particle_count + 3] = fx_doublejump.particle_container[nr_of_doublejump + 1].a;
 			}
+			fx_doublejump.total_particle_count++;
 		}
 		else
 		{
 			//They ded, hide 'em
+			fx_doublejump.particle_container[nr_of_doublejump + 1].life = 0.0f;
 			fx_doublejump.particle_container[nr_of_doublejump + 1].camera_distance = -1.0f;
 			fx_doublejump.position_data[4 * fx_doublejump.total_particle_count + 3] = 0;
 			previous_trigger = -1;
+			doublejump_active = false;
 		}
-		fx_doublejump.total_particle_count++;
 	}
 	else
 	{
-		fx_doublejump.particle_container[nr_of_doublejump + 1].life = 0.0f;
-		fx_doublejump.particle_container[nr_of_doublejump + 1].size = 0.0f;
+		doublejump_active = false;
 	}
 
 	//Update particle information
@@ -2814,21 +2774,23 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_doublejump.total_particle_count * 4 * sizeof(GLubyte), fx_doublejump.color_data);
 }
-void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
+void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
 	auto& fx_shield = *fx_shield_ptr;
 
-	fx_shield.default_x = 0.0f;
-	fx_shield.default_y = 0.0f;
-	fx_shield.default_z = 0.0f;
 	fx_shield.nr_of_particles = nr_of_shield;
-	randomizer = rand() % 100;
 
 	if (trigger_type == 6)
 	{
-		previous_trigger = 6;
+		previous_trigger = trigger_type;
+	}
+
+	//If it hits a spike trap
+	if (trigger_type == 0 && previous_trigger == 6)
+	{
+		previous_trigger = -1;
 	}
 
 	//Update data for particles
@@ -2846,17 +2808,16 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 			fx_shield.particle_container[i].a = 180;
 			fx_shield.particle_container[i].size = 4.0f;
 		}
-		if (previous_trigger == 6)
+		if (previous_trigger == 6 && !shield_active)
 		{
-			
 			fx_shield.particle_container[nr_of_shield + 1].life = 1.0f;
 			fx_shield.particle_container[nr_of_shield + 1].random_amp = 1.0f;
 			fx_shield.particle_container[nr_of_shield + 1].r = 24;
 			fx_shield.particle_container[nr_of_shield + 1].g = 208;
 			fx_shield.particle_container[nr_of_shield + 1].b = 255;
-			fx_shield.particle_container[nr_of_shield + 1].a = 220;
+			fx_shield.particle_container[nr_of_shield + 1].a = 180;
 			fx_shield.particle_container[nr_of_shield + 1].size = 5.0f;
-			
+			shield_active = true;
 		}
 	}
 
@@ -2864,73 +2825,50 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 	//Update movement
 	for (int i = 0; i < fx_shield.nr_of_particles; i++)
 	{
-		//Update life with delta time
+		fx_shield.particle_container[i].pos = shield_loc[i] + glm::vec3(0, 0, -1.0f);
+		fx_shield.particle_container[i].camera_distance = glm::length(fx_shield.particle_container[i].pos - camera.position);
 
-		if (fx_shield.particle_container[i].life > 0.0f)
-		{
-			fx_shield.particle_container[i].pos = shield_loc[i] + glm::vec3(0, 0, -1.0f);
-			fx_shield.particle_container[i].camera_distance = glm::length(fx_shield.particle_container[i].pos - camera.position);
+		//Set positions in the position data
+		fx_shield.position_data[4 * fx_shield.total_particle_count + 0] = fx_shield.particle_container[i].pos.x;
+		fx_shield.position_data[4 * fx_shield.total_particle_count + 1] = fx_shield.particle_container[i].pos.y;
+		fx_shield.position_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[i].pos.z;
+		fx_shield.position_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[i].size;
 
-			//Set positions in the position data
-			fx_shield.position_data[4 * fx_shield.total_particle_count + 0] = fx_shield.particle_container[i].pos.x;
-			fx_shield.position_data[4 * fx_shield.total_particle_count + 1] = fx_shield.particle_container[i].pos.y;
-			fx_shield.position_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[i].pos.z;
-			fx_shield.position_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[i].size;
+		//Set colors in the color data
+		fx_shield.color_data[4 * fx_shield.total_particle_count + 0] = fx_shield.particle_container[i].r;
+		fx_shield.color_data[4 * fx_shield.total_particle_count + 1] = fx_shield.particle_container[i].g;
+		fx_shield.color_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[i].b;
 
-			//Set colors in the color data
-			fx_shield.color_data[4 * fx_shield.total_particle_count + 0] = fx_shield.particle_container[i].r;
-			fx_shield.color_data[4 * fx_shield.total_particle_count + 1] = fx_shield.particle_container[i].g;
-			fx_shield.color_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[i].b;
+		//Alpha
+		fx_shield.color_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[i].a;
 
-			//Alpha
-			fx_shield.color_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[i].a;
-		}
-		else
-		{
-			//They ded, hide 'em
-			fx_shield.particle_container[i].camera_distance = -1.0f;
-			fx_shield.position_data[4 * fx_shield.total_particle_count + 3] = 0;
-		}
 		fx_shield.total_particle_count++;
 	}
 
 	if (previous_trigger == 6)
 	{
-		fx_shield.particle_container[nr_of_shield + 1].life -= (seconds.count() / 10.0f);
+		fx_shield.particle_container[nr_of_shield + 1].pos = player_pos + glm::vec3(0, -1, -1);
+		fx_shield.particle_container[nr_of_shield + 1].camera_distance = glm::length(fx_shield.particle_container[nr_of_shield + 1].pos - camera.position);
 
-		if (fx_shield.particle_container[nr_of_shield + 1].life > 0.0f)
-		{
-			fx_shield.particle_container[nr_of_shield + 1].pos = player_pos + glm::vec3(0, -1, -1);
-			fx_shield.particle_container[nr_of_shield + 1].camera_distance = glm::length(fx_shield.particle_container[nr_of_shield + 1].pos - camera.position);
+		//Set positions in the position data
+		fx_shield.position_data[4 * fx_shield.total_particle_count + 0] = fx_shield.particle_container[nr_of_shield + 1].pos.x;
+		fx_shield.position_data[4 * fx_shield.total_particle_count + 1] = fx_shield.particle_container[nr_of_shield + 1].pos.y;
+		fx_shield.position_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[nr_of_shield + 1].pos.z;
+		fx_shield.position_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[nr_of_shield + 1].size;
 
-			//Set positions in the position data
-			fx_shield.position_data[4 * fx_shield.total_particle_count + 0] = fx_shield.particle_container[nr_of_shield + 1].pos.x;
-			fx_shield.position_data[4 * fx_shield.total_particle_count + 1] = fx_shield.particle_container[nr_of_shield + 1].pos.y;
-			fx_shield.position_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[nr_of_shield + 1].pos.z;
-			fx_shield.position_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[nr_of_shield + 1].size;
+		//Set colors in the color data
+		fx_shield.color_data[4 * fx_shield.total_particle_count + 0] = fx_shield.particle_container[nr_of_shield + 1].r;
+		fx_shield.color_data[4 * fx_shield.total_particle_count + 1] = fx_shield.particle_container[nr_of_shield + 1].g;
+		fx_shield.color_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[nr_of_shield + 1].b;
 
-			//Set colors in the color data
-			fx_shield.color_data[4 * fx_shield.total_particle_count + 0] = fx_shield.particle_container[nr_of_shield + 1].r;
-			fx_shield.color_data[4 * fx_shield.total_particle_count + 1] = fx_shield.particle_container[nr_of_shield + 1].g;
-			fx_shield.color_data[4 * fx_shield.total_particle_count + 2] = fx_shield.particle_container[nr_of_shield + 1].b;
-
-			//Alpha
-			fx_shield.color_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[nr_of_shield + 1].a;
+		//Alpha
+		fx_shield.color_data[4 * fx_shield.total_particle_count + 3] = fx_shield.particle_container[nr_of_shield + 1].a;
 			
-		}
-		else
-		{
-			//They ded, hide 'em
-			fx_shield.particle_container[nr_of_shield + 1].camera_distance = -1.0f;
-			fx_shield.position_data[4 * fx_shield.total_particle_count + 3] = 0;
-			previous_trigger = -1;
-		}
 		fx_shield.total_particle_count++;
 	}
 	else
 	{
-		fx_shield.particle_container[nr_of_shield + 1].life = 0.0f;
-		fx_shield.particle_container[nr_of_shield + 1].size = 0.0f;
+		shield_active = false;
 	}
 
 	//Update particle information
@@ -2942,32 +2880,17 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_shield.total_particle_count * 4 * sizeof(GLubyte), fx_shield.color_data);
 }
-void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, glm::vec3 player_pos)
+void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
 	auto& fx_random = *fx_random_ptr;
 
-	fx_random.default_x = 0.0f;
-	fx_random.default_y = 0.0f;
-	fx_random.default_z = 0.0f;
 	fx_random.nr_of_particles = nr_of_random;
-	randomizer = rand() % 100;
-
-	if (previous_trigger == 7 && trigger_type >= 3 && trigger_type <= 7)
-	{
-		fx_random.particle_container[nr_of_random + 1].life = 0;
-		fx_random.particle_container[nr_of_random + 1].size = 0;
-		fx_random.particle_container[nr_of_random + 1].a = 0;
-	}
-	else
-	{
-		previous_trigger = -1;
-	}
 
 	if (trigger_type == 7)
 	{
-		previous_trigger = 7;
+		previous_trigger = trigger_type;
 	}
 
 	//Update data for particles
@@ -2985,7 +2908,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 			fx_random.particle_container[i].a = 180;
 			fx_random.particle_container[i].size = 4.0f;
 		}
-		if (previous_trigger == 7)
+		if (previous_trigger == 7 && !random_active)
 		{
 			if (fx_random.particle_container[nr_of_random + 1].life <= 0.0f)
 			{
@@ -2994,8 +2917,9 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 				fx_random.particle_container[nr_of_random + 1].r = 255;
 				fx_random.particle_container[nr_of_random + 1].g = 255;
 				fx_random.particle_container[nr_of_random + 1].b = 255;
-				fx_random.particle_container[nr_of_random + 1].a = 220;
+				fx_random.particle_container[nr_of_random + 1].a = 180;
 				fx_random.particle_container[nr_of_random + 1].size = 5.0f;
+				random_active = true;
 			}
 		}
 	}
@@ -3004,42 +2928,30 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 	//Update movement
 	for (int i = 0; i < fx_random.nr_of_particles; i++)
 	{
-		//Update life with delta time
-		fx_random.particle_container[i].life -= (seconds.count() / 2.0f);
+		fx_random.particle_container[i].pos = random_loc[i] + glm::vec3(0, 0, -1.0f);
+		fx_random.particle_container[i].camera_distance = glm::length(fx_random.particle_container[i].pos - camera.position);
 
-		if (fx_random.particle_container[i].life > 0.0f)
-		{
-			fx_random.particle_container[i].pos = random_loc[i] + glm::vec3(0, 0, -1.0f);
-			fx_random.particle_container[i].camera_distance = glm::length(fx_random.particle_container[i].pos - camera.position);
+		//Set positions in the position data
+		fx_random.position_data[4 * fx_random.total_particle_count + 0] = fx_random.particle_container[i].pos.x;
+		fx_random.position_data[4 * fx_random.total_particle_count + 1] = fx_random.particle_container[i].pos.y;
+		fx_random.position_data[4 * fx_random.total_particle_count + 2] = fx_random.particle_container[i].pos.z;
+		fx_random.position_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].size;
 
-			//Set positions in the position data
-			fx_random.position_data[4 * fx_random.total_particle_count + 0] = fx_random.particle_container[i].pos.x;
-			fx_random.position_data[4 * fx_random.total_particle_count + 1] = fx_random.particle_container[i].pos.y;
-			fx_random.position_data[4 * fx_random.total_particle_count + 2] = fx_random.particle_container[i].pos.z;
-			fx_random.position_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].size;
+		//Set colors in the color data
+		fx_random.color_data[4 * fx_random.total_particle_count + 0] = fx_random.particle_container[i].r;
+		fx_random.color_data[4 * fx_random.total_particle_count + 1] = fx_random.particle_container[i].g;
+		fx_random.color_data[4 * fx_random.total_particle_count + 2] = fx_random.particle_container[i].b;
 
-			//Set colors in the color data
+		//Alpha
+		fx_random.color_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].a;
 
-			fx_random.color_data[4 * fx_random.total_particle_count + 0] = fx_random.particle_container[nr_of_random + 1].r;
-			fx_random.color_data[4 * fx_random.total_particle_count + 1] = fx_random.particle_container[nr_of_random + 1].g;
-			fx_random.color_data[4 * fx_random.total_particle_count + 2] = fx_random.particle_container[nr_of_random + 1].b;
-
-			//Alpha
-			fx_random.color_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[i].a;
-		}
-		else
-		{
-			//They ded, hide 'em
-			fx_random.particle_container[i].camera_distance = -1.0f;
-			fx_random.position_data[4 * fx_random.total_particle_count + 3] = 0;
-		}
 		fx_random.total_particle_count++;
 	}
 
 	if (previous_trigger == 7)
 	{
 		fx_random.particle_container[nr_of_random + 1].life -= (seconds.count() / 10.0f);
-
+		
 		if (fx_random.particle_container[nr_of_random + 1].life > 0.0f)
 		{
 			fx_random.particle_container[nr_of_random + 1].pos = player_pos + glm::vec3(0, -1, -1);
@@ -3052,7 +2964,6 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 			fx_random.position_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[nr_of_random + 1].size;
 
 			//Set colors in the color data
-
 			fx_random.color_data[4 * fx_random.total_particle_count + 0] = fx_random.particle_container[nr_of_random + 1].r;
 			fx_random.color_data[4 * fx_random.total_particle_count + 1] = fx_random.particle_container[nr_of_random + 1].g;
 			fx_random.color_data[4 * fx_random.total_particle_count + 2] = fx_random.particle_container[nr_of_random + 1].b;
@@ -3067,20 +2978,21 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 			{
 				fx_random.color_data[4 * fx_random.total_particle_count + 3] = fx_random.particle_container[nr_of_random + 1].a;
 			}
+			fx_random.total_particle_count++;
 		}
 		else
 		{
 			//They ded, hide 'em
+			fx_random.particle_container[nr_of_random + 1].life = 0.0f;
 			fx_random.particle_container[nr_of_random + 1].camera_distance = -1.0f;
 			fx_random.position_data[4 * fx_random.total_particle_count + 3] = 0;
 			previous_trigger = -1;
+			random_active = false;
 		}
-		fx_random.total_particle_count++;
 	}
 	else
 	{
-		fx_random.particle_container[nr_of_random + 1].life = 0.0f;
-		fx_random.particle_container[nr_of_random + 1].size = 0.0f;
+		random_active = false;
 	}
 
 	//Update particle information
@@ -3093,8 +3005,24 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_random.total_particle_count * 4 * sizeof(GLubyte), fx_random.color_data);
 }
 
-void FX::calculate_object_data(std::chrono::milliseconds delta, const Camera & camera, std::vector<build_information> &build_info, int trigger_type, glm::vec3 player_pos)
+void FX::calculate_object_data(
+	std::chrono::milliseconds delta, 
+	const Camera & camera, 
+	std::vector<build_information> &build_info, 
+	int trigger_type,
+	int game_state,
+	glm::vec3 player_pos)
 {	
+	//Hard reset
+	if (!(game_state & state::playing))
+	{
+		previous_trigger = -1;
+		glide_active = false;
+		speedboost_active = false;
+		doublejump_active = false;
+		shield_active = false;
+		random_active = false;
+	}
 	//Reset object locations before iterator
 	nr_of_stun = 0;
 	nr_of_glide = 0;
@@ -3108,6 +3036,7 @@ void FX::calculate_object_data(std::chrono::milliseconds delta, const Camera & c
 	doublejump_loc.clear();
 	shield_loc.clear();
 	random_loc.clear();
+
 
 	//Iterate through all the objects and collect needed data
 	for (int object = 0; object < build_info.size(); object++)
@@ -3142,15 +3071,14 @@ void FX::calculate_object_data(std::chrono::milliseconds delta, const Camera & c
 			nr_of_random++;
 			random_loc.push_back(build_info[object].local_position);
 		}
-
-		//Calculate the objects' particles
-		calculate_stun_data(delta, camera, trigger_type, player_pos);
-		calculate_glide_data(delta, camera, trigger_type, player_pos);
-		calculate_speedboost_data(delta, camera, trigger_type, player_pos);
-		calculate_doublejump_data(delta, camera, trigger_type, player_pos);
-		calculate_shield_data(delta, camera, trigger_type, player_pos);
-		calculate_random_data(delta, camera, trigger_type, player_pos);
 	}
+	//Calculate the objects' particles
+	calculate_stun_data(delta, camera, trigger_type, player_pos);
+	calculate_glide_data(delta, camera, trigger_type, game_state, player_pos);
+	calculate_speedboost_data(delta, camera, trigger_type, game_state, player_pos);
+	calculate_doublejump_data(delta, camera, trigger_type, game_state, player_pos);
+	calculate_shield_data(delta, camera, trigger_type, game_state, player_pos);
+	calculate_random_data(delta, camera, trigger_type, game_state, player_pos);
 }
 
 }

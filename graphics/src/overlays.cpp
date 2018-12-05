@@ -48,6 +48,11 @@ void Overlays::update(
 	has_finished = finish;
 	player_id = player;
 
+	if (!(current_state & state::playing) || !is_dead)
+	{
+		death_timer = 0ms;
+	}
+
 	//Playing update
 	if (current_state & state::playing)
 	{

@@ -630,7 +630,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		fx_emitter.calculate_gust_data(delta, game_camera);
 
 		//Objects
-		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects, trigger_type[player_id], scene->moving_models[player_id].get_position());
+		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects, trigger_type[player_id], game_state, scene->moving_models[player_id].get_position());
 
 		scene->moving_models[player_id].get_position();
 
