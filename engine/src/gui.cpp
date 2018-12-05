@@ -6,12 +6,13 @@ namespace gui
 
 using namespace std::chrono_literals;
 
+std::string stored_buffer;
 std::string string_buffer;
 bool chat_on = false;
 
 const std::string& text_buffer()
 {
-	return string_buffer;
+	return stored_buffer;
 }
 
 void character_callback(GLFWwindow* window, unsigned int codepoint)
@@ -28,7 +29,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	else if (action == GLFW_PRESS && key == GLFW_KEY_ENTER)
 	{
 		chat_on = !chat_on;
-		string_buffer.clear();
+		if (!chat_on)
+		{
+			stored_buffer = string_buffer;
+			string_buffer.clear();
+		}		
 	}	
 }
 
