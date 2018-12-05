@@ -379,7 +379,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 				if (players_placed_objects_id[i].model_type_id == 1)
 				{
-					if ((player_inputs[i])[logic::button::rotate] == logic::button_state::pressed)
+					/*if ((player_inputs[i])[logic::button::rotate] == logic::button_state::pressed)
 						//(*local_input)[logic::button::rotate] == logic::button_state::pressed)
 					{
 						turret_infos[i].direction++;
@@ -413,15 +413,15 @@ void Game::update(std::chrono::milliseconds delta)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 0, degree });
 						else if (turret_infos[i].direction == 1)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 180.f, degree });
-					}
+					}*/
 
-					/*if (pos.z == 1)
+					if (pos.z == 1)
 					{
-						if ((*local_input)[logic::button::up] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::up] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::down] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::down] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -433,11 +433,11 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 					else if (pos.z == 2)
 					{
-						if ((*local_input)[logic::button::right] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::right] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::left] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::left] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -449,11 +449,11 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 					else if (pos.z == 3)
 					{
-						if ((*local_input)[logic::button::up] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::up] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::down] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::down] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -465,11 +465,11 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 					else if (pos.z == 4)
 					{
-						if ((*local_input)[logic::button::right] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::right] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::left] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::left] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -478,7 +478,7 @@ void Game::update(std::chrono::milliseconds delta)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 0, degree });
 						else if (turret_infos[i].direction == 1)
 							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 180.f, degree });
-					}*/
+					}
 				}
 				else
 					level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 0, 1 }, { 0, 0, degree });
