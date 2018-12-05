@@ -39,6 +39,7 @@ public:
 	
 	void light_lobby();
 	void light_level_1();
+	void light_level_2();
 
 	glm::vec2 v[4];
 	std::vector<Model> moving_models;
