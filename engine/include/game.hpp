@@ -103,6 +103,17 @@ private:
 
 	void remove_object(int id);
 
+	//Turret 
+	struct turret
+	{
+		int dynamic_id;
+		//int model_id;
+		turret_info direction;
+	};
+	std::vector<turret> turrets;
+	void laser_update(const glm::vec2 turret_position, turret_info info, int index, std::array<bool, 4>& hit_array);
+	std::array<bool, 4> player_hit_array = { false, false, false, false };
+
 	//Random placed objects
 	std::array <id_and_model_place, 4> random_placed_objects_id;
 
@@ -121,8 +132,7 @@ private:
 	//New gameloop stuff
 	void load_map(graphics::GameScene* scene);
 
-	std::array<bool, 4> laser_update(const glm::vec3 turret_position, glm::vec3 direction, int turret_frame);
-	std::array<bool, 4> player_hit_array = { false, false, false, false };
+
 };
 
 

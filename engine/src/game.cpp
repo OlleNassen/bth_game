@@ -525,7 +525,12 @@ void Game::update(std::chrono::milliseconds delta)
 						turret_infos[i].direction;
 						turret_infos[i].rotation = static_cast<int>(pos.z);
 
-						std::cout << turret_infos[i].rotation << " : " << turret_infos[i].direction << "\n";
+						//std::cout << "add a turret. size: " << dynamics[players_placed_objects_id[i].dynamics_id].size.y << std::endl;
+						turrets.push_back(turret{ players_placed_objects_id[i].dynamics_id, turret_infos[i] });
+
+						//std::cout << turret_infos[i].rotation << " : " << turret_infos[i].direction << "\n";
+						
+
 					}
 				}
 			}
@@ -656,25 +661,27 @@ void Game::update(std::chrono::milliseconds delta)
 		is_client = true;
 	}
 
-	std::array<glm::vec3, 4> directions
-	{
-		glm::vec3{0.0f},
-		glm::vec3{0.0f},
-		glm::vec3{0.0f},
-		glm::vec3{0.0f}
-	};
+	//std::array<glm::vec3, 4> directions
+	//{
+	//	glm::vec3{0.0f},
+	//	glm::vec3{0.0f},
+	//	glm::vec3{0.0f},
+	//	glm::vec3{0.0f}
+	//};
 	
 
+
+	player_hit_array = { false, false, false, false };
+
+	if (turretframe <= 1)
 	{
-		glm::vec3 dir = { 0, 0, 0 };
-		for (auto i = 0u; i < dynamics.size(); ++i)
+		//std::cout << "shoot" << std::endl;
+		for (auto i = 0; i < turrets.size(); ++i)
 		{
-			if (dynamics[i].objects_type_id == 1)
-			{
-				player_hit_array = laser_update(glm::vec3{dynamics[i].position.x, dynamics[i].position.y, 0}, dir, turretframe);
-			}
+			laser_update(dynamics[turrets[i].dynamic_id].position, turrets[i].direction, turrets[i].dynamic_id, player_hit_array);
 		}
 	}
+
 
 
 	{
@@ -794,7 +801,7 @@ void Game::update(std::chrono::milliseconds delta)
 					if (level->moving_models[i].mesh->name == "turret")
 					{
 						turret = true;
-						//	turretframe = level->moving_models[i].getCurrentKeyframe();
+						turretframe = level->moving_models[i].getCurrentKeyframe();
 					}
 					if (level->moving_models[i].mesh->name == "stun_trap")
 						stun = true;
@@ -1097,14 +1104,73 @@ void Game::load_map(graphics::GameScene* scene)
 	watching = net.id();
 }
 
-std::array<bool, 4> Game::laser_update(const glm::vec3 turret_position, glm::vec3 direction, int turret_frame)
+void Game::laser_update(const glm::vec2 turret_position, turret_info info, int index, std::array<bool, 4>& hit_array)
 {
-	std::array<bool, 4> hit_array = { false, false, false, false };
+	glm::vec2 direction;
+	glm::vec2 barrel_position = turret_position;
 
-	if (turret_frame < 5)
+
+	if (info.rotation == 1)//attach to R wall
 	{
-		return hit_array = physics.laser_ray_cast(turret_position, direction);
+		if (info.direction == 1) //look UP
+		{
+			direction = glm::vec2{ 0, 1 }; 
+
+			barrel_position += glm::vec2{ -0.833, dynamics[index].size.y };
+		}
+		else if (info.direction == 0) //look DOWN
+		{
+			direction = glm::vec2{ 0, -1 };
+
+			barrel_position -= glm::vec2{ 0.833, dynamics[index].size.y };
+		}
+	}
+	else if (info.rotation == 2) //attach to roof
+	{
+		if (info.direction == 1) //look RIGHT
+		{
+			direction = glm::vec2{ 1, 0 };
+
+			barrel_position += glm::vec2{ dynamics[index].size.x, -0.833 };
+		}
+		else if (info.direction == 0) //look LEFT
+		{
+			direction = glm::vec2{ -1, 0 };
+
+			barrel_position -= glm::vec2{ dynamics[index].size.x, 0.833 };
+		}
+	}
+	else if (info.rotation == 3) //attach to L wall
+	{
+		if (info.direction == 1) //look UP
+		{
+			direction = glm::vec2{ 0, 1 };
+
+			barrel_position += glm::vec2{ 0.833, dynamics[index].size.y };
+		}
+		else if (info.direction == 0) //look DOWN
+		{
+			direction = glm::vec2{ 0, -1 };
+
+			barrel_position -= glm::vec2{ -0.833, dynamics[index].size.y };
+		}
+	}
+	else if (info.rotation == 4) //attach to floor
+	{
+		if (info.direction == 1) //look RIGHT
+		{
+			direction = glm::vec2{ 1, 0 };
+
+			barrel_position += glm::vec2{ dynamics[index].size.x, 0.833 };
+		}
+		else if (info.direction == 0) //look LEFT
+		{
+			direction = glm::vec2{ -1, 0 };
+
+			barrel_position -= glm::vec2{ dynamics[index].size.x, -0.833 };
+		}
 	}
 
-	return hit_array;
+	physics.laser_ray_cast(glm::vec3{ barrel_position, 0 }, glm::vec3{ direction, 0 }, hit_array);
+
 }

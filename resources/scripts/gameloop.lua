@@ -130,6 +130,39 @@ function update(delta_seconds, game, entities, player_count)
 	--Check if players dead
 	for i = 1, player_count, 1
 	do
+		if game.finished[i] == false
+		then
+			--laser test
+			if entities[i].laser_hit and game.shield_triggered[i] == false and not game.died[i] --and game.turret_frame <= 1
+			then
+
+				--if i == 1
+				--then
+					print("killed by laser")
+				--end
+
+
+				game.finished[i] = true
+				game.died[i] = true
+				
+				death_height[i] = entities[i].position.y;
+				
+				--entities[i].position.y = entities[i].position.y
+				entities[i].position.x = -40
+				
+				entities[i].impulse.x = 0
+				entities[i].impulse.y = 0
+				
+				entities[i].velocity.x = 0
+				entities[i].velocity.y = 0
+
+			elseif entities[i].laser_hit and game.shield_triggered[i] == true --and game.turret_frame <= 2
+			then
+				game.is_laser[i] = true
+				print("protected from laser")
+			end
+		end
+
 		if entities[i].triggered >= 4 and not game.finished[i]
 		then
 			if entities[i].triggered_type == 2 or entities[i].triggered_type == 6
@@ -158,34 +191,8 @@ function update(delta_seconds, game, entities, player_count)
 			then
 				game.is_spike[i] = true
 				--print("protected")
-			
-			--laser test
-			--[[elseif laser and game.shield_triggered[i] == false and not game.died[i] and game.turret_frame <=5
-			then
-				game.finished[i] = true
-				game.died[i] = true
-				
-				death_height[i] = entities[i].position.y;
-
-				--entities[i].position.y = entities[i].position.y
-				entities[i].position.x = -40
-
-				entities[i].impulse.x = 0
-				entities[i].impulse.y = 0
-
-				entities[i].velocity.x = 0
-				entities[i].velocity.y = 0
-
-			elseif laser and game.shield_triggered[i] == true and game.turret_frame <=5
-			then
-				game.is_laser = true
-
-				]]
 			end
-
 			
-
-
 
 			--shield
 			if entities[i].triggered_type == 6 and game.shield_triggered[i] == false
@@ -202,12 +209,11 @@ function update(delta_seconds, game, entities, player_count)
 			--print("removed")
 
 		--laser test
-		--[[elseif game.shield_triggered[i] == true and game.is_laser = true
+		elseif game.shield_triggered[i] == true and game.is_laser == true
 		then
 			game.shield_triggered[i] = false
-			game.is_laser = false
+			game.is_laser[i] = false
 			entities[i].shield_active = false
-		]]
 		end
 	end
 

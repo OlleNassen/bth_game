@@ -389,7 +389,7 @@ void GameScript::update(
 		{
 			stack.rawget(top, i);
 			int top_pos = stack.top();
-
+	
 			stack.push("laser_hit");
 			stack.push(laser_hit);
 			stack.rawset(top_pos);
@@ -408,6 +408,18 @@ void GameScript::update(
 
 		stack.clear();
 	}
+
+	//{
+	//	stack.getglobal("game");
+	//
+	//	int top_pos = stack.top();
+	//
+	//	stack.push("turret_frame");
+	//	stack.push(turret_frame);
+	//	stack.rawset(top_pos);
+	//
+	//	stack.clear();
+	//}
 
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);
