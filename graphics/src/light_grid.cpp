@@ -67,17 +67,30 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> li
 			for (int i = 0; i < block_size; ++i)
 			{
 				int x = i * 16;
-				int y = j * block_size;
-				int count = indices[x + y];
+				int y = j * block_size * 16;
+				int& count = indices[x + y];
 
 				if (sphere_inside_frustum(sphere, grid[i][j]) && count < 10)
 				{			
+					++count;
 					indices[x + y + count] = light_id;
-					++indices[x + y];
 				}
 			}
 		}
 	}
+
+	for (int j = 0; j < block_size; ++j)
+	{
+		for (int i = 0; i < block_size; ++i)
+		{
+			int x = i * 16;
+			int y = j * block_size * 16;
+			int& count = indices[x + y];
+
+			//std::cout << count << '\n';
+		}
+	}
+
 	glBindTexture(GL_TEXTURE_2D, light_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, block_size * 16, block_size, 0, GL_RED_INTEGER, GL_INT, indices);
 }

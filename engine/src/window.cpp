@@ -1,5 +1,19 @@
 #include "window.hpp"
 #include <iostream>
+#include <screen.hpp>
+
+int width = 1920;
+int height = 1080;
+
+int screen_width()
+{
+	return width;
+}
+
+int screen_height()
+{
+	return height;
+}
 
 using std::cout;
 

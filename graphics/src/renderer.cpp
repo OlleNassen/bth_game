@@ -5,7 +5,7 @@
 #include <sstream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iomanip>
-
+#include "screen.hpp"
 
 
 //Hopkok av Stefan Petersson (spr@bth.se), copyright 2003-2019 etc etc bla bla, glhf :-)
@@ -116,8 +116,8 @@ ModelsToRender::ModelsToRender(const Model& player, const Model* begin, const Mo
 }
 
 Renderer::Renderer(GameScene* scene)
-	: db_camera{glm::radians(90.0f), 1920.f / 1080.f, 0.1f, 100.f}
-	, game_camera{glm::radians(65.0f), 1920.f / 1080.f, 0.1f, 100.f}
+	: db_camera{glm::radians(90.0f), (float)screen_width() / (float)screen_height(), 0.1f, 100.f}
+	, game_camera{glm::radians(65.0f), (float)screen_width() / (float)screen_height(), 0.1f, 100.f}
 	, scene{scene}
 	, irradiance_buffer{irradiance, skybox}
 	, prefilter_buffer{pre_filter, skybox, true}
@@ -126,7 +126,7 @@ Renderer::Renderer(GameScene* scene)
 {
 	grid.calculate_grid(game_camera);
 	db_camera.position.z = 20.0f;
-	glViewport(0, 0, 1920, 1080); // don't forget to configure the viewport to the capture dimensions.
+	glViewport(0, 0, screen_width(), screen_height()); // don't forget to configure the viewport to the capture dimensions.
 
 	dir_light.direction = glm::vec3(0, -0.7, -1);
 	dir_light.color = glm::vec3(1.0, 0.8, 0.8);
@@ -160,8 +160,6 @@ void Renderer::render(
 	bool is_menu = (game_state & state::menu);
 	bool connected = (game_state & state::connected);
 	bool debug_active = (game_state & state::render_physics);
-	const float screen_width = 1920.f;
-	const float screen_height = 1080.f;
 	
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		
@@ -278,7 +276,7 @@ void Renderer::render(
 
 			if (scores[0] > 0)
 			{
-				build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
+				build_text.render_text("Score: ", screen_width() * 0.5f, screen_height() * 0.5f, 0.75f);
 
 				std::array<int, 4> positions;
 
@@ -293,7 +291,7 @@ void Renderer::render(
 
 					text_shader.uniform("text_color", sorted_infos[i].color);
 
-					build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
+					build_text.render_text(out_text.str(), screen_width() * 0.5f, (screen_height() * 0.5f) + ((i + 1) * -35.f), 0.75f);
 				}
 			}
 			
@@ -306,7 +304,7 @@ void Renderer::render(
 
 					out_text.str("");
 					out_text << player_infos[i].name << " is ready";
-					build_text.render_text(out_text.str(), 10.f, screen_height - (45.f * (i + 2)), 1.f);
+					build_text.render_text(out_text.str(), 10.f, screen_height() - (45.f * (i + 2)), 1.f);
 					total_players_ready++;
 				}
 			}
@@ -314,10 +312,10 @@ void Renderer::render(
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 			out_text.str("");
 			out_text << total_players_ready << "/" << player_count;
-			build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
+			build_text.render_text(out_text.str(), 10.f, screen_height() - 45.f, 1.f);
 
 			if (total_players_ready == player_count)
-				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);
+				build_text.render_text("Host: Press 'R' to start", screen_width() * 0.33f + 120.f, screen_height() - 35.f, 0.75f);
 		}
 
 		if (game_state & state::pre_building)
@@ -371,12 +369,12 @@ void Renderer::render(
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
-			build_text.render_text("Press 'Space' to place object", screen_width - 540, 10.f, 0.75f);
-			build_text.render_text("Build Stage", screen_width - 210, screen_height - 35.f, 0.75f);
+			build_text.render_text("Press 'Space' to place object", screen_width() - 540, 10.f, 0.75f);
+			build_text.render_text("Build Stage", screen_width() - 210, screen_height() - 35.f, 0.75f);
 
 			out_text.str("");
 			out_text << total_players_ready << "/" << player_count;
-			build_text.render_text(out_text.str(), screen_width - 65.f, screen_height - 65.f, 0.75f);
+			build_text.render_text(out_text.str(), screen_width() - 65.f, screen_height() - 65.f, 0.75f);
 
 
 			build_text.render_text("Your object:", 10.f, 45.f, 0.75f);
@@ -401,7 +399,7 @@ void Renderer::render(
 
 			if (print_time > 0.0f)
 			{
-				build_text.render_text(out_text.str(), (screen_width * 0.5f) - (width * 0.5f), screen_height * 0.45f, 2.f);
+				build_text.render_text(out_text.str(), (screen_width() * 0.5f) - (width * 0.5f), screen_height() * 0.45f, 2.f);
 			}
 		}
 
@@ -414,19 +412,19 @@ void Renderer::render(
 			if (print_time <= 90.f && print_time >= 89.f)
 			{
 				float width = build_text.get_text_width("GO!", 2.0f);
-				build_text.render_text("GO!", (screen_width * 0.5f) - (width * 0.5f), screen_height * 0.45f, 2.f);
+				build_text.render_text("GO!", (screen_width() * 0.5f) - (width * 0.5f), screen_height() * 0.45f, 2.f);
 			}
 			
 			if (print_time > 15.f || died[player_id] || finish[player_id])
 			{
 				text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-				timer_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
+				timer_text.render_text(out_text.str(), 10.f, screen_height() - 45.f, 1.f);
 			}
 			else
 			{
 				static float t = 0.f;
-				glm::vec2 start = { 10.f, screen_height - 45.f };
-				glm::vec2 end = { (screen_width * 0.5f), (screen_height * 0.7f) };
+				glm::vec2 start = { 10.f, screen_height() - 45.f };
+				glm::vec2 end = { (screen_width() * 0.5f), (screen_height() * 0.7f) };
 
 				glm::vec3 red = glm::vec3(1.f, 0.2f, 0.2f);
 				glm::vec3 white = glm::vec3(1.f, 0.4f, 0.4f);
@@ -461,7 +459,7 @@ void Renderer::render(
 				if (overlays.finished_timer <= 5000ms)
 				{
 					width = build_text.get_text_width("Escaped", 2.f);
-					build_text.render_text("Escaped", (screen_width * 0.5f) - (width * 0.5f), (screen_height * 0.5f) + 35.f, 2.f);
+					build_text.render_text("Escaped", (screen_width() * 0.5f) - (width * 0.5f), (screen_height() * 0.5f) + 35.f, 2.f);
 				}
 
 				if (overlays.finished_timer <= 5000ms && overlays.finished_timer >= 1500ms)
@@ -469,7 +467,7 @@ void Renderer::render(
 					out_text.str("");
 					out_text << "Place: " << placing[player_id];
 					width = build_text.get_text_width(out_text.str(), 1.25f);
-					build_text.render_text(out_text.str(), (screen_width * 0.5f) - (width * 0.5f) + 20.f, (screen_height * 0.5f) - 35.f, 1.25f);
+					build_text.render_text(out_text.str(), (screen_width() * 0.5f) - (width * 0.5f) + 20.f, (screen_height() * 0.5f) - 35.f, 1.25f);
 				}
 
 				if (overlays.finished_timer <= 5000ms && overlays.finished_timer >= 3000ms)
@@ -477,13 +475,13 @@ void Renderer::render(
 					out_text.str("");
 					out_text << "Score: +" << scores_to_give[placing[player_id] - 1];
 					width = build_text.get_text_width(out_text.str(), 0.75f);
-					build_text.render_text(out_text.str(), (screen_width * 0.5f) - (width * 0.5f) + 10.f, (screen_height * 0.5f) - 105.f, 0.75f);
+					build_text.render_text(out_text.str(), (screen_width() * 0.5f) - (width * 0.5f) + 10.f, (screen_height() * 0.5f) - 105.f, 0.75f);
 				}
 			}
 
 			if ((died[player_id] || finish[player_id]) && (overlays.finished_timer >= 5000ms || overlays.death_timer >= 500ms))
 			{				
-				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
+				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width() * 0.5f) - 325.f, screen_height() - 35.f, 0.75f);
 			}
 			else
 			{
@@ -499,7 +497,7 @@ void Renderer::render(
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
-			build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
+			build_text.render_text("Score: ", screen_width() * 0.5f, screen_height() * 0.5f, 0.75f);
 
 			std::array<int, 4> positions;
 
@@ -515,7 +513,7 @@ void Renderer::render(
 
 				text_shader.uniform("text_color", player_infos[i].color);
 
-				build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
+				build_text.render_text(out_text.str(), screen_width() * 0.5f, (screen_height() * 0.5f) + ((i + 1) * -35.f), 0.75f);
 			}
 		}
 

@@ -125,11 +125,11 @@ void main()
     ivec2 lights = ivec2(gl_FragCoord.x / block_size_x, gl_FragCoord.y / block_size_y);
 	int elem_count =  texture(light_indices, vec2(lights.x * 16, lights.y)).r;
 
-	for(int j = 0; j < elem_count; ++j) 
+	for(int j = 1; j <= elem_count; ++j) 
     {
 		int i = texture(light_indices, vec2(lights.x * 16 + j, lights.y)).r;
 		
-		frag_color = vec4(vec3(elem_count / 15.0, elem_count / 15.0, elem_count / 15.0), 1.0);
+		frag_color = vec4(vec3(7 / 15.0, 7 / 15.0, 7 / 15.0), 1.0);
 		return;
 			
 		// calculate per-light radiance
