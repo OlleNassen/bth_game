@@ -2724,7 +2724,7 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 
 		if (fx_doublejump.particle_container[nr_of_doublejump + 1].life > 0.0f)
 		{
-			fx_doublejump.particle_container[nr_of_doublejump + 1].pos = player_pos + glm::vec3(0, -1, -1);
+			fx_doublejump.particle_container[nr_of_doublejump + 1].pos = player_pos + glm::vec3(0, -1.0f, -0.8f);
 			fx_doublejump.particle_container[nr_of_doublejump + 1].camera_distance = glm::length(fx_doublejump.particle_container[nr_of_doublejump + 1].pos - camera.position);
 
 			//Set positions in the position data
