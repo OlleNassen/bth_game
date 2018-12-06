@@ -583,9 +583,12 @@ void Renderer::update(std::chrono::milliseconds delta,
 {
 	bool is_menu = (new_game_state & state::menu);
 
-	db_camera.projection = glm::perspective(glm::radians(90.0f), (float)screen_width() / (float)screen_height(), 0.1f, 100.f);
-	game_camera.projection = glm::perspective(glm::radians(65.0f), (float)screen_width() / (float)screen_height(), 0.1f, 100.f);
-	projection = glm::ortho(0.0f, (float)screen_width(), 0.0f, (float)screen_height());
+	if (screen_height())
+	{
+		db_camera.projection = glm::perspective(glm::radians(90.0f), (float)screen_width() / (float)screen_height(), 0.1f, 100.f);
+		game_camera.projection = glm::perspective(glm::radians(65.0f), (float)screen_width() / (float)screen_height(), 0.1f, 100.f);
+		projection = glm::ortho(0.0f, (float)screen_width(), 0.0f, (float)screen_height());
+	}
 	
 	if (game_state & state::building)
 	{
