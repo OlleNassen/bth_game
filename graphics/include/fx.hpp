@@ -87,13 +87,9 @@ public:
 	Texture stun;
 	
 	unsigned int randomizer = 0;
-	//unsigned int color_picker[4];
 	unsigned int color_picker;
 	std::chrono::milliseconds timer;
 
-	//unsigned char random_color_r[4] = { 0 };
-	//unsigned char random_color_g[4] = { 0 };
-	//unsigned char random_color_b[4] = { 0 };
 	unsigned char random_color_r = 0;
 	unsigned char random_color_g = 0;
 	unsigned char random_color_b = 0;
@@ -124,6 +120,7 @@ public:
 		std::vector<build_information> &build_info, 
 		int trigger_type, 
 		int game_state,
+		bool bullet_hit,
 		glm::vec3 player_pos);
 
 	FXdata* fx_dust_ptr = new FXdata{};
@@ -173,7 +170,7 @@ private:
 	void calculate_glide_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
 	void calculate_speedboost_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
 	void calculate_doublejump_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
-	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
+	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, bool bullet_hit, int game_state, glm::vec3 player_pos);
 	void calculate_random_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
 };
 

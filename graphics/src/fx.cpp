@@ -2837,7 +2837,7 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_doublejump.total_particle_count * 4 * sizeof(GLubyte), fx_doublejump.color_data);
 }
-void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos)
+void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, bool bullet_hit, int game_state, glm::vec3 player_pos)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2851,7 +2851,7 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 	}
 
 	//If it hits a spike trap
-	if ((trigger_type == 0 || trigger_type == 2) && previous_trigger == 6)
+	if ((trigger_type == 0 || trigger_type == 2 || bullet_hit) && previous_trigger == 6)
 	{
 		previous_trigger = -1;
 	}
@@ -3074,6 +3074,7 @@ void FX::calculate_object_data(
 	std::vector<build_information> &build_info, 
 	int trigger_type,
 	int game_state,
+	bool bullet_hit,
 	glm::vec3 player_pos)
 {	
 	//Hard reset
@@ -3153,7 +3154,7 @@ void FX::calculate_object_data(
 		calculate_glide_data(delta, camera, trigger_type, game_state, player_pos);
 		calculate_speedboost_data(delta, camera, trigger_type, game_state, player_pos);
 		calculate_doublejump_data(delta, camera, trigger_type, game_state, player_pos);
-		calculate_shield_data(delta, camera, trigger_type, game_state, player_pos);
+		calculate_shield_data(delta, camera, trigger_type, bullet_hit, game_state, player_pos);
 		calculate_random_data(delta, camera, trigger_type, game_state, player_pos);
 	}
 

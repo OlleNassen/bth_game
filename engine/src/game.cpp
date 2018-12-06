@@ -733,6 +733,7 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			obj[i].position = dynamics[i].position;
 			obj[i].size = dynamics[i].size;
+			obj[i].bullet_hit = !dynamics[i].shield_active;
 		}
 
 		std::array<glm::vec3, 4> directions;

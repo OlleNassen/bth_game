@@ -32,6 +32,7 @@ class objects
 public:
 	glm::vec2 position;
 	glm::vec2 size;
+	bool bullet_hit = false;
 };
 
 using objects_array = std::array<objects, 100>;
