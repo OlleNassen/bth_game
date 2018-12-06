@@ -253,6 +253,8 @@ void Game::update(std::chrono::milliseconds delta)
 		{ 
 			gameplay.refresh();
 			load_map(&level1);
+
+			add_moving_platforms(1); // terst for moving platforms
 		}
 
 		//Render text of state and what to do.
@@ -1002,16 +1004,21 @@ void Game::load_map(graphics::GameScene* scene)
 	watching = net.id();
 }
 
-void Game::add_moving_platforms(glm::vec2 pos)
+void Game::add_moving_platforms(int level_nr)
 {
-	for (int i = 99; i > 99 - 1; i--)
+	//for (int i = 99; i > 99 - 1; i--)
+	//{
+	
+	if (level_nr == 1)
 	{
 		collision_data data;
-		int model_id = level->add_object(data, 6);
-		data.position = pos;
+		int model_id = level->add_object(data, 8);
+		data.position = glm::vec2{0, 0.5};
 		level->moving_models[model_id].set_position(data.position);
 
-		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 });
+		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 }, 8);
+
+		dynamic_id = 99 - nr_of_moving_platforms;
 
 		moving_platform_ids.push_back(dynamic_id);
 
@@ -1024,5 +1031,33 @@ void Game::add_moving_platforms(glm::vec2 pos)
 		dynamics[dynamic_id].model_id = model_id;
 		dynamics[dynamic_id].objects_type_id = 9;
 
+		nr_of_moving_platforms++;
 	}
+	else if (level_nr == 2)
+	{
+		collision_data data;
+		int model_id = level->add_object(data, 8);
+		data.position = glm::vec2{ 0, 0.5 };
+		level->moving_models[model_id].set_position(data.position);
+
+		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 }, 8);
+
+		dynamic_id = 99 - nr_of_moving_platforms;
+
+		moving_platform_ids.push_back(dynamic_id);
+
+		dynamics[dynamic_id].position = data.position;
+		dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
+		dynamics[dynamic_id].size = { data.width, data.height };
+		dynamics[dynamic_id].forces = { 0.0f, 0.0f };
+		dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+		dynamics[dynamic_id].dynamic_id = dynamic_id;
+		dynamics[dynamic_id].model_id = model_id;
+		dynamics[dynamic_id].objects_type_id = 9;
+
+		nr_of_moving_platforms++;
+	}
+	
+
+	//}
 }

@@ -23,7 +23,16 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	body.position = position;
 	body.velocity = glm::vec3{0.0f};
 	body.forces = glm::vec3{0.0f};
-	body.mass = 100.0f;
+
+	if (trigger_type == 8)
+	{
+		body.mass = 0.0f;
+	}
+	else
+	{ 
+		body.mass = 100.0f;
+	}
+
 	body.inverse_mass = 1.0f / body.mass;
 
 	body.trigger_type = trigger_type; // test triggers

@@ -102,8 +102,9 @@ private:
 
 
 	//moving platforms
-	void add_moving_platforms(glm::vec2 pos);
+	void add_moving_platforms(int level_nr);
 	std::vector<int> moving_platform_ids;
+	int nr_of_moving_platforms = 0;
 
 
 	//test trigger
