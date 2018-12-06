@@ -638,7 +638,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 			//Fire
 			fx_emitter.calculate_fire_data(delta, game_camera);
 
-
 			//Gust
 			fx_emitter.calculate_gust_data(delta, game_camera);
 		}
