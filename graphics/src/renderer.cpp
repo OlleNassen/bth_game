@@ -292,7 +292,7 @@ void Renderer::render(
 
 			float width = timer_text.get_text_width(out_text.str(), 0.02f);
 
-			timer_text.render_text(out_text.str(), build_info[player_id].local_position.x - (width * 0.5f), build_info[player_id].local_position.y + 1.f, 0.02f);
+			timer_text.render_text(out_text.str(), build_info[player_id].local_position.x - (width * 0.5f), build_info[player_id].local_position.y - 0.5f, 0.02f);
 
 			//Build area
 			int total_players_ready = 0;
