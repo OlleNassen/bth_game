@@ -56,10 +56,20 @@ void Overlays::update(
 	//Playing update
 	if (current_state & state::playing)
 	{
+		if (has_finished && !is_dead)
+		{
+			finished_timer += delta;
+		}
+		else
+		{
+			finished_timer = 0ms;
+		}
 		if (is_dead && has_finished)
 		{
 			death_timer += delta;
 		}
+		else
+			death_timer = 0ms;
 	}
 }
 
