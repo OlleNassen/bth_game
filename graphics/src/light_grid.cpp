@@ -50,8 +50,6 @@ void LightGrid::calculate_grid(const Camera& camera)
 void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> lights)
 {
 	memset(indices, 0, sizeof(indices));
-	float dx = 1920 / block_size;
-	float dy = 1080 / block_size;
 	
 	for (int light_id = 0; light_id < lights.size(); ++light_id)
 	{
