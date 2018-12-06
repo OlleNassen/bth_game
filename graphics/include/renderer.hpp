@@ -168,6 +168,9 @@ private:
 	Shader fx_dust{ 
 		"../resources/shaders/fx_dust.vs",
 		"../resources/shaders/fx_dust.fs" };
+	Shader fx_bubble{
+		"../resources/shaders/fx_bubble.vs",
+		"../resources/shaders/fx_bubble.fs" };
 	Shader fx_spark{ 
 		"../resources/shaders/fx_spark.vs",
 		"../resources/shaders/fx_spark.fs" };

@@ -97,6 +97,7 @@ public:
 
 	void render_particles(
 		const Shader& dust,
+		const Shader& bubble,
 		const Shader& spark,
 		const Shader& steam,
 		const Shader& blitz,
@@ -109,6 +110,7 @@ public:
 		int current_map) const;
 	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_spark_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_bubble_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_steam_data(std::chrono::milliseconds delta, const Camera& camera, int current_map);
 	void calculate_blitz_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_fire_data(std::chrono::milliseconds delta, const Camera& camera);

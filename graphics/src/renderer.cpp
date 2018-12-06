@@ -117,7 +117,7 @@ void Renderer::render(
 		
 		if (!(game_state & state::lobby))
 		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer, current_map);
+			fx_emitter.render_particles(fx_dust, fx_bubble, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer, current_map);
 		}
 		if (debug_active)
 		{
@@ -146,7 +146,7 @@ void Renderer::render(
 
 		if (!(game_state & state::lobby))
 		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer, current_map);
+			fx_emitter.render_particles(fx_dust, fx_bubble, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer, current_map);
 		}
 
 		if (debug_active)
@@ -644,6 +644,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 		//Dust
 		fx_emitter.calculate_dust_data(delta, game_camera);
+
+		//Bubble
+		fx_emitter.calculate_bubble_data(delta, game_camera);
 
 		//Steam
 		fx_emitter.calculate_steam_data(delta, game_camera, current_map);
