@@ -64,7 +64,7 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 		{
 			current_emissive = 1;
 		}
-		else if (emissive_counter >= 10 && emissive_counter <= 25)
+		else if (emissive_counter >= 10)
 		{
 			current_emissive = 2;
 		}
@@ -229,19 +229,12 @@ void GameScene::light_level_1()
 	lights[10].position = glm::vec3{ 0, 46.53, -24.053 };
 	lights[10].color = glm::vec3{ 1, 0.01, 0.01 };
 	//Green
-	lights[11].position = glm::vec3{ 0, 227.53, -13.053 };
+	lights[11].position = glm::vec3{ 0, 224.53, -13.053 };
 	lights[11].color = glm::vec3{ 0.1, 1.0, 0.01 };
-	lights[12].position = glm::vec3{ 0, 247.53, -13.053 };
+	lights[12].position = glm::vec3{ 0, 241.53, -13.053 };
 	lights[12].color = glm::vec3{ 0.1, 1.0, 0.01 };
-	//lights[12].position = glm::vec3{ 0, 141.359, -31.505 };
-	//lights[12].color = glm::vec3{ 1, 0.2, 0 };
-	//
-	//for (int i = 4; i < 13; i++)
-	//{
-	//	lights[i].intensity = 400;
-	//}
-	//
-	//lights[6].intensity = 700;
+
+
 	lights[4].intensity = 800;
 	lights[4].radius = 90;
 	lights[5].intensity = 800;
@@ -263,10 +256,6 @@ void GameScene::light_level_1()
 	lights[11].radius = 80;
 	lights[12].intensity = 400;
 	lights[12].radius = 80;
-	//for (int i = 4; i < 13; i++)
-	//{
-	//	lights[i].radius = 60;
-	//}
 
 }
 
@@ -288,9 +277,9 @@ void GameScene::light_level_2()
 
 	//Map Light
 	//Blue screen lights
-	lights[4].position = glm::vec3{ 2.73, 116.368,-32.735 };
+	lights[4].position = glm::vec3{ 2.73, 120.368,-10.735 };
 	lights[4].color = glm::vec3{ 0.2 ,0.56, 0.9 };
-	lights[5].position = glm::vec3{ -0.24, 140,-29.984 };
+	lights[5].position = glm::vec3{ -0.24, 143,-26.984 };
 	lights[5].color = glm::vec3{ 0.1, 0.7, 0.9 };
 
 	//Robot Lights
@@ -300,24 +289,23 @@ void GameScene::light_level_2()
 	lights[7].color = glm::vec3{ 0.3, 0.9, 1.0 };
 	lights[8].position = glm::vec3{ 0, 206.484, -8.785 };
 	lights[8].color = glm::vec3{ 0.3, 0.9, 1.0 };
-	lights[9].position = glm::vec3{ 0, 214.484, -8.785 };
-	lights[9].color = glm::vec3{ 0, 0.8, 1.0 };
 
 	//Red
-	lights[10].position = glm::vec3{ 0, 36.53, -24.053 };
+	lights[9].position = glm::vec3{ 0, 36.53, -24.053 };
+	lights[9].color = glm::vec3{ 1, 0.01, 0.01 };
+	lights[10].position = glm::vec3{ 0, 46.53, -24.053 };
 	lights[10].color = glm::vec3{ 1, 0.01, 0.01 };
-	lights[11].position = glm::vec3{ 0, 46.53, -24.053 };
-	lights[11].color = glm::vec3{ 1, 0.01, 0.01 };
 	//Green
-	lights[12].position = glm::vec3{ 0, 227.53, -13.053 };
+	lights[11].position = glm::vec3{ 0, 224.53, -13.053 };
+	lights[11].color = glm::vec3{ 0.1, 1.0, 0.01 };
+	lights[12].position = glm::vec3{ 0, 241.53, -13.053 };
 	lights[12].color = glm::vec3{ 0.1, 1.0, 0.01 };
-	lights[13].position = glm::vec3{ 0, 247.53, -13.053 };
-	lights[13].color = glm::vec3{ 0.1, 1.0, 0.01 };
 
-	lights[4].intensity = 700;
-	lights[4].radius = 700;
-	lights[5].intensity = 700;
-	lights[5].radius = 700;
+
+	lights[4].intensity = 800;
+	lights[4].radius = 90;
+	lights[5].intensity = 800;
+	lights[5].radius = 90;
 
 	lights[6].intensity = 600;
 	lights[6].radius = 100;
@@ -325,18 +313,16 @@ void GameScene::light_level_2()
 	lights[7].radius = 100;
 	lights[8].intensity = 600;
 	lights[8].radius = 100;
-	lights[9].intensity = 600;
-	lights[9].radius = 100;
 
+	lights[9].intensity = 400;
+	lights[9].radius = 80;
 	lights[10].intensity = 400;
 	lights[10].radius = 80;
+
 	lights[11].intensity = 400;
 	lights[11].radius = 80;
-
 	lights[12].intensity = 400;
 	lights[12].radius = 80;
-	lights[13].intensity = 400;
-	lights[13].radius = 80;
 }
 
 void GameScene::inititate_object(CustomLevel& objects, MeshLib* object_lib)
