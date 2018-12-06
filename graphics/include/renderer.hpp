@@ -55,7 +55,6 @@ class Renderer
 {
 public:
 	Renderer(GameScene* scene);
-
 	void render(
 		const std::string* begin,
 		const std::string* end,
@@ -136,6 +135,9 @@ private:
 	
 	void render_character(const Shader& shader, const Camera& camera, 
 		const std::vector<Model>& data, int num_players) const;
+
+	void vramUsage();
+	void ramUsage();
 
 	Shader pbr{ 
 		"../resources/shaders/pbr.vs", 
