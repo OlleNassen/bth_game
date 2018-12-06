@@ -108,15 +108,16 @@ public:
 		const Shader& gust,
 		const Shader& stun,
 		const Camera& camera,
-		std::chrono::milliseconds delta) const;
+		std::chrono::milliseconds delta,
+		int current_map) const;
 	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_spark_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_steam_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_steam_data(std::chrono::milliseconds delta, const Camera& camera, int current_map);
 	void calculate_blitz_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_fire_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_godray_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_godray_data(std::chrono::milliseconds delta, const Camera& camera, int current_map);
+	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera, int current_map);
+	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera, int current_map);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_object_data(
 		std::chrono::milliseconds delta, const Camera& camera, 

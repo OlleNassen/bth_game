@@ -42,6 +42,7 @@ public:
 	std::vector<Model> models;
 	std::vector<Model> animated_models;
 	std::vector<collision_data> coll_data;
+	std::string level_name;
 
 // Lucas/Vincet Test för placering av object.
 	std::vector<placeableObjectInfo> objects;

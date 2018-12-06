@@ -253,7 +253,7 @@ private:
 	std::vector<build_information> build_info_vec;
 
 	int game_state;
-
+	int current_map = -1;
 
 	//Test of leaderboard
 	glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
