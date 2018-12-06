@@ -158,7 +158,7 @@ void Renderer::render(
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	if (is_menu)
+	if (is_menu && how_to_play)
 	{
 		overlays.render(overlay_shader, how_to_play);
 	}
@@ -177,8 +177,11 @@ void Renderer::render(
 		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 		post_processing_effects.render();
 
-		overlays.render(overlay_shader, how_to_play);
-		
+		if (is_menu && how_to_play)
+		{
+			overlays.render(overlay_shader, how_to_play);
+		}
+
 		if (game_state & state::pre_building)
 		{
 			glDisable(GL_DEPTH_TEST);
@@ -200,7 +203,12 @@ void Renderer::render(
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
-			if (scores[0] > 0)
+			bool anyone_has_score = false;
+			for (int i = 0; i < player_count; i++)
+				if (scores[i] > 0)
+					anyone_has_score = true;
+
+			if (anyone_has_score)
 			{
 				build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
 
@@ -263,6 +271,8 @@ void Renderer::render(
 				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);
 		}
 
+		
+
 		if (game_state & state::pre_building)
 		{
 			
@@ -323,7 +333,7 @@ void Renderer::render(
 
 
 			build_text.render_text("Your object:", 10.f, 45.f, 0.75f);
-			build_text.render_text(objects_description[player_object_id], 10.f, 10.f, 0.75f);
+			build_text.render_text(objects_name[player_object_id], 10.f, 10.f, 0.75f);
 		}
 
 		if (game_state & state::pre_playing)

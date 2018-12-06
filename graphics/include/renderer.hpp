@@ -272,16 +272,16 @@ private:
 	Text build_text;
 
 	//Arrays of strings and vec3
-	std::array<std::string, 8> objects_description =
+	std::array<std::string, 8> objects_name =
 	{ 	
-		"Spike Trap - Kills if hit",
-		"Turret - Shoots a projectile that kills",
-		"Stun Trap - Stuns the player",
-		"Glide Trap - Makes the player glide",
-		"Speed Boost - Increases running speed",
-		"Double Jump - Enables double jump",
-		"Shield - Invulnerable for one hit",
-		"Random Buff - Random buff"
+		"Spike Trap",
+		"Turret",
+		"Stun Trap",
+		"Glide Debuff",
+		"Speed Boost",
+		"Double Jump",
+		"Shield",
+		"Random Buff"
 	};
 
 	std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };

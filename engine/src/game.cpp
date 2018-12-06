@@ -285,7 +285,7 @@ void Game::update(std::chrono::milliseconds delta)
 	//}
 	else if (net_state.state == network::SessionState::pre_building)
 	{
-		if (level != &level1)
+		if (level != &level1 && level != &level2)
 		{ 
 			if (door_1_votes > door_2_votes)
 			{
@@ -294,8 +294,8 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 			else
 			{
-				/*gameplay.refresh();
-				load_map(&level2);*/
+				gameplay.refresh();
+				load_map(&level2);
 			}
 		}
 
@@ -417,11 +417,13 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				//level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
 							   
-				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
+				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id, dynamics[players_placed_objects_id[i].dynamics_id].position);
 
 				float degree = 90.f * pos.z;
 
 				physics.set_rotation(players_placed_objects_id[i].dynamics_id, static_cast<int>(pos.z));
+
+				physics.set_body_position(players_placed_objects_id[i].dynamics_id, { pos.x, pos.y });
 
 				level->moving_models[players_placed_objects_id[i].model_id].set_rotation(degree);
 
@@ -494,7 +496,7 @@ void Game::update(std::chrono::milliseconds delta)
 				}
 				else
 				{
-					glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id);
+					glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id, dynamics[players_placed_objects_id[i].dynamics_id].position);
 					dynamics[players_placed_objects_id[i].dynamics_id].position = { pos.x, pos.y };
 					level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 				}
@@ -766,8 +768,8 @@ void Game::update(std::chrono::milliseconds delta)
 		level->v[net.id()] = { level->v[net.id()].x, dynamics[players_placed_objects_id[net.id()].dynamics_id].position.y - 3 };
 	}
 
-
-	physics.update(delta, dynamics, triggers, triggers_types, anim_states);
+	if (!(game_state & state::building))
+		physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 
 	pack_data();
 	net.update(net_state, str);
