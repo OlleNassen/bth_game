@@ -120,6 +120,20 @@ private:
 	LuaStack stack;
 };
 
+class MovingPlatformsScript
+{
+public:
+	MovingPlatformsScript(const std::string& path);
+	void setup(int entity);
+	void update(
+		std::chrono::milliseconds delta,
+		objects& object,
+		int index);
+
+private:
+	LuaStack stack;
+};
+
 }
 
 #endif

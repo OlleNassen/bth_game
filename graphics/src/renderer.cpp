@@ -683,6 +683,18 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 }
 
+void Renderer::update_moving_platforms(const objects_array& dynamics,
+	int model_id,
+	int nr_of_moving_platforms)
+{	
+	int j = 0;
+	for (int i = model_id; i < model_id + nr_of_moving_platforms; i++)
+	{
+		scene->moving_models[i].set_position(dynamics[j].position);
+		j++;
+	}
+}
+
 void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const
 {
 	shader.use();

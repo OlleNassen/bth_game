@@ -91,6 +91,10 @@ public:
 		std::array<int, 4> moving_objects_id,
 		bool view_score);
 
+	void update_moving_platforms(const objects_array& dynamics,
+		int model_id,
+		int nr_of_moving_platforms);
+
 	static void point_debug(const std::vector<glm::vec3>& lines)
 	{
 		VertexArray vao;

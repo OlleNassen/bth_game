@@ -100,6 +100,11 @@ private:
 	//Random placed objects
 	std::array <id_and_model_place, 4> random_placed_objects_id;
 
+	//moving platforms
+	void add_moving_platforms(int level_nr);
+	std::vector<int> moving_platform_ids;
+	int nr_of_moving_platforms = 0;
+
 	//test trigger
 	int placed_objects_list_id = 7;
 	//int placed_objects_array[4] = {7/*random*/, 2/*glide*/, 7/*speed*/, 6/*shield*/ };

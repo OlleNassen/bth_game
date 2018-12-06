@@ -67,5 +67,7 @@
     <None Include="shaders\fx_gust.vs" />
     <None Include="shaders\fx_stun.fs" />
     <None Include="shaders\fx_stun.vs" />
+    <None Include="scripts\projectile.lua" />
+    <None Include="scripts\moving_platforms.lua" />
   </ItemGroup>
 </Project>
