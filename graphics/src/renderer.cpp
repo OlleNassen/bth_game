@@ -6,6 +6,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iomanip>
 
+#include <d3d11_4.h>
+#include <dxgi1_6.h>
+
+#pragma comment(lib, "dxgi.lib")
+
+#include <psapi.h>
+#include <string>
+
 namespace graphics
 {
 
@@ -672,6 +680,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		trigger_type[player_id],
 		game_state, 
 		player_id);
+
 }
 
 void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const
@@ -755,5 +764,4 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 		renderable.render(shader);
 	}
 }
-
 }

@@ -60,8 +60,9 @@ private:
 	OverlayScreen overlay;
 	
 	Texture empty{ "../resources/textures/black_pixel.png", true };
-
 	Texture dash{ "../resources/textures/dash.png", true };
+	Texture how_to_play_texture{ "../resources/textures/how_to_play.png", true };
+
 	std::vector<Texture> main_menu;
 	std::vector<Texture> finish;
 	std::vector<Texture> waiting;

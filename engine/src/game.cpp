@@ -599,16 +599,19 @@ void Game::update(std::chrono::milliseconds delta)
 			obj[i].shield_active = dynamics[i].shield_active;
 		}
 		
-		lua_data = gameplay.update(
-			{ delta, obj, triggers,
-			player_inputs,
-			anim_states,
-			players_placed_objects_id,
-			static_cast<int>(player_count),
-			spikeframe,
-			turretframe,
-			triggers_types},
-			game_state, physics.rw, physics.lw);
+		if (!menu.on())
+		{
+			lua_data = gameplay.update(
+				{ delta, obj, triggers,
+				player_inputs,
+				anim_states,
+				players_placed_objects_id,
+				static_cast<int>(player_count),
+				spikeframe,
+				turretframe,
+				triggers_types},
+				game_state, physics.rw, physics.lw);
+		}
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
 		{

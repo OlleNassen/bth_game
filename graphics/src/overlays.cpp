@@ -60,19 +60,6 @@ void Overlays::update(
 		{
 			death_timer += delta;
 		}
-
-		//Main menu update
-		if (current_state & state::menu)
-		{
-			if (main_menu_timer > 1600ms)
-			{
-				main_menu_timer = 0ms;
-			}
-			else
-			{
-				main_menu_timer += delta;
-			}
-		}
 	}
 }
 
@@ -97,7 +84,7 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 	}
 
 	if (how_to_play)
-		dash.bind(0);
+		how_to_play_texture.bind(0);
 
 	overlay.render(shader);
 }
