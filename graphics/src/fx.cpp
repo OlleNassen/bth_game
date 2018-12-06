@@ -1929,7 +1929,7 @@ void FX::calculate_godray_data(std::chrono::milliseconds delta, const Camera & c
 				//Set default values for the particles, first off life and position.
 				fx_godray.particle_container[i].life = 1.0f;
 				//data.particle_container[particle_index].pos = glm::vec3(data.random_x, data.random_y, data.random_z);
-				fx_godray.particle_container[0].pos = glm::vec3(0.0f, 253.0f, 0.0f);
+				fx_godray.particle_container[0].pos = glm::vec3(0.0f, 253.0f, -2.0f);
 				fx_godray.particle_container[1].pos = glm::vec3(-12.248f, 120.597f, -26.537f);
 				fx_godray.particle_container[2].pos = glm::vec3(12.248f, 120.597f, -26.537f);
 				fx_godray.particle_container[3].pos = glm::vec3(0.0f, 120.597f, -26.537f);
@@ -2476,7 +2476,7 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 
 		if (fx_glide.particle_container[nr_of_glide + 1].life > 0.0f)
 		{
-			fx_glide.particle_container[nr_of_glide + 1].pos = player_pos + glm::vec3(0, -1, -1);
+			fx_glide.particle_container[nr_of_glide + 1].pos = player_pos + glm::vec3(0, -1.0f, -0.8f);
 			fx_glide.particle_container[nr_of_glide + 1].camera_distance = glm::length(fx_glide.particle_container[nr_of_glide + 1].pos - camera.position);
 
 			//Set positions in the position data
@@ -2600,7 +2600,7 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 
 		if (fx_speedboost.particle_container[nr_of_speedboost + 1].life > 0.0f)
 		{
-			fx_speedboost.particle_container[nr_of_speedboost + 1].pos = player_pos + glm::vec3(0, -1, -1);
+			fx_speedboost.particle_container[nr_of_speedboost + 1].pos = player_pos + glm::vec3(0, -1.0f, -0.8f);
 			fx_speedboost.particle_container[nr_of_speedboost + 1].camera_distance = glm::length(fx_speedboost.particle_container[nr_of_speedboost + 1].pos - camera.position);
 
 			//Set positions in the position data
@@ -2724,7 +2724,7 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 
 		if (fx_doublejump.particle_container[nr_of_doublejump + 1].life > 0.0f)
 		{
-			fx_doublejump.particle_container[nr_of_doublejump + 1].pos = player_pos + glm::vec3(0, -1, -1);
+			fx_doublejump.particle_container[nr_of_doublejump + 1].pos = player_pos + glm::vec3(0, -1.0f, -0.8f);
 			fx_doublejump.particle_container[nr_of_doublejump + 1].camera_distance = glm::length(fx_doublejump.particle_container[nr_of_doublejump + 1].pos - camera.position);
 
 			//Set positions in the position data
@@ -2847,7 +2847,7 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 
 	if (previous_trigger == 6)
 	{
-		fx_shield.particle_container[nr_of_shield + 1].pos = player_pos + glm::vec3(0, -1, -1);
+		fx_shield.particle_container[nr_of_shield + 1].pos = player_pos + glm::vec3(0, -1.0f, -0.8f);
 		fx_shield.particle_container[nr_of_shield + 1].camera_distance = glm::length(fx_shield.particle_container[nr_of_shield + 1].pos - camera.position);
 
 		//Set positions in the position data
@@ -2954,7 +2954,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 		
 		if (fx_random.particle_container[nr_of_random + 1].life > 0.0f)
 		{
-			fx_random.particle_container[nr_of_random + 1].pos = player_pos + glm::vec3(0, -1, -1);
+			fx_random.particle_container[nr_of_random + 1].pos = player_pos + glm::vec3(0, -1.0f, -0.8f);
 			fx_random.particle_container[nr_of_random + 1].camera_distance = glm::length(fx_random.particle_container[nr_of_random + 1].pos - camera.position);
 
 			//Set positions in the position data
