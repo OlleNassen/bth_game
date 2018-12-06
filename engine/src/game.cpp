@@ -541,13 +541,15 @@ void Game::update(std::chrono::milliseconds delta)
 		//Announs winner and return to lobby.
 		game_state = (game_state | state::game_over);
 
-
-		if (net.id() == 0)
-			net_state.state = network::SessionState::lobby;
-		game_state = (game_state | state::lobby);
-
-		load_map(&lobby);
-		//Set State -> lobby
+		//std::cout << "game over man" << "\n";
+		if ((*local_input)[logic::button::jump] == logic::button_state::pressed) 
+		{
+			if (net.id() == 0)
+				net_state.state = network::SessionState::lobby;
+			game_state = (game_state | state::lobby);
+			load_map(&lobby);
+			//Set State -> lobby
+		}
 	}
 
 

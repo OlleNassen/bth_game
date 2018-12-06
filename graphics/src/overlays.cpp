@@ -320,8 +320,11 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 		}
 	}
 
+	if (current_state & state::game_over)
+		empty2.bind(0);
+
 	if (how_to_play)
-		dash.bind(0);
+		//dash.bind(0);
 
 	overlay.render(shader);
 }
