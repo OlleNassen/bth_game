@@ -85,6 +85,7 @@ public:
 	Texture furnace;
 	Texture gust;
 	Texture stun;
+	Texture bubble;
 	
 	unsigned int randomizer = 0;
 	//unsigned int color_picker[4];
@@ -140,6 +141,7 @@ public:
 	FXdata* fx_doublejump_ptr = new FXdata{};
 	FXdata* fx_shield_ptr = new FXdata{};
 	FXdata* fx_random_ptr = new FXdata{};
+	FXdata* fx_bubble_ptr = new FXdata{};
 
 private:
 	int nr_of_stun = 0;
