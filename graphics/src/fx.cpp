@@ -910,7 +910,7 @@ void FX::calculate_bubble_data(std::chrono::milliseconds delta, const Camera & c
 				//Set default values for the particles, first off life and position.
 				fx_bubble.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10);
 				fx_bubble.particle_container[particle_index].life = 1.0f;
-				fx_bubble.particle_container[particle_index].pos = glm::vec3(fx_bubble.random_x, fx_bubble.random_y + 20.0f, fx_bubble.random_z);
+				fx_bubble.particle_container[particle_index].pos = glm::vec3(fx_bubble.random_x, fx_bubble.random_y, fx_bubble.random_z);
 
 				//Create a direction for the particles to travel
 				glm::vec3 main_dir = glm::vec3(0, 10, 0);
