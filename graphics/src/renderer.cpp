@@ -445,55 +445,41 @@ void Renderer::render(
 
 		if (game_state & state::game_over)
 		{
-			glClearColor(0, 0, 0, 1);
+			glClearColor(0.f, 0.f, 0.f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT);
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-
 			auto width{ .0f }, big_text_size{ 2.5f };
-			/*auto winner{ 0u }, draw{ 0u };
-			for (auto i = 1u; i < player_count; ++i)
-			{
-				if (player_infos[i].score > player_infos[winner].score)
-				{
-					winner = i;
-				}
-				else if (player_infos[i].score == player_infos[winner].score)
-					draw = i;
-			}*/
+			auto sorted_infos = player_infos;
 
-			std::array<player_info, 4> sorted_infos = player_infos;
 			std::sort(sorted_infos.begin(), sorted_infos.end(), sort_by_score);
-
-			out_text.str("");
 			if (sorted_infos.at(0).score == sorted_infos.at(1).score)
 			{
-				width = build_text.get_text_width("DRAW", big_text_size);
-				build_text.render_text("DRAW", screen_width * 0.5f - width * 0.5f, screen_height * 0.8f, big_text_size);
+				out_text.str("DRAW");
 			}
 			else
 			{
+				out_text.str("");
 				text_shader.uniform("text_color", sorted_infos.at(0).color);
-
 				out_text << sorted_infos.at(0).name << " is the winner!";
-				width = build_text.get_text_width(out_text.str(), big_text_size);
-				build_text.render_text(out_text.str(), screen_width * 0.5f - width * 0.5, screen_height * 0.8f, big_text_size);
 			}
+			width = build_text.get_text_width(out_text.str(), big_text_size);
+			build_text.render_text(out_text.str(), screen_width * 0.5f - width * 0.5, screen_height * 0.8f, big_text_size);
+
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			//width = build_text.get_text_width("Score" , 0.75f);
 			build_text.render_text("Score", screen_width * 0.46f, screen_height * 0.5f, 0.75f);
-			for (int i = 0; i < player_count; i++)
+			for (auto i = 0u; i < player_count; ++i)
 			{
 				out_text.str("");
 				out_text << sorted_infos.at(i).name << " : " << sorted_infos.at(i).score;
 				text_shader.uniform("text_color", sorted_infos.at(i).color);
-				//width = build_text.get_text_width(out_text.str(), 0.75f);
 				build_text.render_text(out_text.str(), screen_width * 0.46f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 			}
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			width = build_text.get_text_width("Press SPACE to restart", 0.5f);
-			build_text.render_text("Press SPACE to restart", screen_width * 0.5f - width * 0.5, screen_height * 0.1f, 0.5f);
+			out_text.str("Press SPACE to restart");
+			width = build_text.get_text_width(out_text.str(), 0.5f);
+			build_text.render_text(out_text.str(), screen_width * 0.5f - width * 0.5, screen_height * 0.1f, 0.5f);
 		}
 
 		glEnable(GL_DEPTH_TEST);
