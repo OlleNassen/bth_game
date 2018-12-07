@@ -12,6 +12,11 @@ GameScene::GameScene()
 
 GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_lib)
 {
+	//Level name 
+	std::string str_file_name = (std::string)file_name;
+	std::size_t found = str_file_name.find_last_of("/");
+	level_name = str_file_name.substr(found + 1);
+
 	//Create players
 	CustomLevel level(file_name);
 	CustomLevel objects("../resources/level/objects.ssp");

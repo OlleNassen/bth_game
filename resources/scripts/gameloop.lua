@@ -1,7 +1,7 @@
 function setup(game)
 	game.goal = 258
 	game.points = 0 -- do not change this, edit value in update loop
-	game.max_points = 10
+	game.max_points = 100
 	--4 playerscores:
 	game.names = {"p1", "p2", "p3", "p4"}
 	game.scores = { 0, 0, 0, 0 }
@@ -20,20 +20,31 @@ function setup(game)
 	
 
 	game.time = 0.0
-	game.max_time = 90.0
+	game.max_time = 5.0
 	game.start_round = true
 end
 
 round = 0
 death_height = { 0.0, 0.0, 0.0, 0.0 }
-total_players = 0;
+
+checkpoints = { {}, {}, {}, {} }
+
+checkpoints[1].x = 0.0
+checkpoints[1].y = 0.9
+
+checkpoints[2].x = 0.0
+checkpoints[2].y = 92.0
+
+checkpoints[3].x = 0.0
+checkpoints[3].y = 140.0
+
+checkpoints[4].x = 0.0
+checkpoints[4].y = 194.0
+			
+respawn_timer = { 0.0, 0.0, 0.0, 0.0 }
+last_checkpoint = { 0, 0, 0, 0 }
 
 function update(delta_seconds, game, entities, player_count)
-
-	if total_players == 0 
-	then
-		total_players = player_count
-	end
 
 	game.clock = game.clock + delta_seconds
 	game.time = game.max_time - game.clock
@@ -43,7 +54,7 @@ function update(delta_seconds, game, entities, player_count)
 		game.start_round = false
 
 		-- Start positions
-		for i = 1, 4, 1
+		for i = 1, player_count, 1
 		do
 			entities[i].position.x = 3 * (i - 1)
 			entities[i].position.y = 0.9
@@ -56,14 +67,15 @@ function update(delta_seconds, game, entities, player_count)
 
 			game.finished[i] = false
 			game.died[i] = false
+			last_checkpoint[i] = 0
 		end
 
 		--game.max_points = player_count * 3
-		game.points = total_players -- Don't change unless you know what you're doing :)
+		game.points = 4 -- Don't change unless you know what you're doing :)
 		round = round + 1
 		--game.clock = 0
 
-		for i = 1, 4, 1
+		for i = 1, player_count, 1
 		do
 			game.finished[i] = false
 			game.died[i] = false
@@ -92,7 +104,7 @@ function update(delta_seconds, game, entities, player_count)
 		round = round + 1
 		--game.clock = 0
 
-		for i = 1, 4, 1
+		for i = 1, player_count, 1
 		do
 			game.finished[i] = false
 			game.died[i] = false
@@ -181,7 +193,7 @@ function update(delta_seconds, game, entities, player_count)
 	end
 
 	--If player finished hold him up high
-	for i = 1, 4, 1
+	for i = 1, player_count, 1
 	do
 		if game.finished[i] and not game.died[i]
 		then
@@ -196,7 +208,20 @@ function update(delta_seconds, game, entities, player_count)
 		end
 	end
 
-	for i = 1, 4, 1
+	--Update checkpoints
+	for i = 1, player_count, 1
+	do
+		for j = 1, 4, 1
+		do
+			if entities[i].position.y > checkpoints[j].y and j >= last_checkpoint[i]
+			then
+				last_checkpoint[i] = j
+			end
+		end
+	end
+
+	--If player is dead
+	for i = 1, player_count, 1
 	do
 		if game.died[i] and game.finished[i]
 		then
@@ -208,6 +233,21 @@ function update(delta_seconds, game, entities, player_count)
 
 			entities[i].velocity.x = 0
 			entities[i].velocity.y = 0
+
+			respawn_timer[i] = respawn_timer[i] + delta_seconds
+
+			if respawn_timer[i] > 3.5
+			then
+				respawn_timer[i] = 0.0
+
+				game.died[i] = false
+				game.finished[i] = false
+				
+				index = last_checkpoint[i]
+
+				entities[i].position.x = checkpoints[index].x
+				entities[i].position.y = checkpoints[index].y
+			end
 		end
 	end
 
