@@ -339,11 +339,11 @@ void Game::update(std::chrono::milliseconds delta)
 		if (!give_players_objects && net.id() == 0)
 		{
 			players_placed_objects_id.fill({ -1, -1, -1, -1 });
-			std::array<int, 4> random_position = random_indexes();
+			std::array<int, 4> indexies = random_indexes();
 			std::array<glm::vec2, 4> start_positons = { glm::vec2{0.f, 60.5f}, glm::vec2{0.f, 113.5}, glm::vec2{0.f, 167.f}, glm::vec2{0.f, 224.5f} };
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
-				glm::vec2 start_position = start_positons[random_position[i]];
+				glm::vec2 start_position = start_positons[indexies[i]];
 				placed_objects_list_id = random_picked_object();
 				collision_data data;
 				int m_id = level->add_object(data, placed_objects_list_id);
@@ -383,12 +383,14 @@ void Game::update(std::chrono::milliseconds delta)
 
 				if (obj_id != -1 && obj_type_id != -1)
 				{
-					dynamics[i].player_moving_object_id = -1;
-					dynamics[i].player_moving_object_type_id = -1;
+					//dynamics[i].player_moving_object_id = -1;
+					//dynamics[i].player_moving_object_type_id = -1;
+
+					glm::vec2 start_position = dynamics[obj_id].position;
 
 					collision_data data;
 					int m_id = level->add_object(data, obj_type_id);
-					int d_id = physics.add_dynamic_body(dynamics[obj_id].position, { 0, 0 }, data.width, data.height, { 0, 0 }, obj_type_id);
+					int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, obj_type_id);
 
 					//std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "\nType ID:\t" << obj_type_id << std::endl << std::endl;
 
@@ -413,10 +415,10 @@ void Game::update(std::chrono::milliseconds delta)
 		
 		for (int i = 0; i < static_cast<int>(player_count); i++)
 		{
-			if (players_placed_objects_id[i].place_state != 2 && players_placed_objects_id[i].dynamics_id != -1)
-			{
-				//level.moving_models[players_placed_objects_id[i].model_id].set_position(dynamics[players_placed_objects_id[i].dynamics_id].position);
-							   
+			if (players_placed_objects_id[i].place_state != 2 && 
+				players_placed_objects_id[i].dynamics_id != -1 && 
+				give_players_objects)
+			{							   
 				glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id, dynamics[players_placed_objects_id[i].dynamics_id].position);
 
 				float degree = 90.f * pos.z;
@@ -472,13 +474,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 					level->moving_models.erase(level->moving_models.begin() + ppoi.model_id);
 
-					//std::swap(level->moving_models[ppoi.model_id], level->moving_models[index]);
-					//level->moving_models.pop_back();
-
 					physics.remove_body(ppoi.dynamics_id);
-
-					//dynamics[ppoi.dynamics_id] = dynamics[index];
-
 
 					auto beg = dynamics.begin() + players_placed_objects_id[i].dynamics_id;
 					std::rotate(beg, beg + 1, dynamics.end());
@@ -489,9 +485,6 @@ void Game::update(std::chrono::milliseconds delta)
 						players_placed_objects_id[i].dynamics_id--;
 					}
 
-					/*dynamics[index].model_id = ppoi.model_id;
-					dynamics[index].dynamic_id = ppoi.dynamics_id;*/
-
 					total_nr_objects--;
 				}
 				else
@@ -501,12 +494,6 @@ void Game::update(std::chrono::milliseconds delta)
 					level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 				}
 			}
-
-			/*for (int i = 4; i < 8; i++)
-			{
-				std::cout << "Dynamic: " << dynamics[i].position.x << " - " << dynamics[i].position.y << "\n";
-			}*/
-
 			give_players_objects = false;
 		}
 		
