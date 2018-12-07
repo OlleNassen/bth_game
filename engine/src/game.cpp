@@ -285,7 +285,7 @@ void Game::update(std::chrono::milliseconds delta)
 	//}
 	else if (net_state.state == network::SessionState::pre_building)
 	{
-		if (level != &level1 && level != &level2)
+		if (level == &lobby)
 		{ 
 			if (door_1_votes > door_2_votes)
 			{
@@ -295,7 +295,7 @@ void Game::update(std::chrono::milliseconds delta)
 			else
 			{
 				gameplay.refresh();
-				load_map(&level2);
+				load_map(&level1);
 			}
 		}
 
