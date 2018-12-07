@@ -688,13 +688,6 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 	shader.use();
 
 	grid.bind();
-	
-	shader.uniform("brdf_lut", 6);
-	shader.uniform("irradiance_map", 7);
-	shader.uniform("prefilter_map", 8);
-	brdf_buffer.bind_texture(6);
-	irradiance_buffer.bind_texture(7);
-	prefilter_buffer.bind_texture(8);
 
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
@@ -729,13 +722,6 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 	shader.use();
 
 	grid.bind();
-
-	shader.uniform("brdf_lut", 6);
-	shader.uniform("irradiance_map", 7);
-	shader.uniform("prefilter_map", 8);
-	brdf_buffer.bind_texture(6);
-	irradiance_buffer.bind_texture(7);
-	prefilter_buffer.bind_texture(8);
 
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
