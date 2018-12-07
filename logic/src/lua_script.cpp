@@ -742,6 +742,9 @@ void MovingPlatformsScript::setup(int entity)
 	stack.setglobal(name.c_str());
 
 	stack.getglobal("setup");
+	stack.push(entity);
+	stack.getglobal(name.c_str());
+	stack.call(2, 0);
 
 	if (lua_isfunction(stack.lua_state, -1))
 	{
@@ -751,6 +754,7 @@ void MovingPlatformsScript::setup(int entity)
 
 	stack.clear();
 }
+
 void MovingPlatformsScript::update(
 	std::chrono::milliseconds delta,
 	objects& object,

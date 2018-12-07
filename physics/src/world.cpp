@@ -23,9 +23,18 @@ int World::add_dynamic_body(glm::vec2 start_position, glm::vec2 offset,
 	body.position = position;
 	body.velocity = glm::vec3{0.0f};
 	body.forces = glm::vec3{0.0f};
-	body.mass = 100.0f;
-	body.inverse_mass = 1.0f / body.mass;
 
+	if (trigger_type == 8)
+	{
+		body.mass = 0.0f;
+		body.inverse_mass = 0.0f;
+		//std::cout << "type 8" << std::endl;
+	}
+	else
+	{
+		body.mass = 100.0f;
+		body.inverse_mass = 1.0f / body.mass;
+	}
 	body.trigger_type = trigger_type; // test triggers
 
 	body.original_size = size;
@@ -164,6 +173,32 @@ void World::update(
 			}		
 		}
 	}*/
+
+	for (int i = 0; i < 4; ++i) //test for elevator
+	{
+		auto& left = bodies[i];
+
+		for (auto& right : bodies)
+		{
+			if (&left != &right)
+			{
+				if (right.trigger_type == 8)
+				{
+					CollisionManifold result;
+					reset_collison_manifold(result);
+	
+					result = find_collision_features(left, right);
+	
+					if (result.colliding)
+					{
+						colliders1.push_back(&left);
+						colliders2.push_back(&right);
+						results.push_back(result);
+					}
+				}
+			}
+		}
+	}
 	
 	int index = 0;
 	for (auto& body : bodies)

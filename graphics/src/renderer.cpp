@@ -691,6 +691,7 @@ void Renderer::update_moving_platforms(const objects_array& dynamics,
 	for (int i = model_id; i < model_id + nr_of_moving_platforms; i++)
 	{
 		scene->moving_models[i].set_position(dynamics[j].position);
+		//std::cout << "update platform" << std::endl;
 		j++;
 	}
 }

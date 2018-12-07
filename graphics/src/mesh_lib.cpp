@@ -111,7 +111,8 @@ void MeshLib::create_object_list()
 		"speed_boost.ssp",					//4
 		"double_jump.ssp",					//5
 		"shield.ssp",						//6
-		"random_buff.ssp"					//7
+		"random_buff.ssp",					//7
+		"platform_object.ssp"				//8
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
