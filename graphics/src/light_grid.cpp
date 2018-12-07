@@ -14,7 +14,7 @@ LightGrid::LightGrid()
 {	
 	glGenBuffers(1, &ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-	glBufferData(GL_UNIFORM_BUFFER, 0, 0, GL_STATIC_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 }
 
 void LightGrid::bind() const
@@ -77,7 +77,7 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> li
 	a=a;
 
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(indices), indices);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 }
 
 glm::vec4 screen_to_view(const glm::mat4& inv_proj, const glm::vec4& screen)
