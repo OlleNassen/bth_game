@@ -899,9 +899,9 @@ void FX::calculate_bubble_data(std::chrono::milliseconds delta, const Camera & c
 			for (auto i = 0u; i < fx_bubble.nr_of_particles; i++)
 			{
 				//Create a random position here
-				fx_bubble.random_x = static_cast<float>((rand() % 1100) / 100.0f) - 5.5f;
+				fx_bubble.random_x = static_cast<float>((rand() % 800) / 100.0f) - 4.0f;
 				fx_bubble.random_y = static_cast<float>(rand() % 300) / 300.0f;
-				fx_bubble.random_z = static_cast<float>((rand() % 1100) / 100.0f) - 5.5f;
+				fx_bubble.random_z = static_cast<float>((rand() % 800) / 100.0f) - 4.0f;
 
 				//Find and update the last used particle
 				fx_bubble.last_used_particle = find_unused_particle(fx_bubble.particle_container, fx_bubble.last_used_particle);
@@ -910,7 +910,7 @@ void FX::calculate_bubble_data(std::chrono::milliseconds delta, const Camera & c
 				//Set default values for the particles, first off life and position.
 				fx_bubble.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10);
 				fx_bubble.particle_container[particle_index].life = 1.0f;
-				fx_bubble.particle_container[particle_index].pos = glm::vec3(fx_bubble.random_x, 0, fx_bubble.random_z - 21.835f);
+				fx_bubble.particle_container[particle_index].pos = glm::vec3(fx_bubble.random_x, 3.75f, fx_bubble.random_z - 22.435f);
 
 				//Create a direction for the particles to travel
 				glm::vec3 main_dir = glm::vec3(0, 10, 0);
@@ -965,7 +965,7 @@ void FX::calculate_bubble_data(std::chrono::milliseconds delta, const Camera & c
 
 			if (fx_bubble.particle_container[i].life >= 0.5f)
 			{
-				fx_bubble.particle_container[i].size = abs(fx_bubble.particle_container[i].life - 1) * 3.0f;
+				fx_bubble.particle_container[i].size = abs(fx_bubble.particle_container[i].life - 1) * 2.0f;
 				fx_bubble.position_data[4 * fx_bubble.total_particle_count + 3] = fx_bubble.particle_container[i].size;
 			}
 
