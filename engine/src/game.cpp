@@ -17,6 +17,7 @@ Game::Game()
 	, renderer{&lobby}
 {
 	level1.light_level_1();
+	level2.light_level_2();
 	lobby.light_lobby();
 
 	anim_states[0] = anim::idle;
