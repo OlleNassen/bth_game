@@ -111,8 +111,6 @@ private:
 		glm::vec2 direction;
 		glm::vec2 barrel_position;
 		glm::vec2 end_position;
-		//glm::vec2 back_pos;
-		//float back_range;
 		float range;
 	};
 	std::vector<turret> turrets;

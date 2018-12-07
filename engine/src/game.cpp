@@ -676,11 +676,17 @@ void Game::update(std::chrono::milliseconds delta)
 
 	if (turretframe >= 90 && turretframe <= 92)
 	{
-		//std::cout << "shoot" << std::endl;
+		
+		//Update laser draw here....bool draw laser
 		for (auto i = 0; i < turrets.size(); ++i)
 		{
 			laser_update(turrets[i], player_hit_array);
 		}
+	}
+	else
+	{
+		//Draw no laser
+		//Bool laser false
 	}
 
 
