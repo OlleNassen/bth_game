@@ -22,16 +22,6 @@ void LightGrid::bind() const
 	glBindBufferBase(GL_UNIFORM_BUFFER, 4, ubo);
 }
 
-const light_grid_element* LightGrid::data() const
-{
-	return indices;
-}
-
-int LightGrid::size() const
-{
-	return block_size * block_size;
-}
-
 void LightGrid::calculate_grid(const Camera& camera)
 {	
 	const glm::mat4 inv_proj = glm::inverse(camera.projection);
@@ -45,7 +35,7 @@ void LightGrid::calculate_grid(const Camera& camera)
 	}
 }
 
-void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> lights)
+void LightGrid::update(const Camera& camera, const std::array<PointLight, 32>& lights)
 {
 	memset(indices, 0, sizeof(indices));
 	int  a = 0;

@@ -40,12 +40,9 @@ public:
 	LightGrid();
 
 	void bind() const;
-	
-	const light_grid_element* data()const;
-	int size()const;
 
 	void calculate_grid(const Camera& camera);
-	void update(const Camera& camera, const std::array<PointLight, 32> lights);
+	void update(const Camera& camera, const std::array<PointLight, 32>& lights);
 
 private:
 	GLuint ubo;
