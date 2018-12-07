@@ -901,8 +901,11 @@ void Game::pack_data()
 		net_state.game_objects[i].velocity = dynamics[i].velocity;
 
 		//Vincent
-		net_state.game_objects[i].player_moving_object_type_id = dynamics[i].player_moving_object_type_id;
-		net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
+		if (i < 4)
+		{
+			net_state.game_objects[i].player_moving_object_type_id = dynamics[i].player_moving_object_type_id;
+			net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
+		}
 	}
 
 	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0 && net_state.state != network::SessionState::lobby)
