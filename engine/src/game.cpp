@@ -901,7 +901,7 @@ void Game::pack_data()
 		net_state.game_objects[i].velocity = dynamics[i].velocity;
 
 		//Vincent
-		if (i < 4)
+		if (i < 4 && net.id() == 0)
 		{
 			net_state.game_objects[i].player_moving_object_type_id = dynamics[i].player_moving_object_type_id;
 			net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
