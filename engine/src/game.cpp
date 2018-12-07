@@ -340,6 +340,10 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			players_placed_objects_id.fill({ -1, -1, -1, -1 });
 			std::array<int, 4> indexies = random_indexes();
+
+			std::cout << "New Round:" <<
+				"\nRandom Indexies: " << indexies[0] << ", " << indexies[1] << ", " << indexies[2] << ", " << indexies[3] << "\n\n";
+
 			std::array<glm::vec2, 4> start_positons = { glm::vec2{0.f, 60.5f}, glm::vec2{0.f, 113.5}, glm::vec2{0.f, 167.f}, glm::vec2{0.f, 224.5f} };
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
@@ -349,7 +353,15 @@ void Game::update(std::chrono::milliseconds delta)
 				int m_id = level->add_object(data, placed_objects_list_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
 
-				//std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "Type ID:\t" << placed_objects_list_id << std::endl << std::endl;
+
+				if (net.id() == i)
+					std::cout << "This is me:\n";
+
+				std::cout << "Player:/t" << i <<
+					"\nModel ID:\t" << m_id << 
+					"\nDynamic ID:\t" << d_id << 
+					"\nType ID:\t" << placed_objects_list_id << 
+					"\n\n";
 
 				dynamics[d_id].position = start_position;
 				dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -392,7 +404,14 @@ void Game::update(std::chrono::milliseconds delta)
 					int m_id = level->add_object(data, obj_type_id);
 					int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, obj_type_id);
 
-					//std::cout << "Model ID:\t" << m_id << "\nDynamic ID:\t" << d_id << "\nType ID:\t" << obj_type_id << std::endl << std::endl;
+					if (net.id() == i)
+						std::cout << "This is me:\n";
+
+					std::cout << "Player:/t" << i <<
+						"\nModel ID:\t" << m_id <<
+						"\nDynamic ID:\t" << d_id <<
+						"\nType ID:\t" << placed_objects_list_id <<
+						"\n\n";
 
 					//dynamics[d_id].position = start_position;
 					//dynamics[d_id].velocity = { 0.0f, 0.0f };
