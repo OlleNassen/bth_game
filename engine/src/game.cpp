@@ -348,19 +348,19 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = start_positons[indexies[i]];
-				placed_objects_list_id = random_picked_object();
+				int type_id = random_picked_object();
 				collision_data data;
-				int m_id = level->add_object(data, placed_objects_list_id);
-				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, placed_objects_list_id);
+				int m_id = level->add_object(data, type_id);
+				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, type_id);
 
 
 				if (net.id() == i)
 					std::cout << "This is me:\n";
 
-				std::cout << "Player:/t" << i <<
+				std::cout << "Player:\t" << i <<
 					"\nModel ID:\t" << m_id << 
 					"\nDynamic ID:\t" << d_id << 
-					"\nType ID:\t" << placed_objects_list_id << 
+					"\nType ID:\t" << type_id <<
 					"\n\n";
 
 				dynamics[d_id].position = start_position;
@@ -370,10 +370,10 @@ void Game::update(std::chrono::milliseconds delta)
 				dynamics[d_id].impulse = { 0.0f, 0.0f };
 				dynamics[d_id].dynamic_id = d_id;
 				dynamics[d_id].model_id = m_id;
-				dynamics[d_id].objects_type_id = placed_objects_list_id;
+				dynamics[d_id].objects_type_id = type_id;
 
 				dynamics[i].player_moving_object_id = d_id;
-				dynamics[i].player_moving_object_type_id = placed_objects_list_id;
+				dynamics[i].player_moving_object_type_id = type_id;
 
 				players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
 							0, dynamics[d_id].objects_type_id };
@@ -407,10 +407,10 @@ void Game::update(std::chrono::milliseconds delta)
 					if (net.id() == i)
 						std::cout << "This is me:\n";
 
-					std::cout << "Player:/t" << i <<
+					std::cout << "Player:\t" << i <<
 						"\nModel ID:\t" << m_id <<
 						"\nDynamic ID:\t" << d_id <<
-						"\nType ID:\t" << placed_objects_list_id <<
+						"\nType ID:\t" << obj_type_id <<
 						"\n\n";
 
 					//dynamics[d_id].position = start_position;
