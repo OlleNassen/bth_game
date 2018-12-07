@@ -610,7 +610,7 @@ void Game::update(std::chrono::milliseconds delta)
 				spikeframe,
 				turretframe,
 				triggers_types},
-				game_state, physics.rw, physics.lw);
+				game_state, physics.rw, physics.lw, net.id());
 		}
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -821,7 +821,7 @@ void Game::update(std::chrono::milliseconds delta)
 			lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
 			moving_objects_id,
-			view_score);
+			view_score, lua_data.dash_timer);
 	}
 
 	if (game_state & state::menu && menu.get_fullscreen_pressed())

@@ -54,7 +54,9 @@ public:
 	std::chrono::milliseconds doublejump_timer{ 0 };
 	std::chrono::milliseconds shield_timer{ 0 };
 	std::chrono::milliseconds pulse_timer{0};
-	float pulse;
+	float pulse = 1.f;
+
+	void set_pulse(float pulse);
 
 private:
 	OverlayScreen overlay;

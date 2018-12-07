@@ -89,7 +89,7 @@ public:
 		std::vector<build_information>& all_placed_objects,
 		int spectator_id,
 		std::array<int, 4> moving_objects_id,
-		bool view_score);
+		bool view_score, float dash_timer);
 
 	static void point_debug(const std::vector<glm::vec3>& lines)
 	{

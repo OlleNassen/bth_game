@@ -411,7 +411,7 @@ function dash(delta_seconds, entity)
 		entity.velocity.x = dash_speed * dir_x
 		entity.velocity.y = 0
 
-		entity.dash_timer = 2.0
+		entity.dash_timer = 5.0
 		entity.dash_control = 0.12
 
 		entity.anim.current = entity.anim.dash

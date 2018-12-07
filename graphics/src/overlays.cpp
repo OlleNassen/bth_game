@@ -69,6 +69,7 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 	shader.use();
 	shader.uniform("overlay_texture", 0);
 	shader.uniform("cooldown_texture", 1);
+	shader.uniform("pulse", pulse);
 
 	empty.bind(0);
 	empty.bind(1);
@@ -99,6 +100,14 @@ void Overlays::bind_overlay(std::vector<Texture> texture, float modulus_max) con
 	{
 		texture.at(1).bind(0);
 	}
+}
+
+void Overlays::set_pulse(float pulse)
+{
+	if(pulse > 0.0)
+		this->pulse = 0.5f;
+	else
+		this->pulse = 1.0f;
 }
 
 }

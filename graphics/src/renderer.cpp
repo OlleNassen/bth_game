@@ -512,7 +512,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::vector<build_information>& all_placed_objects,
 	int spectator_id,
 	std::array<int, 4> moving_objects_id,
-	bool view_score)
+	bool view_score, float dash_timer)
 {
 	bool is_menu = (new_game_state & state::menu);
 	
@@ -672,6 +672,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	}
 
 	grid.update(game_camera, scene->lights);
+
+	overlays.set_pulse(dash_timer);
 
 	overlays.update(delta, 
 		died[player_id], 
