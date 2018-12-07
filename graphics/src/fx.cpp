@@ -910,7 +910,7 @@ void FX::calculate_bubble_data(std::chrono::milliseconds delta, const Camera & c
 				//Set default values for the particles, first off life and position.
 				fx_bubble.particle_container[particle_index].random_amp = static_cast<float>(rand() % 10);
 				fx_bubble.particle_container[particle_index].life = 1.0f;
-				fx_bubble.particle_container[particle_index].pos = glm::vec3(fx_bubble.random_x, fx_bubble.random_y, fx_bubble.random_z);
+				fx_bubble.particle_container[particle_index].pos = glm::vec3(fx_bubble.random_x, 0, fx_bubble.random_z);
 
 				//Create a direction for the particles to travel
 				glm::vec3 main_dir = glm::vec3(0, 10, 0);
@@ -2322,9 +2322,9 @@ void FX::calculate_furnace_light_data(std::chrono::milliseconds delta, const Cam
 				}
 				if (current_map == 2)
 				{
-					fx_furnace_light.particle_container[0].pos = glm::vec3(0.45f, 190.654f, -10.778f);
-					fx_furnace_light.particle_container[1].pos = glm::vec3(0.45f, 198.654f, -10.778f);
-					fx_furnace_light.particle_container[2].pos = glm::vec3(0.45f, 206.654f, -10.778f);
+					fx_furnace_light.particle_container[0].pos = glm::vec3(-0.45f, 190.654f, -10.778f);
+					fx_furnace_light.particle_container[1].pos = glm::vec3(-0.45f, 198.654f, -10.778f);
+					fx_furnace_light.particle_container[2].pos = glm::vec3(-0.45f, 206.654f, -10.778f);
 				}
 
 				//Create a direction for the particles to travel
@@ -2338,17 +2338,18 @@ void FX::calculate_furnace_light_data(std::chrono::milliseconds delta, const Cam
 					fx_furnace_light.particle_container[i].r = 240;
 					fx_furnace_light.particle_container[i].g = 100;
 					fx_furnace_light.particle_container[i].b = 0;
+					fx_furnace_light.particle_container[i].size = 40.0f;
 				}
 				else if (current_map == 2)
 				{
 					fx_furnace_light.particle_container[i].r = 24;
 					fx_furnace_light.particle_container[i].g = 208;
 					fx_furnace_light.particle_container[i].b = 255;
+					fx_furnace_light.particle_container[i].size = 25.0f;
 				}
 
 				fx_furnace_light.particle_container[i].a = 190;
 
-				fx_furnace_light.particle_container[i].size = 40.0f;
 			}
 		}
 	}
