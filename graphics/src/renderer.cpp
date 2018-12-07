@@ -166,11 +166,6 @@ void Renderer::render(
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	if (is_menu && how_to_play)
-	{
-		overlays.render(overlay_shader, how_to_play);
-	}
-
 	//Text rendering
 	{ 
 		post_proccessing.use();
@@ -185,10 +180,7 @@ void Renderer::render(
 		post_proccessing.uniform("pulse", post_processing_effects.glow_value);
 		post_processing_effects.render();
 
-		if (is_menu && how_to_play)
-		{
-			overlays.render(overlay_shader, how_to_play);
-		}
+		overlays.render(overlay_shader, how_to_play);
 
 		if (game_state & state::pre_building)
 		{
@@ -718,15 +710,14 @@ void Renderer::update(std::chrono::milliseconds delta,
 
 	grid.update(game_camera, scene->lights);
 
-	overlays.set_pulse(dash_timer);
-
 	overlays.update(delta, 
 		died[player_id], 
 		finish[player_id],
 		scores,
 		trigger_type[player_id],
 		game_state, 
-		player_id);
+		player_id,
+		dash_timer);
 
 }
 
@@ -736,13 +727,6 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 
 	shader.uniform("light_indices", grid);
 	
-	shader.uniform("brdf_lut", 6);
-	shader.uniform("irradiance_map", 7);
-	shader.uniform("prefilter_map", 8);
-	brdf_buffer.bind_texture(6);
-	irradiance_buffer.bind_texture(7);
-	prefilter_buffer.bind_texture(8);
-
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
@@ -776,13 +760,6 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 	shader.use();
 
 	shader.uniform("light_indices", grid);
-
-	shader.uniform("brdf_lut", 6);
-	shader.uniform("irradiance_map", 7);
-	shader.uniform("prefilter_map", 8);
-	brdf_buffer.bind_texture(6);
-	irradiance_buffer.bind_texture(7);
-	prefilter_buffer.bind_texture(8);
 
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
