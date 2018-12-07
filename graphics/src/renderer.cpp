@@ -510,7 +510,7 @@ void Renderer::render(
 			[this, &offset, begin](const auto& s)
 		{
 			if (&s == begin || is_chat_visible)
-				text.render_text(s.c_str(), 1920.0f / 2, (offset += 25.0f), 0.5f);
+				text.render_text(s.c_str(), 10.f, (offset += 25.0f), 0.5f);
 		});
 
 		constexpr float size_y = static_cast<int>(1080 / 12);

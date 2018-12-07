@@ -1,7 +1,7 @@
 function setup(game)
 	game.goal = 258
 	game.points = 0 -- do not change this, edit value in update loop
-	game.max_points = 10
+	game.max_points = 100
 	--4 playerscores:
 	game.names = {"p1", "p2", "p3", "p4"}
 	game.scores = { 0, 0, 0, 0 }
