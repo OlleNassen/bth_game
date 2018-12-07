@@ -11,6 +11,7 @@ function setup(game)
 	game.clock = 0.0
 	game.winner = false
 
+	game.immune = {false, false, false, false}
 
 	--shield
 	--game.shield_triggered = {false, false, false, false}
@@ -225,19 +226,29 @@ function update(delta_seconds, game, entities, player_count)
 
 	for i = 1, 4, 1
 	do
+		if entities[i].dash_active == false
+		then
+			game.immune[i] = false
+		end
+	end
+
+	for i = 1, 4, 1
+	do
 		if entities[i].dash_active and entities[i].triggered < 4 and entities[i].triggered ~= -1 
 		then
-			if entities[i].velocity.x  > 0
+			if entities[i].velocity.x  > 0 and not game.immune[i]
 			then
 				entities[entities[i].triggered + 1].impulse.x = 20
-			elseif entities[i].velocity.x < 0
+				game.immune[i] = true
+
+			elseif entities[i].velocity.x < 0 and not game.immune[i]
 			then
 				entities[entities[i].triggered + 1].impulse.x = -20
+				game.immune[i] = true
 			end
 			--entities[entities[i].triggered + 1].impulse.x = entities[i].velocity.x * 10
 			--right.position.x = -10000
 		end
-
 	end
 
 	--for i = 1, 4, 1
