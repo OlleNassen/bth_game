@@ -412,9 +412,13 @@ function dash(delta_seconds, entity)
 		entity.velocity.y = 0
 
 		entity.dash_timer = 2.0
-		entity.dash_control = 0.1
+		entity.dash_control = 0.12
+
+		entity.anim.current = entity.anim.dash
+
 		entity.current_state = entity.states[8]
 	end
+
 end
 
 function accelerate(delta_seconds, entity, top_speed, acceleration)
