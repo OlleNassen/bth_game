@@ -254,6 +254,8 @@ void Game::update(std::chrono::milliseconds delta)
 			gameplay.refresh();
 			load_map(&level1);
 
+			moving_platform_ids.clear();
+			nr_of_moving_platforms = 0;
 			add_moving_platforms(1);
 		}
 
