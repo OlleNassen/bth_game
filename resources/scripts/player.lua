@@ -1,7 +1,4 @@
 
-printf = print
-print = function() end
-
 function setup(entity)
 	--Jump stuff
 	entity.can_jump = true
@@ -30,6 +27,7 @@ function setup(entity)
 	entity.max_gravity = 1800
 
 	entity.dash_timer = 0.0
+	entity.dash_control = 0.0 -- How long until you can control your character again
 
 	--TriGGerS---------------------------------------------------------------
 
@@ -128,6 +126,7 @@ function update(delta_seconds, entity)
 
 	--Dash timer
 	entity.dash_timer = entity.dash_timer - delta_seconds
+	entity.dash_control = entity.dash_control - delta_seconds
 	
 	--triggers
 	entity.jump_pushed_last_frame = entity.button.jump
@@ -371,7 +370,7 @@ function update_control(delta_seconds, entity)
 	--Dash cooldown
 	if entity.current_state == entity.states[8]
 	then
-		if entity.dash_timer < 0
+		if entity.dash_control < 0.0
 		then
 			entity.current_state = entity.states[2]
 		else
@@ -399,7 +398,7 @@ end
 
 function dash(delta_seconds, entity)
 
-	if entity.button.rotate and entity.dash_timer < 0 and math.abs(entity.velocity.x) > epsilon
+	if entity.button.rotate and entity.dash_timer < 0.0 and math.abs(entity.velocity.x) > epsilon
 	then
 	
 		local length = math.sqrt(entity.velocity.x * entity.velocity.x + entity.velocity.y * entity.velocity.y)
@@ -413,8 +412,8 @@ function dash(delta_seconds, entity)
 		entity.velocity.y = 0
 
 		entity.dash_timer = 2.0
-		entity.current_state = entity.states[9]
-
+		entity.dash_control = 0.1
+		entity.current_state = entity.states[8]
 	end
 end
 
