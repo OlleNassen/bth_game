@@ -687,7 +687,7 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 {
 	shader.use();
 
-	shader.uniform("light_indices", grid);
+	grid.bind();
 	
 	shader.uniform("brdf_lut", 6);
 	shader.uniform("irradiance_map", 7);
@@ -728,7 +728,7 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 {
 	shader.use();
 
-	shader.uniform("light_indices", grid);
+	grid.bind();
 
 	shader.uniform("brdf_lut", 6);
 	shader.uniform("irradiance_map", 7);

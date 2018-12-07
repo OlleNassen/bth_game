@@ -18,7 +18,11 @@ const int block_size =  12;
 const int block_size_x = 1920 / block_size;
 const int block_size_y = 1080 / block_size;
 
-uniform light_grid_element light_indices[block_size * block_size];
+layout(std140, binding = 4) uniform lge 
+{
+	light_grid_element light_indices[block_size * block_size];
+};
+
 
 // material parameters
 uniform sampler2D emissive_map;

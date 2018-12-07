@@ -1,6 +1,7 @@
 #ifndef LIGHT_GRID_HPP
 #define LIGHT_GRID_HPP
 #include <array>
+#include <GL/glew.h>
 #include "lights.hpp"
 #include "camera.hpp"
 
@@ -37,6 +38,8 @@ class LightGrid
 {
 public:
 	LightGrid();
+
+	void bind() const;
 	
 	const light_grid_element* data()const;
 	int size()const;
@@ -45,6 +48,8 @@ public:
 	void update(const Camera& camera, const std::array<PointLight, 32> lights);
 
 private:
+	GLuint ubo;
+	
 	static constexpr int block_size = 12;
 
 	light_grid_element indices[block_size * block_size];
