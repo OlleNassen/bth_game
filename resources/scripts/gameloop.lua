@@ -241,7 +241,7 @@ function update(delta_seconds, game, entities, player_count)
 				entities[i].impulse.x = -entities[i].velocity.x
 
 				entities[entities[i].triggered + 1].impulse.x = 50
-				--entities[entities[i].triggered + 1].impulse.y = 10
+				entities[entities[i].triggered + 1].impulse.y = 10
 				game.immune[i] = true
 
 			elseif entities[i].velocity.x < 0 and not game.immune[i]
@@ -249,7 +249,7 @@ function update(delta_seconds, game, entities, player_count)
 				entities[i].impulse.x = -entities[i].velocity.x
 
 				entities[entities[i].triggered + 1].impulse.x = -50
-				--entities[entities[i].triggered + 1].impulse.y = 10
+				entities[entities[i].triggered + 1].impulse.y = 10
 				game.immune[i] = true
 			end
 			--entities[entities[i].triggered + 1].impulse.x = entities[i].velocity.x * 10
