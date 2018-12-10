@@ -81,14 +81,6 @@ Game::Game()
 
 	//Start States
 	net_state.state = network::SessionState::lobby;
-
-	if (seed[0] == -1)
-	{
-		for (int i = 0; i < 100; i++)
-		{
-			seed[i] = rand() % 8;
-		}
-	}
 }
 
 void Game::run()
@@ -244,6 +236,17 @@ void Game::update(std::chrono::milliseconds delta)
 			if (!lua_data.finished[i])
 			{
 				all_ready = false;
+			}
+		}
+
+		if (net.id() == 0)
+		{
+			if (seed[0] == -1)
+			{
+				for (int i = 0; i < 100; i++)
+				{
+					seed[i] = rand() % 8;
+				}
 			}
 		}
 
@@ -947,8 +950,7 @@ void Game::unpack_data()
 				dynamics[i].position = net_state.game_objects[i].position;
 				dynamics[i].velocity = net_state.game_objects[i].velocity;
 				
-				if (seed[99] == -1)
-					seed[i] = net_state.seed[i];
+				seed[i] = net_state.seed[i];
 
 				//Vincent
 				if (i < 4)
