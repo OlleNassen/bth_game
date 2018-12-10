@@ -9,7 +9,7 @@
 #include "framebuffer.hpp"
 #include <chrono>
 
-#define MAX_PARTICLES 100
+#define MAX_PARTICLES 1000
 
 struct build_information
 {
@@ -124,21 +124,21 @@ public:
 
 	void calculate_soft_particles_data(std::chrono::milliseconds delta, const Camera& camera);
 
-	FXdata* fx_dust_ptr = new FXdata{};
-	FXdata* fx_spark_ptr = new FXdata{};
-	FXdata* fx_steam_ptr = new FXdata{};
-	FXdata* fx_blitz_ptr = new FXdata{};
-	FXdata* fx_fire_ptr = new FXdata{};
-	FXdata* fx_godray_ptr = new FXdata{};
-	FXdata* fx_lava_light_ptr = new FXdata{};
-	FXdata* fx_furnace_light_ptr = new FXdata{};
-	FXdata* fx_gust_ptr = new FXdata{};
-	FXdata* fx_stun_ptr = new FXdata{};
-	FXdata* fx_glide_ptr = new FXdata{};
-	FXdata* fx_speedboost_ptr = new FXdata{};
-	FXdata* fx_doublejump_ptr = new FXdata{};
-	FXdata* fx_shield_ptr = new FXdata{};
-	FXdata* fx_random_ptr = new FXdata{};
+	//FXdata* fx_dust_ptr = new FXdata{};
+	//FXdata* fx_spark_ptr = new FXdata{};
+	//FXdata* fx_steam_ptr = new FXdata{};
+	//FXdata* fx_blitz_ptr = new FXdata{};
+	//FXdata* fx_fire_ptr = new FXdata{};
+	//FXdata* fx_godray_ptr = new FXdata{};
+	//FXdata* fx_lava_light_ptr = new FXdata{};
+	//FXdata* fx_furnace_light_ptr = new FXdata{};
+	//FXdata* fx_gust_ptr = new FXdata{};
+	//FXdata* fx_stun_ptr = new FXdata{};
+	//FXdata* fx_glide_ptr = new FXdata{};
+	//FXdata* fx_speedboost_ptr = new FXdata{};
+	//FXdata* fx_doublejump_ptr = new FXdata{};
+	//FXdata* fx_shield_ptr = new FXdata{};
+	//FXdata* fx_random_ptr = new FXdata{};
 
 	FXdata* fx_soft_particles_ptr = new FXdata{};
 

@@ -13,37 +13,37 @@ FX::FX()
 	,gust("../resources/textures/fx/gust_1.png", true)
 	,stun("../resources/textures/fx/stun_1.png", true)
 {
-	auto& fx_dust = *fx_dust_ptr;
-	auto& fx_spark = *fx_spark_ptr;
-	auto& fx_steam = *fx_steam_ptr;
-	auto& fx_blitz = *fx_blitz_ptr;
-	auto& fx_fire = *fx_fire_ptr;
-	auto& fx_godray = *fx_godray_ptr;
-	auto& fx_lava_light = *fx_lava_light_ptr;
-	auto& fx_furnace_light = *fx_furnace_light_ptr;
-	auto& fx_gust = *fx_gust_ptr;
-	auto& fx_stun = *fx_stun_ptr;
-	auto& fx_glide = *fx_glide_ptr;
-	auto& fx_speedboost = *fx_speedboost_ptr;
-	auto& fx_doublejump = *fx_doublejump_ptr;
-	auto& fx_shield = *fx_shield_ptr;
-	auto& fx_random = *fx_random_ptr;
+	//auto& fx_dust = *fx_dust_ptr;
+	//auto& fx_spark = *fx_spark_ptr;
+	//auto& fx_steam = *fx_steam_ptr;
+	//auto& fx_blitz = *fx_blitz_ptr;
+	//auto& fx_fire = *fx_fire_ptr;
+	//auto& fx_godray = *fx_godray_ptr;
+	//auto& fx_lava_light = *fx_lava_light_ptr;
+	//auto& fx_furnace_light = *fx_furnace_light_ptr;
+	//auto& fx_gust = *fx_gust_ptr;
+	//auto& fx_stun = *fx_stun_ptr;
+	//auto& fx_glide = *fx_glide_ptr;
+	//auto& fx_speedboost = *fx_speedboost_ptr;
+	//auto& fx_doublejump = *fx_doublejump_ptr;
+	//auto& fx_shield = *fx_shield_ptr;
+	//auto& fx_random = *fx_random_ptr;
 	auto& fx_soft_particles = *fx_soft_particles_ptr;
-	gen_particle_buffer(fx_dust);
-	gen_particle_buffer(fx_spark);
-	gen_particle_buffer(fx_steam);
-	gen_particle_buffer(fx_blitz);
-	gen_particle_buffer(fx_fire);
-	gen_particle_buffer(fx_godray);
-	gen_particle_buffer(fx_lava_light);
-	gen_particle_buffer(fx_furnace_light);
-	gen_particle_buffer(fx_gust);
-	gen_particle_buffer(fx_stun);
-	gen_particle_buffer(fx_glide);
-	gen_particle_buffer(fx_speedboost);
-	gen_particle_buffer(fx_doublejump);
-	gen_particle_buffer(fx_shield);
-	gen_particle_buffer(fx_random);
+	//gen_particle_buffer(fx_dust);
+	//gen_particle_buffer(fx_spark);
+	//gen_particle_buffer(fx_steam);
+	//gen_particle_buffer(fx_blitz);
+	//gen_particle_buffer(fx_fire);
+	//gen_particle_buffer(fx_godray);
+	//gen_particle_buffer(fx_lava_light);
+	//gen_particle_buffer(fx_furnace_light);
+	//gen_particle_buffer(fx_gust);
+	//gen_particle_buffer(fx_stun);
+	//gen_particle_buffer(fx_glide);
+	//gen_particle_buffer(fx_speedboost);
+	//gen_particle_buffer(fx_doublejump);
+	//gen_particle_buffer(fx_shield);
+	//gen_particle_buffer(fx_random);
 	gen_particle_buffer(fx_soft_particles);
 }
 
@@ -77,21 +77,21 @@ void FX::render_particles(const Shader& dust,
 	const Camera& camera,
 	std::chrono::milliseconds delta) const
 {
-	auto& fx_dust = *fx_dust_ptr;
-	auto& fx_spark = *fx_spark_ptr;
-	auto& fx_steam = *fx_steam_ptr;
-	auto& fx_blitz = *fx_blitz_ptr;
-	auto& fx_fire = *fx_fire_ptr;
-	auto& fx_godray = *fx_godray_ptr;
-	auto& fx_lava_light = *fx_lava_light_ptr;
-	auto& fx_furnace_light = *fx_furnace_light_ptr;
-	auto& fx_gust = *fx_gust_ptr;
-	auto& fx_stun = *fx_stun_ptr;
-	auto& fx_glide = *fx_glide_ptr;
-	auto& fx_speedboost = *fx_speedboost_ptr;
-	auto& fx_doublejump = *fx_doublejump_ptr;
-	auto& fx_shield = *fx_shield_ptr;
-	auto& fx_random = *fx_random_ptr;
+	//auto& fx_dust = *fx_dust_ptr;
+	//auto& fx_spark = *fx_spark_ptr;
+	//auto& fx_steam = *fx_steam_ptr;
+	//auto& fx_blitz = *fx_blitz_ptr;
+	//auto& fx_fire = *fx_fire_ptr;
+	//auto& fx_godray = *fx_godray_ptr;
+	//auto& fx_lava_light = *fx_lava_light_ptr;
+	//auto& fx_furnace_light = *fx_furnace_light_ptr;
+	//auto& fx_gust = *fx_gust_ptr;
+	//auto& fx_stun = *fx_stun_ptr;
+	//auto& fx_glide = *fx_glide_ptr;
+	//auto& fx_speedboost = *fx_speedboost_ptr;
+	//auto& fx_doublejump = *fx_doublejump_ptr;
+	//auto& fx_shield = *fx_shield_ptr;
+	//auto& fx_random = *fx_random_ptr;
 
 	auto& fx_soft_particles = *fx_soft_particles_ptr;
 
@@ -326,7 +326,7 @@ int FX::find_unused_particle(Particle * container, int lastUsedParticle)
 
 	return 0;
 }
-
+/*
 void FX::steam_right(glm::vec3 pos_vec)
 {
 	auto& fx_steam = *fx_steam_ptr;
@@ -483,7 +483,7 @@ void FX::steam_left(glm::vec3 pos_vec)
 		}
 	}
 }
-
+*/
 void FX::particle_linear_sort(Particle * arr, int size)
 {
 	int a, b;
@@ -501,7 +501,7 @@ void FX::particle_linear_sort(Particle * arr, int size)
 		arr[b + 1].life = key;
 	}
 }
-
+/*
 void FX::calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera)
 {
 	std::chrono::duration<float> seconds = delta;
@@ -2921,9 +2921,9 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 				}
 			}
 
-			/*fx_random.color_data[4 * fx_random.total_particle_count + 0] = fx_random.particle_container[i].r;
-			fx_random.color_data[4 * fx_random.total_particle_count + 1] = fx_random.particle_container[i].g;
-			fx_random.color_data[4 * fx_random.total_particle_count + 2] = fx_random.particle_container[i].b;*/
+			//fx_random.color_data[4 * fx_random.total_particle_count + 0] = fx_random.particle_container[i].r;
+			//fx_random.color_data[4 * fx_random.total_particle_count + 1] = fx_random.particle_container[i].g;
+			//fx_random.color_data[4 * fx_random.total_particle_count + 2] = fx_random.particle_container[i].b;
 
 			//Alpha
 			if (fx_random.particle_container[i].life >= 0.5f)
@@ -3016,7 +3016,7 @@ void FX::calculate_object_data(std::chrono::milliseconds delta, const Camera & c
 		calculate_random_data(delta, camera);
 	}
 }
-
+*/
 void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Camera & camera)
 {
 	std::chrono::duration<float> seconds = delta;
@@ -3110,7 +3110,7 @@ void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Ca
 		if (fx_soft_particles.particle_container[i].life > 0.0f)
 		{
 			//data.particle_container[i].speed += * seconds.count();
-			fx_soft_particles.particle_container[i].pos += fx_soft_particles.particle_container[i].speed / 10.0f * seconds.count();
+			fx_soft_particles.particle_container[i].pos += fx_soft_particles.particle_container[i].speed / 100.0f * seconds.count();
 			fx_soft_particles.particle_container[i].camera_distance = glm::length(fx_soft_particles.particle_container[i].pos - camera.position);
 
 			//Set positions in the position data
@@ -3134,6 +3134,8 @@ void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Ca
 				fx_soft_particles.particle_container[i].a = fx_soft_particles.particle_container[i].life * 255;
 				fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 3] = fx_soft_particles.particle_container[i].a;
 			}
+			//fx_soft_particles.color_data[4 * fx_soft_particles.total_particle_count + 3] = fx_soft_particles.particle_container[i].a;
+
 		}
 		else
 		{
@@ -3152,6 +3154,7 @@ void FX::calculate_soft_particles_data(std::chrono::milliseconds delta, const Ca
 	}
 
 	fx_soft_particles.average_camera_distance = fx_soft_particles.total_camera_distance / fx_soft_particles.total_alive;
+	//std::cout << fx_soft_particles.total_alive << std::endl;
 
 	//Update particle information
 	glBindBuffer(GL_ARRAY_BUFFER, fx_soft_particles.position_buffer);
