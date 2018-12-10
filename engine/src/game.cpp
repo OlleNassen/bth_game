@@ -266,7 +266,7 @@ void Game::update(std::chrono::milliseconds delta)
 		//For host only
 		if (!have_placed_random_platforms)
 		{
-			place_random_objects(0, 9);
+			place_random_objects(0, 15);
 
 			have_placed_random_platforms = true;
 		}
@@ -898,14 +898,9 @@ void Game::unpack_data()
 
 void Game::place_random_objects(float start_height, int number_of_randoms)
 {
-	/*for (int i = 0; i < 15; i++)
-	{
-		input.physics->random_placed_objects_pos[i] = glm::vec2{ 0.0, hight };
-	}*/
-
-	//bool placed_1 = false;
-	//bool placed_2 = false;
-	//bool placed_3 = false;
+	bool placed_1 = false;
+	bool placed_2 = false;
+	bool placed_3 = false;
 
 	collision_data data;
 
@@ -916,9 +911,9 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 	int totalX = 5;
 	int totalY = 3;
 
-	int width = static_cast<int>(width_of_map / totalX + 1);
+	int width = static_cast<int>(width_of_map / totalX);
 
-	startPosition = { width, start_height};
+	startPosition = { (width_of_map * 0.5) - (width / 2), start_height};
 
 	for (int i = 0; i < totalY; i++)
 	{
@@ -942,6 +937,23 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 	{
 		same_number = false;
 		randum_number = rand() % positions.size();
+
+		if (rand_numb.size() >= number_of_randoms - 3) //test, maka sure every row has a platform
+		{
+			if (!placed_1)
+			{
+				rand_numb.push_back(2);
+			}
+			if (!placed_2)
+			{
+				rand_numb.push_back(7);
+			}
+			if (!placed_3)
+			{
+				rand_numb.push_back(12);
+			}
+		}
+
 		for (int i = 0; i < rand_numb.size(); i++)
 		{
 			if (randum_number == rand_numb[i])
@@ -952,7 +964,24 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 		if (!same_number)
 		{
 			rand_numb.push_back(randum_number);
+
+			if (randum_number <= 4)
+			{
+				placed_1 = true;
+			}
+			else if (randum_number >= 5 && randum_number <=9)
+			{
+				placed_2 = true;
+			}
+			else if (randum_number >= 10 && randum_number <= 14)
+			{
+				placed_3 = true;
+			}
 		}
+
+		
+
+
 	}
 
 	int platform_id = 8;
