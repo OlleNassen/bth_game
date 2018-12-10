@@ -47,7 +47,7 @@ private:
 	
 	int level_id = 0;
 	graphics::GameScene level1{"../resources/level/level_1.ssp", &mesh_lib, &object_lib}; //ID = 1
-	graphics::GameScene level2{"../resources/level/level_1.ssp", &mesh_lib, &object_lib}; //ID = 2
+	graphics::GameScene level2{"../resources/level/level_2.ssp", &mesh_lib, &object_lib}; //ID = 2
 	graphics::GameScene lobby{"../resources/level/lobby.ssp", &mesh_lib, &object_lib}; //ID = 0
 
 	graphics::GameScene* level{&lobby};

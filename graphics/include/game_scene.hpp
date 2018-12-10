@@ -34,8 +34,6 @@ public:
 	GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_lib);
 	~GameScene();
 
-	std::string level_name;
-
 	void light_lobby();
 	void light_level_1();
 	void light_level_2();

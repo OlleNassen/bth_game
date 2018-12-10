@@ -166,6 +166,11 @@ void Game::update(std::chrono::milliseconds delta)
 		gameplay.refresh();
 
 		load_map(&lobby);
+
+		if (net.id() == 0)
+			level_id = 0;
+
+		std::cout << level_id << "\n";
 	}
 
 	/*if (net_state.state == network::SessionState::waiting)
@@ -265,6 +270,16 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 				}
 
+				if (net.id() == 0)
+				{
+					if (door_1_votes > door_2_votes)
+						level_id = 1;
+					else
+						level_id = 2;
+				}
+
+				std::cout << level_id << "\n";
+
 				net_state.state = network::SessionState::pre_building;
 			}
 			game_state = (game_state | state::pre_building);
@@ -286,7 +301,7 @@ void Game::update(std::chrono::milliseconds delta)
 	//}
 	else if (net_state.state == network::SessionState::pre_building)
 	{
-		if (level == &lobby && level_id != 0)
+		if (level == &lobby)
 		{ 
 			switch (level_id)
 			{
@@ -294,9 +309,13 @@ void Game::update(std::chrono::milliseconds delta)
 				gameplay.refresh();
 				load_map(&level1);
 				break;
+
 			case 2:
 				gameplay.refresh();
 				load_map(&level2);
+				break;
+
+			case 0:
 				break;
 			}
 		}
@@ -1055,7 +1074,7 @@ void Game::load_map(graphics::GameScene* scene)
 	for (int i = 4; i < dynamics.size(); ++i)
 		dynamics[i].position = glm::vec2(-20000.f, -20000.f);
 	
-	if (net.id() == 0)
+	/*if (net.id() == 0)
 	{
 		if (scene == &lobby)
 			level_id = 0;
@@ -1063,9 +1082,7 @@ void Game::load_map(graphics::GameScene* scene)
 			level_id = 1;
 		else if (scene == &level2)
 			level_id = 2;
-	}
-
-	std::cout << level_id << "\n";
+	}*/
 	
 	renderer.switch_scene(scene);
 	level = scene;
