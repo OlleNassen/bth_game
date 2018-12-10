@@ -278,8 +278,6 @@ void Game::update(std::chrono::milliseconds delta)
 						level_id = 2;
 				}
 
-				std::cout << level_id << "\n";
-
 				net_state.state = network::SessionState::pre_building;
 			}
 			game_state = (game_state | state::pre_building);
@@ -308,11 +306,13 @@ void Game::update(std::chrono::milliseconds delta)
 			case 1:
 				gameplay.refresh();
 				load_map(&level1);
+				std::cout << level_id << "\n";
 				break;
 
 			case 2:
 				gameplay.refresh();
 				load_map(&level2);
+				std::cout << level_id << "\n";
 				break;
 
 			case 0:
