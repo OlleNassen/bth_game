@@ -218,7 +218,11 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		if (level != &lobby)
 		{
+			gameplay.refresh();
 			load_map(&lobby);
+
+			level_id = 0;
+			std::cout << level_id << "\n";
 
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
