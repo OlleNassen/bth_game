@@ -168,8 +168,6 @@ void Game::update(std::chrono::milliseconds delta)
 		load_map(&lobby);
 		level_id = 0;
 
-		std::cout << level_id << "\n";
-
 		door_1_votes = 0;
 		door_2_votes = 0;
 	}
@@ -308,13 +306,11 @@ void Game::update(std::chrono::milliseconds delta)
 			case 1:
 				gameplay.refresh();
 				load_map(&level1);
-				std::cout << level_id << "\n";
 				break;
 
 			case 2:
 				gameplay.refresh();
 				load_map(&level2);
-				std::cout << level_id << "\n";
 				break;
 
 			case 0:
