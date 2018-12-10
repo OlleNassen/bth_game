@@ -6,6 +6,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iomanip>
 
+#include <d3d11_4.h>
+#include <dxgi1_6.h>
+
+#pragma comment(lib, "dxgi.lib")
+
+#include <psapi.h>
+#include <string>
+
 namespace graphics
 {
 
@@ -76,6 +84,7 @@ void Renderer::render(
 	int player_object_id,
 	std::vector<glm::vec3> remove_lines,
 	bool view_score,
+	std::array<glm::vec2, 4> player_positions,
 	bool how_to_play)const
 {
 	bool is_menu = (game_state & state::menu);
@@ -157,11 +166,6 @@ void Renderer::render(
 	// Post Processing Effects
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	if (is_menu)
-	{
-		overlays.render(overlay_shader, how_to_play);
-	}
-
 	//Text rendering
 	{ 
 		post_proccessing.use();
@@ -177,7 +181,7 @@ void Renderer::render(
 		post_processing_effects.render();
 
 		overlays.render(overlay_shader, how_to_play);
-		
+
 		if (game_state & state::pre_building)
 		{
 			glDisable(GL_DEPTH_TEST);
@@ -199,7 +203,12 @@ void Renderer::render(
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
-			if (scores[0] > 0)
+			bool anyone_has_score = false;
+			for (int i = 0; i < player_count; i++)
+				if (scores[i] > 0)
+					anyone_has_score = true;
+
+			if (anyone_has_score)
 			{
 				build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
 
@@ -221,6 +230,8 @@ void Renderer::render(
 			}
 			
 			int total_players_ready = 0;
+			int level_1_index = 0;
+			int level_2_index = 0;
 			for (int i = 0; i < player_count; i++)
 			{
 				if (finish[i])
@@ -228,20 +239,39 @@ void Renderer::render(
 					text_shader.uniform("text_color", player_infos[i].color);
 
 					out_text.str("");
-					out_text << player_infos[i].name << " is ready";
-					build_text.render_text(out_text.str(), 10.f, screen_height - (45.f * (i + 2)), 1.f);
+
+					if (player_positions[i].x > 22)
+					{
+						out_text << player_infos[i].name << " has voted for level 2";
+
+						float width = build_text.get_text_width(out_text.str(), 1.f);
+						build_text.render_text(out_text.str(), screen_width - width, screen_height - (45.f * (level_1_index + 2)), 1.f);
+
+						level_1_index++;
+					}
+					else if (player_positions[i].x < -22)
+					{
+						out_text << player_infos[i].name << " has voted for level 1";
+
+						build_text.render_text(out_text.str(), 10.f, screen_height - (45.f * (level_2_index + 2)), 1.f);
+
+						level_2_index++;
+					}
+
 					total_players_ready++;
 				}
 			}
 
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			out_text.str("");
-			out_text << total_players_ready << "/" << player_count;
-			build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
+			//out_text.str("");
+			//out_text << total_players_ready << "/" << player_count;
+			//build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
 
 			if (total_players_ready == player_count)
 				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);
 		}
+
+		
 
 		if (game_state & state::pre_building)
 		{
@@ -262,7 +292,7 @@ void Renderer::render(
 
 			float width = timer_text.get_text_width(out_text.str(), 0.02f);
 
-			timer_text.render_text(out_text.str(), build_info[player_id].local_position.x - (width * 0.5f), build_info[player_id].local_position.y + 1.f, 0.02f);
+			timer_text.render_text(out_text.str(), build_info[player_id].local_position.x - (width * 0.5f), build_info[player_id].local_position.y - 0.5f, 0.02f);
 
 			//Build area
 			int total_players_ready = 0;
@@ -303,7 +333,7 @@ void Renderer::render(
 
 
 			build_text.render_text("Your object:", 10.f, 45.f, 0.75f);
-			build_text.render_text(objects_description[player_object_id], 10.f, 10.f, 0.75f);
+			build_text.render_text(objects_name[player_object_id], 10.f, 10.f, 0.75f);
 		}
 
 		if (game_state & state::pre_playing)
@@ -404,7 +434,14 @@ void Renderer::render(
 				}
 			}
 
-			if ((died[player_id] || finish[player_id]) && (overlays.finished_timer >= 5000ms || overlays.death_timer >= 500ms))
+			if (died[player_id])
+			{
+				out_text.str("");
+				out_text << "Respawning at last checkpoint in " << std::fixed << std::setprecision(0) << spawn_timer << " seconds";
+				build_text.render_text(out_text.str(), (screen_width * 0.5f) - 400.f, (screen_height * 0.5f) - 70.f, 0.75f);
+			}
+
+			if ((died[player_id] && finish[player_id]) && (overlays.finished_timer >= 5000ms))
 			{				
 				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 			}
@@ -465,7 +502,7 @@ void Renderer::render(
 			[this, &offset, begin](const auto& s)
 		{
 			if (&s == begin || is_chat_visible)
-				text.render_text(s.c_str(), 1920.0f / 2, (offset += 25.0f), 0.5f);
+				text.render_text(s.c_str(), 10.f, (offset += 25.0f), 0.5f);
 		});
 
 		constexpr float size_y = static_cast<int>(1080 / 12);
@@ -504,10 +541,11 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::vector<build_information>& all_placed_objects,
 	int spectator_id,
 	std::array<int, 4> moving_objects_id,
-	bool view_score)
+	bool view_score, float dash_timer)
 {
 	bool is_menu = (new_game_state & state::menu);
-	
+	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(delta).count();
+
 	if (game_state & state::building)
 	{
 		if (moving_objects_id[id] < scene->moving_models.size())
@@ -541,7 +579,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	{
 		places = 1;
 		placing = { -1, -1, -1, -1 };
-		scores_to_give = { player_count, player_count - 1, player_count - 2, player_count - 3 };
+		scores_to_give = { 4, 3, 2, 1 };
 	}
 
 	if (!(game_state & state::playing))
@@ -629,9 +667,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 		//Gust
 		fx_emitter.calculate_gust_data(delta, game_camera);
 
-		
-		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects);
-		
+		//Objects
+		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects, trigger_type[player_id], game_state, scene->moving_models[player_id].get_position());
+
+		scene->moving_models[player_id].get_position();
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();
@@ -650,6 +689,13 @@ void Renderer::update(std::chrono::milliseconds delta,
 		game_camera.update(delta, &scene->v[id], &scene->v[id + 1]);
 	else
 		game_camera.update(delta, &scene->v[spectator_id], &scene->v[spectator_id + 1]);
+
+	if (died[player_id])
+	{
+		spawn_timer -= dt;
+	}
+	else
+		spawn_timer = 3.5f;
 
 	ui.update(scene->moving_models, 
 		player_count, 
@@ -670,7 +716,9 @@ void Renderer::update(std::chrono::milliseconds delta,
 		scores,
 		trigger_type[player_id],
 		game_state, 
-		player_id);
+		player_id,
+		dash_timer);
+
 }
 
 void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const
@@ -679,13 +727,6 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 
 	shader.uniform("light_indices", grid);
 	
-	shader.uniform("brdf_lut", 6);
-	shader.uniform("irradiance_map", 7);
-	shader.uniform("prefilter_map", 8);
-	brdf_buffer.bind_texture(6);
-	irradiance_buffer.bind_texture(7);
-	prefilter_buffer.bind_texture(8);
-
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
@@ -720,13 +761,6 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 
 	shader.uniform("light_indices", grid);
 
-	shader.uniform("brdf_lut", 6);
-	shader.uniform("irradiance_map", 7);
-	shader.uniform("prefilter_map", 8);
-	brdf_buffer.bind_texture(6);
-	irradiance_buffer.bind_texture(7);
-	prefilter_buffer.bind_texture(8);
-
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
@@ -754,5 +788,4 @@ void Renderer::render_character(const Shader& shader, const Camera& camera, cons
 		renderable.render(shader);
 	}
 }
-
 }

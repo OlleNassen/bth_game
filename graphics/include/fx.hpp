@@ -6,6 +6,7 @@
 #include "texture.hpp"
 #include "camera.hpp"
 #include "shader.hpp"
+#include "flags.hpp"
 #include <chrono>
 
 #define MAX_PARTICLES 1000
@@ -117,11 +118,12 @@ public:
 	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_object_data(std::chrono::milliseconds delta, const Camera& camera, std::vector<build_information> &build_info);
-	//void calculate_object_1_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	//void calculate_object_2_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	//void calculate_object_3_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
-	//void calculate_object_4_data(std::chrono::milliseconds delta, const Camera& camera, build_information build_info);
+	void calculate_object_data(
+		std::chrono::milliseconds delta, const Camera& camera, 
+		std::vector<build_information> &build_info, 
+		int trigger_type, 
+		int game_state,
+		glm::vec3 player_pos);
 
 	FXdata* fx_dust_ptr = new FXdata{};
 	FXdata* fx_spark_ptr = new FXdata{};
@@ -138,10 +140,6 @@ public:
 	FXdata* fx_doublejump_ptr = new FXdata{};
 	FXdata* fx_shield_ptr = new FXdata{};
 	FXdata* fx_random_ptr = new FXdata{};
-	//FXdata* fx_object_1_ptr = new FXdata{};
-	//FXdata* fx_object_2_ptr = new FXdata{};
-	//FXdata* fx_object_3_ptr = new FXdata{};
-	//FXdata* fx_object_4_ptr = new FXdata{};
 
 private:
 	int nr_of_stun = 0;
@@ -150,6 +148,12 @@ private:
 	int nr_of_doublejump = 0;
 	int nr_of_shield = 0;
 	int nr_of_random = 0;
+	int previous_trigger = -1;
+	bool glide_active = false;
+	bool speedboost_active = false;
+	bool doublejump_active = false;
+	bool shield_active = false;
+	bool random_active = false;
 	std::vector<glm::vec3> stun_loc;
 	std::vector<glm::vec3> glide_loc;
 	std::vector<glm::vec3> speedboost_loc;
@@ -164,12 +168,12 @@ private:
 	void steam_right(glm::vec3 pos_vec);
 	void steam_back(glm::vec3 pos_vec);
 	void steam_left(glm::vec3 pos_vec);
-	void calculate_stun_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_glide_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_speedboost_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_doublejump_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_random_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_stun_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, glm::vec3 player_pos);
+	void calculate_glide_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
+	void calculate_speedboost_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
+	void calculate_doublejump_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
+	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
+	void calculate_random_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
 };
 
 }

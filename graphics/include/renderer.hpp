@@ -55,7 +55,6 @@ class Renderer
 {
 public:
 	Renderer(GameScene* scene);
-
 	void render(
 		const std::string* begin,
 		const std::string* end,
@@ -71,7 +70,9 @@ public:
 		int player_id,
 		int player_object_id,
 		std::vector<glm::vec3> remove_lines,
-		bool view_score, bool how_to_play) const;
+		bool view_score,
+		std::array<glm::vec2, 4> player_positions,
+		bool how_to_play) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -90,7 +91,7 @@ public:
 		std::vector<build_information>& all_placed_objects,
 		int spectator_id,
 		std::array<int, 4> moving_objects_id,
-		bool view_score);
+		bool view_score, float dash_timer);
 
 	static void point_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -134,6 +135,9 @@ private:
 	
 	void render_character(const Shader& shader, const Camera& camera, 
 		const std::vector<Model>& data, int num_players) const;
+
+	void vramUsage();
+	void ramUsage();
 
 	Shader pbr{ 
 		"../resources/shaders/pbr.vs", 
@@ -264,21 +268,22 @@ private:
 
 	//Timer info
 	Text timer_text;
+	float spawn_timer = 3.5f;
 
 	//Build instructions
 	Text build_text;
 
 	//Arrays of strings and vec3
-	std::array<std::string, 8> objects_description =
+	std::array<std::string, 8> objects_name =
 	{ 	
-		"Spike Trap - Kills if hit",
-		"Turret - Shoots a projectile that kills",
-		"Stun Trap - Stuns the player",
-		"Glide Trap - Makes the player glide",
-		"Speed Boost - Increases running speed",
-		"Double Jump - Enables double jump",
-		"Shield - Invulnerable for one hit",
-		"Random Buff - Random buff"
+		"Spike Trap",
+		"Turret",
+		"Stun Trap",
+		"Glide Debuff",
+		"Speed Boost",
+		"Double Jump",
+		"Shield",
+		"Random Buff"
 	};
 
 	std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };
