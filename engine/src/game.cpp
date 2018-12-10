@@ -77,6 +77,7 @@ Game::Game()
 
 	//place_random_objects(0, 20, 9); //For random placing object
 
+	srand(time(NULL));
 
 	//Start States
 	net_state.state = network::SessionState::lobby;
@@ -225,6 +226,9 @@ void Game::update(std::chrono::milliseconds delta)
 
 			door_1_votes = 0;
 			door_2_votes = 0;
+
+			seed = rand();
+			srand(seed);
 		}
 
 		game_state = (game_state | state::lobby);
@@ -291,6 +295,15 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				gameplay.refresh();
 				load_map(&level1);
+
+				std::cout << rand() << "\n";
+				std::cout << rand() << "\n";
+				std::cout << rand() << "\n";
+				std::cout << rand() << "\n";
+				std::cout << rand() << "\n";
+				std::cout << rand() << "\n";
+				std::cout << rand() << "\n";
+				std::cout << rand() << "\n\n";
 			}
 			else
 			{

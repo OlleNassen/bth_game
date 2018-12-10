@@ -118,6 +118,9 @@ private:
 	int turretframe = 0;
 	//New gameloop stuff
 	void load_map(graphics::GameScene* scene);
+
+	//Random seed
+	unsigned int seed = 0;
 };
 
 
