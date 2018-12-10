@@ -210,8 +210,6 @@ void Game::update(std::chrono::milliseconds delta)
 	if (net.connected())
 		game_state = (game_state | state::connected);
 	
-	
-
 	if ((net_state.state == network::SessionState::lobby))
 	{
 		if (level != &lobby)
@@ -240,32 +238,40 @@ void Game::update(std::chrono::milliseconds delta)
 
 		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu) && all_ready)
 		{
-			for (int i = 0; i < 4; i++)
-			{
-				if (dynamics[i].position.x < -22)
-				{
-					door_1_votes++;
-				}
-				else if (dynamics[i].position.x > 22)
-				{
-					door_2_votes++;
-				}
-			}
-
-			if (door_1_votes == door_2_votes)
-			{
-				if (dynamics[0].position.x < -22)
-				{
-					door_1_votes++;
-				}
-				else if (dynamics[0].position.x > 22)
-				{
-					door_2_votes++;
-				}
-			}
-
 			if (net.id() == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (dynamics[i].position.x < -22)
+					{
+						door_1_votes++;
+					}
+					else if (dynamics[i].position.x > 22)
+					{
+						door_2_votes++;
+					}
+				}
+
+				if (door_1_votes == door_2_votes)
+				{
+					if (dynamics[0].position.x < -22)
+					{
+						door_1_votes++;
+					}
+					else if (dynamics[0].position.x > 22)
+					{
+						door_2_votes++;
+					}
+				}
+
 				net_state.state = network::SessionState::pre_building;
+
+				if (door_1_votes > door_2_votes)
+					level_id = 1;
+				else
+					level_id = 2;
+
+			}
 			game_state = (game_state | state::pre_building);
 		}
 	}
@@ -287,15 +293,16 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		if (level == &lobby)
 		{ 
-			if (door_1_votes > door_2_votes)
+			switch (level_id)
 			{
+			case 1:
 				gameplay.refresh();
 				load_map(&level1);
-			}
-			else
-			{
+				break;
+			case 2:
 				gameplay.refresh();
-				load_map(&level1);
+				load_map(&level2);
+				break;
 			}
 		}
 
@@ -890,22 +897,24 @@ void Game::update(std::chrono::milliseconds delta)
 
 void Game::pack_data()
 {	
-	for (int i = 0; i < 4; ++i)
+	if (net.id() == 0)
 	{
-		net_state.inputs[i] = player_inputs[i];
-	}
-
-	for (auto i = 0u; i < dynamics.size(); ++i)
-	{
-		net_state.game_objects[i].position = dynamics[i].position;
-		net_state.game_objects[i].velocity = dynamics[i].velocity;
-
 		//Vincent
-		if (i < 4 && net.id() == 0)
+		net_state.level_id = level_id;
+
+		for (int i = 0; i < 4; ++i) //Players
 		{
+			net_state.inputs[i] = player_inputs[i];
+
 			net_state.game_objects[i].player_moving_object_type_id = dynamics[i].player_moving_object_type_id;
 			net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
 		}
+	}
+
+	for (auto i = 0u; i < dynamics.size(); ++i)	//Player + Objects
+	{
+		net_state.game_objects[i].position = dynamics[i].position;
+		net_state.game_objects[i].velocity = dynamics[i].velocity;
 	}
 
 	if ((*local_input)[logic::button::refresh] == logic::button_state::held && net.id() == 0 && net_state.state != network::SessionState::lobby)
@@ -914,11 +923,17 @@ void Game::pack_data()
 
 void Game::unpack_data()
 {	
-	for (int i = 0; i < 4; ++i)
+	//Vincent
+	level_id = net_state.level_id;
+
+	for (int i = 0; i < 4; ++i)	//Players
 	{
 		if (i != net.id())
 		{
 			player_inputs[i] = net_state.inputs[i];
+
+			dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
+			dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
 		}		
 	}
 	
@@ -929,17 +944,10 @@ void Game::unpack_data()
 
 		if (net.id())
 		{
-			for (auto i = 0u; i < dynamics.size(); ++i)
+			for (auto i = 0u; i < dynamics.size(); ++i) //Players + objects
 			{
 				dynamics[i].position = net_state.game_objects[i].position;
 				dynamics[i].velocity = net_state.game_objects[i].velocity;
-
-				//Vincent
-				if (i < 4)
-				{
-					dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
-					dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
-				}
 			}
 		}
 
@@ -1047,7 +1055,19 @@ void Game::load_map(graphics::GameScene* scene)
 		dynamics[i].position = glm::vec2(3.f * i, 2.5f);
 	for (int i = 4; i < dynamics.size(); ++i)
 		dynamics[i].position = glm::vec2(-20000.f, -20000.f);
+	
+	if (net.id() == 0)
+	{
+		if (scene == &lobby)
+			level_id = 0;
+		else if (scene == &level1)
+			level_id = 1;
+		else if (scene == &level2)
+			level_id = 2;
+	}
 
+	std::cout << level_id << "\n";
+	
 	renderer.switch_scene(scene);
 	level = scene;
 
