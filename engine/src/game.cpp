@@ -291,27 +291,19 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		if (level == &lobby)
 		{ 
-			if (door_1_votes > door_2_votes)
-			{
-				gameplay.refresh();
-				load_map(&level1);
+			gameplay.refresh();
+			load_map(&level1);
 
-				srand(seed);
+			srand(seed);
 
-				std::cout << rand() << "\n";
-				std::cout << rand() << "\n";
-				std::cout << rand() << "\n";
-				std::cout << rand() << "\n";
-				std::cout << rand() << "\n";
-				std::cout << rand() << "\n";
-				std::cout << rand() << "\n";
-				std::cout << rand() << "\n\n";
-			}
-			else
-			{
-				gameplay.refresh();
-				load_map(&level1);
-			}
+			std::cout << rand() << "\n";
+			std::cout << rand() << "\n";
+			std::cout << rand() << "\n";
+			std::cout << rand() << "\n";
+			std::cout << rand() << "\n";
+			std::cout << rand() << "\n";
+			std::cout << rand() << "\n";
+			std::cout << rand() << "\n\n";
 		}
 
 
@@ -338,6 +330,9 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::building)
 	{
+		if (static_cast<int>(lua_data.time) % 2 < 2)
+			std::cout << rand() << "\n";
+
 		for (auto& anim : anim_states)
 		{
 			anim = anim::falling;
