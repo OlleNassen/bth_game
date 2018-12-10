@@ -897,6 +897,11 @@ void Game::update(std::chrono::milliseconds delta)
 
 void Game::pack_data()
 {	
+	for (int i = 0; i < 4; ++i) //Players
+	{
+		net_state.inputs[i] = player_inputs[i];
+	}
+
 	if (net.id() == 0)
 	{
 		//Vincent
@@ -904,8 +909,6 @@ void Game::pack_data()
 
 		for (int i = 0; i < 4; ++i) //Players
 		{
-			net_state.inputs[i] = player_inputs[i];
-
 			net_state.game_objects[i].player_moving_object_type_id = dynamics[i].player_moving_object_type_id;
 			net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
 		}
