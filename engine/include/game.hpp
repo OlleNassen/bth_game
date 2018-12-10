@@ -119,8 +119,8 @@ private:
 	//New gameloop stuff
 	void load_map(graphics::GameScene* scene);
 
-	//Random seed
-	int seed[100] = { -1 };
+	//Random Seed
+	std::array<int, 100> seed = { -1 };
 };
 
 

@@ -245,7 +245,7 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				for (int i = 0; i < 100; i++)
 				{
-					seed[i] = rand() % 8;
+					seed[i] = 3 + (rand() % 4);
 				}
 			}
 		}
@@ -301,11 +301,6 @@ void Game::update(std::chrono::milliseconds delta)
 		{ 
 			gameplay.refresh();
 			load_map(&level1);
-
-			for (int i = 0; i < 100; i++)
-			{
-				std::cout << seed[i] << "\n";
-			}
 		}
 
 
@@ -675,7 +670,8 @@ void Game::update(std::chrono::milliseconds delta)
 				static_cast<int>(player_count),
 				spikeframe,
 				turretframe,
-				triggers_types},
+				triggers_types,
+				seed },
 				game_state, physics.rw, physics.lw, net.id());
 		}
 
