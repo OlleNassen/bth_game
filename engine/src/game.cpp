@@ -172,40 +172,6 @@ void Game::update(std::chrono::milliseconds delta)
 		door_2_votes = 0;
 	}
 
-	/*if (net_state.state == network::SessionState::waiting)
-	{
-		net_state.state = network::SessionState::none;
-		game_state = (game_state | state::lobby);
-		physics.clear_object();
-		level.clear_object();
-		gameplay.refresh();
-		for (int i = 0; i < 4; ++i)
-			dynamics[i].position = glm::vec2(3.f * i, 2.5f);
-		for (int i = 4; i < dynamics.size(); ++i)
-			dynamics[i].position = glm::vec2(-20000.f, -20000.f);
-		give_players_objects = false;
-		watching = net.id();
-
-		level = graphics::GameScene("../resources/level/lobby.ssp", &mesh_lib, &object_lib);
-		physics.clear_static_object();
-		for (auto& coll : level.coll_data)
-		{
-			physics.add_static_body(coll.position,
-				glm::vec2{ 0.0f,0.0f }, coll.width, coll.height, coll.trigger);
-		}
-		gameplay.is_new_round = false;
-	}	*/
-
-	/*if (gameplay.is_new_round)
-	{
-		net_state.state = network::SessionState::building;
-		game_state = (game_state | state::building);
-
-		give_players_objects = false;
-		watching = net.id();
-		gameplay.is_new_round = false;
-	}*/
-
 	if (menu.on())
 		game_state = (game_state | state::menu);
 
@@ -283,20 +249,7 @@ void Game::update(std::chrono::milliseconds delta)
 			game_state = (game_state | state::pre_building);
 		}
 	}
-	//else if (net_state.state == network::SessionState::loading)
-	//{
-	//	game_state = (game_state | state::loading);
 
-	//	gameplay.refresh();
-	//	load_map(&level1);
-
-	//	/*for (int i = 0; i < 4; ++i)
-	//		dynamics[i].position = glm::vec2(3.f * i, 2.5f);*/
-
-	//	if (net.id() == 0)
-	//		net_state.state = network::SessionState::pre_building;
-	//	game_state = (game_state | state::pre_building);
-	//}
 	else if (net_state.state == network::SessionState::pre_building)
 	{
 		if (level == &lobby)
@@ -376,7 +329,7 @@ void Game::update(std::chrono::milliseconds delta)
 				int m_id = level->add_object(data, type_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, type_id);
 
-
+				/*
 				if (net.id() == i)
 					std::cout << "This is me:\n";
 
@@ -385,6 +338,7 @@ void Game::update(std::chrono::milliseconds delta)
 					"\nDynamic ID:\t" << d_id << 
 					"\nType ID:\t" << type_id <<
 					"\n\n";
+				*/
 
 				dynamics[d_id].position = start_position;
 				dynamics[d_id].velocity = { 0.0f, 0.0f };
