@@ -38,7 +38,8 @@ public:
 		std::array<float, 4> &scores,
 		int trigger_type,
 		int game_state,
-		int player
+		int player,
+		float pulse
 	);
 
 	void render(const Shader& shader, bool how_to_play) const;
@@ -54,9 +55,9 @@ public:
 	std::chrono::milliseconds doublejump_timer{ 0 };
 	std::chrono::milliseconds shield_timer{ 0 };
 	std::chrono::milliseconds pulse_timer{0};
-	float pulse;
 
 private:
+	float pulse = 1.f;
 	OverlayScreen overlay;
 	
 	Texture empty{ "../resources/textures/black_pixel.png", true };

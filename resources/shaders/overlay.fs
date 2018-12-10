@@ -11,7 +11,7 @@ void main()
 {
 	vec4 screen_texture = texture(overlay_texture, tex_coords).rgba * abs(texture(cooldown_texture, tex_coords).w - 1);
 
-	screen_texture += texture(cooldown_texture, tex_coords).rgba * texture(cooldown_texture, tex_coords).w;
+	screen_texture += texture(cooldown_texture, tex_coords).rgba * texture(cooldown_texture, tex_coords).w * pulse;
 
 	frag_color = vec4(screen_texture);
 }

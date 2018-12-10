@@ -39,7 +39,8 @@ void Overlays::update(
 	std::array<float, 4> &scores,
 	int trigger_type,
 	int game_state,
-	int player
+	int player,
+	float dash_timer
 )
 {
 	using namespace std::chrono_literals;
@@ -47,6 +48,11 @@ void Overlays::update(
 	is_dead = died;
 	has_finished = finish;
 	player_id = player;
+
+	if (dash_timer > 0.0)
+		this->pulse = 0.5f;
+	else
+		this->pulse = 1.0f;
 
 	if (!(current_state & state::playing) || !is_dead)
 	{
@@ -69,6 +75,7 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 	shader.use();
 	shader.uniform("overlay_texture", 0);
 	shader.uniform("cooldown_texture", 1);
+	shader.uniform("pulse", pulse);
 
 	empty.bind(0);
 	empty.bind(1);

@@ -35,7 +35,9 @@ enum class anim
 	sliding,
 	hanging_left,
 	hanging_right,
-	independent
+	independent,
+	dash,
+	stun
 };
 
 
