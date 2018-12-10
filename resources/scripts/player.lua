@@ -83,6 +83,7 @@ function setup(entity)
 
 
 	entity.falling_delay_timer = 0.0
+	entity.falling_delay_timer_max = 0.175
 
 
 end
@@ -105,11 +106,11 @@ function update(delta_seconds, entity)
 		update_control(delta_seconds, entity)
 	end
 
-
-	
 	update_triggers(delta_seconds, entity)
 
 
+	entity.falling_delay_timer = entity.falling_delay_timer + delta_seconds
+	
 	--Gravity
 	if entity.current_state == entity.states[6] and entity.velocity.y < 0
 	or entity.current_state == entity.states[7] and entity.velocity.y < 0 
@@ -174,11 +175,14 @@ function update_control(delta_seconds, entity)
 			entity.current_state = entity.states[2]
 			entity.anim.current = entity.anim.running
 		end
-		if entity.falling_delay_timer > 0.1
+		
+		if entity.velocity.y < -1.0 -- if falling
 		then
-			if entity.velocity.y < -1.0 -- if falling
+
+			entity.current_state = entity.states[4]
+
+			if entity.falling_delay_timer > entity.falling_delay_timer_max
 			then
-				entity.current_state = entity.states[4]
 				entity.anim.current = entity.anim.falling
 			end
 		end
@@ -256,9 +260,7 @@ function update_control(delta_seconds, entity)
 	if entity.current_state == entity.states[4]
 	then
 	 
-	entity.falling_delay_timer = entity.falling_delay_timer + delta_seconds
-
-	--jump_forgivenes
+		--jump_forgivenes
 		entity.jump_timer = entity.jump_timer + delta_seconds
 
 		if entity.jump_forgiveness_time > entity.jump_timer and entity.button.jump and entity.can_jump and entity.jumped_last == false
@@ -295,8 +297,13 @@ function update_control(delta_seconds, entity)
 		then 
 			entity.velocity.y = 0
 			entity.current_state = entity.states[5]
-			entity.anim.current = entity.anim.landing
-			entity.falling_delay_timer = 0.0
+
+			if entity.falling_delay_timer > entity.falling_delay_timer_max
+			then
+				entity.anim.current = entity.anim.landing
+				entity.falling_delay_timer = 0.0
+			end
+
 		end
 
 		dash(delta_seconds, entity)
@@ -305,6 +312,7 @@ function update_control(delta_seconds, entity)
 	--Landing
 	if entity.current_state == entity.states[5]
 	then
+
 		entity.can_jump = true
 		entity.jump_timer = 0.0
 		entity.current_state = entity.states[2]
@@ -399,6 +407,12 @@ function update_control(delta_seconds, entity)
 	end
 
 
+	--New if-statement for standing on a platform
+	if entity.triggered_type == 8 
+	then
+		 entity.falling_delay_timer = 0.0
+	end
+
 end
 
 function dash(delta_seconds, entity)
@@ -461,6 +475,9 @@ function decelerate(delta_seconds, entity)
 end
 
 function update_triggers(delta_seconds, entity)
+	
+	
+	
 	--trigger
 	if entity.triggered >= 4
 	then
@@ -477,7 +494,6 @@ function update_triggers(delta_seconds, entity)
 			entity.is_stund = true
 			entity.stun_trap_timer = 0.0
 
-			--print("stun_trap")
 		end
 
 		--speed_boost
@@ -492,8 +508,6 @@ function update_triggers(delta_seconds, entity)
 				entity.glide_trap_triggered = false
 				entity.shield_active = false
 			end
-
-			--print("Sprint_boost")
 		end
 
 		--double_jump
@@ -509,8 +523,6 @@ function update_triggers(delta_seconds, entity)
 				entity.glide_trap_triggered = false
 				entity.shield_active = false
 			end
-
-			--print("double_jump")
 		end
 
 		--glide_trap
@@ -525,8 +537,6 @@ function update_triggers(delta_seconds, entity)
 				entity.double_jump_triggered = false
 				entity.shield_active = false
 			end
-
-			--print("glide_trap")
 
 		end
 
@@ -545,8 +555,6 @@ function update_triggers(delta_seconds, entity)
 			end
 
 			random_assignment(entity)
-
-			--print("random_buff")
 		end
 
 		--shield
@@ -722,26 +730,22 @@ function random_assignment(entity)
 
 		if id == entity.buffs_id[1] --glide_trap
 		then
-			--print("glide trap")
 			entity.glide_trap_triggered = true
 			entity.glide_trap_timer = 0.0
 
 		elseif id == entity.buffs_id[2] --speed_boost
 		then
-			--print("speed boost")
 			entity.speed_boost_triggered = true
 			entity.speed_boost_timer = 0.0
 
 		elseif id == entity.buffs_id[3] --double_jump
 		then
-			--print("double jump")
 			entity.double_jump_triggered = true
 			entity.double_jump_timer = 0.0
 			entity.can_double_jump = false
 
 		elseif id == entity.buffs_id[4] --shield
 		then
-			--print("shield player")
 			entity.shield_active = true;
 		end
 	end
