@@ -88,7 +88,9 @@ void MeshLib::create_mesh_list()
 		"controlp_wall.ssp",				//60
 		"htp_tv.ssp",						//61
 		"liquid_machine.ssp",				//62
-		"spheres.ssp"						//63
+		"spheres.ssp",						//63
+		"sludge_machine.ssp",				//64
+		"sludge_pipes.ssp"					//65
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)

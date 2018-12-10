@@ -233,6 +233,8 @@ void GameScene::light_level_1()
 	lights[11].color = glm::vec3{ 0.1, 1.0, 0.01 };
 	lights[12].position = glm::vec3{ 0, 241.53, -13.053 };
 	lights[12].color = glm::vec3{ 0.1, 1.0, 0.01 };
+	lights[13].position = glm::vec3{ 0, 6.53, -21.853 };
+	lights[13].color = glm::vec3{ 0.1, 1.0, 0.01 };
 
 
 	lights[4].intensity = 800;
@@ -256,6 +258,8 @@ void GameScene::light_level_1()
 	lights[11].radius = 80;
 	lights[12].intensity = 400;
 	lights[12].radius = 80;
+	lights[13].intensity = 400;
+	lights[13].radius = 80;
 
 }
 
