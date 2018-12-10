@@ -951,10 +951,10 @@ void Game::unpack_data()
 		if (i != net.id())
 		{
 			player_inputs[i] = net_state.inputs[i];
+		}
 
-			dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
-			dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
-		}		
+		dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
+		dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
 	}
 	
 	//if (state_sequence != net_state.sequence)
@@ -962,7 +962,7 @@ void Game::unpack_data()
 		state_sequence = net_state.sequence;
 		player_count = net_state.player_count;
 
-		if (net.id())
+		if (net.id() != 0)
 		{
 			for (auto i = 0u; i < dynamics.size(); ++i) //Players + objects
 			{
