@@ -85,21 +85,19 @@ public:
 	Texture furnace;
 	Texture gust;
 	Texture stun;
+	Texture bubble;
 	
 	unsigned int randomizer = 0;
-	//unsigned int color_picker[4];
 	unsigned int color_picker;
 	std::chrono::milliseconds timer;
 
-	//unsigned char random_color_r[4] = { 0 };
-	//unsigned char random_color_g[4] = { 0 };
-	//unsigned char random_color_b[4] = { 0 };
 	unsigned char random_color_r = 0;
 	unsigned char random_color_g = 0;
 	unsigned char random_color_b = 0;
 
 	void render_particles(
 		const Shader& dust,
+		const Shader& bubble,
 		const Shader& spark,
 		const Shader& steam,
 		const Shader& blitz,
@@ -108,21 +106,24 @@ public:
 		const Shader& gust,
 		const Shader& stun,
 		const Camera& camera,
-		std::chrono::milliseconds delta) const;
+		std::chrono::milliseconds delta,
+		int current_map) const;
 	void calculate_dust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_spark_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_steam_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_bubble_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_steam_data(std::chrono::milliseconds delta, const Camera& camera, int current_map);
 	void calculate_blitz_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_fire_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_godray_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera);
-	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera);
+	void calculate_godray_data(std::chrono::milliseconds delta, const Camera& camera, int current_map);
+	void calculate_lava_light_data(std::chrono::milliseconds delta, const Camera& camera, int current_map);
+	void calculate_furnace_light_data(std::chrono::milliseconds delta, const Camera& camera, int current_map);
 	void calculate_gust_data(std::chrono::milliseconds delta, const Camera& camera);
 	void calculate_object_data(
 		std::chrono::milliseconds delta, const Camera& camera, 
 		std::vector<build_information> &build_info, 
 		int trigger_type, 
 		int game_state,
+		bool bullet_hit,
 		glm::vec3 player_pos);
 
 	FXdata* fx_dust_ptr = new FXdata{};
@@ -140,6 +141,7 @@ public:
 	FXdata* fx_doublejump_ptr = new FXdata{};
 	FXdata* fx_shield_ptr = new FXdata{};
 	FXdata* fx_random_ptr = new FXdata{};
+	FXdata* fx_bubble_ptr = new FXdata{};
 
 private:
 	int nr_of_stun = 0;
@@ -172,7 +174,7 @@ private:
 	void calculate_glide_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
 	void calculate_speedboost_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
 	void calculate_doublejump_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
-	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
+	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, bool bullet_hit, int game_state, glm::vec3 player_pos);
 	void calculate_random_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
 };
 
