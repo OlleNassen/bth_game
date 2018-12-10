@@ -687,7 +687,7 @@ void Renderer::update_moving_platforms(const objects_array& dynamics,
 	int model_id,
 	int nr_of_moving_platforms)
 {	
-	if (scene->moving_models.size >= 4)
+	if (scene->moving_models.size() >= 4)
 	{
 		int j = 0;
 		for (int i = model_id; i < model_id + nr_of_moving_platforms; i++)
