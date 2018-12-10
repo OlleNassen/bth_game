@@ -338,7 +338,7 @@ void GameScene::inititate_object(CustomLevel& objects, MeshLib* object_lib)
 		auto* ptr = objects.levelObjects[i].centerPivot;
 		int model_type_id = i;
 
-		Model tempModel = { model, glm::vec3(0, 0, 0), object_lib->get_mesh(i) };
+		Model tempModel = { model, glm::vec3(1, 1, 1), object_lib->get_mesh(i) };
 		collision_data tempInfo = { glm::vec2{ ptr[0], ptr[1] }, width, height, false, model_type_id };
 		placeableObjectInfo info = { tempModel, tempInfo };
 		this->objects.emplace_back(info);

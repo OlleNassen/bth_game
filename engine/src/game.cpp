@@ -315,6 +315,8 @@ void Game::update(std::chrono::milliseconds delta)
 			case 2:
 				gameplay.refresh();
 				load_map(&level2);
+				moving_platform_ids.clear();
+				nr_of_moving_platforms = 0;
 				break;
 
 			case 0:
