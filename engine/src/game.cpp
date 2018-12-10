@@ -166,9 +166,7 @@ void Game::update(std::chrono::milliseconds delta)
 		gameplay.refresh();
 
 		load_map(&lobby);
-
-		if (net.id() == 0)
-			level_id = 0;
+		level_id = 0;
 
 		std::cout << level_id << "\n";
 	}
@@ -270,13 +268,10 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 				}
 
-				if (net.id() == 0)
-				{
-					if (door_1_votes > door_2_votes)
-						level_id = 1;
-					else
-						level_id = 2;
-				}
+				if (door_1_votes > door_2_votes)
+					level_id = 1;
+				else
+					level_id = 2;
 
 				net_state.state = network::SessionState::pre_building;
 			}
@@ -319,27 +314,27 @@ void Game::update(std::chrono::milliseconds delta)
 				break;
 			}
 		}
-
-
-
-		//Render text of state and what to do.
-		game_state = (game_state | state::pre_building);
-		static float pre_build_timer = 3.5f;
-
-		for (int i = 0; i < 4; i++)
+		else
 		{
-			dynamics[i].player_moving_object_id = -1;
-			dynamics[i].player_moving_object_type_id = -1;
-		}
+			//Render text of state and what to do.
+			game_state = (game_state | state::pre_building);
+			static float pre_build_timer = 3.5f;
 
-		//Set State -> building
-		pre_build_timer -= dt;
-		if (pre_build_timer <= 0.0f)
-		{
-			pre_build_timer = 3.5f;
-			if (net.id() == 0)
-				net_state.state = network::SessionState::building;
-			game_state = (game_state | state::building);
+			for (int i = 0; i < 4; i++)
+			{
+				dynamics[i].player_moving_object_id = -1;
+				dynamics[i].player_moving_object_type_id = -1;
+			}
+
+			//Set State -> building
+			pre_build_timer -= dt;
+			if (pre_build_timer <= 0.0f)
+			{
+				pre_build_timer = 3.5f;
+				if (net.id() == 0)
+					net_state.state = network::SessionState::building;
+				game_state = (game_state | state::building);
+			}
 		}
 	}
 	else if (net_state.state == network::SessionState::building)
