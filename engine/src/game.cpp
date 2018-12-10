@@ -81,6 +81,14 @@ Game::Game()
 
 	//Start States
 	net_state.state = network::SessionState::lobby;
+
+	if (seed[0] == -1)
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			seed[i] = rand() % 8;
+		}
+	}
 }
 
 void Game::run()
@@ -226,9 +234,6 @@ void Game::update(std::chrono::milliseconds delta)
 
 			door_1_votes = 0;
 			door_2_votes = 0;
-
-			seed = rand();
-			srand(seed);
 		}
 
 		game_state = (game_state | state::lobby);
@@ -294,16 +299,10 @@ void Game::update(std::chrono::milliseconds delta)
 			gameplay.refresh();
 			load_map(&level1);
 
-			srand(seed);
-
-			std::cout << rand() << "\n";
-			std::cout << rand() << "\n";
-			std::cout << rand() << "\n";
-			std::cout << rand() << "\n";
-			std::cout << rand() << "\n";
-			std::cout << rand() << "\n";
-			std::cout << rand() << "\n";
-			std::cout << rand() << "\n\n";
+			for (int i = 0; i < 100; i++)
+			{
+				std::cout << seed[i] << "\n";
+			}
 		}
 
 
@@ -330,9 +329,6 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::building)
 	{
-		if (static_cast<int>(lua_data.time) % 4 == 3)
-			std::cout << rand() << "\n";
-
 		for (auto& anim : anim_states)
 		{
 			anim = anim::falling;
@@ -910,10 +906,14 @@ void Game::pack_data()
 		net_state.game_objects[i].position = dynamics[i].position;
 		net_state.game_objects[i].velocity = dynamics[i].velocity;
 
+		if (net.id() == 0)
+		{
+			net_state.seed[i] = seed[i];
+		}
+
 		//Vincent
 		if (i < 4 && net.id() == 0)
 		{
-			net_state.seed = seed;
 
 			net_state.game_objects[i].player_moving_object_type_id = dynamics[i].player_moving_object_type_id;
 			net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
@@ -926,7 +926,6 @@ void Game::pack_data()
 
 void Game::unpack_data()
 {	
-	seed = net_state.seed;
 	
 	for (int i = 0; i < 4; ++i)
 	{
@@ -947,6 +946,9 @@ void Game::unpack_data()
 			{
 				dynamics[i].position = net_state.game_objects[i].position;
 				dynamics[i].velocity = net_state.game_objects[i].velocity;
+				
+				if (seed[99] == -1)
+					seed[i] = net_state.seed[i];
 
 				//Vincent
 				if (i < 4)

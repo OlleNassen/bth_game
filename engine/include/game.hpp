@@ -120,7 +120,7 @@ private:
 	void load_map(graphics::GameScene* scene);
 
 	//Random seed
-	unsigned int seed = 0;
+	int seed[100] = { -1 };
 };
 
 
