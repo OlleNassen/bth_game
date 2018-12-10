@@ -377,14 +377,14 @@ void Game::update(std::chrono::milliseconds delta)
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, type_id);
 
 
-				/*if (net.id() == i)
+				if (net.id() == i)
 					std::cout << "This is me:\n";
 
 				std::cout << "Player:\t" << i <<
 					"\nModel ID:\t" << m_id << 
 					"\nDynamic ID:\t" << d_id << 
 					"\nType ID:\t" << type_id <<
-					"\n\n";*/
+					"\n\n";
 
 				dynamics[d_id].position = start_position;
 				dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -877,7 +877,7 @@ void Game::update(std::chrono::milliseconds delta)
 		
 		all_placed_objects.clear();
 
-		for (int i = 4; i < total_nr_objects + 4; i++)
+		for (int i = 4 + nr_of_moving_platforms; i < total_nr_objects + 4 + nr_of_moving_platforms; i++)
 		{
 			build_information info;
 
