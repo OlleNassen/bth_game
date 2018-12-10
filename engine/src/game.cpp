@@ -234,6 +234,8 @@ void Game::update(std::chrono::milliseconds delta)
 			door_2_votes = 0;
 		}
 
+		srand(0);
+
 		game_state = (game_state | state::lobby);
 		
 		bool all_ready = true;
@@ -306,6 +308,12 @@ void Game::update(std::chrono::milliseconds delta)
 			case 1:
 				gameplay.refresh();
 				load_map(&level1);
+
+				std::cout << rand() << "\n";
+				std::cout << rand() << "\n";
+				std::cout << rand() << "\n";
+				std::cout << rand() << "\n";
+
 				break;
 
 			case 2:
