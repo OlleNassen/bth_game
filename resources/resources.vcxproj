@@ -119,6 +119,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="scripts\gameloop.lua" />
+    <None Include="scripts\moving_platforms.lua" />
     <None Include="scripts\placing_objects.lua" />
     <None Include="scripts\player.lua" />
     <None Include="scripts\projectile.lua" />
@@ -134,6 +135,8 @@
     <None Include="shaders\finish_screen.vs" />
     <None Include="shaders\fx_blitz.fs" />
     <None Include="shaders\fx_blitz.vs" />
+    <None Include="shaders\fx_bubble.fs" />
+    <None Include="shaders\fx_bubble.vs" />
     <None Include="shaders\fx_dust.fs" />
     <None Include="shaders\fx_dust.vs" />
     <None Include="shaders\fx_fire.fs" />

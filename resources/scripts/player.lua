@@ -82,7 +82,7 @@ function setup(entity)
 	entity.buffs_id = { 3, 4, 5, 6 }
 
 
-
+	entity.falling_delay_timer = 0.0
 
 
 end
@@ -174,12 +174,14 @@ function update_control(delta_seconds, entity)
 			entity.current_state = entity.states[2]
 			entity.anim.current = entity.anim.running
 		end
-		if entity.velocity.y < -1.0 -- if falling
+		if entity.falling_delay_timer > 0.1
 		then
-			entity.current_state = entity.states[4]
-			entity.anim.current = entity.anim.falling
+			if entity.velocity.y < -1.0 -- if falling
+			then
+				entity.current_state = entity.states[4]
+				entity.anim.current = entity.anim.falling
+			end
 		end
-
 		dash(delta_seconds, entity)
 	end
 
@@ -252,6 +254,8 @@ function update_control(delta_seconds, entity)
 	--Falling
 	if entity.current_state == entity.states[4]
 	then
+	 
+	entity.falling_delay_timer = entity.falling_delay_timer + delta_seconds
 
 	--jump_forgivenes
 		entity.jump_timer = entity.jump_timer + delta_seconds
@@ -290,6 +294,7 @@ function update_control(delta_seconds, entity)
 			entity.velocity.y = 0
 			entity.current_state = entity.states[5]
 			entity.anim.current = entity.anim.landing
+			entity.falling_delay_timer = 0.0
 		end
 
 		dash(delta_seconds, entity)

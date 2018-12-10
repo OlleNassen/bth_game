@@ -76,17 +76,21 @@ void MeshLib::create_mesh_list()
 		"platform_fence.ssp",               //48
 		"melting_pot.ssp",                  //49
 		"hydraulic_press.ssp",              //50
-		"chain.ssp",						//51
+		"chain.ssp",                        //51
 		"furnace.ssp",                      //52
 		"machine_arm.ssp",                  //53
 		"iron_chunk.ssp",                   //54
-		"scrap_robot.ssp",				    //55
-		"furnace_in.ssp",					//56
-		"furnace_out.ssp",					//57
-		"smelt_bots.ssp",					//58
-		"controlp_extreme.ssp",				//59
-		"controlp_wall.ssp",				//60
-		"htp_tv.ssp"						//61
+		"scrap_robot.ssp",                  //55
+		"furnace_in.ssp",                   //56
+		"furnace_out.ssp",                  //57
+		"smelt_bots.ssp",                   //58
+		"controlp_extreme.ssp",             //59
+		"controlp_wall.ssp",                //60
+		"htp_tv.ssp",                       //61
+		"liquid_machine.ssp",               //62
+		"spheres.ssp",                      //63
+		"sludge_machine.ssp",               //64
+		"sludge_pipes.ssp"                  //65
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
@@ -111,7 +115,8 @@ void MeshLib::create_object_list()
 		"speed_boost.ssp",					//4
 		"double_jump.ssp",					//5
 		"shield.ssp",						//6
-		"random_buff.ssp"					//7
+		"random_buff.ssp",					//7
+		"platform_object.ssp"				//8
 	};
 
 	for (auto i = 0u; i < sizeof(meshLoader) / sizeof(meshLoader[0]); ++i)
