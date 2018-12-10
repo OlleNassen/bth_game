@@ -1,5 +1,5 @@
 function setup(game)
-	game.goal = 10--258
+	game.goal = 258
 	game.points = 0 -- do not change this, edit value in update loop
 	game.max_points = 1
 	--4 playerscores:
@@ -20,7 +20,7 @@ function setup(game)
 	
 
 	game.time = 0.0
-	game.max_time = 9.0
+	game.max_time = 90.0
 	game.start_round = true
 end
 
@@ -197,8 +197,8 @@ function update(delta_seconds, game, entities, player_count)
 	do
 		if game.finished[i] and not game.died[i]
 		then
-			entities[i].position.y = 270
-			entities[i].position.x = 0
+			entities[i].position.y = game.goal
+			entities[i].position.x = -40
 
 			entities[i].impulse.x = 0
 			entities[i].impulse.y = 0

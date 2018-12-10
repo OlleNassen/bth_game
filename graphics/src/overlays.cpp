@@ -91,7 +91,7 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 	}
 
 	if (current_state & state::game_over)
-		empty2.bind(0);
+		empty.bind(0);
 
 	if (how_to_play)
 		how_to_play_texture.bind(0);

@@ -203,7 +203,7 @@ void Renderer::render(
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
-			bool anyone_has_score = false;
+			/*bool anyone_has_score = false;
 			for (int i = 0; i < player_count; i++)
 				if (scores[i] > 0)
 					anyone_has_score = true;
@@ -227,7 +227,7 @@ void Renderer::render(
 
 					build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 				}
-			}
+			}*/
 			
 			int total_players_ready = 0;
 			int level_1_index = 0;
@@ -514,7 +514,7 @@ void Renderer::render(
 				build_text.render_text(out_text.str(), screen_width * 0.46f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
 			}
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			out_text.str("Press SPACE to restart");
+			out_text.str("Host: Press SPACE to restart");
 			width = build_text.get_text_width(out_text.str(), 0.5f);
 			build_text.render_text(out_text.str(), screen_width * 0.5f - width * 0.5, screen_height * 0.1f, 0.5f);
 		}
