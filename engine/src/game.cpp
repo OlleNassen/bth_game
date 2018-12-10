@@ -330,7 +330,7 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::building)
 	{
-		if (static_cast<int>(lua_data.time) % 2 < 2)
+		if (static_cast<int>(lua_data.time) % 4 == 3)
 			std::cout << rand() << "\n";
 
 		for (auto& anim : anim_states)
