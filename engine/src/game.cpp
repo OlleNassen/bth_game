@@ -287,22 +287,13 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		if (level == &lobby)
 		{ 
-			if (door_1_votes > door_2_votes)
-			{
-				gameplay.refresh();
-				load_map(&level1);
+			gameplay.refresh();
+			load_map(&level1);
 
-				moving_platform_ids.clear();
-				nr_of_moving_platforms = 0;
-				add_moving_platforms(1);
-			}
-			else
-			{
-				gameplay.refresh();
-				load_map(&level1);
-			}
+			moving_platform_ids.clear();
+			nr_of_moving_platforms = 0;
+			add_moving_platforms(1);
 		}
-
 
 
 		//Render text of state and what to do.
