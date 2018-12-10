@@ -265,12 +265,6 @@ void Game::update(std::chrono::milliseconds delta)
 				}
 
 				net_state.state = network::SessionState::pre_building;
-
-				if (door_1_votes > door_2_votes)
-					level_id = 1;
-				else
-					level_id = 2;
-
 			}
 			game_state = (game_state | state::pre_building);
 		}
@@ -291,7 +285,7 @@ void Game::update(std::chrono::milliseconds delta)
 	//}
 	else if (net_state.state == network::SessionState::pre_building)
 	{
-		if (level == &lobby)
+		if (level == &lobby && level_id != 0)
 		{ 
 			switch (level_id)
 			{
