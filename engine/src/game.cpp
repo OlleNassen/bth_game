@@ -296,6 +296,8 @@ void Game::update(std::chrono::milliseconds delta)
 				gameplay.refresh();
 				load_map(&level1);
 
+				srand(seed);
+
 				std::cout << rand() << "\n";
 				std::cout << rand() << "\n";
 				std::cout << rand() << "\n";
@@ -916,6 +918,8 @@ void Game::pack_data()
 		//Vincent
 		if (i < 4 && net.id() == 0)
 		{
+			net_state.seed = seed;
+
 			net_state.game_objects[i].player_moving_object_type_id = dynamics[i].player_moving_object_type_id;
 			net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
 		}
@@ -927,6 +931,8 @@ void Game::pack_data()
 
 void Game::unpack_data()
 {	
+	seed = net_state.seed;
+	
 	for (int i = 0; i < 4; ++i)
 	{
 		if (i != net.id())
