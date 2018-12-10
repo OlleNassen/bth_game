@@ -80,6 +80,10 @@ private:
 
 	std::array<anim, 4> anim_states;
 
+	//Door voting
+	int door_1_votes = 0;
+	int door_2_votes = 0;
+
 	//Temp leaderboards
 	std::vector<int> leader_board;
 	bool showleaderboard = false;
@@ -101,7 +105,7 @@ private:
 	std::array <id_and_model_place, 4> random_placed_objects_id;
 
 	//test trigger
-	int placed_objects_list_id = 7;
+	int placed_objects_type_id = 7;
 	//int placed_objects_array[4] = {7/*random*/, 2/*glide*/, 7/*speed*/, 6/*shield*/ };
 	int placed_objects_array[8] = { 0, 0, 2, 3, 4, 5, 6, 7 };
 
