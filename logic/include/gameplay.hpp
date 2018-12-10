@@ -62,6 +62,7 @@ struct Input
 	int turret_keyframe = 0;
 
 	const trigger_type_array& triggers_types; //test for triggers
+	const std::vector<int> moving_platform_ids;
 };
 
 
@@ -86,6 +87,8 @@ private:
 	PlayerScript player_script{"../resources/scripts/player.lua"};
 	PlacingScript placement_script{"../resources/scripts/placing_objects.lua"};
 	GameScript game_script;
+	MovingPlatformsScript moving_platforms_script{ "../resources/scripts/moving_platforms.lua" };
+
 	std::array<glm::vec3, 4> directions;
 
 	int model_id{ -1 };

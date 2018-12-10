@@ -728,5 +728,80 @@ float PlacingScript::get_time(int index)
 
 	return temp;
 }
+
+MovingPlatformsScript::MovingPlatformsScript(const std::string& path)
+	: stack{ path.c_str() }
+{
+	stack.setglobal("entities");
+}
+
+void MovingPlatformsScript::setup(int entity)
+{
+	std::string name{ "entities[" + std::to_string(entity) + "]" };
+	stack.newtable();
+	stack.setglobal(name.c_str());
+
+	stack.getglobal("setup");
+	stack.push(entity);
+	stack.getglobal(name.c_str());
+	stack.call(2, 0);
+
+	if (lua_isfunction(stack.lua_state, -1))
+	{
+		stack.getglobal(name.c_str());
+		stack.call(1, 0);
+	}
+
+	stack.clear();
+}
+
+void MovingPlatformsScript::update(
+	std::chrono::milliseconds delta,
+	objects& object,
+	int index)
+{
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	int top = stack.top();
+
+	if (lua_istable(stack.lua_state, top))
+	{
+
+		{
+			stack.push("position");
+			stack.push(object.position);
+			stack.rawset(top);
+			stack.push("velocity");
+			stack.push(object.velocity);
+			stack.rawset(top);
+		}
+	}
+
+	stack.getglobal("update");
+	stack.push(delta.count() / 1000.0f);
+	stack.getglobal(name.c_str());
+	stack.call(2, 0);
+
+
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+
+		stack.getfield(top, "position");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.position.x = stack.tonumber(-2);
+		object.position.y = stack.tonumber(-1);
+
+		stack.getfield(top, "velocity");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.velocity.x = stack.tonumber(-2);
+		object.velocity.y = stack.tonumber(-1);
+
+		stack.clear();
+	}
+}
+
 }
 

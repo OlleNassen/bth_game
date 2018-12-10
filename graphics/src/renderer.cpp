@@ -118,7 +118,7 @@ void Renderer::render(
 		
 		if (!(game_state & state::lobby))
 		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer);
+			fx_emitter.render_particles(fx_dust, fx_bubble, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer, current_map);
 		}
 		if (debug_active)
 		{
@@ -147,7 +147,7 @@ void Renderer::render(
 
 		if (!(game_state & state::lobby))
 		{
-			fx_emitter.render_particles(fx_dust, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer);
+			fx_emitter.render_particles(fx_dust, fx_bubble, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer, current_map);
 		}
 
 		if (debug_active)
@@ -640,37 +640,60 @@ void Renderer::update(std::chrono::milliseconds delta,
 	fx_emitter.timer += delta;
 	if (!is_chat_on)
 	{
+		if (scene->level_name == "lobby.ssp")
+		{
+			current_map = 0;
+		}
+		else if (scene->level_name == "level_1.ssp")
+		{
+			current_map = 1;
+		}
+		else if (scene->level_name == "level_2.ssp")
+		{
+			current_map = 2;
+		}
+		else
+		{
+			current_map = -1;
+		}
+
+		if (current_map == 1)
+		{
+			//Spark
+			fx_emitter.calculate_spark_data(delta, game_camera);
+
+			//Blitz
+			fx_emitter.calculate_blitz_data(delta, game_camera);
+
+			//Fire
+			fx_emitter.calculate_fire_data(delta, game_camera);
+
+			//Gust
+			fx_emitter.calculate_gust_data(delta, game_camera);
+		}
+
 		//Dust
 		fx_emitter.calculate_dust_data(delta, game_camera);
 
-		//Spark
-		fx_emitter.calculate_spark_data(delta, game_camera);
+		//Bubble
+		fx_emitter.calculate_bubble_data(delta, game_camera);
 
 		//Steam
-		fx_emitter.calculate_steam_data(delta, game_camera);
-
-		//Blitz
-		fx_emitter.calculate_blitz_data(delta, game_camera);
-
-		//Fire
-		fx_emitter.calculate_fire_data(delta, game_camera);
-
+		fx_emitter.calculate_steam_data(delta, game_camera, current_map);
+		
 		//Godray
-		fx_emitter.calculate_godray_data(delta, game_camera);
- 
+		fx_emitter.calculate_godray_data(delta, game_camera, current_map);
+		
 		//Lava Light
-		fx_emitter.calculate_lava_light_data(delta, game_camera);
-
+		fx_emitter.calculate_lava_light_data(delta, game_camera, current_map);
+		
 		//Furnace Light
-		fx_emitter.calculate_furnace_light_data(delta, game_camera);
-
-		//Gust
-		fx_emitter.calculate_gust_data(delta, game_camera);
+		fx_emitter.calculate_furnace_light_data(delta, game_camera, current_map);
 
 		//Objects
-		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects, trigger_type[player_id], game_state, scene->moving_models[player_id].get_position());
+		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects, trigger_type[player_id], game_state, dynamics[player_id].bullet_hit, scene->moving_models[player_id].get_position());
 
-		scene->moving_models[player_id].get_position();
+		//scene->moving_models[player_id].get_position();
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();
@@ -719,6 +742,22 @@ void Renderer::update(std::chrono::milliseconds delta,
 		player_id,
 		dash_timer);
 
+}
+
+void Renderer::update_moving_platforms(const objects_array& dynamics,
+	int model_id,
+	int nr_of_moving_platforms)
+{	
+	if (scene->moving_models.size() >= 4)
+	{
+		int j = 0;
+		for (int i = model_id; i < model_id + nr_of_moving_platforms; i++)
+		{
+			scene->moving_models[i].set_position(dynamics[j].position);
+			//std::cout << "update platform" << std::endl;
+			j++;
+		}
+	}
 }
 
 void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const

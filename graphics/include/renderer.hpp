@@ -32,6 +32,7 @@ class objects
 public:
 	glm::vec2 position;
 	glm::vec2 size;
+	bool bullet_hit = false;
 };
 
 using objects_array = std::array<objects, 100>;
@@ -92,6 +93,10 @@ public:
 		int spectator_id,
 		std::array<int, 4> moving_objects_id,
 		bool view_score, float dash_timer);
+
+	void update_moving_platforms(const objects_array& dynamics,
+		int model_id,
+		int nr_of_moving_platforms);
 
 	static void point_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -169,6 +174,9 @@ private:
 	Shader fx_dust{ 
 		"../resources/shaders/fx_dust.vs",
 		"../resources/shaders/fx_dust.fs" };
+	Shader fx_bubble{
+		"../resources/shaders/fx_bubble.vs",
+		"../resources/shaders/fx_bubble.fs" };
 	Shader fx_spark{ 
 		"../resources/shaders/fx_spark.vs",
 		"../resources/shaders/fx_spark.fs" };
@@ -255,7 +263,7 @@ private:
 	std::vector<build_information> build_info_vec;
 
 	int game_state;
-
+	int current_map = -1;
 
 	//Test of leaderboard
 	glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
