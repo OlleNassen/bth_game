@@ -169,6 +169,9 @@ void Game::update(std::chrono::milliseconds delta)
 		level_id = 0;
 
 		std::cout << level_id << "\n";
+
+		door_1_votes = 0;
+		door_2_votes = 0;
 	}
 
 	/*if (net_state.state == network::SessionState::waiting)
