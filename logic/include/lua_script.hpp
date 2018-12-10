@@ -31,6 +31,7 @@ public:
 	bool game_over = false;
 	float time;
 	float goal_height;
+	float dash_timer; 
 };
 
 class objects

@@ -12,6 +12,11 @@ GameScene::GameScene()
 
 GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_lib)
 {
+	//Level name 
+	std::string str_file_name = (std::string)file_name;
+	std::size_t found = str_file_name.find_last_of("/");
+	level_name = str_file_name.substr(found + 1);
+
 	//Create players
 	CustomLevel level(file_name);
 	CustomLevel objects("../resources/level/objects.ssp");
@@ -45,6 +50,10 @@ GameScene::GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_l
 		moving_models[i].create_animation_data("Robot_hanging.sspAnim", anim::hanging_right);
 		moving_models[i].create_animation_data("Robot_wj2.sspAnim", anim::jump_from_wall);
 		moving_models[i].create_animation_data("Robot_slide.sspAnim", anim::sliding);
+		moving_models[i].create_animation_data("Robot_dash.sspAnim", anim::dash);
+		moving_models[i].create_animation_data("Robot_stun.sspAnim", anim::stun);
+
+
 	}
 
 	for (unsigned int i = 0; i < level.counterReader.levelObjectCount; i++)
