@@ -197,8 +197,8 @@ function update(delta_seconds, game, entities, player_count)
 	do
 		if game.finished[i] and not game.died[i]
 		then
-			entities[i].position.y = 270
-			entities[i].position.x = 0
+			entities[i].position.y = game.goal
+			entities[i].position.x = -40
 
 			entities[i].impulse.x = 0
 			entities[i].impulse.y = 0

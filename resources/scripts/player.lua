@@ -197,7 +197,6 @@ function update_control(delta_seconds, entity)
 
 			entity.impulse.y = 46
 			entity.can_jump = false
-			entity.jumped_last = true
 
 		end
 		
@@ -265,7 +264,6 @@ function update_control(delta_seconds, entity)
 		then
 			entity.impulse.y = 48
 			entity.can_jump = false
-			entity.jumped_last = true
 		end
 
 		if entity.button.left
@@ -393,8 +391,10 @@ function update_control(delta_seconds, entity)
 		end
 	end
 
-	if entity.button.jump == false
+	if entity.button.jump 
 		then
+			entity.jumped_last = true
+		else
 			entity.jumped_last = false
 	end
 
