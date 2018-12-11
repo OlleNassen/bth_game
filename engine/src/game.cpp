@@ -1200,9 +1200,9 @@ int Game::find_previous_spectator(int current_id)
 {
 	for (int i = 0; i < static_cast<int>(player_count); i++)
 	{
-		watching = (watching - 1);
-		if (watching < 0)
-			watching = static_cast<int>(player_count) - 1;
+		current_id = (current_id - 1);
+		if (current_id < 0)
+			current_id = static_cast<int>(player_count) - 1;
 
 		if (current_id != net.id() && (!lua_data.finished[current_id]))
 		{
