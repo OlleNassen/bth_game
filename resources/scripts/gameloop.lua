@@ -20,7 +20,7 @@ function setup(game)
 	
 
 	game.time = 0.0
-	game.max_time = 900.0
+	game.max_time = 90.0
 	game.start_round = true
 end
 
