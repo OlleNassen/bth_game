@@ -43,9 +43,9 @@ function setup(entity)
 	--speed boost
 	entity.speed_boost_timer = 0.0
 	entity.speed_boost_triggered = false
-	entity.max_speed_boost = entity.max_speed * 1.5
-	entity.max_speed_boost_air = entity.max_air_speed * 1.5
-	entity.speed_boost_acceleration = entity.ground_acceleration * 4
+	entity.max_speed_boost = entity.max_speed * 1.25
+	entity.max_speed_boost_air = entity.max_air_speed * 1.25
+	entity.speed_boost_acceleration = entity.ground_acceleration * 3
 	entity.speed_boost_air_acceleration = entity.air_acceleration * 2
 	entity.speed_boost_max_timer = 10
 	
@@ -80,6 +80,8 @@ function setup(entity)
 	entity.random_buff_timer = 0.0
 	entity.random_buff_max_timer = 10
 	entity.buffs_id = { 3, 4, 5, 6 }
+
+	--math.randomseed(seed)
 
 
 	entity.falling_delay_timer = 0.0
@@ -715,6 +717,8 @@ function random_assignment(entity)
 	if entity.random_assigned == false
 	then
 		entity.random_assigned = true
+
+		--id = entity.buffs_id[math.random(4)]
 
 		id = entity.buffs_id[3]
 

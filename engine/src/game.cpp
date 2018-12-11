@@ -76,8 +76,6 @@ Game::Game()
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f, 0.0f }, coll.width, coll.height, coll.trigger);
 
-	//place_random_objects(0, 20, 9); //For random placing object
-
 
 	//Start States
 	net_state.state = network::SessionState::lobby;
@@ -997,11 +995,6 @@ void Game::unpack_data()
 
 void Game::place_random_objects(float start_height, int number_of_randoms)
 {
-	//bool placed_1 = false;
-	//bool placed_2 = false;
-	//bool placed_3 = false;
-	//bool placed_4 = false;
-
 	collision_data data;
 
 	glm::vec2 startPosition = { 0.0, start_height };
@@ -1013,7 +1006,6 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 
 	int width = static_cast<int>(width_of_map / total_x);
 
-	//startPosition = { (width_of_map * 0.5) - (width / 2), start_height };
 	startPosition.x = (width_of_map * 0.5) - (width / 2);
 
 	for (int i = 0; i < total_y; i++)
@@ -1059,50 +1051,6 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 			rand_numb.push_back(radom_number);
 		}
 	}
-
-	//for (int i = 0; i < rand_numb.size(); i++)
-	//{
-	//	std::cout << "x:" << positions[rand_numb[i]].x << " y:" << positions[rand_numb[i]].y << std::endl;
-	//}
-
-	//for (int i = 0; i < rand_numb.size(); i++)
-	//{
-	//	if (rand_numb[i] <= 4)
-	//	{
-	//		placed_1 = true;
-	//	}
-	//	else if (rand_numb[i] >= 5 && rand_numb[i] <= 9)
-	//	{
-	//		placed_2 = true;
-	//	}
-	//	else if (rand_numb[i] >= 10 && rand_numb[i] <= 14)
-	//	{
-	//		placed_3 = true;
-	//	}
-	//	else if (rand_numb[i] >= 15 && rand_numb[i] <= 19)
-	//	{
-	//		placed_4 = true;
-	//	}
-	//}
-
-	//if (!placed_1)
-	//{
-	//	radom_number = rand() % 4;
-	//}
-	//if (!placed_2)
-	//{
-	//	radom_number = rand() % positions.size();
-	//}
-	//if (!placed_3)
-	//{
-	//	radom_number = rand() % positions.size();
-	//}
-	//if (!placed_4)
-	//{
-	//	radom_number = rand() % positions.size();
-	//}
-
-
 
 	int platform_id = 8;
 
