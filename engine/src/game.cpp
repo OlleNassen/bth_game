@@ -172,6 +172,16 @@ void Game::update(std::chrono::milliseconds delta)
 
 		load_map(&lobby);
 		level_id = 0;
+		if (net.id() == 0)
+		{
+			srand(time(NULL));
+
+			for (int i = 0; i < 100; i++)
+			{
+				random_values[i] = 3 + (rand() % 4);
+			}
+		}
+
 
 		door_1_votes = 0;
 		door_2_votes = 0;
@@ -234,6 +244,16 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				lua_data.finished[i] = false;
 			}
+			if (net.id() == 0)
+			{
+				srand(time(NULL));
+
+				for (int i = 0; i < 100; i++)
+				{
+					random_values[i] = 3 + (rand() % 4);
+				}
+			}
+
 
 			door_1_votes = 0;
 			door_2_votes = 0;
@@ -312,13 +332,6 @@ void Game::update(std::chrono::milliseconds delta)
 				gameplay.refresh();
 				load_map(&level1);
 
-				srand(time(NULL));
-
-				for (int i = 0; i < 100; i++)
-				{
-					random_values[i] = 3 + (rand() % 4);
-				}
-
 				moving_platform_ids.clear();
 				nr_of_moving_platforms = 0;
 				add_moving_platforms();
@@ -328,13 +341,6 @@ void Game::update(std::chrono::milliseconds delta)
 			case 2:
 				gameplay.refresh();
 				load_map(&level2);
-
-				srand(time(NULL));
-
-				for (int i = 0; i < 100; i++)
-				{
-					random_values[i] = 3 + (rand() % 4);
-				}
 
 				moving_platform_ids.clear();
 				nr_of_moving_platforms = 0;
