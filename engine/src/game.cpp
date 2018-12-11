@@ -1183,9 +1183,8 @@ int Game::find_next_spectator(int current_id)
 	{
 		current_id = (current_id + 1) % (static_cast<int>(player_count));
 
-		if (current_id != net.id() || (!lua_data.died[current_id] || !lua_data.finished[current_id]))
+		if (current_id != net.id() && (!lua_data.finished[current_id]))
 		{
-			//current_id = (current_id + 1) % (static_cast<int>(player_count));'
 			break;
 		}
 	}
