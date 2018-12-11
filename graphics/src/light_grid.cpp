@@ -12,16 +12,10 @@ bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z
 
 LightGrid::LightGrid()
 {	
-}
-
-const light_grid_element* LightGrid::data() const
-{
-	return indices;
-}
-
-int LightGrid::size() const
-{
-	return block_size * block_size;
+	glGenBuffers(1, &ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(indices), 0, GL_DYNAMIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 4, ubo);
 }
 
 void LightGrid::calculate_grid(const Camera& camera)
@@ -37,16 +31,8 @@ void LightGrid::calculate_grid(const Camera& camera)
 	}
 }
 
-void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> lights)
+void LightGrid::update(const Camera& camera, const std::array<PointLight, 32>& lights)
 {
-	//for (int j = 0; j < block_size; ++j)
-	//{
-	//	for (int i = 0; i < block_size; ++i)
-	//	{
-	//		indices[i + j * block_size].count = 0;
-	//	}
-	//}
-
 	memset(indices, 0, sizeof(indices));
 	int  a = 0;
 	for (int light_id = 0; light_id < lights.size(); ++light_id)
@@ -63,11 +49,10 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> li
 			for (int i = 0; i < block_size; ++i)
 			{
 				light_grid_element& elem = indices[i + j * block_size];
-				if (sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count < 10)
+				if (sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count.x < 10)
 				{
 					a++;
-					elem.indices[elem.count++] = light_id;
-				
+					elem.indices[elem.count.x++].x = light_id;		
 				}
 				//elem.count = 1;
 			}
@@ -75,6 +60,10 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32> li
 	}
 
 	a=a;
+
+	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(indices), indices);
+
 }
 
 glm::vec4 screen_to_view(const glm::mat4& inv_proj, const glm::vec4& screen)
