@@ -801,17 +801,19 @@ void Game::update(std::chrono::milliseconds delta)
 			//Spectator
 			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
 			{
-				watching = (watching + 1) % (static_cast<int>(player_count));
+				watching = find_next_spectator(watching);
+
+				/*watching = (watching + 1) % (static_cast<int>(player_count));
 
 				if (watching == net.id())
 				{
 					watching = (watching + 1) % (static_cast<int>(player_count));
 				}
 
-				if (lua_data.died[watching] || lua_data.finished[watching])
+				if (lua_data.finished[watching])
 				{
 					watching = (watching + 1) % (static_cast<int>(player_count));
-				}
+				}*/
 			}
 
 			if ((*local_input)[logic::button::left] == logic::button_state::pressed)
@@ -1173,4 +1175,57 @@ void Game::add_moving_platforms(int level_nr)
 		moving_platform_ids.push_back(d_id);
 		nr_of_moving_platforms++;
 	}
+}
+
+int Game::find_next_spectator(int spectator_id)
+{
+	/*if ((*local_input)[logic::button::right] == logic::button_state::pressed)
+	{
+		watching = (watching + 1) % (static_cast<int>(player_count));
+
+		if (watching == net.id())
+		{
+			watching = (watching + 1) % (static_cast<int>(player_count));
+		}
+
+		if (lua_data.finished[watching])
+		{
+			watching = (watching + 1) % (static_cast<int>(player_count));
+		}
+	}
+
+	if ((*local_input)[logic::button::left] == logic::button_state::pressed)
+	{
+		watching = (watching - 1);
+		if (watching < 0)
+			watching = static_cast<int>(player_count) - 1;
+
+		if (watching == net.id())
+		{
+			watching = (watching - 1);
+			if (watching < 0)
+				watching = static_cast<int>(player_count) - 1;
+		}
+
+		if (lua_data.died[watching] || lua_data.finished[watching])
+		{
+			watching = (watching - 1);
+			if (watching < 0)
+				watching = static_cast<int>(player_count) - 1;
+		}
+	}*/
+	
+	spectator_id = (spectator_id + 1) % (static_cast<int>(player_count));
+
+	if (watching == net.id())
+	{
+		find_next_spectator(spectator_id);
+	}
+
+	if (lua_data.finished[watching])
+	{
+		find_next_spectator(spectator_id);
+	}
+
+	return spectator_id;
 }
