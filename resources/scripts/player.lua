@@ -587,6 +587,7 @@ function update_triggers(delta_seconds, entity)
 	if	entity.stun_trap_triggered == true and entity.stun_trap_timer <= entity.shock_trap_max_timer --stun timer
 	then
 		entity.stun_trap_timer = entity.stun_trap_timer + delta_seconds
+		entity.anim.current = entity.anim.stun
 
 	elseif	entity.stun_trap_triggered == true
 	then
