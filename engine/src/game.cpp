@@ -801,7 +801,17 @@ void Game::update(std::chrono::milliseconds delta)
 			//Spectator
 			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
 			{
-				watching = find_next_spectator(watching);
+				watching = (watching + 1) % (static_cast<int>(player_count));
+
+				if (watching == net.id())
+				{
+					watching = (watching + 1) % (static_cast<int>(player_count));
+				}
+
+				if (!lua_data.died[watching] && lua_data.finished[watching])
+				{
+					watching = (watching + 1) % (static_cast<int>(player_count));
+				}
 			}
 
 			if ((*local_input)[logic::button::left] == logic::button_state::pressed)
@@ -817,7 +827,7 @@ void Game::update(std::chrono::milliseconds delta)
 						watching = static_cast<int>(player_count) - 1;
 				}
 
-				if (lua_data.died[watching] || lua_data.finished[watching])
+				if (!lua_data.died[watching] && lua_data.finished[watching])
 				{
 					watching = (watching - 1);
 					if (watching < 0)
@@ -1167,17 +1177,16 @@ void Game::add_moving_platforms(int level_nr)
 
 int Game::find_next_spectator(int current_id)
 {
-	int next_watching = current_id;
-
-	for (int i = current_id; i < static_cast<int>(player_count) + current_id; i++)
+	for (int i = 0; i < static_cast<int>(player_count); i++)
 	{
-		int id = i % static_cast<int>(player_count);
+		current_id = (current_id + 1) % (static_cast<int>(player_count));
 
-		if (id == net.id() || lua_data.finished[id])
+		if (current_id != net.id() || (!lua_data.died[current_id] || !lua_data.finished[current_id]))
 		{
-			next_watching = id;
+			//current_id = (current_id + 1) % (static_cast<int>(player_count));'
+			break;
 		}
 	}
 
-	return next_watching;
+	return current_id;
 }
