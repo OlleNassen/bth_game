@@ -30,8 +30,8 @@ struct Frustum
 
 struct light_grid_element 
 {
-	glm::ivec4 count;
-	glm::ivec4 indices[15];
+	int count;
+	int indices[15];
 };
 
 class LightGrid
