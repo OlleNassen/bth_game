@@ -216,6 +216,9 @@ private:
 	Shader build_stage_screen_shader{
 		"../resources/shaders/build_stage.vs",
 		"../resources/shaders/build_stage.fs" };
+	Shader turrent_laser{
+		"../resources/shaders/laser.vs",
+		"../resources/shaders/laser.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
