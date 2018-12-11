@@ -793,7 +793,7 @@ void Game::update(std::chrono::milliseconds delta)
 				direction.x += 1.0f;
 		}	
 		
-		if ((lua_data.died[net.id()] && lua_data.finished[net.id()]) && (net_state.state == network::SessionState::playing))
+		if ((!lua_data.died[net.id()] && lua_data.finished[net.id()]) && (net_state.state == network::SessionState::playing))
 		{
 			//Spectator
 			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
