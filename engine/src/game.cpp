@@ -324,7 +324,7 @@ void Game::update(std::chrono::milliseconds delta)
 				moving_platform_ids.clear();
 				nr_of_moving_platforms = 0;
 
-				place_random_objects(120, 7);
+				place_random_objects(120, 8);
 				break;
 
 			case 0:
@@ -1018,6 +1018,8 @@ void Game::unpack_data()
 
 void Game::place_random_objects(float start_height, int number_of_randoms)
 {
+	srand(random_values[0] + random_values[1] + random_values[2] + random_values[3]);
+
 	collision_data data;
 
 	glm::vec2 startPosition = { 0.0, start_height };
@@ -1035,7 +1037,15 @@ void Game::place_random_objects(float start_height, int number_of_randoms)
 	{
 		for (int j = 0; j < total_x; j++)
 		{
-			positions.push_back({ startPosition.x - (j * width),  startPosition.y + (i * 6) });
+			if ((i % 2) == 1)
+			{
+				positions.push_back({ (startPosition.x - (j * width) - 1),  startPosition.y + (i * 6) });
+			}
+			else
+			{
+				positions.push_back({ (startPosition.x - (j * width) + 1),  startPosition.y + (i * 6) });
+			}
+			
 		}
 	}
 
