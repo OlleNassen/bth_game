@@ -14,7 +14,7 @@ LightGrid::LightGrid()
 {	
 	glGenBuffers(1, &ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(indices), 0, GL_STATIC_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(indices), 0, GL_DYNAMIC_DRAW);
 }
 
 void LightGrid::bind() const
