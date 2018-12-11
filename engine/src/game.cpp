@@ -1287,7 +1287,7 @@ void Game::add_moving_platforms(int level_nr)
 		nr_of_moving_platforms++;
 	}
 }
-}
+
 
 void Game::laser_update(turret turret, std::array<bool, 4>& hit_array)
 {
