@@ -81,6 +81,11 @@ Game::Game()
 
 	//Start States
 	net_state.state = network::SessionState::lobby;
+
+	for (int i = 0; i < 100; i++)
+	{
+		random_values[i] = 3 + (rand() % 4);
+	}
 }
 
 void Game::run()
@@ -236,17 +241,6 @@ void Game::update(std::chrono::milliseconds delta)
 			if (!lua_data.finished[i])
 			{
 				all_ready = false;
-			}
-		}
-
-		if (net.id() == 0)
-		{
-			if (seed[0] == -1)
-			{
-				for (int i = 0; i < 100; i++)
-				{
-					seed[i] = 3 + (rand() % 4);
-				}
 			}
 		}
 
@@ -671,7 +665,7 @@ void Game::update(std::chrono::milliseconds delta)
 				spikeframe,
 				turretframe,
 				triggers_types,
-				seed },
+				random_values },
 				game_state, physics.rw, physics.lw, net.id());
 		}
 
@@ -907,13 +901,12 @@ void Game::pack_data()
 
 		if (net.id() == 0)
 		{
-			net_state.seed[i] = seed[i];
+			net_state.random_values[i] = random_values[i];
 		}
 
 		//Vincent
 		if (i < 4 && net.id() == 0)
 		{
-
 			net_state.game_objects[i].player_moving_object_type_id = dynamics[i].player_moving_object_type_id;
 			net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
 		}
@@ -946,7 +939,7 @@ void Game::unpack_data()
 				dynamics[i].position = net_state.game_objects[i].position;
 				dynamics[i].velocity = net_state.game_objects[i].velocity;
 				
-				seed[i] = net_state.seed[i];
+				random_values[i] = net_state.random_values[i];
 
 				//Vincent
 				if (i < 4)

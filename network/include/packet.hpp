@@ -73,7 +73,7 @@ public:
 	uint8 player_count = 1;
 	uint8 player_id = 0;
 	SessionState state = SessionState::none;
-	int seed[100] = { -1 };
+	int random_values[100] = { -1 };
 };
 
 class Queue

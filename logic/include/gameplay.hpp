@@ -63,7 +63,7 @@ struct Input
 
 	const trigger_type_array& triggers_types; //test for triggers
 
-	std::array<int, 100> seed;
+	std::array<int, 100> random_values;
 };
 
 

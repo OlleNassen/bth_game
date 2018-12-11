@@ -123,6 +123,16 @@ LuaExport Gameplay::update(Input inputs,
 				}
 			}
 		}
+
+		static bool done = false;
+		if (!done)
+		{
+			for (int i = 0; i < 100; i++)
+			{
+				std::cout << inputs.random_values[i] << "\n";
+			}
+			done = true;
+		}
 	}
 
 	if (current_state & state::pre_playing)
