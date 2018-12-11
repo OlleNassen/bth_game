@@ -77,8 +77,15 @@ Game::Game()
 			glm::vec2{ 0.0f, 0.0f }, coll.width, coll.height, coll.trigger);
 
 
+	srand(time(NULL));
+
 	//Start States
 	net_state.state = network::SessionState::lobby;
+
+	for (int i = 0; i < 100; i++)
+	{
+		random_values[i] = 3 + (rand() % 4);
+	}
 }
 
 void Game::run()
@@ -693,7 +700,8 @@ void Game::update(std::chrono::milliseconds delta)
 				spikeframe,
 				turretframe,
 				triggers_types,
-				moving_platform_ids},
+				random_values,
+				moving_platform_ids },
 				game_state, physics.rw, physics.lw, net.id());
 		}
 
@@ -937,8 +945,16 @@ void Game::pack_data()
 		net_state.inputs[i] = player_inputs[i];
 	}
 
-	if (net.id() == 0)
+	for (auto i = 0u; i < dynamics.size(); ++i)
 	{
+		net_state.game_objects[i].position = dynamics[i].position;
+		net_state.game_objects[i].velocity = dynamics[i].velocity;
+
+		if (net.id() == 0)
+		{
+			net_state.random_values[i] = random_values[i];
+		}
+
 		//Vincent
 		net_state.level_id = level_id;
 
@@ -961,10 +977,8 @@ void Game::pack_data()
 
 void Game::unpack_data()
 {	
-	//Vincent
-	level_id = net_state.level_id;
-
-	for (int i = 0; i < 4; ++i)	//Players
+	
+	for (int i = 0; i < 4; ++i)
 	{
 		if (i != net.id())
 		{
@@ -986,6 +1000,15 @@ void Game::unpack_data()
 			{
 				dynamics[i].position = net_state.game_objects[i].position;
 				dynamics[i].velocity = net_state.game_objects[i].velocity;
+				
+				random_values[i] = net_state.random_values[i];
+
+				//Vincent
+				if (i < 4)
+				{
+					dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
+					dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
+				}
 			}
 		}
 

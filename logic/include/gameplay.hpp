@@ -62,6 +62,8 @@ struct Input
 	int turret_keyframe = 0;
 
 	const trigger_type_array& triggers_types; //test for triggers
+
+	std::array<int, 100> random_values;
 	const std::vector<int> moving_platform_ids;
 };
 

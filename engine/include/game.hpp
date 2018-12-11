@@ -124,6 +124,9 @@ private:
 	int turretframe = 0;
 	//New gameloop stuff
 	void load_map(graphics::GameScene* scene);
+
+	//Random Seed
+	std::array<int, 100> random_values = { -1 };
 };
 
 
