@@ -1188,5 +1188,7 @@ int Game::find_next_spectator(int current_id)
 		}
 	}
 
+	std::cout << current_id << "\n";
+
 	return current_id;
 }
