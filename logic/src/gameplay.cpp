@@ -56,6 +56,7 @@ LuaExport Gameplay::update(Input inputs,
 			{
 				std::cout << inputs.random_values[i] << "\n";
 			}
+			done = true;
 		}
 
 		glm::vec2 level_1_door = { -19.7, 26.1 };
