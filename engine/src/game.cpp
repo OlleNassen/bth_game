@@ -315,6 +315,11 @@ void Game::update(std::chrono::milliseconds delta)
 			case 2:
 				gameplay.refresh();
 				load_map(&level2);
+
+				moving_platform_ids.clear();
+				nr_of_moving_platforms = 0;
+
+				place_random_objects(120, 7);
 				break;
 
 			case 0:
@@ -990,71 +995,137 @@ void Game::unpack_data()
 	}
 }
 
-void Game::place_random_objects(float start_height, float map_width, int number_of_randoms)
+void Game::place_random_objects(float start_height, int number_of_randoms)
 {
-	/*for (int i = 0; i < 15; i++)
-	{
-		input.physics->random_placed_objects_pos[i] = glm::vec2{ 0.0, hight };
-	}*/
+	//bool placed_1 = false;
+	//bool placed_2 = false;
+	//bool placed_3 = false;
+	//bool placed_4 = false;
 
 	collision_data data;
 
-	glm::vec2 startPosition = { 0.0, 0.0 };
+	glm::vec2 startPosition = { 0.0, start_height };
 	std::vector<glm::vec2> positions;
+	float width_of_map = 40;
 
-	int totalX = 5;
-	int totalY = 3;
+	int total_x = 5;
+	int total_y = 4;
 
-	int width = static_cast<int>(map_width / 6.0f);
+	int width = static_cast<int>(width_of_map / total_x);
 
-	startPosition = { width * 2, map_width };
+	//startPosition = { (width_of_map * 0.5) - (width / 2), start_height };
+	startPosition.x = (width_of_map * 0.5) - (width / 2);
 
-	for (int i = 0; i < totalY; i++)
+	for (int i = 0; i < total_y; i++)
 	{
-		for (int j = 0; j < totalX; j++)
+		for (int j = 0; j < total_x; j++)
 		{
-			positions.push_back({ startPosition.x - (j * width),  startPosition.y + (i * 8) });
+			positions.push_back({ startPosition.x - (j * width),  startPosition.y + (i * 6) });
 		}
 	}
 
 	std::vector<int> rand_numb;
 
 	bool same_number = false;
-	int randum_number;
+	int radom_number;
+
+	if (number_of_randoms > 10)
+	{
+		number_of_randoms = 10;
+	}
+
+	for (int i = 0; i < total_y; i++)
+	{
+		radom_number = rand() % 5 + (i * 5);
+		rand_numb.push_back(radom_number);
+
+		//std::cout << radom_number << std::endl;
+	}
 
 	while (rand_numb.size() < number_of_randoms)
 	{
 		same_number = false;
-		randum_number = rand() % positions.size();
+		radom_number = rand() % positions.size();
+
 		for (int i = 0; i < rand_numb.size(); i++)
 		{
-			if (randum_number == rand_numb[i])
+			if (radom_number == rand_numb[i])
 			{
 				same_number = true;
 			}
 		}
 		if (!same_number)
 		{
-			rand_numb.push_back(randum_number);
+			rand_numb.push_back(radom_number);
 		}
 	}
 
-	for (int i = 99; i > 99 - number_of_randoms; i--)
+	//for (int i = 0; i < rand_numb.size(); i++)
+	//{
+	//	std::cout << "x:" << positions[rand_numb[i]].x << " y:" << positions[rand_numb[i]].y << std::endl;
+	//}
+
+	//for (int i = 0; i < rand_numb.size(); i++)
+	//{
+	//	if (rand_numb[i] <= 4)
+	//	{
+	//		placed_1 = true;
+	//	}
+	//	else if (rand_numb[i] >= 5 && rand_numb[i] <= 9)
+	//	{
+	//		placed_2 = true;
+	//	}
+	//	else if (rand_numb[i] >= 10 && rand_numb[i] <= 14)
+	//	{
+	//		placed_3 = true;
+	//	}
+	//	else if (rand_numb[i] >= 15 && rand_numb[i] <= 19)
+	//	{
+	//		placed_4 = true;
+	//	}
+	//}
+
+	//if (!placed_1)
+	//{
+	//	radom_number = rand() % 4;
+	//}
+	//if (!placed_2)
+	//{
+	//	radom_number = rand() % positions.size();
+	//}
+	//if (!placed_3)
+	//{
+	//	radom_number = rand() % positions.size();
+	//}
+	//if (!placed_4)
+	//{
+	//	radom_number = rand() % positions.size();
+	//}
+
+
+
+	int platform_id = 8;
+
+	for (int i = 0; i < number_of_randoms; i++)
 	{
 		collision_data data;
-		int model_id = level->add_object(data, 6);
-		data.position = positions[rand_numb[abs(i - 99)]];
-		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 });
 
-		dynamics[dynamic_id].position = positions[rand_numb[abs(i - 99)]];
-		dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
-		dynamics[dynamic_id].size = { data.width, data.height };
-		dynamics[dynamic_id].forces = { 0.0f, 0.0f };
-		dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+		int model_id = level->add_object(data, platform_id);
+		data.position = positions[rand_numb[i]];
+		level->moving_models[model_id].set_position(data.position);
 
-		level->moving_models[model_id].set_position(dynamics[dynamic_id].position);
+		physics.add_static_body(data.position,
+			glm::vec2{ 0.0f, 0.0f }, data.width, data.height, false);
 
 	}
+
+	auto beg = level->models.begin();
+	beg += 9;
+
+	std::sort(beg, level->models.end(), [](const auto& left, const auto& right)
+	{
+		return left.get_y_position() < right.get_y_position();
+	});
 }
 
 std::array<int, 4> Game::random_indexes()
