@@ -122,8 +122,8 @@ private:
 	int watching = 0;
 	int spikeframe = 0;
 	int turretframe = 0;
-	int find_next_spectator(int spectator_id);
 
+	int find_next_spectator(int current_id);
 
 	//New gameloop stuff
 	void load_map(graphics::GameScene* scene);

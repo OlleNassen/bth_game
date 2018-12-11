@@ -802,18 +802,6 @@ void Game::update(std::chrono::milliseconds delta)
 			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
 			{
 				watching = find_next_spectator(watching);
-
-				/*watching = (watching + 1) % (static_cast<int>(player_count));
-
-				if (watching == net.id())
-				{
-					watching = (watching + 1) % (static_cast<int>(player_count));
-				}
-
-				if (lua_data.finished[watching])
-				{
-					watching = (watching + 1) % (static_cast<int>(player_count));
-				}*/
 			}
 
 			if ((*local_input)[logic::button::left] == logic::button_state::pressed)
@@ -1177,55 +1165,19 @@ void Game::add_moving_platforms(int level_nr)
 	}
 }
 
-int Game::find_next_spectator(int spectator_id)
+int Game::find_next_spectator(int current_id)
 {
-	/*if ((*local_input)[logic::button::right] == logic::button_state::pressed)
+	int next_watching = current_id;
+
+	for (int i = current_id; i < static_cast<int>(player_count) + current_id; i++)
 	{
-		watching = (watching + 1) % (static_cast<int>(player_count));
+		int id = i % static_cast<int>(player_count);
 
-		if (watching == net.id())
+		if (id == net.id() || lua_data.finished[id])
 		{
-			watching = (watching + 1) % (static_cast<int>(player_count));
-		}
-
-		if (lua_data.finished[watching])
-		{
-			watching = (watching + 1) % (static_cast<int>(player_count));
+			next_watching = id;
 		}
 	}
 
-	if ((*local_input)[logic::button::left] == logic::button_state::pressed)
-	{
-		watching = (watching - 1);
-		if (watching < 0)
-			watching = static_cast<int>(player_count) - 1;
-
-		if (watching == net.id())
-		{
-			watching = (watching - 1);
-			if (watching < 0)
-				watching = static_cast<int>(player_count) - 1;
-		}
-
-		if (lua_data.died[watching] || lua_data.finished[watching])
-		{
-			watching = (watching - 1);
-			if (watching < 0)
-				watching = static_cast<int>(player_count) - 1;
-		}
-	}*/
-	
-	spectator_id = (spectator_id + 1) % (static_cast<int>(player_count));
-
-	if (watching == net.id())
-	{
-		find_next_spectator(spectator_id);
-	}
-
-	if (lua_data.finished[watching])
-	{
-		find_next_spectator(spectator_id);
-	}
-
-	return spectator_id;
+	return next_watching;
 }
