@@ -312,14 +312,29 @@ void Game::update(std::chrono::milliseconds delta)
 				gameplay.refresh();
 				load_map(&level1);
 
+				srand(time(NULL));
+
+				for (int i = 0; i < 100; i++)
+				{
+					random_values[i] = 3 + (rand() % 4);
+				}
+
 				moving_platform_ids.clear();
 				nr_of_moving_platforms = 0;
 				add_moving_platforms();
+
 				break;
 
 			case 2:
 				gameplay.refresh();
 				load_map(&level2);
+
+				srand(time(NULL));
+
+				for (int i = 0; i < 100; i++)
+				{
+					random_values[i] = 3 + (rand() % 4);
+				}
 
 				moving_platform_ids.clear();
 				nr_of_moving_platforms = 0;
