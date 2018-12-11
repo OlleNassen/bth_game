@@ -734,5 +734,43 @@ glm::vec3 World::get_closest_wall_point(int player_id, glm::vec2 from)
 	return find_closest_wall(statics, bodies[player_id], { from.x, from.y, 0.0 });
 }
 
+void World::laser_ray_cast(
+	const glm::vec3 turret_position,
+	const glm::vec3 direction,
+	float range,
+	std::array<bool, 4>& hit_array)
+{
+
+	float t = range + 0.02;
+
+	for (int i = 0; i < 4; i++)
+	{
+		float temp = raycast(bodies[i].box, Ray(turret_position, direction));
+		if (temp != -1 && temp <= t)
+		{
+			hit_array[i] = true;
+			std::cout << "temp:"<< temp << " range: " << t << std::endl;
+		}
+	}
+}
+
+float World::laser_range(
+	const glm::vec3 turret_position,
+	const glm::vec3 direction)
+{
+
+	float t = 200.0f;
+	for (auto& body : statics)
+	{
+		float temp = raycast(body.box, Ray(turret_position, direction));
+		if (temp != -1 && temp < t)
+		{
+			t = temp;
+			//std::cout << t << std::endl;
+		}
+	}
+	return t;
+}
+
 }
 

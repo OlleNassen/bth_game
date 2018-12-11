@@ -269,7 +269,8 @@ void GameScript::update(
 	int player_count,
 	int spike_frame, 
 	int turret_frame,
-	bool dash_active[])
+	bool dash_active[],
+	bool laser_hit)
 {
 	{
 		stack.getglobal("game");
@@ -380,6 +381,22 @@ void GameScript::update(
 		}
 		stack.clear();
 	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+	
+			stack.push("laser_hit");
+			stack.push(laser_hit);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
 	{
 		stack.getglobal("game");
 
@@ -391,6 +408,18 @@ void GameScript::update(
 
 		stack.clear();
 	}
+
+	//{
+	//	stack.getglobal("game");
+	//
+	//	int top_pos = stack.top();
+	//
+	//	stack.push("turret_frame");
+	//	stack.push(turret_frame);
+	//	stack.rawset(top_pos);
+	//
+	//	stack.clear();
+	//}
 
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);

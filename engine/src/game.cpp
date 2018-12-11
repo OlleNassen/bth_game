@@ -198,6 +198,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 			door_1_votes = 0;
 			door_2_votes = 0;
+
+			turrets.clear();
 		}
 
 		game_state = (game_state | state::lobby);
@@ -356,10 +358,11 @@ void Game::update(std::chrono::milliseconds delta)
 
 				players_placed_objects_id[i] = { dynamics[d_id].dynamic_id, dynamics[d_id].model_id,
 							0, dynamics[d_id].objects_type_id };
-
+				
 				total_nr_objects++;
 			}
 
+			turret_infos.fill({ 0, 0 });
 			give_players_objects = true;
 		}
 
@@ -409,6 +412,8 @@ void Game::update(std::chrono::milliseconds delta)
 					total_nr_objects++;
 				}
 			}
+
+			turret_infos.fill({ 0, 0 });
 		}
 		
 		for (int i = 0; i < static_cast<int>(player_count); i++)
@@ -423,9 +428,75 @@ void Game::update(std::chrono::milliseconds delta)
 
 				physics.set_rotation(players_placed_objects_id[i].dynamics_id, static_cast<int>(pos.z));
 
-				physics.set_body_position(players_placed_objects_id[i].dynamics_id, { pos.x, pos.y });
+				if (players_placed_objects_id[i].model_type_id == 1)
+				{
+					if (pos.z == 1)
+					{
+						if ((*local_input)[logic::button::up] == logic::button_state::held)
+						{
+							turret_infos[i].direction = 1;
+						}
+						else if ((*local_input)[logic::button::down] == logic::button_state::held)
+						{
+							turret_infos[i].direction = 0;
+						}
 
-				level->moving_models[players_placed_objects_id[i].model_id].set_rotation(degree);
+						if (turret_infos[i].direction == 0)
+							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 0, 0, degree });
+						else if (turret_infos[i].direction == 1)
+							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 180.f, 0, degree });
+					}
+					else if (pos.z == 2)
+					{
+						if ((*local_input)[logic::button::right] == logic::button_state::held)
+						{
+							turret_infos[i].direction = 1;
+						}
+						else if ((*local_input)[logic::button::left] == logic::button_state::held)
+						{
+							turret_infos[i].direction = 0;
+						}
+
+						if (turret_infos[i].direction == 0)
+							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 180.f, degree });
+						else if (turret_infos[i].direction == 1)
+							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 0, degree });
+					}
+					else if (pos.z == 3)
+					{
+						if ((*local_input)[logic::button::up] == logic::button_state::held)
+						{
+							turret_infos[i].direction = 1;
+						}
+						else if ((*local_input)[logic::button::down] == logic::button_state::held)
+						{
+							turret_infos[i].direction = 0;
+						}
+
+						if (turret_infos[i].direction == 0)
+							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 180.f, 0, degree });
+						else if (turret_infos[i].direction == 1)
+							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 1, 0, 1 }, { 0, 0, degree });
+					}
+					else if (pos.z == 4)
+					{
+						if ((*local_input)[logic::button::right] == logic::button_state::held)
+						{
+							turret_infos[i].direction = 1;
+						}
+						else if ((*local_input)[logic::button::left] == logic::button_state::held)
+						{
+							turret_infos[i].direction = 0;
+						}
+
+						if (turret_infos[i].direction == 0)
+							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 0, degree });
+						else if (turret_infos[i].direction == 1)
+							level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 1, 1 }, { 0, 180.f, degree });
+					}
+				}
+				else
+					level->moving_models[players_placed_objects_id[i].model_id].set_rotation({ 0, 0, 1 }, { 0, 0, degree });
 
 				level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 
@@ -490,8 +561,26 @@ void Game::update(std::chrono::milliseconds delta)
 					glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id, dynamics[players_placed_objects_id[i].dynamics_id].position);
 					dynamics[players_placed_objects_id[i].dynamics_id].position = { pos.x, pos.y };
 					level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
+
+					if (players_placed_objects_id[i].model_type_id == 1)
+					{
+						turret_infos[i].direction;
+						turret_infos[i].rotation = static_cast<int>(pos.z);
+
+						add_turret(players_placed_objects_id[i].dynamics_id, turret_infos[i], dynamics[players_placed_objects_id[i].dynamics_id].position);
+
+						//std::cout << turret_infos[i].rotation << " : " << turret_infos[i].direction << "\n";
+						
+
+					}
 				}
 			}
+
+			/*for (int i = 4; i < 8; i++)
+			{
+				std::cout << "Dynamic: " << dynamics[i].position.x << " - " << dynamics[i].position.y << "\n";
+			}*/
+
 			give_players_objects = false;
 		}
 		
@@ -617,14 +706,35 @@ void Game::update(std::chrono::milliseconds delta)
 		is_client = true;
 	}
 
-	std::array<glm::vec3, 4> directions
-	{
-		glm::vec3{0.0f},
-		glm::vec3{0.0f},
-		glm::vec3{0.0f},
-		glm::vec3{0.0f}
-	};
+	//std::array<glm::vec3, 4> directions
+	//{
+	//	glm::vec3{0.0f},
+	//	glm::vec3{0.0f},
+	//	glm::vec3{0.0f},
+	//	glm::vec3{0.0f}
+	//};
 	
+
+
+	player_hit_array = { false, false, false, false };
+
+	if (turretframe >= 90 && turretframe <= 92)
+	{
+		
+		//Update laser draw here....bool draw laser
+		for (auto i = 0; i < turrets.size(); ++i)
+		{
+			laser_update(turrets[i], player_hit_array);
+		}
+	}
+	else
+	{
+		//Draw no laser
+		//Bool laser false
+	}
+
+
+
 	{
 		logic::objects_array obj;
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -648,9 +758,12 @@ void Game::update(std::chrono::milliseconds delta)
 				spikeframe,
 				turretframe,
 				triggers_types,
+				player_hit_array,
 				moving_platform_ids},
 				game_state, physics.rw, physics.lw, net.id());
 		}
+
+		//add laser hit array
 
 		for (auto i = 0u; i < dynamics.size(); ++i)
 		{
@@ -741,7 +854,10 @@ void Game::update(std::chrono::milliseconds delta)
 					if (level->moving_models[i].mesh->name == "double_jump")
 						jump = true;
 					if (level->moving_models[i].mesh->name == "turret")
+					{
 						turret = true;
+						turretframe = level->moving_models[i].getCurrentKeyframe();
+					}
 					if (level->moving_models[i].mesh->name == "stun_trap")
 						stun = true;
 					if (level->moving_models[i].mesh->name == "random_buff")
@@ -1170,4 +1286,88 @@ void Game::add_moving_platforms(int level_nr)
 		moving_platform_ids.push_back(d_id);
 		nr_of_moving_platforms++;
 	}
+}
+}
+
+void Game::laser_update(turret turret, std::array<bool, 4>& hit_array)
+{
+	physics.laser_ray_cast(glm::vec3{ turret.barrel_position, 0 }, glm::vec3{ turret.direction, 0 }, turret.range, hit_array);
+}
+
+void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::vec2 turret_pos)
+{	
+	glm::vec2 direction;
+	glm::vec2 barrel_position = turret_pos;
+	glm::vec2 end_pos;
+	turret temp;
+	float temp_range;
+
+	if (dir_info.rotation == 1)//attach to R wall
+	{
+		if (dir_info.direction == 1) //look UP
+		{
+			direction = glm::vec2{ 0, 1 };
+
+			barrel_position += glm::vec2{ -0.833, dynamics[dyn_id].size.y };
+		}
+		else if (dir_info.direction == 0) //look DOWN
+		{
+			direction = glm::vec2{ 0, -1 };
+
+			barrel_position -= glm::vec2{ 0.833, dynamics[dyn_id].size.y };
+		}
+	}
+	else if (dir_info.rotation == 2) //attach to roof
+	{
+		if (dir_info.direction == 1) //look RIGHT
+		{
+			direction = glm::vec2{ 1, 0 };
+
+			barrel_position += glm::vec2{ dynamics[dyn_id].size.x, -0.833 };
+		}
+		else if (dir_info.direction == 0) //look LEFT
+		{
+			direction = glm::vec2{ -1, 0 };
+
+			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x, 0.833 };
+		}
+	}
+	else if (dir_info.rotation == 3) //attach to L wall
+	{
+		if (dir_info.direction == 1) //look UP
+		{
+			direction = glm::vec2{ 0, 1 };
+
+			barrel_position += glm::vec2{ 0.833, dynamics[dyn_id].size.y };
+		}
+		else if (dir_info.direction == 0) //look DOWN
+		{
+			direction = glm::vec2{ 0, -1 };
+
+			barrel_position -= glm::vec2{ -0.833, dynamics[dyn_id].size.y };
+		}
+	}
+	else if (dir_info.rotation == 4) //attach to floor
+	{
+		if (dir_info.direction == 1) //look RIGHT
+		{
+			direction = glm::vec2{ 1, 0 };
+
+			barrel_position += glm::vec2{ dynamics[dyn_id].size.x, 0.833 };
+		}
+		else if (dir_info.direction == 0) //look LEFT
+		{
+			direction = glm::vec2{ -1, 0 };
+
+			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x, -0.833 };
+		}
+	}
+
+	temp_range = physics.laser_range(glm::vec3{ barrel_position, 0 }, glm::vec3{ direction, 0 });
+	end_pos = barrel_position + (direction * temp_range);
+
+	temp = turret{ dyn_id, direction, barrel_position, end_pos, temp_range };
+
+	turrets.push_back(temp);
+
 }
