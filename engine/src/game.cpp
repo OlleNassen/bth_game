@@ -459,6 +459,12 @@ void Game::update(std::chrono::milliseconds delta)
 
 				if (ppoi.place_state == 0 || ppoi.place_state == 1) 
 				{
+					std::cout << "Removed: " << i <<
+						"\nModel ID:\t" << ppoi.model_id <<
+						"\nDynamic ID:\t" << ppoi.dynamics_id <<
+						"\nType ID:\t" << ppoi.model_type_id <<
+						"\n\n";
+
 					//Remove object
 					dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
 					level->moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
