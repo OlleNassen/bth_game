@@ -328,7 +328,8 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = start_positons[indexies[i]];
-				int type_id = random_picked_object();
+				//This is set to always spawn a turrent
+				int type_id = 1; //random_picked_object();
 				collision_data data;
 				int m_id = level->add_object(data, type_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, type_id);
