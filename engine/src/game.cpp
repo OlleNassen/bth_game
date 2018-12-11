@@ -486,7 +486,7 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				auto& ppoi = players_placed_objects_id[i];
 
-				if (ppoi.place_state == 0 || ppoi.place_state == 1) 
+				if (ppoi.place_state == 0) // || ppoi.place_state == 1) 
 				{
 					//Remove object
 					dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
