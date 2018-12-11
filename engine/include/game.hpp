@@ -106,7 +106,7 @@ private:
 	std::array <id_and_model_place, 4> random_placed_objects_id;
 
 	//moving platforms
-	void add_moving_platforms(int level_nr);
+	void add_moving_platforms();
 	std::vector<int> moving_platform_ids;
 	int nr_of_moving_platforms = 0;
 
