@@ -54,6 +54,7 @@ LuaExport Gameplay::update(Input inputs,
 	int turret_frame = inputs.turret_keyframe;
 	if (current_state & state::lobby)
 	{
+
 		glm::vec2 level_1_door = { -19.7, 26.1 };
 		glm::vec2 level_2_door = { 19.7, 26.1 };
 		for (int i = 0; i < inputs.player_count; i++)
@@ -83,6 +84,7 @@ LuaExport Gameplay::update(Input inputs,
 					inputs.triggers[i],
 					inputs.triggers_types[i],
 					inputs.anim_states[i],
+					inputs.random_values[50],
 					rw[i], lw[i]);
 		}
 	}
@@ -168,6 +170,7 @@ LuaExport Gameplay::update(Input inputs,
 					inputs.triggers[i],
 					inputs.triggers_types[i],
 					inputs.anim_states[i],
+					inputs.random_values[50],
 					rw[i], lw[i]);
 			}
 		}

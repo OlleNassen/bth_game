@@ -77,7 +77,7 @@ private:
 	//Build info
 	std::vector<build_information> build_info;
 
-	void place_random_objects(float start_height, float map_width, int number_of_randoms);
+	void place_random_objects(float start_height, int number_of_randoms);
 
 	std::array<anim, 4> anim_states;
 
@@ -106,7 +106,7 @@ private:
 	std::array <id_and_model_place, 4> random_placed_objects_id;
 
 	//moving platforms
-	void add_moving_platforms(int level_nr);
+	void add_moving_platforms();
 	std::vector<int> moving_platform_ids;
 	int nr_of_moving_platforms = 0;
 
@@ -128,6 +128,9 @@ private:
 
 	//New gameloop stuff
 	void load_map(graphics::GameScene* scene);
+
+	//Random Seed
+	std::array<int, 100> random_values = { -1 };
 };
 
 

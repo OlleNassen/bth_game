@@ -73,6 +73,7 @@ public:
 	uint8 player_count = 1;
 	uint8 player_id = 0;
 	SessionState state = SessionState::none;
+	int random_values[100] = { -1 };
 
 	int level_id = 0; //0 = lobby, 1 = level1, 2 = level2
 };
