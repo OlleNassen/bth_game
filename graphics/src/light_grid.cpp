@@ -15,10 +15,6 @@ LightGrid::LightGrid()
 	glGenBuffers(1, &ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(indices), 0, GL_DYNAMIC_DRAW);
-}
-
-void LightGrid::bind() const
-{
 	glBindBufferBase(GL_UNIFORM_BUFFER, 4, ubo);
 }
 
@@ -53,11 +49,10 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32>& l
 			for (int i = 0; i < block_size; ++i)
 			{
 				light_grid_element& elem = indices[i + j * block_size];
-				if (sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count < 10)
+				if (sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count.x < 10)
 				{
 					a++;
-					elem.indices[elem.count++] = light_id;
-				
+					elem.indices[elem.count.x++].x = light_id;		
 				}
 				//elem.count = 1;
 			}
@@ -68,6 +63,7 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32>& l
 
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(indices), indices);
+
 }
 
 glm::vec4 screen_to_view(const glm::mat4& inv_proj, const glm::vec4& screen)

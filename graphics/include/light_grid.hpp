@@ -28,18 +28,16 @@ struct Frustum
 	Plane bottom;
 };
 
-struct light_grid_element
+struct light_grid_element 
 {
-	int count;
-	int indices[15];
+	glm::ivec4 count;
+	glm::ivec4 indices[15];
 };
 
 class LightGrid
 {
 public:
 	LightGrid();
-
-	void bind() const;
 
 	void calculate_grid(const Camera& camera);
 	void update(const Camera& camera, const std::array<PointLight, 32>& lights);

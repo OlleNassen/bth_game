@@ -687,8 +687,6 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 {
 	shader.use();
 
-	grid.bind();
-
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
 
@@ -720,8 +718,6 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 void Renderer::render_character(const Shader& shader, const Camera& camera, const std::vector<Model>& data, int num_players) const
 {
 	shader.use();
-
-	grid.bind();
 
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
