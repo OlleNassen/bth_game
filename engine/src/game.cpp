@@ -818,7 +818,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 			if ((*local_input)[logic::button::left] == logic::button_state::pressed)
 			{
-				watching = (watching - 1);
+				/*watching = (watching - 1);
 				if (watching < 0)
 					watching = static_cast<int>(player_count) - 1;
 
@@ -834,7 +834,9 @@ void Game::update(std::chrono::milliseconds delta)
 					watching = (watching - 1);
 					if (watching < 0)
 						watching = static_cast<int>(player_count) - 1;
-				}
+				}*/
+
+				watching = find_previous_spectator(watching);
 			}
 		}
 		
@@ -1182,6 +1184,25 @@ int Game::find_next_spectator(int current_id)
 	for (int i = 0; i < static_cast<int>(player_count); i++)
 	{
 		current_id = (current_id + 1) % (static_cast<int>(player_count));
+
+		if (current_id != net.id() && (!lua_data.finished[current_id]))
+		{
+			break;
+		}
+	}
+
+	std::cout << current_id << "\n";
+
+	return current_id;
+}
+
+int Game::find_previous_spectator(int current_id)
+{
+	for (int i = 0; i < static_cast<int>(player_count); i++)
+	{
+		watching = (watching - 1);
+		if (watching < 0)
+			watching = static_cast<int>(player_count) - 1;
 
 		if (current_id != net.id() && (!lua_data.finished[current_id]))
 		{

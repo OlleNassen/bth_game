@@ -124,6 +124,7 @@ private:
 	int turretframe = 0;
 
 	int find_next_spectator(int current_id);
+	int find_previous_spectator(int current_id);
 
 	//New gameloop stuff
 	void load_map(graphics::GameScene* scene);
