@@ -441,7 +441,7 @@ void Renderer::render(
 				build_text.render_text(out_text.str(), (screen_width * 0.5f) - 400.f, (screen_height * 0.5f) - 70.f, 0.75f);
 			}
 
-			if ((died[player_id] && finish[player_id]) && (overlays.finished_timer >= 5000ms))
+			if ((!died[player_id] && finish[player_id]) && (overlays.finished_timer >= 5000ms))
 			{				
 				build_text.render_text("Press 'A' or 'D' to change spectator", (screen_width * 0.5f) - 325.f, screen_height - 35.f, 0.75f);
 			}
