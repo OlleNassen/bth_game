@@ -84,6 +84,7 @@ LuaExport Gameplay::update(Input inputs,
 					inputs.triggers[i],
 					inputs.triggers_types[i],
 					inputs.anim_states[i],
+					inputs.random_values[50],
 					rw[i], lw[i]);
 		}
 	}
@@ -179,6 +180,7 @@ LuaExport Gameplay::update(Input inputs,
 					inputs.triggers[i],
 					inputs.triggers_types[i],
 					inputs.anim_states[i],
+					inputs.random_values[50],
 					rw[i], lw[i]);
 			}
 		}

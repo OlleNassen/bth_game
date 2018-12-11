@@ -82,6 +82,7 @@ function setup(entity)
 	entity.buffs_id = { 3, 4, 5, 6 }
 
 	--math.randomseed(seed)
+	entity.have_set_seed = false
 
 
 	entity.falling_delay_timer = 0.0
@@ -107,10 +108,13 @@ function update(delta_seconds, entity)
 		update_control(delta_seconds, entity)
 	end
 
-
-	
 	update_triggers(delta_seconds, entity)
 
+	if entity.have_set_seed == false
+	then
+		math.randomseed(entity.random_value)
+		entity.have_set_seed = true
+	end
 
 	--Gravity
 	if entity.current_state == entity.states[6] and entity.velocity.y < 0
@@ -718,34 +722,34 @@ function random_assignment(entity)
 	then
 		entity.random_assigned = true
 
-		--id = entity.buffs_id[math.random(4)]
+		id = entity.buffs_id[math.random(4)]
 
-		id = entity.buffs_id[3]
+		--id = entity.buffs_id[3]
 
 		entity.random_last = id
 
 		if id == entity.buffs_id[1] --glide_trap
 		then
-			--print("glide trap")
+			print("glide trap")
 			entity.glide_trap_triggered = true
 			entity.glide_trap_timer = 0.0
 
 		elseif id == entity.buffs_id[2] --speed_boost
 		then
-			--print("speed boost")
+			print("speed boost")
 			entity.speed_boost_triggered = true
 			entity.speed_boost_timer = 0.0
 
 		elseif id == entity.buffs_id[3] --double_jump
 		then
-			--print("double jump")
+			print("double jump")
 			entity.double_jump_triggered = true
 			entity.double_jump_timer = 0.0
 			entity.can_double_jump = false
 
 		elseif id == entity.buffs_id[4] --shield
 		then
-			--print("shield player")
+			print("shield player")
 			entity.shield_active = true;
 		end
 	end

@@ -34,7 +34,9 @@ void PlayerScript::update(
 	int index,
 	const int& trigger,
 	const int& type,
-	anim& anim_state, bool rw, bool lw)
+	anim& anim_state,
+	int random_value,
+	bool rw, bool lw)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
 	stack.getglobal(name.c_str());
@@ -99,7 +101,12 @@ void PlayerScript::update(
 			stack.push("shield_active");
 			stack.push(object.shield_active);
 			stack.rawset(top);
-			
+		}
+
+		{
+			stack.push("random_value");
+			stack.push(random_value);
+			stack.rawset(top);
 		}
 		stack.clear();
 	}
