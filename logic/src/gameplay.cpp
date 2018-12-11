@@ -48,16 +48,6 @@ LuaExport Gameplay::update(Input inputs,
 	int turret_frame = inputs.turret_keyframe;
 	if (current_state & state::lobby)
 	{
-		static bool done = false;
-
-		if (!done)
-		{
-			for (int i = 0; i < 100; i++)
-			{
-				std::cout << inputs.random_values[i] << "\n";
-			}
-			done = true;
-		}
 
 		glm::vec2 level_1_door = { -19.7, 26.1 };
 		glm::vec2 level_2_door = { 19.7, 26.1 };
