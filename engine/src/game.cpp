@@ -220,15 +220,6 @@ void Game::update(std::chrono::milliseconds delta)
 
 	if ((net_state.state == network::SessionState::lobby))
 	{
-
-		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed)
-		{
-			for (int i = 0; i < 100; i++)
-			{
-				std::cout << random_values[i] << "\n";
-			}
-		}
-
 		if (level != &lobby)
 		{
 			load_map(&lobby);
