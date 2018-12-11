@@ -66,6 +66,13 @@ void Overlays::update(
 		{
 			death_timer += delta;
 		}
+
+		if (has_finished && !is_dead)
+		{
+			finished_timer += delta;
+		}
+		else
+			finished_timer = 0ms;
 	}
 }
 

@@ -331,7 +331,6 @@ void Game::update(std::chrono::milliseconds delta)
 				int m_id = level->add_object(data, type_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, type_id);
 
-				/*
 				if (net.id() == i)
 					std::cout << "This is me:\n";
 
@@ -340,7 +339,6 @@ void Game::update(std::chrono::milliseconds delta)
 					"\nDynamic ID:\t" << d_id << 
 					"\nType ID:\t" << type_id <<
 					"\n\n";
-				*/
 
 				dynamics[d_id].position = start_position;
 				dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -383,14 +381,19 @@ void Game::update(std::chrono::milliseconds delta)
 					int m_id = level->add_object(data, obj_type_id);
 					int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, obj_type_id);
 
-					/*if (net.id() == i)
+					if (obj_id != d_id)
+					{
+						std::cout << "WARNING! - Invalid dynamic id! \nERROR: game.cpp - Row: 386\n";
+					}
+
+					if (net.id() == i)
 						std::cout << "This is me:\n";
 
 					std::cout << "Player:\t" << i <<
 						"\nModel ID:\t" << m_id <<
 						"\nDynamic ID:\t" << d_id <<
 						"\nType ID:\t" << obj_type_id <<
-						"\n\n";*/
+						"\n\n";
 
 					//dynamics[d_id].position = start_position;
 					//dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -793,27 +796,29 @@ void Game::update(std::chrono::milliseconds delta)
 				direction.x += 1.0f;
 		}	
 		
-		if ((lua_data.died[net.id()] && lua_data.finished[net.id()]) && (net_state.state == network::SessionState::playing))
+		if ((!lua_data.died[net.id()] && lua_data.finished[net.id()]) && (net_state.state == network::SessionState::playing))
 		{
 			//Spectator
 			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
 			{
-				watching = (watching + 1) % (static_cast<int>(player_count));
+				/*watching = (watching + 1) % (static_cast<int>(player_count));
 
 				if (watching == net.id())
 				{
 					watching = (watching + 1) % (static_cast<int>(player_count));
 				}
 
-				if (lua_data.died[watching] || lua_data.finished[watching])
+				if (!lua_data.died[watching] && lua_data.finished[watching])
 				{
 					watching = (watching + 1) % (static_cast<int>(player_count));
-				}
+				}*/
+
+				watching = find_next_spectator(watching);
 			}
 
 			if ((*local_input)[logic::button::left] == logic::button_state::pressed)
 			{
-				watching = (watching - 1);
+				/*watching = (watching - 1);
 				if (watching < 0)
 					watching = static_cast<int>(player_count) - 1;
 
@@ -824,12 +829,14 @@ void Game::update(std::chrono::milliseconds delta)
 						watching = static_cast<int>(player_count) - 1;
 				}
 
-				if (lua_data.died[watching] || lua_data.finished[watching])
+				if (!lua_data.died[watching] && lua_data.finished[watching])
 				{
 					watching = (watching - 1);
 					if (watching < 0)
 						watching = static_cast<int>(player_count) - 1;
-				}
+				}*/
+
+				watching = find_previous_spectator(watching);
 			}
 		}
 		
@@ -1170,4 +1177,40 @@ void Game::add_moving_platforms(int level_nr)
 		moving_platform_ids.push_back(d_id);
 		nr_of_moving_platforms++;
 	}
+}
+
+int Game::find_next_spectator(int current_id)
+{
+	for (int i = 0; i < static_cast<int>(player_count); i++)
+	{
+		current_id = (current_id + 1) % (static_cast<int>(player_count));
+
+		if (current_id != net.id() && (!lua_data.finished[current_id]))
+		{
+			break;
+		}
+	}
+
+	std::cout << current_id << "\n";
+
+	return current_id;
+}
+
+int Game::find_previous_spectator(int current_id)
+{
+	for (int i = 0; i < static_cast<int>(player_count); i++)
+	{
+		current_id = (current_id - 1);
+		if (current_id < 0)
+			current_id = static_cast<int>(player_count) - 1;
+
+		if (current_id != net.id() && (!lua_data.finished[current_id]))
+		{
+			break;
+		}
+	}
+
+	std::cout << current_id << "\n";
+
+	return current_id;
 }
