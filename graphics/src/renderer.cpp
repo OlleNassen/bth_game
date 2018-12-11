@@ -797,8 +797,6 @@ void Renderer::update_moving_platforms(const objects_array& dynamics,
 void Renderer::render_type(const Shader& shader, const Camera& camera, const Model* first, const Model* last) const
 {
 	shader.use();
-
-	shader.uniform("light_indices", grid);
 	
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
@@ -831,8 +829,6 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 void Renderer::render_character(const Shader& shader, const Camera& camera, const std::vector<Model>& data, int num_players) const
 {
 	shader.use();
-
-	shader.uniform("light_indices", grid);
 
 	shader.uniform("view", camera.view());
 	shader.uniform("projection", camera.projection);
