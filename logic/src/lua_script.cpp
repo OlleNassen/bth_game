@@ -450,47 +450,7 @@ void GameScript::update(
 		}
 
 		stack.clear();
-
-
 	}
-
-
-	/*{
-		stack.getglobal("entities");
-		int top = stack.top();
-		for (int i = 1; i <= 4; ++i)
-		{
-			stack.rawget(top, i);
-			stack.getfield(-1, "velocity");
-			stack.getfield(-1, "x");
-			stack.getfield(-2, "y");
-			players[i - 1].velocity.x = stack.tonumber(-2);
-			players[i - 1].velocity.y = stack.tonumber(-1);
-
-
-		}
-
-		stack.clear();
-	}
-
-	{
-		stack.getglobal("entities");
-		int top = stack.top();
-		for (int i = 1; i <= 4; ++i)
-		{
-			stack.rawget(top, i);
-			stack.getfield(-1, "forces");
-			stack.getfield(-1, "x");
-			stack.getfield(-2, "y");
-			players[i - 1].forces.x = stack.tonumber(-2);
-			players[i - 1].forces.y = stack.tonumber(-1);
-
-
-		}
-
-		stack.clear();
-	}*/
-
 }
 
 void GameScript::update_export()

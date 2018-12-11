@@ -730,26 +730,26 @@ function random_assignment(entity)
 
 		if id == entity.buffs_id[1] --glide_trap
 		then
-			print("glide trap")
+			--print("glide trap")
 			entity.glide_trap_triggered = true
 			entity.glide_trap_timer = 0.0
 
 		elseif id == entity.buffs_id[2] --speed_boost
 		then
-			print("speed boost")
+			--print("speed boost")
 			entity.speed_boost_triggered = true
 			entity.speed_boost_timer = 0.0
 
 		elseif id == entity.buffs_id[3] --double_jump
 		then
-			print("double jump")
+			--print("double jump")
 			entity.double_jump_triggered = true
 			entity.double_jump_timer = 0.0
 			entity.can_double_jump = false
 
 		elseif id == entity.buffs_id[4] --shield
 		then
-			print("shield player")
+			--print("shield player")
 			entity.shield_active = true;
 		end
 	end
