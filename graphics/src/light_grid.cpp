@@ -49,10 +49,10 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32>& l
 			for (int i = 0; i < block_size; ++i)
 			{
 				light_grid_element& elem = indices[i + j * block_size];
-				if (sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count < 10)
+				if (sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count.x < 10)
 				{
 					a++;
-					elem.indices[elem.count++] = light_id;		
+					elem.indices[elem.count.x++].x = light_id;		
 				}
 				//elem.count = 1;
 			}
