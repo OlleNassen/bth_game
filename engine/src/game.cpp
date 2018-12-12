@@ -956,7 +956,7 @@ void Game::pack_data()
 	for (int i = 0; i < 4; ++i) //Players
 	{
 		net_state.inputs[i] = player_inputs[i];
-		if (net.id())
+		if (net.id() == 0)
 			net_state.has_placed_correctly[i] = has_placed_correctly[i];
 	}
 
