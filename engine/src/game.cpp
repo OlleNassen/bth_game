@@ -360,14 +360,14 @@ void Game::update(std::chrono::milliseconds delta)
 				int m_id = level->add_object(data, type_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, type_id);
 
-				if (net.id() == i)
+				/*if (net.id() == i)
 					std::cout << "This is me:\n";
 
 				std::cout << "Player:\t" << i <<
 					"\nModel ID:\t" << m_id << 
 					"\nDynamic ID:\t" << d_id << 
 					"\nType ID:\t" << type_id <<
-					"\n\n";
+					"\n\n";*/
 
 				dynamics[d_id].position = start_position;
 				dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -870,7 +870,7 @@ void Game::update(std::chrono::milliseconds delta)
 			directions,
 			chat[1], static_cast<int>(player_count),
 			net.id(), game_state, lua_data.died, 
-			lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time, lua_data.goal_height, all_placed_objects,
+			lua_data.finished, lua_data.scores, lua_data.trigger_type, buff_activ, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
 			moving_objects_id,
 			view_score, lua_data.dash_timer);

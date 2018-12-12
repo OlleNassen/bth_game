@@ -122,6 +122,8 @@ public:
 		std::chrono::milliseconds delta, const Camera& camera, 
 		std::vector<build_information> &build_info, 
 		int trigger_type, 
+		int random_buff,
+		bool dead,
 		int game_state,
 		bool bullet_hit,
 		glm::vec3 player_pos);
@@ -155,7 +157,8 @@ private:
 	bool speedboost_active = false;
 	bool doublejump_active = false;
 	bool shield_active = false;
-	bool random_active = false;
+	bool random_buff_active = false;
+	bool random_shield_active = false;
 	std::vector<glm::vec3> stun_loc;
 	std::vector<glm::vec3> glide_loc;
 	std::vector<glm::vec3> speedboost_loc;
@@ -171,11 +174,11 @@ private:
 	void steam_back(glm::vec3 pos_vec);
 	void steam_left(glm::vec3 pos_vec);
 	void calculate_stun_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, glm::vec3 player_pos);
-	void calculate_glide_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
-	void calculate_speedboost_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
-	void calculate_doublejump_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
-	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, bool bullet_hit, int game_state, glm::vec3 player_pos);
-	void calculate_random_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos);
+	void calculate_glide_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead);
+	void calculate_speedboost_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead);
+	void calculate_doublejump_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead);
+	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, bool bullet_hit, int game_state, glm::vec3 player_pos, bool dead);
+	void calculate_random_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead);
 };
 
 }
