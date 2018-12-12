@@ -19,14 +19,14 @@ namespace graphics
 
 using namespace std::chrono_literals;
 
-ModelsToRender::ModelsToRender(const Model& player, const Model* begin, const Model* end)
+ModelsToRender::ModelsToRender(float player_y, Model* begin, Model* end)
 {
 	first = begin;
 	last = end - 1;
 
 	float culling_distance = 50.0f;
-	float bottom = player.get_y_position() - culling_distance;
-	float top = player.get_y_position() + culling_distance;
+	float bottom = player_y - culling_distance;
+	float top = player_y + culling_distance;
 
 	for (auto it = begin; it != end; ++it)
 	{
@@ -112,8 +112,8 @@ void Renderer::render(
 		if (scene->moving_models.size() > 4)
 			render_type(pbra, game_camera, &scene->moving_models[4], &scene->moving_models.back() + 1);
 
-		render_type(pbra, game_camera,a_to_render.first, a_to_render.last);
-		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
+		render_type(pbra, game_camera,a_to_render.begin(), a_to_render.end());
+		render_type(pbr, game_camera, s_to_render.begin(), s_to_render.end());
 		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
 		
 		if (!(game_state & state::lobby))
@@ -131,36 +131,6 @@ void Renderer::render(
 			glEnable(GL_DEPTH_TEST);
 		}
 		
-	}
-	else if (!is_menu)
-	{
-		if(debug)
-			render_character(robot_shader, game_camera, scene->moving_models, 4);
-
-		if (scene->moving_models.size() > 4)
-			render_type(pbr, db_camera,
-				&scene->moving_models[4], &scene->moving_models.back() + 1);
-
-		render_type(pbra, db_camera, a_to_render.first, a_to_render.last);
-		render_type(pbr, db_camera, s_to_render.first, s_to_render.last);
-		render_type(pbr, db_camera, &scene->models[0], &scene->models[9]);
-
-		if (!(game_state & state::lobby))
-		{
-			fx_emitter.render_particles(fx_dust, fx_bubble, fx_spark, fx_steam, fx_blitz, fx_fire, fx_godray, fx_gust, fx_stun, game_camera, fx_emitter.timer, current_map);
-		}
-
-		if (debug_active)
-		{
-			glDisable(GL_DEPTH_TEST);
-			lines.use();
-			lines.uniform("projection", db_camera.projection);
-			lines.uniform("view", db_camera.view());
-			lines.uniform("line_color", glm::vec3(0.2, 1.0, 0.2f));
-			point_debug(debug_positions);
-			glEnable(GL_DEPTH_TEST);
-		}
-
 	}
 
 	// Post Processing Effects
@@ -202,32 +172,6 @@ void Renderer::render(
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-
-			/*bool anyone_has_score = false;
-			for (int i = 0; i < player_count; i++)
-				if (scores[i] > 0)
-					anyone_has_score = true;
-
-			if (anyone_has_score)
-			{
-				build_text.render_text("Score: ", screen_width * 0.5f, screen_height * 0.5f, 0.75f);
-
-				std::array<int, 4> positions;
-
-				std::array<player_info, 4> sorted_infos = player_infos;
-				std::sort(sorted_infos.begin(), sorted_infos.end(), sort_by_score);
-
-				for (int i = 0; i < player_count; i++)
-				{
-					out_text.str("");
-
-					out_text << sorted_infos[i].name << " : " << sorted_infos[i].score;
-
-					text_shader.uniform("text_color", sorted_infos[i].color);
-
-					build_text.render_text(out_text.str(), screen_width * 0.5f, (screen_height * 0.5f) + ((i + 1) * -35.f), 0.75f);
-				}
-			}*/
 			
 			int total_players_ready = 0;
 			int level_1_index = 0;
@@ -263,20 +207,11 @@ void Renderer::render(
 			}
 
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
-			//out_text.str("");
-			//out_text << total_players_ready << "/" << player_count;
-			//build_text.render_text(out_text.str(), 10.f, screen_height - 45.f, 1.f);
 
 			if (total_players_ready == player_count)
 				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);
 		}
 
-		
-
-		if (game_state & state::pre_building)
-		{
-			
-		}
 
 		if ((game_state & state::building) && build_info.size() > 0)
 		{
@@ -339,11 +274,6 @@ void Renderer::render(
 		if (game_state & state::pre_playing)
 		{
 			std::stringstream out_text;
-
-			/*if (print_time <= 1.0f)
-			{
-				print_time = 1.0f;
-			}*/
 
 			out_text << std::fixed << std::setprecision(0) << print_time;
 			text_shader.use();
@@ -468,10 +398,6 @@ void Renderer::render(
 			{
 				out_text.str("");
 
-				/*out_text << players[i] << " : " << scores[i];
-
-				text_shader.uniform("text_color", players_colors[i]);*/
-
 				out_text << player_infos[i].name << " : " << player_infos[i].score;
 
 				text_shader.uniform("text_color", player_infos[i].color);
@@ -580,28 +506,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	bool is_menu = (new_game_state & state::menu);
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(delta).count();
 
-	if (game_state & state::building)
-	{
-		if (moving_objects_id[id] < scene->moving_models.size())
-			s_to_render = ModelsToRender{ scene->moving_models[moving_objects_id[id]], &scene->models[9], &scene->models.back() };
-		
-		if (scene->animated_models.size() > 0 && moving_objects_id[id] < scene->moving_models.size())
-			a_to_render = ModelsToRender{ scene->moving_models[moving_objects_id[id]], &scene->animated_models.front(), &scene->animated_models.back() };
-	}
-	else if (!died[id] && !finish[id])
-	{
-		s_to_render = ModelsToRender{ scene->moving_models[id], &scene->models[9], &scene->models.back() };
-
-		if (scene->animated_models.size() > 0)
-			a_to_render = ModelsToRender{ scene->moving_models[id], &scene->animated_models.front(), &scene->animated_models.back() };
-	}
-	else //Spectator
-	{
-		s_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->models[9], &scene->models.back() };
-		
-		if (scene->animated_models.size() > 0 && moving_objects_id[spectator_id] < scene->moving_models.size())
-			a_to_render = ModelsToRender{ scene->moving_models[spectator_id], &scene->animated_models.front(), &scene->animated_models.back() };
-	}
+	s_to_render = ModelsToRender{ game_camera.position.y, &scene->models[9], &scene->models.back() };
+	a_to_render = ModelsToRender{ game_camera.position.y, &scene->animated_models.front(), &scene->animated_models.back() };
 	
 	if (game_state & state::pre_playing || game_state & state::lobby)
 	{
@@ -765,6 +671,10 @@ void Renderer::update(std::chrono::milliseconds delta,
 		scene->lights[i].position = scene->moving_models[i].get_position();
 	}
 
+	anim idle = anim::falling;
+	for (auto it = a_to_render.first; it != a_to_render.last; ++it)
+		it->update_animation((float)delta.count(), idle);
+
 	grid.update(game_camera, scene->lights);
 
 	overlays.update(delta, 
@@ -788,7 +698,6 @@ void Renderer::update_moving_platforms(const objects_array& dynamics,
 		for (int i = model_id; i < model_id + nr_of_moving_platforms; i++)
 		{
 			scene->moving_models[i].set_position(dynamics[j].position);
-			//std::cout << "update platform" << std::endl;
 			j++;
 		}
 	}
