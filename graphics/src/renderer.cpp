@@ -199,6 +199,8 @@ void Renderer::render(
 
 		if (game_state & state::lobby && !is_menu)
 		{
+			laser.render(turret_laser, game_camera);
+
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
@@ -338,6 +340,7 @@ void Renderer::render(
 
 		if (game_state & state::pre_playing)
 		{
+
 			std::stringstream out_text;
 
 			/*if (print_time <= 1.0f)
@@ -360,6 +363,7 @@ void Renderer::render(
 
 		if (game_state & state::playing)
 		{
+
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
@@ -776,6 +780,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 		player_id,
 		dash_timer);
 
+
+
 }
 
 void Renderer::update_moving_platforms(const objects_array& dynamics,
@@ -827,7 +833,6 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 		renderable.render(shader);
 	}
 
-	laser.render(turret_laser, camera);
 }
 
 void Renderer::render_character(const Shader& shader, const Camera& camera, const std::vector<Model>& data, int num_players) const
