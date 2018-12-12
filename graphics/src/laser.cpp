@@ -32,36 +32,16 @@ void Laser::update(const glm::vec2& start, const glm::vec2& end)
 {
 	model[3][0] = start.x;
 	model[3][1] = start.y;
-
-	/*
-	float distance = glm::distance(start, end);
-
-	model = glm::mat4(1.f);
-
-	if (glm::abs(start.x - end.x) > 0)
-	{
-		model = glm::translate(model, glm::vec3(start.x - distance, start.y, 0.0f));
-	}
-	else
-		model = glm::translate(model, glm::vec3(start.x, start.y - distance, 0.0f));
-
-
-	model = glm::scale(model * 0.5f, glm::vec3(distance, 1,1));
-	*/
-
-
+	
 	glm::vec2 direction = end - start;
 	float distance = glm::distance(start, end);
 
 	model = glm::mat4(1.f);
 
-	model = glm::translate(model, glm::vec3(start, 0.f));
+	model = glm::translate(model, glm::vec3(start + direction * 0.5f, 0.f));
 
 
-	model = glm::scale(model, glm::vec3(direction, 1.f));
-
-
-	std::cout << start.x << " " << start.y << '\n';
+	model = glm::scale(model, glm::vec3(distance * 0.5f, 1.f, 1.f));
 
 
 }
