@@ -45,9 +45,12 @@ class ModelsToRender
 {
 public:
 	ModelsToRender() = default;
-	ModelsToRender(const Model& player, const Model* begin, const Model* end);
-	const Model* first = 0;
-	const Model* last = 0;
+	ModelsToRender(float player_y, Model* begin, Model* end);
+	Model* first = 0;
+	Model* last = 0;
+
+	const Model* begin() const { return first; }
+	const Model* end() const { return last; }
 };
 
 

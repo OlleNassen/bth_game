@@ -749,9 +749,6 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 		anim idle = anim::falling;
 
-		for (auto& model : level->animated_models)
-			model.update_animation((float)delta.count(), idle);
-
 		bool spike = false, jump = false, speed = false, random = false, shield = false, turret = false, stun = false;
 
 		for (int i = 4; i < level->moving_models.size(); i++)
@@ -830,44 +827,10 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			//Spectator
 			if ((*local_input)[logic::button::right] == logic::button_state::pressed)
-			{
-				/*watching = (watching + 1) % (static_cast<int>(player_count));
-
-				if (watching == net.id())
-				{
-					watching = (watching + 1) % (static_cast<int>(player_count));
-				}
-
-				if (!lua_data.died[watching] && lua_data.finished[watching])
-				{
-					watching = (watching + 1) % (static_cast<int>(player_count));
-				}*/
-
 				watching = find_next_spectator(watching);
-			}
 
 			if ((*local_input)[logic::button::left] == logic::button_state::pressed)
-			{
-				/*watching = (watching - 1);
-				if (watching < 0)
-					watching = static_cast<int>(player_count) - 1;
-
-				if (watching == net.id())
-				{
-					watching = (watching - 1);
-					if (watching < 0)
-						watching = static_cast<int>(player_count) - 1;
-				}
-
-				if (!lua_data.died[watching] && lua_data.finished[watching])
-				{
-					watching = (watching - 1);
-					if (watching < 0)
-						watching = static_cast<int>(player_count) - 1;
-				}*/
-
 				watching = find_previous_spectator(watching);
-			}
 		}
 		
 		all_placed_objects.clear();
