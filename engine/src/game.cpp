@@ -491,7 +491,7 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::pre_playing)
 	{
-		if (give_players_objects) // && lua_data.time < 2.f)
+		if (give_players_objects && lua_data.time < 2.f)
 		{
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
