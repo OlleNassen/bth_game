@@ -327,7 +327,7 @@ void Game::update(std::chrono::milliseconds delta)
 			std::array<glm::vec2, 4> start_positons = { glm::vec2{0.f, 60.5f}, glm::vec2{0.f, 113.5}, glm::vec2{0.f, 167.f}, glm::vec2{0.f, 224.5f} };
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
-				glm::vec2 start_position = start_positons[indexies[i]];
+				glm::vec2 start_position = glm::vec2(0,0);//start_positons[indexies[i]];
 				//This is set to always spawn a turrent
 				int type_id = 1; //random_picked_object();
 				collision_data data;

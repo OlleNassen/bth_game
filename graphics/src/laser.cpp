@@ -27,7 +27,6 @@ Laser::Laser()
 
 }
 
-
 void Laser::update(const glm::vec2& start, const glm::vec2& end)
 {
 	model[3][0] = start.x;
@@ -36,15 +35,20 @@ void Laser::update(const glm::vec2& start, const glm::vec2& end)
 	glm::vec2 direction = end - start;
 	float distance = glm::distance(start, end);
 
+	glm::vec2 nor_dir = glm::normalize(direction);
+	float aco = glm::acos(glm::dot(nor_dir, glm::vec2(1,0)));
+
 	model = glm::mat4(1.f);
 
 	model = glm::translate(model, glm::vec3(start + direction * 0.5f, 0.f));
-
+	
+	model = glm::rotate(model, aco, glm::vec3(0,0,-1));
 
 	model = glm::scale(model, glm::vec3(distance * 0.5f, 1.f, 1.f));
 
 
 }
+
 void Laser::render(const Shader &shader, const Camera& cam)const
 {
 	shader.use();
