@@ -557,7 +557,7 @@ void Game::update(std::chrono::milliseconds delta)
 			give_players_objects = false;
 		}
 		
-		give_players_objects = false;
+		//give_players_objects = false;
 
 		//Begin 3, 2, 1, GO! countdown.
 		game_state = (game_state | state::pre_playing);
