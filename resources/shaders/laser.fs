@@ -8,6 +8,5 @@ uniform sampler2D middle_laser;
 
 void main()
 {
-
 	frag_color = texture(middle_laser, tex_coords) * vec4(1,0,0,1);
 }

@@ -99,6 +99,9 @@ void Renderer::render(
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	laser.render(turret_laser, game_camera);
+
+
 	if (print_time < 0.0)
 		print_time = 0.0f;
 
@@ -199,7 +202,6 @@ void Renderer::render(
 
 		if (game_state & state::lobby && !is_menu)
 		{
-			laser.render(turret_laser, game_camera);
 
 			text_shader.use();
 			text_shader.uniform("projection", projection);
@@ -363,6 +365,7 @@ void Renderer::render(
 
 		if (game_state & state::playing)
 		{
+
 
 			text_shader.use();
 			text_shader.uniform("projection", projection);
@@ -579,7 +582,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::vector<build_information>& all_placed_objects,
 	int spectator_id,
 	std::array<int, 4> moving_objects_id,
-	bool view_score, float dash_timer)
+	bool view_score, float dash_timer,
+	const glm::vec2& start, const glm::vec2& end)
 {
 	bool is_menu = (new_game_state & state::menu);
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(delta).count();
@@ -780,7 +784,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		player_id,
 		dash_timer);
 
-
+	laser.update(start, end);
 
 }
 

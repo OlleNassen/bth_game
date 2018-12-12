@@ -17,16 +17,16 @@ public:
 	~Laser() = default;
 
 
-	void update();
+	void update(const glm::vec2& start, const glm::vec2& end);
 	void render(const Shader &shader, const Camera& cam)const;
 	void disable();
 
 private:
+	glm::mat4 model {1.f};
 	unsigned int vao;
 	unsigned int vertex_buffer;
 	unsigned int laser_buffer;
 	std::array<Texture, 10> laser_textures;
-	Texture laser{"../resources/textures/laser/middle_background_texture.png", true};
 	unsigned int active_texture;
 };
 

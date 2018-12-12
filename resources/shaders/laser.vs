@@ -11,5 +11,10 @@ uniform mat4 projection;
 void main()
 {
     tex_coords = position.zw;
-    gl_Position = projection * view * model * vec4(position.xy, 0.0, 1.0);
+
+	mat4 model_view = view * model;
+
+	vec3 view_vec = inverse(mat3(view)) * vec3(position.xy, 0.0);
+
+    gl_Position = projection * view * model * vec4(view_vec, 1.0);
 }

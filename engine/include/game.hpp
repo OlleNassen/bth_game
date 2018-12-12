@@ -114,7 +114,7 @@ private:
 		int dynamic_id;
 		//turret_info info;
 		glm::vec2 direction;
-		glm::vec2 barrel_position;
+		glm::vec2 barrel_position; // start
 		glm::vec2 end_position;
 		float range;
 	};
