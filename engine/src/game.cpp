@@ -82,7 +82,7 @@ Game::Game()
 	//Start States
 	net_state.state = network::SessionState::lobby;
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		random_values[i] = 3 + (rand() % 4);
 	}
@@ -176,7 +176,7 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			srand(time(NULL));
 
-			for (int i = 0; i < 100; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				random_values[i] = 3 + (rand() % 4);
 			}
@@ -214,7 +214,7 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				srand(time(NULL));
 
-				for (int i = 0; i < 100; i++)
+				for (int i = 0; i < 5; i++)
 				{
 					random_values[i] = 3 + (rand() % 4);
 				}
@@ -363,14 +363,14 @@ void Game::update(std::chrono::milliseconds delta)
 				int m_id = level->add_object(data, type_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, type_id);
 
-				if (net.id() == i)
+				/*if (net.id() == i)
 					std::cout << "This is me:\n";
 
 				std::cout << "Player:\t" << i <<
 					"\nModel ID:\t" << m_id << 
 					"\nDynamic ID:\t" << d_id << 
 					"\nType ID:\t" << type_id <<
-					"\n\n";
+					"\n\n";*/
 
 				dynamics[d_id].position = start_position;
 				dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -419,14 +419,14 @@ void Game::update(std::chrono::milliseconds delta)
 						std::cout << "WARNING! - Invalid dynamic id! \nERROR: game.cpp - Row: 386\n";
 					}
 
-					if (net.id() == i)
+					/*if (net.id() == i)
 						std::cout << "This is me:\n";
 
 					std::cout << "Player:\t" << i <<
 						"\nModel ID:\t" << m_id <<
 						"\nDynamic ID:\t" << d_id <<
 						"\nType ID:\t" << obj_type_id <<
-						"\n\n";
+						"\n\n";*/
 
 					//dynamics[d_id].position = start_position;
 					//dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -536,11 +536,23 @@ void Game::update(std::chrono::milliseconds delta)
 				level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
+				{
 					players_placed_objects_id[i].place_state = 1;
+					if (net.id() == 0)
+						has_placed_correctly[i] = 0;
+				}
 				else
-					players_placed_objects_id[i].place_state = 0;
-
-
+				{
+					players_placed_objects_id[i].place_state = 0; 
+					if (net.id() == 0)
+						has_placed_correctly[i] = 0;
+				}
+			}
+			
+			if (players_placed_objects_id[i].place_state == 2)
+			{
+				if (net.id() == 0)
+					has_placed_correctly[i] = 1;
 			}
 		}
 
@@ -554,14 +566,22 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::pre_playing)
 	{
-		if (give_players_objects)
+		if (give_players_objects && lua_data.time < 2.f)
 		{
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				auto& ppoi = players_placed_objects_id[i];
+			
+				//if (ppoi.place_state == 0 || ppoi.place_state == 1) 
 
-				if (ppoi.place_state == 0) // || ppoi.place_state == 1) 
+				if (has_placed_correctly[i] == 0)
 				{
+					/*std::cout << "Removed: " << i <<
+						"\nModel ID:\t" << ppoi.model_id <<
+						"\nDynamic ID:\t" << ppoi.dynamics_id <<
+						"\nType ID:\t" << ppoi.model_type_id <<
+						"\n\n";*/
+
 					//Remove object
 					dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
 					level->moving_models[ppoi.model_id].set_position(dynamics[ppoi.dynamics_id].position);
@@ -619,7 +639,7 @@ void Game::update(std::chrono::milliseconds delta)
 			give_players_objects = false;
 		}
 		
-		give_players_objects = false;
+		//give_players_objects = false;
 
 		//Begin 3, 2, 1, GO! countdown.
 		game_state = (game_state | state::pre_playing);
@@ -1027,6 +1047,8 @@ void Game::pack_data()
 	for (int i = 0; i < 4; ++i) //Players
 	{
 		net_state.inputs[i] = player_inputs[i];
+		if (net.id() == 0)
+			net_state.has_placed_correctly[i] = has_placed_correctly[i];
 	}
 
 	for (auto i = 0u; i < dynamics.size(); ++i)
@@ -1036,7 +1058,8 @@ void Game::pack_data()
 
 		if (net.id() == 0)
 		{
-			net_state.random_values[i] = random_values[i];
+			if (i < 5)
+				net_state.random_values[i] = random_values[i];
 			net_state.level_id = level_id;
 		}
 
@@ -1068,9 +1091,13 @@ void Game::unpack_data()
 			level_id = net_state.level_id;
 		}
 
+		has_placed_correctly[i] = net_state.has_placed_correctly[i];
+
 		dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
 		dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
 	}
+
+
 	
 	//if (state_sequence != net_state.sequence)
 	{
@@ -1083,8 +1110,9 @@ void Game::unpack_data()
 			{
 				dynamics[i].position = net_state.game_objects[i].position;
 				dynamics[i].velocity = net_state.game_objects[i].velocity;
-				
-				random_values[i] = net_state.random_values[i];
+
+				if (i < 5)
+					random_values[i] = net_state.random_values[i];
 
 				//Vincent
 				if (i < 4)

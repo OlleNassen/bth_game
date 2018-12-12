@@ -76,6 +76,7 @@ private:
 
 	//Build info
 	std::vector<build_information> build_info;
+	int has_placed_correctly[4] = { 0 };
 
 	void place_random_objects(float start_height, int number_of_randoms);
 
@@ -151,7 +152,7 @@ private:
 	void load_map(graphics::GameScene* scene);
 
 	//Random Seed
-	std::array<int, 100> random_values = { -1 };
+	std::array<int, 5> random_values = { -1 };
 };
 
 
