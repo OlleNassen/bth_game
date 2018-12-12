@@ -131,6 +131,8 @@ private:
 
 	//Random Seed
 	std::array<int, 100> random_values = { -1 };
+
+	std::array<int, 4> buff_activ = { -1 };
 };
 
 

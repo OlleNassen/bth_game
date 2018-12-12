@@ -84,7 +84,7 @@ Game::Game()
 
 	for (int i = 0; i < 100; i++)
 	{
-		random_values[i] = 3 + (rand() % 4);
+		random_values[i] = 1 + (rand() % 4);
 	}
 }
 
@@ -178,7 +178,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 			for (int i = 0; i < 100; i++)
 			{
-				random_values[i] = 3 + (rand() % 4);
+				random_values[i] = 1 + (rand() % 4);
 			}
 		}
 
@@ -216,7 +216,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 				for (int i = 0; i < 100; i++)
 				{
-					random_values[i] = 3 + (rand() % 4);
+					random_values[i] = 1 + (rand() % 4);
 				}
 			}
 
@@ -355,7 +355,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = start_positons[indexies[i]];
-				int type_id = random_picked_object();
+				int type_id = 7;//random_picked_object();
 				collision_data data;
 				int m_id = level->add_object(data, type_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, type_id);
@@ -657,6 +657,8 @@ void Game::update(std::chrono::milliseconds delta)
 		glm::vec3{0.0f}
 	};
 	
+	buff_activ = { -1 };
+
 	{
 		logic::objects_array obj;
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -681,6 +683,7 @@ void Game::update(std::chrono::milliseconds delta)
 				turretframe,
 				triggers_types,
 				random_values,
+				buff_activ,
 				moving_platform_ids },
 				game_state, physics.rw, physics.lw, net.id());
 		}
@@ -851,6 +854,15 @@ void Game::update(std::chrono::milliseconds delta)
 			players_placed_objects_id[3].model_id };
 			
 		bool view_score = (*local_input)[logic::button::score] == logic::button_state::held;
+
+		//for (int i = 0; i < buff_activ.size(); i++)
+		//{
+		//	if (buff_activ[i] > 0)
+		//	{
+		//		std::cout << buff_activ[i] << std::endl;
+		//	}
+
+		//}
 
 		renderer.update(delta,
 			obj,
