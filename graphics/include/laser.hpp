@@ -19,13 +19,15 @@ private:
 	VertexArray vao;
 	Buffer vertex_buffer;
 	Buffer laser_buffer;
+	std::array<Texture, 10> laser_textures;
+	unsigned int active_texture;
 public:
 	Laser();
 	~Laser();
 
 
 	void update();
-	void render();
+	void render(const Shader &shader)const;
 	void disable();
 
 };
