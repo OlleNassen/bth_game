@@ -97,6 +97,7 @@ public:
 		int spectator_id,
 		std::array<int, 4> moving_objects_id,
 		bool view_score, float dash_timer,
+		int turretframe,
 		const std::vector<glm::vec2>& start,
 		const std::vector<glm::vec2>& end);
 

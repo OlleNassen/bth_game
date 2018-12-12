@@ -27,10 +27,12 @@ Laser::Laser()
 
 }
 
-void Laser::update(
+void Laser::update(int turretframe,
 	const std::vector<glm::vec2>& starts, 
 	const std::vector<glm::vec2>& ends)
 {
+	laser_on = turretframe >= 30 && turretframe <= 32; 
+	
 	if (!starts.empty())
 	{
 		models.resize(starts.size());
@@ -61,26 +63,28 @@ void Laser::update(
 
 void Laser::render(const Shader &shader, const Camera& cam)const
 {
-	shader.use();
-	shader.uniform("view", cam.view());
-	shader.uniform("projection", cam.projection);
-	
-	for (int i = 0; i < 7; i++)
+	if (laser_on)
 	{
-		laser_textures[i].bind(i);
-	}
-	
-	glBindVertexArray(vao);
+		shader.use();
+		shader.uniform("view", cam.view());
+		shader.uniform("projection", cam.projection);
+		
+		for (int i = 0; i < 7; i++)
+		{
+			laser_textures[i].bind(i);
+		}
+		
+		glBindVertexArray(vao);
 
-	for (int i = 0; i < models.size(); ++i)
-	{
-		shader.uniform("model", models[i]);	
-		glm::vec4 color{1,0,0,1};
-		shader.uniform("color", color);
-		shader.uniform("distance", distances[i]);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		for (int i = 0; i < models.size(); ++i)
+		{
+			shader.uniform("model", models[i]);	
+			glm::vec4 color{1,0,0,1};
+			shader.uniform("color", color);
+			shader.uniform("distance", distances[i]);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+		}
 	}
-
 }
 
 }

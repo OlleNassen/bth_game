@@ -773,7 +773,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 	player_hit_array = { false, false, false, false };
 
-	if (turretframe >= 90 && turretframe <= 92)
+	if (turretframe >= 30 && turretframe <= 32)
 	{
 		
 		//Update laser draw here....bool draw laser
@@ -1009,9 +1009,8 @@ void Game::update(std::chrono::milliseconds delta)
 			lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
 			moving_objects_id,
-			view_score, lua_data.dash_timer, laser_start, laser_end);
-
-		
+			view_score, lua_data.dash_timer, 
+			turretframe, laser_start, laser_end);	
 	}
 
 	if (nr_of_moving_platforms != 0)

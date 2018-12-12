@@ -508,6 +508,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int spectator_id,
 	std::array<int, 4> moving_objects_id,
 	bool view_score, float dash_timer,
+	int turretframe,
 	const std::vector<glm::vec2>& start,
 	const std::vector<glm::vec2>& end)
 {
@@ -683,7 +684,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	for (auto it = a_to_render.first; it != a_to_render.last; ++it)
 		it->update_animation((float)delta.count(), idle);
 
-	laser.update(start, end);
+	laser.update(turretframe, start, end);
 	
 	grid.update(game_camera, scene->lights);
 
