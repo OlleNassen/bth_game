@@ -415,14 +415,14 @@ void Game::update(std::chrono::milliseconds delta)
 						std::cout << "WARNING! - Invalid dynamic id! \nERROR: game.cpp - Row: 386\n";
 					}
 
-					if (net.id() == i)
+					/*if (net.id() == i)
 						std::cout << "This is me:\n";
 
 					std::cout << "Player:\t" << i <<
 						"\nModel ID:\t" << m_id <<
 						"\nDynamic ID:\t" << d_id <<
 						"\nType ID:\t" << obj_type_id <<
-						"\n\n";
+						"\n\n";*/
 
 					//dynamics[d_id].position = start_position;
 					//dynamics[d_id].velocity = { 0.0f, 0.0f };
@@ -500,15 +500,13 @@ void Game::update(std::chrono::milliseconds delta)
 			
 				//if (ppoi.place_state == 0 || ppoi.place_state == 1) 
 
-				std::cout << "Player " << i << " has " << has_placed_correctly[i] << "\n";
-
 				if (has_placed_correctly[i] == 0)
 				{
-					std::cout << "Removed: " << i <<
+					/*std::cout << "Removed: " << i <<
 						"\nModel ID:\t" << ppoi.model_id <<
 						"\nDynamic ID:\t" << ppoi.dynamics_id <<
 						"\nType ID:\t" << ppoi.model_type_id <<
-						"\n\n";
+						"\n\n";*/
 
 					//Remove object
 					dynamics[ppoi.dynamics_id].position = glm::vec3{ 3000, 0, 0 };
