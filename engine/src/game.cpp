@@ -464,20 +464,21 @@ void Game::update(std::chrono::milliseconds delta)
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
 				{
 					players_placed_objects_id[i].place_state = 1;
-					has_placed_correctly[i] = 0;
+					if (net.id() == i)
+						has_placed_correctly[net.id()] = 0;
 				}
 				else
 				{
 					players_placed_objects_id[i].place_state = 0; 
-					has_placed_correctly[i] = 0;
+					if (net.id() == i)
+						has_placed_correctly[net.id()] = 0;
 				}
-
-
 			}
 			
 			if (players_placed_objects_id[i].place_state == 2)
 			{
-				has_placed_correctly[i] = 1;
+				if (net.id() == i)
+					has_placed_correctly[net.id()] = 1;
 			}
 		}
 
@@ -496,12 +497,10 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				auto& ppoi = players_placed_objects_id[i];
-
-				//if (!dynamics[i].has_placed_correctly)
-
+			
 				//if (ppoi.place_state == 0 || ppoi.place_state == 1) 
 
-				std::cout << "Player " << i << " has " << net_state.has_placed_correctly[i] << "\n";
+				std::cout << "Player " << i << " has " << has_placed_correctly[i] << "\n";
 
 				if (has_placed_correctly[i] == 0)
 				{
