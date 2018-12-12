@@ -657,7 +657,7 @@ void Game::update(std::chrono::milliseconds delta)
 		glm::vec3{0.0f}
 	};
 	
-	buff_activ = { -1 };
+	buff_activ = { -1, -1, -1, -1 };
 
 	{
 		logic::objects_array obj;
@@ -894,12 +894,10 @@ void Game::update(std::chrono::milliseconds delta)
 
 		//for (int i = 0; i < buff_activ.size(); i++)
 		//{
-		//	if (buff_activ[i] > 0)
-		//	{
-		//		std::cout << buff_activ[i] << std::endl;
-		//	}
-
+		//	std::cout << buff_activ[i] << std::endl;
 		//}
+
+		std::cout << "end" << std::endl;
 
 		renderer.update(delta,
 			obj,
