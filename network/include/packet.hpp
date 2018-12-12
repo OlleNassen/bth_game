@@ -61,7 +61,6 @@ public:
 	//Vincent
 	int player_moving_object_type_id;
 	int player_moving_object_id;
-	int has_placed_correctly = 0;
 };
 
 class GameState
@@ -77,6 +76,7 @@ public:
 	int random_values[5] = { -1 };
 
 	int level_id = 0; //0 = lobby, 1 = level1, 2 = level2
+	int has_placed_correctly[4] = { 0 };
 };
 
 class Queue

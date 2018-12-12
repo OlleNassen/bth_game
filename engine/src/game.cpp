@@ -464,21 +464,21 @@ void Game::update(std::chrono::milliseconds delta)
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
 				{
 					players_placed_objects_id[i].place_state = 1;
-					if (net.id() == i)
-						has_placed_correctly[net.id()] = 0;
+					if (net.id() == 0)
+						has_placed_correctly[i] = 0;
 				}
 				else
 				{
 					players_placed_objects_id[i].place_state = 0; 
-					if (net.id() == i)
-						has_placed_correctly[net.id()] = 0;
+					if (net.id() == 0)
+						has_placed_correctly[i] = 0;
 				}
 			}
 			
 			if (players_placed_objects_id[i].place_state == 2)
 			{
-				if (net.id() == i)
-					has_placed_correctly[net.id()] = 1;
+				if (net.id() == 0)
+					has_placed_correctly[i] = 1;
 			}
 		}
 
@@ -956,6 +956,8 @@ void Game::pack_data()
 	for (int i = 0; i < 4; ++i) //Players
 	{
 		net_state.inputs[i] = player_inputs[i];
+		if (net.id())
+			net_state.has_placed_correctly[i] = has_placed_correctly[i];
 	}
 
 	for (auto i = 0u; i < dynamics.size(); ++i)
@@ -977,8 +979,6 @@ void Game::pack_data()
 		}
 	}
 
-	net_state.game_objects[net.id()].has_placed_correctly = has_placed_correctly[net.id()];
-
 	for (auto i = 0u; i < dynamics.size(); ++i)	//Player + Objects
 	{
 		net_state.game_objects[i].position = dynamics[i].position;
@@ -998,9 +998,9 @@ void Game::unpack_data()
 		{
 			player_inputs[i] = net_state.inputs[i];
 			level_id = net_state.level_id;
-			has_placed_correctly[i] = net_state.game_objects[i].has_placed_correctly;
 		}
 
+		has_placed_correctly[i] = net_state.has_placed_correctly[i];
 
 		dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
 		dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
