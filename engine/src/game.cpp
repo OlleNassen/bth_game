@@ -429,6 +429,8 @@ void Game::update(std::chrono::milliseconds delta)
 
 				physics.set_rotation(players_placed_objects_id[i].dynamics_id, static_cast<int>(pos.z));
 
+				physics.set_body_position(players_placed_objects_id[i].dynamics_id, { pos.x, pos.y });
+
 				if (players_placed_objects_id[i].model_type_id == 1)
 				{
 					if (pos.z == 1)
