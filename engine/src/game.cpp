@@ -457,6 +457,8 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				auto& ppoi = players_placed_objects_id[i];
 
+				//if (!dynamics[i].has_placed_correctly)
+
 				if (ppoi.place_state == 0 || ppoi.place_state == 1) 
 				{
 					std::cout << "Removed: " << i <<
@@ -496,8 +498,15 @@ void Game::update(std::chrono::milliseconds delta)
 				}
 				else
 				{
-					glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id, dynamics[players_placed_objects_id[i].dynamics_id].position);
+					/*glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id, dynamics[players_placed_objects_id[i].dynamics_id].position);
 					dynamics[players_placed_objects_id[i].dynamics_id].position = { pos.x, pos.y };
+					level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });*/
+
+					glm::vec3 pos = physics.get_closest_wall_point(players_placed_objects_id[i].dynamics_id, dynamics[players_placed_objects_id[i].dynamics_id].position);
+					float degree = 90.f * pos.z;
+					physics.set_rotation(players_placed_objects_id[i].dynamics_id, static_cast<int>(pos.z));
+					physics.set_body_position(players_placed_objects_id[i].dynamics_id, { pos.x, pos.y });
+					level->moving_models[players_placed_objects_id[i].model_id].set_rotation(degree);
 					level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 				}
 			}
