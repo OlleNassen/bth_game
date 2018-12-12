@@ -355,7 +355,7 @@ void Game::update(std::chrono::milliseconds delta)
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				glm::vec2 start_position = start_positons[indexies[i]];
-				int type_id = 7;//random_picked_object();
+				int type_id = random_picked_object();
 				collision_data data;
 				int m_id = level->add_object(data, type_id);
 				int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, type_id);
@@ -415,14 +415,14 @@ void Game::update(std::chrono::milliseconds delta)
 						std::cout << "WARNING! - Invalid dynamic id! \nERROR: game.cpp - Row: 386\n";
 					}
 
-					if (net.id() == i)
+					/*if (net.id() == i)
 						std::cout << "This is me:\n";
 
 					std::cout << "Player:\t" << i <<
 						"\nModel ID:\t" << m_id <<
 						"\nDynamic ID:\t" << d_id <<
 						"\nType ID:\t" << obj_type_id <<
-						"\n\n";
+						"\n\n";*/
 
 					//dynamics[d_id].position = start_position;
 					//dynamics[d_id].velocity = { 0.0f, 0.0f };
