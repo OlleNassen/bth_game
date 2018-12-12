@@ -97,7 +97,8 @@ public:
 		int spectator_id,
 		std::array<int, 4> moving_objects_id,
 		bool view_score, float dash_timer,
-		const glm::vec2& start, const glm::vec2& end);
+		const std::vector<glm::vec2>& start,
+		const std::vector<glm::vec2>& end);
 
 	void update_moving_platforms(const objects_array& dynamics,
 		int model_id,

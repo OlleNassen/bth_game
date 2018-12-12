@@ -27,45 +27,60 @@ Laser::Laser()
 
 }
 
-void Laser::update(const glm::vec2& start, const glm::vec2& end)
+void Laser::update(
+	const std::vector<glm::vec2>& starts, 
+	const std::vector<glm::vec2>& ends)
 {
-	model[3][0] = start.x;
-	model[3][1] = start.y;
-	
-	glm::vec2 direction = end - start;
-	float distance = glm::distance(start, end);
+	if (!starts.empty())
+	{
+		models.resize(starts.size());
+		distances.resize(models.size());
+		
+		for (int i = 0; i < models.size(); ++i)
+		{
+			auto& model = models[i];
+			auto& start = starts[i];
+			auto& end = ends[i];
 
-	glm::vec2 nor_dir = glm::normalize(direction);
-	float aco = glm::acos(glm::dot(nor_dir, glm::vec2(1,0)));
+			glm::vec2 direction = end - start;
+			distances[i] = glm::distance(start, end);
 
-	model = glm::mat4(1.f);
+			glm::vec2 nor_dir = glm::normalize(direction);
+			float aco = glm::acos(glm::dot(nor_dir, glm::vec2(1, 0)));
 
-	model = glm::translate(model, glm::vec3(start + direction * 0.5f, 0.f));
-	
-	model = glm::rotate(model, aco, glm::vec3(0,0,-1));
+			model = glm::mat4(1.f);
 
-	model = glm::scale(model, glm::vec3(distance * 0.5f, 1.f, 1.f));
+			model = glm::translate(model, glm::vec3(start + direction * 0.5f, 0.f));
 
+			model = glm::rotate(model, aco, glm::vec3(0, 0, -1));
+
+			model = glm::scale(model, glm::vec3(distances[i] * 0.5f, 1.f, 1.f));
+		}
+	}
 }
 
 void Laser::render(const Shader &shader, const Camera& cam)const
 {
 	shader.use();
-	shader.uniform("model", model);
 	shader.uniform("view", cam.view());
 	shader.uniform("projection", cam.projection);
-	glm::vec4 color{1,0,0,1};
-	shader.uniform("color", color);
-
-	shader.uniform("distance", distance);
-
+	
 	for (int i = 0; i < 7; i++)
 	{
 		laser_textures[i].bind(i);
 	}
-
+	
 	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	for (int i = 0; i < models.size(); ++i)
+	{
+		shader.uniform("model", models[i]);	
+		glm::vec4 color{1,0,0,1};
+		shader.uniform("color", color);
+		shader.uniform("distance", distances[i]);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+
 }
 
 }

@@ -508,7 +508,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	int spectator_id,
 	std::array<int, 4> moving_objects_id,
 	bool view_score, float dash_timer,
-	const glm::vec2& start, const glm::vec2& end)
+	const std::vector<glm::vec2>& start,
+	const std::vector<glm::vec2>& end)
 {
 	bool is_menu = (new_game_state & state::menu);
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(delta).count();
@@ -682,6 +683,8 @@ void Renderer::update(std::chrono::milliseconds delta,
 	for (auto it = a_to_render.first; it != a_to_render.last; ++it)
 		it->update_animation((float)delta.count(), idle);
 
+	laser.update(start, end);
+	
 	grid.update(game_camera, scene->lights);
 
 	overlays.update(delta, 
@@ -692,9 +695,6 @@ void Renderer::update(std::chrono::milliseconds delta,
 		game_state, 
 		player_id,
 		dash_timer);
-
-	laser.update(start, end);
-
 }
 
 void Renderer::update_moving_platforms(const objects_array& dynamics,

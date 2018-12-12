@@ -991,32 +991,25 @@ void Game::update(std::chrono::milliseconds delta)
 			
 		bool view_score = (*local_input)[logic::button::score] == logic::button_state::held;
 
-		if (turrets.empty())
+		std::vector<glm::vec2> laser_start;
+		std::vector<glm::vec2> laser_end;
+		
+		for (int i = 0; i < turrets.size(); ++i)
 		{
-			renderer.update(delta,
-				obj,
-				player_inputs[net.id()].cursor,
-				directions,
-				chat[1], static_cast<int>(player_count),
-				net.id(), game_state, lua_data.died,
-				lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time, lua_data.goal_height, all_placed_objects,
-				watching,
-				moving_objects_id,
-				view_score, lua_data.dash_timer, glm::vec2(1.f), glm::vec2(1.f));
+			laser_start.push_back(turrets[i].barrel_position);
+			laser_end.push_back(turrets[i].end_position);
 		}
-		else
-		{
-			renderer.update(delta,
-				obj,
-				player_inputs[net.id()].cursor,
-				directions,
-				chat[1], static_cast<int>(player_count),
-				net.id(), game_state, lua_data.died,
-				lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time, lua_data.goal_height, all_placed_objects,
-				watching,
-				moving_objects_id,
-				view_score, lua_data.dash_timer, turrets.front().barrel_position, turrets.front().end_position);
-		}
+
+		renderer.update(delta,
+			obj,
+			player_inputs[net.id()].cursor,
+			directions,
+			chat[1], static_cast<int>(player_count),
+			net.id(), game_state, lua_data.died,
+			lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time, lua_data.goal_height, all_placed_objects,
+			watching,
+			moving_objects_id,
+			view_score, lua_data.dash_timer, laser_start, laser_end);
 
 		
 	}
