@@ -860,7 +860,7 @@ void Game::update(std::chrono::milliseconds delta)
 		//	std::cout << buff_activ[i] << std::endl;
 		//}
 
-		std::cout << "end" << std::endl;
+		//std::cout << "end" << std::endl;
 
 		renderer.update(delta,
 			obj,
