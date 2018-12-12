@@ -327,7 +327,7 @@ void Game::update(std::chrono::milliseconds delta)
 			std::array<glm::vec2, 4> start_positons = { glm::vec2{0.f, 60.5f}, glm::vec2{0.f, 113.5}, glm::vec2{0.f, 167.f}, glm::vec2{0.f, 224.5f} };
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
-				glm::vec2 start_position = start_positons[indexies[i]];
+				glm::vec2 start_position = glm::vec2(0.0, 0.0);//start_positons[indexies[i]];
 				//This is set to always spawn a turrent
 				int type_id = 1; //random_picked_object();
 				collision_data data;
@@ -1329,13 +1329,13 @@ void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::v
 		{
 			direction = glm::vec2{ 0, 1 };
 
-			barrel_position += glm::vec2{ -0.833, dynamics[dyn_id].size.y };
+			barrel_position += glm::vec2{ -0.833, dynamics[dyn_id].size.y / 2 };
 		}
 		else if (dir_info.direction == 0) //look DOWN
 		{
 			direction = glm::vec2{ 0, -1 };
 
-			barrel_position -= glm::vec2{ 0.833, dynamics[dyn_id].size.y };
+			barrel_position -= glm::vec2{ 0.833, dynamics[dyn_id].size.y / 2 };
 		}
 	}
 	else if (dir_info.rotation == 2) //attach to roof
@@ -1344,13 +1344,13 @@ void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::v
 		{
 			direction = glm::vec2{ 1, 0 };
 
-			barrel_position += glm::vec2{ dynamics[dyn_id].size.x, -0.833 };
+			barrel_position += glm::vec2{ dynamics[dyn_id].size.x / 2, -0.833 };
 		}
 		else if (dir_info.direction == 0) //look LEFT
 		{
 			direction = glm::vec2{ -1, 0 };
 
-			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x, 0.833 };
+			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x / 2, 0.833 };
 		}
 	}
 	else if (dir_info.rotation == 3) //attach to L wall
@@ -1359,13 +1359,13 @@ void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::v
 		{
 			direction = glm::vec2{ 0, 1 };
 
-			barrel_position += glm::vec2{ 0.833, dynamics[dyn_id].size.y };
+			barrel_position += glm::vec2{ 0.833, dynamics[dyn_id].size.y / 2 };
 		}
 		else if (dir_info.direction == 0) //look DOWN
 		{
 			direction = glm::vec2{ 0, -1 };
 
-			barrel_position -= glm::vec2{ -0.833, dynamics[dyn_id].size.y };
+			barrel_position -= glm::vec2{ -0.833, dynamics[dyn_id].size.y / 2 };
 		}
 	}
 	else if (dir_info.rotation == 4) //attach to floor
@@ -1374,13 +1374,13 @@ void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::v
 		{
 			direction = glm::vec2{ 1, 0 };
 
-			barrel_position += glm::vec2{ dynamics[dyn_id].size.x, 0.833 };
+			barrel_position += glm::vec2{ dynamics[dyn_id].size.x / 2, 0.833 };
 		}
 		else if (dir_info.direction == 0) //look LEFT
 		{
 			direction = glm::vec2{ -1, 0 };
 
-			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x, -0.833 };
+			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x / 2, -0.833 };
 		}
 	}
 
