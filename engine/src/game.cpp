@@ -82,7 +82,7 @@ Game::Game()
 	//Start States
 	net_state.state = network::SessionState::lobby;
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		random_values[i] = 3 + (rand() % 4);
 	}
@@ -176,7 +176,7 @@ void Game::update(std::chrono::milliseconds delta)
 		{
 			srand(time(NULL));
 
-			for (int i = 0; i < 100; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				random_values[i] = 3 + (rand() % 4);
 			}
@@ -214,7 +214,7 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				srand(time(NULL));
 
-				for (int i = 0; i < 100; i++)
+				for (int i = 0; i < 5; i++)
 				{
 					random_values[i] = 3 + (rand() % 4);
 				}
@@ -480,12 +480,7 @@ void Game::update(std::chrono::milliseconds delta)
 				if (net.id() == i)
 					has_placed_correctly[net.id()] = 1;
 			}
-
-			std::cout << "Player " << i <<
-				"has -> " << has_placed_correctly[i] << "\n";
 		}
-
-		std::cout << "\n";
 
 		//Set State -> pre_playing
 		if (!gameplay.build_stage(static_cast<int>(player_count)))
@@ -970,7 +965,8 @@ void Game::pack_data()
 
 		if (net.id() == 0)
 		{
-			net_state.random_values[i] = random_values[i];
+			if (i < 5)
+				net_state.random_values[i] = random_values[i];
 			net_state.level_id = level_id;
 		}
 
@@ -981,7 +977,7 @@ void Game::pack_data()
 		}
 	}
 
-	net_state.has_placed_correctly[net.id()] = has_placed_correctly[net.id()];
+	net_state.game_objects[net.id()].has_placed_correctly = has_placed_correctly[net.id()];
 
 	for (auto i = 0u; i < dynamics.size(); ++i)	//Player + Objects
 	{
@@ -1002,9 +998,10 @@ void Game::unpack_data()
 		{
 			player_inputs[i] = net_state.inputs[i];
 			level_id = net_state.level_id;
-			has_placed_correctly[i] = net_state.has_placed_correctly[i];
+			has_placed_correctly[i] = net_state.game_objects[i].has_placed_correctly;
 		}
-		
+
+
 		dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
 		dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
 	}
@@ -1022,8 +1019,9 @@ void Game::unpack_data()
 			{
 				dynamics[i].position = net_state.game_objects[i].position;
 				dynamics[i].velocity = net_state.game_objects[i].velocity;
-				
-				random_values[i] = net_state.random_values[i];
+
+				if (i < 5)
+					random_values[i] = net_state.random_values[i];
 
 				//Vincent
 				if (i < 4)

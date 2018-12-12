@@ -63,7 +63,7 @@ struct Input
 
 	const trigger_type_array& triggers_types; //test for triggers
 
-	std::array<int, 100> random_values;
+	std::array<int, 5> random_values;
 	const std::vector<int> moving_platform_ids;
 };
 

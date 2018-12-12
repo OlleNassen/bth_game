@@ -131,7 +131,7 @@ private:
 	void load_map(graphics::GameScene* scene);
 
 	//Random Seed
-	std::array<int, 100> random_values = { -1 };
+	std::array<int, 5> random_values = { -1 };
 };
 
 
