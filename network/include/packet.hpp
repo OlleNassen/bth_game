@@ -75,6 +75,7 @@ public:
 	SessionState state = SessionState::none;
 
 	int level_id = 0; //0 = lobby, 1 = level1, 2 = level2
+	int has_placed_correctly[4] = { 0 };
 };
 
 class Queue

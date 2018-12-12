@@ -76,6 +76,7 @@ private:
 
 	//Build info
 	std::vector<build_information> build_info;
+	int has_placed_correctly[4] = { 0 };
 
 	void place_random_objects(float start_height, float map_width, int number_of_randoms);
 

@@ -433,11 +433,22 @@ void Game::update(std::chrono::milliseconds delta)
 				level->moving_models[players_placed_objects_id[i].model_id].set_position({ pos.x, pos.y });
 
 				if (!physics.overlapping(players_placed_objects_id[i].dynamics_id) && glm::vec2(pos.x, pos.y) != dynamics[players_placed_objects_id[i].dynamics_id].position)
+				{
 					players_placed_objects_id[i].place_state = 1;
+					has_placed_correctly[i] = 0;
+				}
 				else
-					players_placed_objects_id[i].place_state = 0;
+				{
+					players_placed_objects_id[i].place_state = 0; 
+					has_placed_correctly[i] = 0;
+				}
 
 
+			}
+			
+			if (players_placed_objects_id[i].place_state == 2)
+			{
+				has_placed_correctly[i] = 1;
 			}
 		}
 
@@ -459,7 +470,11 @@ void Game::update(std::chrono::milliseconds delta)
 
 				//if (!dynamics[i].has_placed_correctly)
 
-				if (ppoi.place_state == 0 || ppoi.place_state == 1) 
+				//if (ppoi.place_state == 0 || ppoi.place_state == 1) 
+
+				std::cout << "Player " << i << " has " << net_state.has_placed_correctly[i] << "\n";
+
+				if (net_state.has_placed_correctly[i] == 0)
 				{
 					std::cout << "Removed: " << i <<
 						"\nModel ID:\t" << ppoi.model_id <<
@@ -925,6 +940,8 @@ void Game::pack_data()
 			net_state.game_objects[i].player_moving_object_id = dynamics[i].player_moving_object_id;
 		}
 	}
+
+	net_state.has_placed_correctly[net.id()] = has_placed_correctly[net.id()];
 
 	for (auto i = 0u; i < dynamics.size(); ++i)	//Player + Objects
 	{
