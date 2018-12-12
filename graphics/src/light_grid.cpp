@@ -34,7 +34,7 @@ void LightGrid::calculate_grid(const Camera& camera)
 void LightGrid::update(const Camera& camera, const std::array<PointLight, 32>& lights)
 {
 	memset(indices, 0, sizeof(indices));
-	int  a = 0;
+
 	for (int light_id = 0; light_id < lights.size(); ++light_id)
 	{
 		glm::vec3 p{lights[light_id].position};
@@ -51,15 +51,11 @@ void LightGrid::update(const Camera& camera, const std::array<PointLight, 32>& l
 				light_grid_element& elem = indices[i + j * block_size];
 				if (sphere_inside_frustum(sphere, grid[i][j], 1, -30) && elem.count.x < 10)
 				{
-					a++;
 					elem.indices[elem.count.x++].x = light_id;		
 				}
-				//elem.count = 1;
 			}
 		}
 	}
-
-	a=a;
 
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(indices), indices);
@@ -102,15 +98,6 @@ Frustum compute_frustum(const glm::mat4& inv_proj, int x, int y)
 	screen_space[2] = glm::vec4(x * dx, (y + 1) * dy, 1.0f, 1.0f);// Bottom left point	
 	screen_space[3] = glm::vec4((x + 1) * dx, (y + 1) * dy, 1.0f, 1.0f);// Bottom right point
 
-	//screen_space[0] = glm::vec4(0, 0, 1.0f, 1.0f);// Top left point	
-	//screen_space[1] = glm::vec4(1920 / 2, 0, 1.0f, 1.0f);// Top right point	
-	//screen_space[2] = glm::vec4(0, 1080 / 2, 1.0f, 1.0f);// Bottom left point	
-	//screen_space[3] = glm::vec4(1920 / 2, 1080 / 2, 1.0f, 1.0f);// Bottom right point
-
-
-
-	//screen_space[3] = glm::vec4(1920/2, 1080/2, -1.0f, 1);
-
 	glm::vec3 view_space[4];
 	for (int i = 0; i < 4; ++i)
 	{
@@ -137,7 +124,6 @@ bool sphere_inside_plane(const Sphere& sphere, const Plane& plane)
 
 bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z_near, float z_far)
 {	
-	bool result = true;
 	int c = 0;
 	if (sphere_inside_plane(sphere, frustum.left))
 		c++;
@@ -151,7 +137,7 @@ bool sphere_inside_frustum(const Sphere& sphere, const Frustum& frustum, float z
 	if (sphere_inside_plane(sphere, frustum.bottom))
 		c++;
 
-	return c == 4; //result;
+	return c == 4;
 }
 
 }
