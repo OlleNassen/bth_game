@@ -5,31 +5,29 @@
 #include <array>
 #include <glm/glm.hpp>
 #include "shader.hpp"
-#include "helpers.hpp"
 #include "texture.hpp"
-#include "model.hpp"
+#include "primitives.hpp"
 
 namespace graphics
 {
 class Laser
 {
-private:
-	void rebind_buffers();
-
-	VertexArray vao;
-	Buffer vertex_buffer;
-	Buffer laser_buffer;
-	std::array<Texture, 10> laser_textures;
-	unsigned int active_texture;
 public:
 	Laser();
-	~Laser();
+	~Laser() = default;
 
 
 	void update();
-	void render(const Shader &shader)const;
+	void render(const Shader &shader, const Camera& cam)const;
 	void disable();
 
+private:
+	unsigned int vao;
+	unsigned int vertex_buffer;
+	unsigned int laser_buffer;
+	std::array<Texture, 10> laser_textures;
+	Texture laser{"../resources/textures/laser/middle_background_texture.png", true};
+	unsigned int active_texture;
 };
 
 }

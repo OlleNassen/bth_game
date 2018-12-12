@@ -20,6 +20,7 @@
 #include "minimap.hpp"
 #include "build_stage_screen.hpp"
 #include "overlays.hpp"
+#include "laser.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -216,7 +217,7 @@ private:
 	Shader build_stage_screen_shader{
 		"../resources/shaders/build_stage.vs",
 		"../resources/shaders/build_stage.fs" };
-	Shader turrent_laser{
+	Shader turret_laser{
 		"../resources/shaders/laser.vs",
 		"../resources/shaders/laser.fs" };
 
@@ -227,6 +228,8 @@ private:
 	std::vector<Shader> shaders;
 
 	Skybox skybox;
+
+	Laser laser;
 
 	Box light_box;
 

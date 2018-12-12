@@ -826,6 +826,8 @@ void Renderer::render_type(const Shader& shader, const Camera& camera, const Mod
 		const auto& renderable = *it;
 		renderable.render(shader);
 	}
+
+	laser.render(turret_laser, camera);
 }
 
 void Renderer::render_character(const Shader& shader, const Camera& camera, const std::vector<Model>& data, int num_players) const
