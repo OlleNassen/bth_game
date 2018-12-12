@@ -10,7 +10,7 @@ uniform mat4 projection;
 
 void main()
 {
-    tex_coords = position.zw;
+    tex_coords = position.wz;
 
 	mat4 model_view = view * model;
 

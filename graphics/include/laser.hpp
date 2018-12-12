@@ -19,15 +19,15 @@ public:
 
 	void update(const glm::vec2& start, const glm::vec2& end);
 	void render(const Shader &shader, const Camera& cam)const;
-	void disable();
 
 private:
 	glm::mat4 model {1.f};
 	unsigned int vao;
 	unsigned int vertex_buffer;
-	unsigned int laser_buffer;
+
+	float distance = 0.f;
+
 	std::array<Texture, 10> laser_textures;
-	unsigned int active_texture;
 };
 
 }

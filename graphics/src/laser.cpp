@@ -46,7 +46,6 @@ void Laser::update(const glm::vec2& start, const glm::vec2& end)
 
 	model = glm::scale(model, glm::vec3(distance * 0.5f, 1.f, 1.f));
 
-
 }
 
 void Laser::render(const Shader &shader, const Camera& cam)const
@@ -55,9 +54,15 @@ void Laser::render(const Shader &shader, const Camera& cam)const
 	shader.uniform("model", model);
 	shader.uniform("view", cam.view());
 	shader.uniform("projection", cam.projection);
-	shader.uniform("middle_laser", 0);
+	glm::vec4 color{1,0,0,1};
+	shader.uniform("color", color);
 
-	laser_textures[0].bind(0);
+	shader.uniform("distance", distance);
+
+	for (int i = 0; i < 6; i++)
+	{
+		laser_textures[i].bind(i);
+	}
 
 	glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, 6);

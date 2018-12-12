@@ -99,9 +99,6 @@ void Renderer::render(
 	scene_texture.bind_framebuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	laser.render(turret_laser, game_camera);
-
-
 	if (print_time < 0.0)
 		print_time = 0.0f;
 
@@ -118,6 +115,8 @@ void Renderer::render(
 		render_type(pbra, game_camera,a_to_render.first, a_to_render.last);
 		render_type(pbr, game_camera, s_to_render.first, s_to_render.last);
 		render_type(pbr, game_camera,&scene->models[0], &scene->models[9]);
+		laser.render(turret_laser, game_camera);
+
 		
 		if (!(game_state & state::lobby))
 		{
