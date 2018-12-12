@@ -480,7 +480,12 @@ void Game::update(std::chrono::milliseconds delta)
 				if (net.id() == i)
 					has_placed_correctly[net.id()] = 1;
 			}
+
+			std::cout << "Player " << i <<
+				"has -> " << has_placed_correctly[i] << "\n";
 		}
+
+		std::cout << "\n";
 
 		//Set State -> pre_playing
 		if (!gameplay.build_stage(static_cast<int>(player_count)))
