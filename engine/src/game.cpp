@@ -793,8 +793,8 @@ void Game::update(std::chrono::milliseconds delta)
 				spikeframe,
 				turretframe,
 				triggers_types,
-				random_values,
 				player_hit_array,
+				random_values,
 				moving_platform_ids},
 				game_state, physics.rw, physics.lw, net.id());
 		}
@@ -1335,9 +1335,6 @@ int Game::find_next_spectator(int current_id)
 			break;
 		}
 	}
-
-	std::cout << current_id << "\n";
-
 	return current_id;
 }
 
@@ -1354,6 +1351,7 @@ int Game::find_previous_spectator(int current_id)
 			break;
 		}
 	}
+	return current_id;
 }
 
 
