@@ -133,11 +133,12 @@ private:
 	int nr_of_moving_platforms = 0;
 
 	//test trigger
+	static const int num_objects = 8;
 	int placed_objects_type_id = 7;
 	//int placed_objects_array[4] = {7/*random*/, 2/*glide*/, 7/*speed*/, 6/*shield*/ };
-	int placed_objects_array[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+	int placed_objects_array[num_objects] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
-	int random_picked_object() { return placed_objects_array[rand() % level1.objects.size()]; };
+	int random_picked_object() { return placed_objects_array[rand() % num_objects]; };
 	std::array<int, 4> random_indexes();
 
 	//spectator
