@@ -89,7 +89,8 @@ public:
 		int player_count,
 		int spike_frame,
 		int turret_frame,
-		bool dash_active[]);
+		bool dash_active[],
+		bool laser_hit);
 
 	void update_export();
 	float get_time();

@@ -70,5 +70,8 @@
     <None Include="scripts\projectile.lua" />
     <None Include="shaders\fx_bubble.fs" />
     <None Include="shaders\fx_bubble.vs" />
+    <None Include="scripts\moving_platforms.lua" />
+    <None Include="shaders\laser.vs" />
+    <None Include="shaders\laser.fs" />
   </ItemGroup>
 </Project>

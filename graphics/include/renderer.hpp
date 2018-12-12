@@ -20,6 +20,7 @@
 #include "minimap.hpp"
 #include "build_stage_screen.hpp"
 #include "overlays.hpp"
+#include "laser.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -95,7 +96,8 @@ public:
 		std::vector<build_information>& all_placed_objects,
 		int spectator_id,
 		std::array<int, 4> moving_objects_id,
-		bool view_score, float dash_timer);
+		bool view_score, float dash_timer,
+		const glm::vec2& start, const glm::vec2& end);
 
 	void update_moving_platforms(const objects_array& dynamics,
 		int model_id,
@@ -219,6 +221,9 @@ private:
 	Shader build_stage_screen_shader{
 		"../resources/shaders/build_stage.vs",
 		"../resources/shaders/build_stage.fs" };
+	Shader turret_laser{
+		"../resources/shaders/laser.vs",
+		"../resources/shaders/laser.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -227,6 +232,8 @@ private:
 	std::vector<Shader> shaders;
 
 	Skybox skybox;
+
+	Laser laser;
 
 	Box light_box;
 

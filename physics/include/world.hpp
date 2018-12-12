@@ -101,6 +101,11 @@ public:
 
 	glm::vec3 get_closest_wall_point(int player_id);
 	glm::vec3 get_closest_wall_point(int player_id, glm::vec2 from);
+
+	//Turret
+	void laser_ray_cast(const glm::vec3 turret, const glm::vec3 direction, float range, std::array<bool, 4>& hit_array);
+	float laser_range(const glm::vec3 turret, const glm::vec3 direction);
+
 private:
 	void collision_handling(glm::vec2 prev_position, int dynamic_index, int static_index);
 
