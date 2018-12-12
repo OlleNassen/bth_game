@@ -62,6 +62,7 @@ public:
 		const int& type,
 		anim& anim_state,
 		int random_values,
+		std::array<int, 4>& buff_activ,
 		bool rw, bool lw);
 
 	bool build_stage_done(int index);

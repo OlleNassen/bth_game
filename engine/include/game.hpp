@@ -152,6 +152,7 @@ private:
 	void load_map(graphics::GameScene* scene);
 
 	//Random Seed
+	std::array<int, 4> buff_activ = { -1, -1, -1, -1 };
 	std::array<int, 5> random_values = { -1 };
 };
 

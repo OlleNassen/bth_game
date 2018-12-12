@@ -91,6 +91,7 @@ public:
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
 		std::array<int, 4> trigger_type,
+		std::array<int, 4> random_active,
 		float print_time,
 		float goal_height,
 		std::vector<build_information>& all_placed_objects,

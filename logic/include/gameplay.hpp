@@ -65,6 +65,7 @@ struct Input
 	std::array<bool, 4> laser_hit_array;
 
 	std::array<int, 5> random_values;
+	std::array<int, 4>& buff_activ;
 	const std::vector<int> moving_platform_ids;
 };
 

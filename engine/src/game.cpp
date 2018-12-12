@@ -84,7 +84,7 @@ Game::Game()
 
 	for (int i = 0; i < 5; i++)
 	{
-		random_values[i] = 3 + (rand() % 4);
+		random_values[i] = 1 + (rand() % 4);
 	}
 }
 
@@ -178,7 +178,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 			for (int i = 0; i < 5; i++)
 			{
-				random_values[i] = 3 + (rand() % 4);
+				random_values[i] = 1 + (rand() % 4);
 			}
 		}
 
@@ -216,7 +216,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 				for (int i = 0; i < 5; i++)
 				{
-					random_values[i] = 3 + (rand() % 4);
+					random_values[i] = 1 + (rand() % 4);
 				}
 			}
 
@@ -773,6 +773,9 @@ void Game::update(std::chrono::milliseconds delta)
 		}
 	}
 
+	
+	buff_activ = { -1, -1, -1, -1 };
+
 	{
 		logic::objects_array obj;
 		for (auto i = 0u; i < dynamics.size(); ++i)
@@ -798,7 +801,8 @@ void Game::update(std::chrono::milliseconds delta)
 				triggers_types,
 				player_hit_array,
 				random_values,
-				moving_platform_ids},
+				buff_activ,
+				moving_platform_ids },
 				game_state, physics.rw, physics.lw, net.id());
 		}
 
@@ -989,7 +993,7 @@ void Game::update(std::chrono::milliseconds delta)
 			directions,
 			chat[1], static_cast<int>(player_count),
 			net.id(), game_state, lua_data.died,
-			lua_data.finished, lua_data.scores, lua_data.trigger_type, lua_data.time, lua_data.goal_height, all_placed_objects,
+			lua_data.finished, lua_data.scores, lua_data.trigger_type, buff_activ, lua_data.time, lua_data.goal_height, all_placed_objects,
 			watching,
 			moving_objects_id,
 			view_score, lua_data.dash_timer, 

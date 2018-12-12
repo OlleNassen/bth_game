@@ -80,9 +80,9 @@ function setup(entity)
 	entity.random_buff_timer = 0.0
 	entity.random_buff_max_timer = 10
 	entity.buffs_id = { 3, 4, 5, 6 }
-
-	--math.randomseed(seed)
 	entity.have_set_seed = false
+
+	entity.buff_activ = -1;
 
 
 	entity.falling_delay_timer = 0.0
@@ -420,7 +420,6 @@ function update_control(delta_seconds, entity)
 	then
 		 entity.falling_delay_timer = 0.0
 	end
-
 end
 
 function dash(delta_seconds, entity)
@@ -445,7 +444,6 @@ function dash(delta_seconds, entity)
 
 		entity.current_state = entity.states[8]
 	end
-
 end
 
 function accelerate(delta_seconds, entity, top_speed, acceleration)
@@ -483,9 +481,7 @@ function decelerate(delta_seconds, entity)
 end
 
 function update_triggers(delta_seconds, entity)
-	
-	
-	
+
 	--trigger
 	if entity.triggered >= 4
 	then
@@ -509,6 +505,7 @@ function update_triggers(delta_seconds, entity)
 		then
 			entity.speed_boost_triggered = true
 			entity.speed_boost_timer = 0.0
+			entity.buff_activ = 4
 
 			if entity.double_jump_triggered or entity.glide_trap_triggered or entity.shield_active
 			then
@@ -524,6 +521,7 @@ function update_triggers(delta_seconds, entity)
 			entity.double_jump_triggered = true
 			entity.can_double_jump = false
 			entity.double_jump_timer = 0.0
+			entity.buff_activ = 5
 
 			if entity.speed_boost_triggered or entity.glide_trap_triggered or entity.shield_active
 			then
@@ -538,6 +536,7 @@ function update_triggers(delta_seconds, entity)
 		then
 			entity.glide_trap_triggered = true
 			entity.glide_trap_timer = 0.0
+			entity.buff_activ = 3
 
 			if entity.speed_boost_triggered or entity.double_jump_triggered or entity.shield_active
 			then
@@ -734,8 +733,7 @@ function random_assignment(entity)
 
 		id = entity.buffs_id[math.random(4)]
 
-		--id = entity.buffs_id[3]
-
+		entity.buff_activ = id
 		entity.random_last = id
 
 		if id == entity.buffs_id[1] --glide_trap
@@ -757,6 +755,7 @@ function random_assignment(entity)
 		elseif id == entity.buffs_id[4] --shield
 		then
 			entity.shield_active = true;
+
 		end
 	end
 end

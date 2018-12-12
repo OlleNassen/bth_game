@@ -502,6 +502,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 	std::array<bool, 4> finish,
 	std::array<float, 4> scores,
 	std::array<int, 4> trigger_type,
+	std::array<int, 4> random_active,
 	float print_time,
 	float goal_height,
 	std::vector<build_information>& all_placed_objects,
@@ -640,9 +641,7 @@ void Renderer::update(std::chrono::milliseconds delta,
 		fx_emitter.calculate_furnace_light_data(delta, game_camera, current_map);
 
 		//Objects
-		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects, trigger_type[player_id], game_state, dynamics[player_id].bullet_hit, scene->moving_models[player_id].get_position());
-
-		//scene->moving_models[player_id].get_position();
+		fx_emitter.calculate_object_data(delta, game_camera, all_placed_objects, trigger_type[player_id], random_active[player_id], died[player_id], game_state, dynamics[player_id].bullet_hit, scene->moving_models[player_id].get_position());
 
 		db_camera.update(delta, directions[0], cursor);
 		ui.disable_chat();

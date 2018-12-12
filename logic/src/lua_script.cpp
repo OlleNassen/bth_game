@@ -36,6 +36,7 @@ void PlayerScript::update(
 	const int& type,
 	anim& anim_state,
 	int random_value,
+	std::array<int, 4>& buff_activ,
 	bool rw, bool lw)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
@@ -108,6 +109,12 @@ void PlayerScript::update(
 			stack.push(random_value);
 			stack.rawset(top);
 		}
+
+		{
+			stack.push("buff_activ");
+			stack.push(buff_activ[index]);
+			stack.rawset(top);
+		}
 		stack.clear();
 	}
 
@@ -164,6 +171,14 @@ void PlayerScript::update(
 
 		stack.getfield(top, "shield_active");
 		object.shield_active = stack.toboolean(-1);
+
+		stack.getfield(top, "buff_activ");
+		buff_activ[index] = stack.tonumber(-1);
+		//if (buff_activ[index] > 0)
+		//{
+		//	std::cout << buff_activ[index] << std::endl;
+		//}
+
 
 		stack.clear();
 	}	

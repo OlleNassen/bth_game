@@ -2594,7 +2594,7 @@ void FX::calculate_stun_data(std::chrono::milliseconds delta, const Camera & cam
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_stun.total_particle_count * 4 * sizeof(GLubyte), fx_stun.color_data);
 }
-void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos)
+void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2622,7 +2622,7 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 			fx_glide.particle_container[i].a = 180;
 			fx_glide.particle_container[i].size = 4.0f;
 		}
-		if (previous_trigger == 3 && !glide_active)
+		if (previous_trigger == 3 && !glide_active && !dead)
 		{
 			if (fx_glide.particle_container[nr_of_glide + 1].life <= 0.0f)
 			{
@@ -2718,7 +2718,7 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_glide.total_particle_count * 4 * sizeof(GLubyte), fx_glide.color_data);
 }
-void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos)
+void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2746,7 +2746,7 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 			fx_speedboost.particle_container[i].a = 180;
 			fx_speedboost.particle_container[i].size = 4.0f;
 		}
-		if (previous_trigger == 4 && !speedboost_active)
+		if (previous_trigger == 4 && !speedboost_active && !dead)
 		{
 			if (fx_speedboost.particle_container[nr_of_speedboost + 1].life <= 0.0f)
 			{
@@ -2842,7 +2842,7 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_speedboost.total_particle_count * 4 * sizeof(GLubyte), fx_speedboost.color_data);
 }
-void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos)
+void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -2870,7 +2870,7 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 			fx_doublejump.particle_container[i].a = 180;
 			fx_doublejump.particle_container[i].size = 4.0f;
 		}
-		if (previous_trigger == 5 && !doublejump_active)
+		if (previous_trigger == 5 && !doublejump_active && !dead)
 		{
 			if (fx_doublejump.particle_container[nr_of_doublejump + 1].life <= 0.0f)
 			{
@@ -2966,7 +2966,7 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_doublejump.total_particle_count * 4 * sizeof(GLubyte), fx_doublejump.color_data);
 }
-void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, bool bullet_hit, int game_state, glm::vec3 player_pos)
+void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, bool bullet_hit, int game_state, glm::vec3 player_pos, bool dead)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
@@ -3000,7 +3000,7 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 			fx_shield.particle_container[i].a = 180;
 			fx_shield.particle_container[i].size = 4.0f;
 		}
-		if (previous_trigger == 6 && !shield_active)
+		if (previous_trigger == 6 && !shield_active && !dead)
 		{
 			fx_shield.particle_container[nr_of_shield + 1].life = 1.0f;
 			fx_shield.particle_container[nr_of_shield + 1].random_amp = 1.0f;
@@ -3072,18 +3072,13 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, fx_shield.total_particle_count * 4 * sizeof(GLubyte), fx_shield.color_data);
 }
-void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & camera, int trigger_type, int game_state, glm::vec3 player_pos)
+void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & camera, int random_buff, int game_state, glm::vec3 player_pos, bool dead)
 {
 	using namespace std::chrono_literals;
 	std::chrono::duration<float> seconds = delta;
 	auto& fx_random = *fx_random_ptr;
 
 	fx_random.nr_of_particles = nr_of_random;
-
-	if (trigger_type == 7)
-	{
-		previous_trigger = trigger_type;
-	}
 
 	//Update data for particles
 	if (fx_random.total_particle_count <= MAX_PARTICLES)
@@ -3100,18 +3095,44 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 			fx_random.particle_container[i].a = 180;
 			fx_random.particle_container[i].size = 4.0f;
 		}
-		if (previous_trigger == 7 && !random_active)
+
+		if (random_buff != -1 && !random_buff_active && !dead)
 		{
 			if (fx_random.particle_container[nr_of_random + 1].life <= 0.0f)
 			{
 				fx_random.particle_container[nr_of_random + 1].life = 1.0f;
 				fx_random.particle_container[nr_of_random + 1].random_amp = 1.0f;
-				fx_random.particle_container[nr_of_random + 1].r = 255;
-				fx_random.particle_container[nr_of_random + 1].g = 255;
-				fx_random.particle_container[nr_of_random + 1].b = 255;
+				if (random_buff == 3)
+				{
+					fx_random.particle_container[nr_of_random + 1].r = 151;
+					fx_random.particle_container[nr_of_random + 1].g = 0;
+					fx_random.particle_container[nr_of_random + 1].b = 255;
+					random_shield_active = false;
+				}
+				else if(random_buff == 4)
+				{
+					fx_random.particle_container[nr_of_random + 1].r = 255;
+					fx_random.particle_container[nr_of_random + 1].g = 222;
+					fx_random.particle_container[nr_of_random + 1].b = 34;
+					random_shield_active = false;
+				}
+				else if (random_buff == 5)
+				{
+					fx_random.particle_container[nr_of_random + 1].r = 0;
+					fx_random.particle_container[nr_of_random + 1].g = 255;
+					fx_random.particle_container[nr_of_random + 1].b = 0;
+					random_shield_active = false;
+				}
+				else if (random_buff == 6)
+				{
+					fx_random.particle_container[nr_of_random + 1].r = 24;
+					fx_random.particle_container[nr_of_random + 1].g = 208;
+					fx_random.particle_container[nr_of_random + 1].b = 255;
+					random_shield_active = true;
+				}
 				fx_random.particle_container[nr_of_random + 1].a = 180;
 				fx_random.particle_container[nr_of_random + 1].size = 5.0f;
-				random_active = true;
+				random_buff_active = true;
 			}
 		}
 	}
@@ -3140,9 +3161,12 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 		fx_random.total_particle_count++;
 	}
 
-	if (previous_trigger == 7)
+	if (random_buff_active)
 	{
-		fx_random.particle_container[nr_of_random + 1].life -= (seconds.count() / 10.0f);
+		if (!random_shield_active)
+		{
+			fx_random.particle_container[nr_of_random + 1].life -= (seconds.count() / 10.0f);
+		}
 		
 		if (fx_random.particle_container[nr_of_random + 1].life > 0.0f)
 		{
@@ -3178,13 +3202,13 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 			fx_random.particle_container[nr_of_random + 1].life = 0.0f;
 			fx_random.particle_container[nr_of_random + 1].camera_distance = -1.0f;
 			fx_random.position_data[4 * fx_random.total_particle_count + 3] = 0;
-			previous_trigger = -1;
-			random_active = false;
+			random_buff_active = false;
 		}
 	}
 	else
 	{
-		random_active = false;
+		random_buff_active = false;
+		random_shield_active = false;
 	}
 
 	//Update particle information
@@ -3202,6 +3226,8 @@ void FX::calculate_object_data(
 	const Camera & camera, 
 	std::vector<build_information> &build_info, 
 	int trigger_type,
+	int random_buff,
+	bool dead,
 	int game_state,
 	bool bullet_hit,
 	glm::vec3 player_pos)
@@ -3214,7 +3240,7 @@ void FX::calculate_object_data(
 		speedboost_active = false;
 		doublejump_active = false;
 		shield_active = false;
-		random_active = false;
+		random_buff_active = false;
 		nr_of_stun = 0;
 		nr_of_glide = 0;
 		nr_of_speedboost = 0;
@@ -3280,11 +3306,11 @@ void FX::calculate_object_data(
 		}
 		//Calculate the objects' particles
 		calculate_stun_data(delta, camera, trigger_type, player_pos);
-		calculate_glide_data(delta, camera, trigger_type, game_state, player_pos);
-		calculate_speedboost_data(delta, camera, trigger_type, game_state, player_pos);
-		calculate_doublejump_data(delta, camera, trigger_type, game_state, player_pos);
-		calculate_shield_data(delta, camera, trigger_type, bullet_hit, game_state, player_pos);
-		calculate_random_data(delta, camera, trigger_type, game_state, player_pos);
+		calculate_glide_data(delta, camera, trigger_type, game_state, player_pos, dead);
+		calculate_speedboost_data(delta, camera, trigger_type, game_state, player_pos, dead);
+		calculate_doublejump_data(delta, camera, trigger_type, game_state, player_pos, dead);
+		calculate_shield_data(delta, camera, trigger_type, bullet_hit, game_state, player_pos, dead);
+		calculate_random_data(delta, camera, random_buff, game_state, player_pos, dead);
 	}
 
 }
