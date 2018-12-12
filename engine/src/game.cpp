@@ -76,11 +76,16 @@ Game::Game()
 		physics.add_static_body(coll.position, 
 			glm::vec2{ 0.0f, 0.0f }, coll.width, coll.height, coll.trigger);
 
-	//place_random_objects(0, 20, 9); //For random placing object
 
+	srand(time(NULL));
 
 	//Start States
 	net_state.state = network::SessionState::lobby;
+
+	for (int i = 0; i < 100; i++)
+	{
+		random_values[i] = 3 + (rand() % 4);
+	}
 }
 
 void Game::run()
@@ -167,6 +172,16 @@ void Game::update(std::chrono::milliseconds delta)
 
 		load_map(&lobby);
 		level_id = 0;
+		if (net.id() == 0)
+		{
+			srand(time(NULL));
+
+			for (int i = 0; i < 100; i++)
+			{
+				random_values[i] = 3 + (rand() % 4);
+			}
+		}
+
 
 		door_1_votes = 0;
 		door_2_votes = 0;
@@ -189,12 +204,22 @@ void Game::update(std::chrono::milliseconds delta)
 			load_map(&lobby);
 
 			level_id = 0;
-			std::cout << level_id << "\n";
+			//std::cout << level_id << "\n";
 
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
 				lua_data.finished[i] = false;
 			}
+			if (net.id() == 0)
+			{
+				srand(time(NULL));
+
+				for (int i = 0; i < 100; i++)
+				{
+					random_values[i] = 3 + (rand() % 4);
+				}
+			}
+
 
 			door_1_votes = 0;
 			door_2_votes = 0;
@@ -262,14 +287,18 @@ void Game::update(std::chrono::milliseconds delta)
 
 				moving_platform_ids.clear();
 				nr_of_moving_platforms = 0;
-				add_moving_platforms(1);
+				add_moving_platforms();
+
 				break;
 
 			case 2:
 				gameplay.refresh();
 				load_map(&level2);
+
 				moving_platform_ids.clear();
 				nr_of_moving_platforms = 0;
+
+				place_random_objects(120, 8);
 				break;
 
 			case 0:
@@ -681,7 +710,8 @@ void Game::update(std::chrono::milliseconds delta)
 				spikeframe,
 				turretframe,
 				triggers_types,
-				moving_platform_ids},
+				random_values,
+				moving_platform_ids },
 				game_state, physics.rw, physics.lw, net.id());
 		}
 
@@ -929,10 +959,16 @@ void Game::pack_data()
 		net_state.inputs[i] = player_inputs[i];
 	}
 
-	if (net.id() == 0)
+	for (auto i = 0u; i < dynamics.size(); ++i)
 	{
-		//Vincent
-		net_state.level_id = level_id;
+		net_state.game_objects[i].position = dynamics[i].position;
+		net_state.game_objects[i].velocity = dynamics[i].velocity;
+
+		if (net.id() == 0)
+		{
+			net_state.random_values[i] = random_values[i];
+			net_state.level_id = level_id;
+		}
 
 		for (int i = 0; i < 4; ++i) //Players
 		{
@@ -955,14 +991,13 @@ void Game::pack_data()
 
 void Game::unpack_data()
 {	
-	//Vincent
-	level_id = net_state.level_id;
-
-	for (int i = 0; i < 4; ++i)	//Players
+	
+	for (int i = 0; i < 4; ++i)
 	{
 		if (i != net.id())
 		{
 			player_inputs[i] = net_state.inputs[i];
+			level_id = net_state.level_id;
 		}
 
 		dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
@@ -980,6 +1015,15 @@ void Game::unpack_data()
 			{
 				dynamics[i].position = net_state.game_objects[i].position;
 				dynamics[i].velocity = net_state.game_objects[i].velocity;
+				
+				random_values[i] = net_state.random_values[i];
+
+				//Vincent
+				if (i < 4)
+				{
+					dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
+					dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
+				}
 			}
 		}
 
@@ -987,71 +1031,97 @@ void Game::unpack_data()
 	}
 }
 
-void Game::place_random_objects(float start_height, float map_width, int number_of_randoms)
+void Game::place_random_objects(float start_height, int number_of_randoms)
 {
-	/*for (int i = 0; i < 15; i++)
-	{
-		input.physics->random_placed_objects_pos[i] = glm::vec2{ 0.0, hight };
-	}*/
+	srand(random_values[0] + random_values[1] + random_values[2] + random_values[3]);
 
 	collision_data data;
 
-	glm::vec2 startPosition = { 0.0, 0.0 };
+	glm::vec2 startPosition = { 0.0, start_height };
 	std::vector<glm::vec2> positions;
+	float width_of_map = 40;
 
-	int totalX = 5;
-	int totalY = 3;
+	int total_x = 5;
+	int total_y = 4;
 
-	int width = static_cast<int>(map_width / 6.0f);
+	int width = static_cast<int>(width_of_map / total_x);
 
-	startPosition = { width * 2, map_width };
+	startPosition.x = (width_of_map * 0.5) - (width / 2);
 
-	for (int i = 0; i < totalY; i++)
+	for (int i = 0; i < total_y; i++)
 	{
-		for (int j = 0; j < totalX; j++)
+		for (int j = 0; j < total_x; j++)
 		{
-			positions.push_back({ startPosition.x - (j * width),  startPosition.y + (i * 8) });
+			if ((i % 2) == 1)
+			{
+				positions.push_back({ (startPosition.x - (j * width) - 1),  startPosition.y + (i * 6) });
+			}
+			else
+			{
+				positions.push_back({ (startPosition.x - (j * width) + 1),  startPosition.y + (i * 6) });
+			}
+			
 		}
 	}
 
 	std::vector<int> rand_numb;
 
 	bool same_number = false;
-	int randum_number;
+	int radom_number;
+
+	if (number_of_randoms > 10)
+	{
+		number_of_randoms = 10;
+	}
+
+	for (int i = 0; i < total_y; i++)
+	{
+		radom_number = rand() % 5 + (i * 5);
+		rand_numb.push_back(radom_number);
+
+		//std::cout << radom_number << std::endl;
+	}
 
 	while (rand_numb.size() < number_of_randoms)
 	{
 		same_number = false;
-		randum_number = rand() % positions.size();
+		radom_number = rand() % positions.size();
+
 		for (int i = 0; i < rand_numb.size(); i++)
 		{
-			if (randum_number == rand_numb[i])
+			if (radom_number == rand_numb[i])
 			{
 				same_number = true;
 			}
 		}
 		if (!same_number)
 		{
-			rand_numb.push_back(randum_number);
+			rand_numb.push_back(radom_number);
 		}
 	}
 
-	for (int i = 99; i > 99 - number_of_randoms; i--)
+	int platform_id = 8;
+
+	for (int i = 0; i < number_of_randoms; i++)
 	{
 		collision_data data;
-		int model_id = level->add_object(data, 6);
-		data.position = positions[rand_numb[abs(i - 99)]];
-		int dynamic_id = physics.add_dynamic_body(data.position, { 0, 0 }, data.width, data.height, { 0, 0 });
 
-		dynamics[dynamic_id].position = positions[rand_numb[abs(i - 99)]];
-		dynamics[dynamic_id].velocity = { 0.0f, 0.0f };
-		dynamics[dynamic_id].size = { data.width, data.height };
-		dynamics[dynamic_id].forces = { 0.0f, 0.0f };
-		dynamics[dynamic_id].impulse = { 0.0f, 0.0f };
+		int model_id = level->add_object(data, platform_id);
+		data.position = positions[rand_numb[i]];
+		level->moving_models[model_id].set_position(data.position);
 
-		level->moving_models[model_id].set_position(dynamics[dynamic_id].position);
+		physics.add_static_body(data.position,
+			glm::vec2{ 0.0f, 0.0f }, data.width, data.height, false);
 
 	}
+
+	auto beg = level->models.begin();
+	beg += 9;
+
+	std::sort(beg, level->models.end(), [](const auto& left, const auto& right)
+	{
+		return left.get_y_position() < right.get_y_position();
+	});
 }
 
 std::array<int, 4> Game::random_indexes()
@@ -1114,82 +1184,10 @@ void Game::load_map(graphics::GameScene* scene)
 	watching = net.id();
 }
 
-void Game::add_moving_platforms(int level_nr)
+void Game::add_moving_platforms()
 {
-	if (level_nr == 1)
 	{
-		{
-			glm::vec2 start_position = { -12, 150 };
-			int objects_list_id = 8;
-			collision_data data;
-			int m_id = level->add_object(data, objects_list_id);
-			int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, objects_list_id);
-
-			dynamics[d_id].position = start_position;
-			dynamics[d_id].velocity = { 0.0f, 0.0f };
-			dynamics[d_id].size = { data.width, data.height };
-			dynamics[d_id].forces = { 0.0f, 0.0f };
-			dynamics[d_id].impulse = { 0.0f, 0.0f };
-			dynamics[d_id].dynamic_id = d_id;
-			dynamics[d_id].model_id = m_id;
-			dynamics[d_id].objects_type_id = objects_list_id;
-
-			level->moving_models[m_id].set_position(start_position);
-
-			moving_platform_ids.push_back(d_id);
-
-			nr_of_moving_platforms++;
-		}
-
-		{
-			glm::vec2 start_position = { 0, 150 - 9};
-			int objects_list_id = 8;
-			collision_data data;
-			int m_id = level->add_object(data, objects_list_id);
-			int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, objects_list_id);
-
-			dynamics[d_id].position = start_position;
-			dynamics[d_id].velocity = { 0.0f, 0.0f };
-			dynamics[d_id].size = { data.width, data.height };
-			dynamics[d_id].forces = { 0.0f, 0.0f };
-			dynamics[d_id].impulse = { 0.0f, 0.0f };
-			dynamics[d_id].dynamic_id = d_id;
-			dynamics[d_id].model_id = m_id;
-			dynamics[d_id].objects_type_id = objects_list_id;
-
-			level->moving_models[m_id].set_position(start_position);
-
-			moving_platform_ids.push_back(d_id);
-
-			nr_of_moving_platforms++;
-		}
-
-		{
-			glm::vec2 start_position = { 12, 150 - 12};
-			int objects_list_id = 8;
-			collision_data data;
-			int m_id = level->add_object(data, objects_list_id);
-			int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, objects_list_id);
-
-			dynamics[d_id].position = start_position;
-			dynamics[d_id].velocity = { 0.0f, 0.0f };
-			dynamics[d_id].size = { data.width, data.height };
-			dynamics[d_id].forces = { 0.0f, 0.0f };
-			dynamics[d_id].impulse = { 0.0f, 0.0f };
-			dynamics[d_id].dynamic_id = d_id;
-			dynamics[d_id].model_id = m_id;
-			dynamics[d_id].objects_type_id = objects_list_id;
-
-			level->moving_models[m_id].set_position(start_position);
-
-			moving_platform_ids.push_back(d_id);
-
-			nr_of_moving_platforms++;
-		}
-	}
-	else if (level_nr == 2)
-	{
-		glm::vec2 start_position = { 0, 5 };
+		glm::vec2 start_position = { -12, 150 };
 		int objects_list_id = 8;
 		collision_data data;
 		int m_id = level->add_object(data, objects_list_id);
@@ -1202,11 +1200,58 @@ void Game::add_moving_platforms(int level_nr)
 		dynamics[d_id].impulse = { 0.0f, 0.0f };
 		dynamics[d_id].dynamic_id = d_id;
 		dynamics[d_id].model_id = m_id;
-		dynamics[d_id].objects_type_id = 8;
+		dynamics[d_id].objects_type_id = objects_list_id;
 
 		level->moving_models[m_id].set_position(start_position);
 
 		moving_platform_ids.push_back(d_id);
+
+		nr_of_moving_platforms++;
+	}
+
+	{
+		glm::vec2 start_position = { 0, 150 - 9};
+		int objects_list_id = 8;
+		collision_data data;
+		int m_id = level->add_object(data, objects_list_id);
+		int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, objects_list_id);
+
+		dynamics[d_id].position = start_position;
+		dynamics[d_id].velocity = { 0.0f, 0.0f };
+		dynamics[d_id].size = { data.width, data.height };
+		dynamics[d_id].forces = { 0.0f, 0.0f };
+		dynamics[d_id].impulse = { 0.0f, 0.0f };
+		dynamics[d_id].dynamic_id = d_id;
+		dynamics[d_id].model_id = m_id;
+		dynamics[d_id].objects_type_id = objects_list_id;
+
+		level->moving_models[m_id].set_position(start_position);
+
+		moving_platform_ids.push_back(d_id);
+
+		nr_of_moving_platforms++;
+	}
+
+	{
+		glm::vec2 start_position = { 12, 150 - 12};
+		int objects_list_id = 8;
+		collision_data data;
+		int m_id = level->add_object(data, objects_list_id);
+		int d_id = physics.add_dynamic_body(start_position, { 0, 0 }, data.width, data.height, { 0, 0 }, objects_list_id);
+
+		dynamics[d_id].position = start_position;
+		dynamics[d_id].velocity = { 0.0f, 0.0f };
+		dynamics[d_id].size = { data.width, data.height };
+		dynamics[d_id].forces = { 0.0f, 0.0f };
+		dynamics[d_id].impulse = { 0.0f, 0.0f };
+		dynamics[d_id].dynamic_id = d_id;
+		dynamics[d_id].model_id = m_id;
+		dynamics[d_id].objects_type_id = objects_list_id;
+
+		level->moving_models[m_id].set_position(start_position);
+
+		moving_platform_ids.push_back(d_id);
+
 		nr_of_moving_platforms++;
 	}
 }

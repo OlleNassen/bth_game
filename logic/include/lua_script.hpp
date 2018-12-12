@@ -61,6 +61,7 @@ public:
 		const int& trigger,
 		const int& type,
 		anim& anim_state,
+		int random_values,
 		bool rw, bool lw);
 
 	bool build_stage_done(int index);
