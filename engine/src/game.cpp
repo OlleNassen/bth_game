@@ -761,16 +761,6 @@ void Game::update(std::chrono::milliseconds delta)
 		is_client = true;
 	}
 
-	//std::array<glm::vec3, 4> directions
-	//{
-	//	glm::vec3{0.0f},
-	//	glm::vec3{0.0f},
-	//	glm::vec3{0.0f},
-	//	glm::vec3{0.0f}
-	//};
-	
-
-
 	player_hit_array = { false, false, false, false };
 
 	if (turretframe >= 30 && turretframe <= 32)
@@ -782,13 +772,6 @@ void Game::update(std::chrono::milliseconds delta)
 			laser_update(turrets[i], player_hit_array);
 		}
 	}
-	else
-	{
-		//Draw no laser
-		//Bool laser false
-	}
-
-
 
 	{
 		logic::objects_array obj;
