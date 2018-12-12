@@ -73,10 +73,10 @@ public:
 	uint8 player_count = 1;
 	uint8 player_id = 0;
 	SessionState state = SessionState::none;
+	int has_placed_correctly[4] = { 0 };
 	int random_values[100] = { -1 };
 
 	int level_id = 0; //0 = lobby, 1 = level1, 2 = level2
-	int has_placed_correctly[4] = { 0 };
 };
 
 class Queue
