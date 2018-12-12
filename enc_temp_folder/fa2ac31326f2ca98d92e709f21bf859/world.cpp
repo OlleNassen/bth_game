@@ -749,7 +749,7 @@ void World::laser_ray_cast(
 		if (temp != -1 && temp <= t)
 		{
 			hit_array[i] = true;
-			//std::cout << "temp:"<< temp << " range: " << t << std::endl;
+			std::cout << "temp:"<< temp << " range: " << t << std::endl;
 		}
 	}
 }

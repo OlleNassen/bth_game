@@ -13,7 +13,6 @@ Laser::Laser()
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(primitives::quad_uv), &primitives::quad_uv[0], GL_STATIC_DRAW);
-
 	glEnableVertexAttribArray(0);
 
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), nullptr);
@@ -24,6 +23,7 @@ Laser::Laser()
 	laser_textures[3].load_texture("../resources/textures/laser/middle_overlay_texture.png", true);
 	laser_textures[4].load_texture("../resources/textures/laser/end_background_texture.png", true);
 	laser_textures[5].load_texture("../resources/textures/laser/end_overlay_texture.png", true);
+	laser_textures[6].load_texture("../resources/textures/laser/laser_noise.png", true);
 
 }
 
@@ -59,7 +59,7 @@ void Laser::render(const Shader &shader, const Camera& cam)const
 
 	shader.uniform("distance", distance);
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		laser_textures[i].bind(i);
 	}

@@ -13,6 +13,9 @@ layout(binding = 3) uniform sampler2D middle_overlay;
 layout(binding = 4) uniform sampler2D end_background;
 layout(binding = 5) uniform sampler2D end_overlay;
 
+layout(binding = 6) uniform sampler2D laser_noise;
+
+
 uniform vec4 color;
 uniform float distance;
 

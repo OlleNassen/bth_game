@@ -27,7 +27,7 @@ private:
 
 	float distance = 0.f;
 
-	std::array<Texture, 10> laser_textures;
+	std::array<Texture, 7> laser_textures;
 };
 
 }

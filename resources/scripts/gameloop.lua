@@ -149,11 +149,6 @@ function update(delta_seconds, game, entities, player_count)
 			if entities[i].laser_hit and game.shield_triggered[i] == false and not game.died[i] --and game.turret_frame <= 1
 			then
 
-				--if i == 1
-				--then
-					print("killed by laser")
-				--end
-
 
 				game.finished[i] = true
 				game.died[i] = true
@@ -172,7 +167,6 @@ function update(delta_seconds, game, entities, player_count)
 			elseif entities[i].laser_hit and game.shield_triggered[i] == true --and game.turret_frame <= 2
 			then
 				game.is_laser[i] = true
-				print("protected from laser")
 			end
 		end
 
