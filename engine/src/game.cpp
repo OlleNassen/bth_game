@@ -824,13 +824,13 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			if (!dynamics[i].is_stund) // test for placing objects script.
-			{
 
 			if (level->moving_models[i].is_animated)
 			{
 				level->moving_models[i].update_animation((float)delta.count(), anim_states[i]);
 			}
+			if (!dynamics[i].is_stund) // test for placing objects script.
+			{
 
 			if (physics.rw[i] == true)
 				level->moving_models[i].rotate({ 0.0f, 1.0f, 0.0f }, glm::radians(180.0f));
