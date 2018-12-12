@@ -3095,7 +3095,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 			fx_random.particle_container[i].a = 180;
 			fx_random.particle_container[i].size = 4.0f;
 		}
-		if (random_buff != -1 && !random_buff_active && !dead)
+		if ((random_buff <= 3 || random_buff <= 6) && !random_buff_active && !dead)
 		{
 			if (fx_random.particle_container[nr_of_random + 1].life <= 0.0f)
 			{
