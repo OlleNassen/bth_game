@@ -491,7 +491,7 @@ void Game::update(std::chrono::milliseconds delta)
 	}
 	else if (net_state.state == network::SessionState::pre_playing)
 	{
-		if (give_players_objects && lua_data.time < 2.f)
+		if (give_players_objects) // && lua_data.time < 2.f)
 		{
 			for (int i = 0; i < static_cast<int>(player_count); i++)
 			{
@@ -503,7 +503,7 @@ void Game::update(std::chrono::milliseconds delta)
 
 				std::cout << "Player " << i << " has " << net_state.has_placed_correctly[i] << "\n";
 
-				if (net_state.has_placed_correctly[i] == 0)
+				if (has_placed_correctly[i] == 0)
 				{
 					std::cout << "Removed: " << i <<
 						"\nModel ID:\t" << ppoi.model_id <<
@@ -1000,9 +1000,14 @@ void Game::unpack_data()
 			level_id = net_state.level_id;
 		}
 
+		if (net.id() != i)
+			has_placed_correctly[i] = net_state.has_placed_correctly[i];
+
 		dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
 		dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
 	}
+
+
 	
 	//if (state_sequence != net_state.sequence)
 	{
