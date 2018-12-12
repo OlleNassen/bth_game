@@ -999,8 +999,7 @@ void Game::unpack_data()
 			level_id = net_state.level_id;
 		}
 
-		if (net.id() != i)
-			has_placed_correctly[i] = net_state.has_placed_correctly[i];
+		has_placed_correctly[i] = net_state.has_placed_correctly[i];
 
 		dynamics[i].player_moving_object_type_id = net_state.game_objects[i].player_moving_object_type_id;
 		dynamics[i].player_moving_object_id = net_state.game_objects[i].player_moving_object_id;
