@@ -2634,6 +2634,7 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 				fx_glide.particle_container[nr_of_glide + 1].a = 180;
 				fx_glide.particle_container[nr_of_glide + 1].size = 5.0f;
 				glide_active = true;
+				random_buff_active = false;
 			}
 		}
 	}
@@ -2765,6 +2766,7 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 				fx_speedboost.particle_container[nr_of_speedboost + 1].a = 180;
 				fx_speedboost.particle_container[nr_of_speedboost + 1].size = 5.0f;
 				speedboost_active = true;
+				random_buff_active = false;
 			}
 		}
 	}
@@ -2896,6 +2898,7 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 				fx_doublejump.particle_container[nr_of_doublejump + 1].a = 180;
 				fx_doublejump.particle_container[nr_of_doublejump + 1].size = 5.0f;
 				doublejump_active = true;
+				random_buff_active = false;
 			}
 		}
 	}
@@ -3031,6 +3034,7 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 			fx_shield.particle_container[nr_of_shield + 1].a = 180;
 			fx_shield.particle_container[nr_of_shield + 1].size = 5.0f;
 			shield_active = true;
+			random_buff_active = false;
 		}
 	}
 
@@ -3187,7 +3191,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 		fx_random.total_particle_count++;
 	}
 
-	if (random_buff_active && !dead)
+	if (random_buff_active && previous_trigger == 7 && !dead)
 	{
 		if (!random_shield_active)
 		{
@@ -3225,6 +3229,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 		else
 		{
 			//They ded, hide 'em
+			previous_trigger = -1;
 			fx_random.particle_container[nr_of_random + 1].life = 0.0f;
 			fx_random.particle_container[nr_of_random + 1].camera_distance = -1.0f;
 			fx_random.position_data[4 * fx_random.total_particle_count + 3] = 0;
