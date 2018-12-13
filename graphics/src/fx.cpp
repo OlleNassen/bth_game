@@ -2633,9 +2633,10 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 				fx_glide.particle_container[nr_of_glide + 1].b = 255;
 				fx_glide.particle_container[nr_of_glide + 1].a = 180;
 				fx_glide.particle_container[nr_of_glide + 1].size = 5.0f;
-				glide_active = true;
-				random_buff_active = false;
 			}
+			glide_active = true;
+			random_buff_active = false;
+			random_shield_active = false;
 		}
 	}
 
@@ -2766,9 +2767,10 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 				fx_speedboost.particle_container[nr_of_speedboost + 1].b = 34;
 				fx_speedboost.particle_container[nr_of_speedboost + 1].a = 180;
 				fx_speedboost.particle_container[nr_of_speedboost + 1].size = 5.0f;
-				speedboost_active = true;
-				random_buff_active = false;
 			}
+			speedboost_active = true;
+			random_buff_active = false;
+			random_shield_active = false;
 		}
 	}
 
@@ -2899,9 +2901,11 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 				fx_doublejump.particle_container[nr_of_doublejump + 1].b = 0;
 				fx_doublejump.particle_container[nr_of_doublejump + 1].a = 180;
 				fx_doublejump.particle_container[nr_of_doublejump + 1].size = 5.0f;
-				doublejump_active = true;
-				random_buff_active = false;
 			}
+
+			doublejump_active = true;
+			random_buff_active = false;
+			random_shield_active = false;
 		}
 	}
 
