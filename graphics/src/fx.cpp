@@ -3118,6 +3118,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 	if (trigger_type == 7)
 	{
 		previous_trigger = 7;
+		random_buff_active = true;
 	}
 
 	std::cout << "Previous Trigger:\t" << previous_trigger << std::endl;
@@ -3139,7 +3140,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 			fx_random.particle_container[i].size = 4.0f;
 		}
 
-		if (active_buff != -1 && !random_buff_active && !dead)// && previous_trigger == 7)
+		if (active_buff != -1 && !dead)// && previous_trigger == 7)
 		{
 			if (fx_random.particle_container[nr_of_random + 1].life <= 0.0f)
 			{
