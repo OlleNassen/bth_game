@@ -413,7 +413,7 @@ void GameScript::update(
 			int top_pos = stack.top();
 	
 			stack.push("laser_hit");
-			stack.push(player_hit_array[i]);
+			stack.push(player_hit_array[i - 1]);
 			stack.rawset(top_pos);
 		}
 		stack.clear();
