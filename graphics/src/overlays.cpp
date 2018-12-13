@@ -24,7 +24,6 @@ void OverlayScreen::render(const Shader & shader) const
 
 Overlays::Overlays()
 {
-	death.push_back(Texture{ "../resources/textures/death_screen/death_6.png", true });
 }
 
 Overlays::Overlays(int player_id)
@@ -93,12 +92,12 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 		//Render death screen
 		if (is_dead && has_finished && death_timer <= 2000ms)
 		{
-			this->death.at(0).bind(0);
+			this->death.bind(0);
 		}
 	}
 
 	if (current_state & state::game_over)
-		empty.bind(0);
+		this->winner.bind(0);
 
 	if (how_to_play)
 		how_to_play_texture.bind(0);
