@@ -113,7 +113,6 @@ private:
 	struct turret
 	{
 		int dynamic_id;
-		//turret_info info;
 		glm::vec2 direction;
 		glm::vec2 barrel_position; // start
 		glm::vec2 end_position;
@@ -134,10 +133,9 @@ private:
 
 	//test trigger
 	int placed_objects_type_id = 7;
-	//int placed_objects_array[4] = {7/*random*/, 2/*glide*/, 7/*speed*/, 6/*shield*/ };
 	int placed_objects_array[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
-	int random_picked_object() { return placed_objects_array[rand() % level1.objects.size()]; };
+	int random_picked_object() { return placed_objects_array[rand() % 8]; };
 	std::array<int, 4> random_indexes();
 
 	//spectator
