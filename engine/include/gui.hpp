@@ -24,6 +24,7 @@ public:
 	const std::string* begin() const { return &chat_log[0]; }
 	const std::string* end() const { return &chat_log[10]; }
 
+	std::string& operator[](int i) { return chat_log[i]; }
 	std::string* begin() { return &chat_log[0]; }
 	std::string* end() { return &chat_log[10]; }
 
