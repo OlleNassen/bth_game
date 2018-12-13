@@ -468,11 +468,11 @@ void Game::update(std::chrono::milliseconds delta)
 				{
 					if (pos.z == 1)
 					{
-						if ((*local_input)[logic::button::up] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::up] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::down] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::down] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -484,11 +484,11 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 					else if (pos.z == 2)
 					{
-						if ((*local_input)[logic::button::right] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::right] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::left] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::left] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -500,11 +500,11 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 					else if (pos.z == 3)
 					{
-						if ((*local_input)[logic::button::up] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::up] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::down] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::down] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -516,11 +516,11 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 					else if (pos.z == 4)
 					{
-						if ((*local_input)[logic::button::right] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::right] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::left] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::left] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
