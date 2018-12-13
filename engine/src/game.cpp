@@ -760,6 +760,10 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		str = chat[1].c_str();
 		is_client = net.id();
+		if (!is_client)
+		{
+			chat[1].clear();
+		}
 	}
 
 	player_hit_array = { false, false, false, false };
