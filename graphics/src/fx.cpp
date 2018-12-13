@@ -3038,6 +3038,7 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 			fx_shield.particle_container[nr_of_shield + 1].size = 5.0f;
 			shield_active = true;
 			random_buff_active = false;
+			random_shield_active = false;
 		}
 	}
 
@@ -3067,6 +3068,8 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 
 	if (previous_trigger == 6 && !dead && !random_buff_active)
 	{
+		random_shield_active = false;
+
 		fx_shield.particle_container[nr_of_shield + 1].pos = player_pos + glm::vec3(0, -1.0f, -0.8f);
 		fx_shield.particle_container[nr_of_shield + 1].camera_distance = glm::length(fx_shield.particle_container[nr_of_shield + 1].pos - camera.position);
 
@@ -3108,11 +3111,14 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 
 	fx_random.nr_of_particles = nr_of_random;
 
-	/*if (trigger_type == 7)
+	if (trigger_type == 7)
 	{
 		previous_trigger = 7;
-	}*/
+	}
 
+	std::cout << "Previous Trigger:\t" << previous_trigger << std::endl;
+	std::cout << "Random Buff:     \t" << random_buff_active << std::endl;
+	std::cout << "Random Shield:   \t" << random_shield_active << std::endl;
 	//Update data for particles
 	if (fx_random.total_particle_count <= MAX_PARTICLES)
 	{
@@ -3200,6 +3206,10 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 		{
 			fx_random.particle_container[nr_of_random + 1].life -= (seconds.count() / 10.0f);
 		}
+		if (pre_previous_trigger != 7)
+		{
+			fx_random.particle_container[nr_of_random + 1].life = 1.0f;
+		}
 		
 		if (fx_random.particle_container[nr_of_random + 1].life > 0.0f)
 		{
@@ -3245,6 +3255,8 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 		random_shield_active = false;
 	}
 
+	pre_previous_trigger = previous_trigger;
+
 	//Update particle information
 	glBindBuffer(GL_ARRAY_BUFFER, fx_random.position_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
@@ -3275,6 +3287,7 @@ void FX::calculate_object_data(
 		doublejump_active = false;
 		shield_active = false;
 		random_buff_active = false;
+		random_shield_active = false;
 		nr_of_stun = 0;
 		nr_of_glide = 0;
 		nr_of_speedboost = 0;
