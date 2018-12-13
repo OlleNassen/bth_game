@@ -760,10 +760,6 @@ void Game::update(std::chrono::milliseconds delta)
 	{
 		str = chat[1].c_str();
 		is_client = net.id();
-		if (!is_client)
-		{
-			chat[1].clear();
-		}
 	}
 
 	player_hit_array = { false, false, false, false };
@@ -926,6 +922,9 @@ void Game::update(std::chrono::milliseconds delta)
 	pack_data();
 	net.update(net_state, str);
 	unpack_data();
+
+	if (!is_client)
+		chat[1] = "";
 
 	{
 		graphics::objects_array obj;
