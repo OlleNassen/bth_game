@@ -32,8 +32,8 @@ void Laser::update(int turretframe,
 	const std::vector<glm::vec2>& ends)
 {
 	models.clear();
-	laser_on = turretframe >= 30 && turretframe <= 32; 
-	
+	//laser_on = turretframe >= 30 && turretframe <= 32; 
+	laser_on = true;
 	if (!starts.empty())
 	{
 		models.resize(starts.size());
