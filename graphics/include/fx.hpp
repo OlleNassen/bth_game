@@ -153,6 +153,7 @@ private:
 	int nr_of_shield = 0;
 	int nr_of_random = 0;
 	int previous_trigger = -1;
+	int pre_previous_trigger = -1;
 	bool glide_active = false;
 	bool speedboost_active = false;
 	bool doublejump_active = false;
@@ -174,11 +175,11 @@ private:
 	void steam_back(glm::vec3 pos_vec);
 	void steam_left(glm::vec3 pos_vec);
 	void calculate_stun_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, glm::vec3 player_pos);
-	void calculate_glide_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead);
-	void calculate_speedboost_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead);
-	void calculate_doublejump_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead);
-	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, bool bullet_hit, int game_state, glm::vec3 player_pos, bool dead);
-	void calculate_random_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int game_state, glm::vec3 player_pos, bool dead);
+	void calculate_glide_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int active_buff, int game_state, glm::vec3 player_pos, bool dead);
+	void calculate_speedboost_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int active_buff, int game_state, glm::vec3 player_pos, bool dead);
+	void calculate_doublejump_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int active_buff, int game_state, glm::vec3 player_pos, bool dead);
+	void calculate_shield_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int active_buff, bool bullet_hit, int game_state, glm::vec3 player_pos, bool dead);
+	void calculate_random_data(std::chrono::milliseconds delta, const Camera& camera, int trigger_type, int active_buff, int game_state, glm::vec3 player_pos, bool dead);
 };
 
 }
