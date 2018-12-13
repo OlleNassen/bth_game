@@ -80,7 +80,7 @@ public:
 
 	void refresh();
 
-	LuaExport update(Input input,
+	LuaExport update(const Input& inputs,
 		int& current_state, bool rw[], bool lw[], int player_id);
 	bool build_stage(int player_count) const;
 	bool pre_playing_stage() const;

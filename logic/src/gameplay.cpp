@@ -45,7 +45,7 @@ void Gameplay::refresh()
 	game_script.setup();
 }
 
-LuaExport Gameplay::update(Input inputs,
+LuaExport Gameplay::update(const Input& inputs,
 	int& current_state, bool rw[], bool lw[], int player_id)
 {
 	float time = -1.0f;
