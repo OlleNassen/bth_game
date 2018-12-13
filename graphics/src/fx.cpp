@@ -3171,8 +3171,8 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 				}
 				fx_random.particle_container[nr_of_random + 1].a = 180;
 				fx_random.particle_container[nr_of_random + 1].size = 5.0f;
-				random_buff_active = true;
 			}
+			random_buff_active = true;
 		}
 	}
 
