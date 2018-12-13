@@ -54,10 +54,10 @@ void Overlays::update(
 	else
 		this->pulse = 1.0f;
 
-	if (!(current_state & state::playing) || !is_dead)
+	/*if (!(current_state & state::playing) || !is_dead)
 	{
 		death_timer = 0ms;
-	}
+	}*/
 
 	//Playing update
 	if (current_state & state::playing)
@@ -66,6 +66,8 @@ void Overlays::update(
 		{
 			death_timer += delta;
 		}
+		else
+			death_timer = 0ms;
 
 		if (has_finished && !is_dead)
 		{

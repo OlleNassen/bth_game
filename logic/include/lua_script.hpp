@@ -91,7 +91,7 @@ public:
 		int spike_frame,
 		int turret_frame,
 		bool dash_active[],
-		bool laser_hit);
+		std::array<bool, 4> player_hit_array);
 
 	void update_export();
 	float get_time();

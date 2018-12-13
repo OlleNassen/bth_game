@@ -139,7 +139,7 @@ function update(delta_seconds, game, entities, player_count)
 			entities[i].velocity.y = 0
 		end
 	end
-	
+
 	--Check if players dead
 	for i = 1, player_count, 1
 	do

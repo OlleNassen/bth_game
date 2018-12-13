@@ -292,7 +292,7 @@ void GameScript::update(
 	int spike_frame, 
 	int turret_frame,
 	bool dash_active[],
-	bool laser_hit)
+	std::array<bool, 4> player_hit_array)
 {
 	{
 		stack.getglobal("game");
@@ -413,7 +413,7 @@ void GameScript::update(
 			int top_pos = stack.top();
 	
 			stack.push("laser_hit");
-			stack.push(laser_hit);
+			stack.push(player_hit_array[i - 1]);
 			stack.rawset(top_pos);
 		}
 		stack.clear();
