@@ -335,7 +335,7 @@ bool Animation_handler::switch_animation(anim state)
 				switch_quat.clear();
 				switch_translations.clear();
 				switch_scales.clear();
-				switch_time = animation_logic(state);
+				switch_time = 0.16f;
 				for (int i = 0; i < this->joints.size(); i++)
 				{
 					switch_quat.push_back(calc_interpolated_quaternion(this->time_seconds, i));
