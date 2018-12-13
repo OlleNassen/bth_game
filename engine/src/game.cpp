@@ -288,6 +288,7 @@ void Game::update(std::chrono::milliseconds delta)
 				load_map(&level1);
 
 				moving_platform_ids.clear();
+				turrets.clear();
 				nr_of_moving_platforms = 0;
 				add_moving_platforms();
 
@@ -298,6 +299,7 @@ void Game::update(std::chrono::milliseconds delta)
 				load_map(&level2);
 
 				moving_platform_ids.clear();
+				turrets.clear();
 				nr_of_moving_platforms = 0;
 
 				place_random_objects(120, 8);
