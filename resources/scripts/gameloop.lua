@@ -20,7 +20,7 @@ function setup(game)
 	game.is_laser = {false, false, false, false}
 
 	game.time = 0.0
-	game.max_time = 20.0
+	game.max_time = 90.0
 	game.start_round = true
 end
 
