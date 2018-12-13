@@ -921,6 +921,9 @@ void Game::update(std::chrono::milliseconds delta)
 	if (!(game_state & state::building))
 		physics.update(delta, dynamics, triggers, triggers_types, anim_states);
 
+	if (!(game_state & state::lobby))
+		str = 0;
+	
 	pack_data();
 	net.update(net_state, str);
 	unpack_data();
