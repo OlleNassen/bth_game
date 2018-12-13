@@ -152,7 +152,7 @@ function update(delta_seconds, game, entities, player_count)
 				game.died[i] = true
 				
 				death_height[i] = entities[i].position.y;
-				
+
 				--entities[i].position.y = entities[i].position.y
 				entities[i].position.x = -40
 				
