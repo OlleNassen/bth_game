@@ -358,7 +358,7 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				glm::vec2 start_position = start_positons[indexies[i]];
 				//This is set to always spawn a turrent
-				int type_id = random_picked_object();
+				int type_id = 1; //random_picked_object();
 
 				collision_data data;
 				int m_id = level->add_object(data, type_id);
@@ -468,11 +468,11 @@ void Game::update(std::chrono::milliseconds delta)
 				{
 					if (pos.z == 1)
 					{
-						if ((*local_input)[logic::button::up] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::up] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::down] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::down] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -484,11 +484,11 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 					else if (pos.z == 2)
 					{
-						if ((*local_input)[logic::button::right] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::right] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::left] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::left] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -500,11 +500,11 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 					else if (pos.z == 3)
 					{
-						if ((*local_input)[logic::button::up] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::up] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::down] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::down] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -516,11 +516,11 @@ void Game::update(std::chrono::milliseconds delta)
 					}
 					else if (pos.z == 4)
 					{
-						if ((*local_input)[logic::button::right] == logic::button_state::held)
+						if ((player_inputs[i])[logic::button::right] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 1;
 						}
-						else if ((*local_input)[logic::button::left] == logic::button_state::held)
+						else if ((player_inputs[i])[logic::button::left] == logic::button_state::held)
 						{
 							turret_infos[i].direction = 0;
 						}
@@ -1382,13 +1382,13 @@ void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::v
 		{
 			direction = glm::vec2{ 0, 1 };
 
-			barrel_position += glm::vec2{ -0.833, dynamics[dyn_id].size.y / 2 };
+			barrel_position += glm::vec2{ -0.833, dynamics[dyn_id].size.y /*/ 2*/ };
 		}
 		else if (dir_info.direction == 0) //look DOWN
 		{
 			direction = glm::vec2{ 0, -1 };
 
-			barrel_position -= glm::vec2{ 0.833, dynamics[dyn_id].size.y / 2 };
+			barrel_position -= glm::vec2{ 0.833, dynamics[dyn_id].size.y /*/ 2*/ };
 		}
 	}
 	else if (dir_info.rotation == 2) //attach to roof
@@ -1397,13 +1397,13 @@ void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::v
 		{
 			direction = glm::vec2{ 1, 0 };
 
-			barrel_position += glm::vec2{ dynamics[dyn_id].size.x / 2, -0.833 };
+			barrel_position += glm::vec2{ dynamics[dyn_id].size.x /*/ 2*/, -0.833 };
 		}
 		else if (dir_info.direction == 0) //look LEFT
 		{
 			direction = glm::vec2{ -1, 0 };
 
-			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x / 2, 0.833 };
+			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x /*/ 2*/, 0.833 };
 		}
 	}
 	else if (dir_info.rotation == 3) //attach to L wall
@@ -1412,13 +1412,13 @@ void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::v
 		{
 			direction = glm::vec2{ 0, 1 };
 
-			barrel_position += glm::vec2{ 0.833, dynamics[dyn_id].size.y / 2 };
+			barrel_position += glm::vec2{ 0.833, dynamics[dyn_id].size.y /*/ 2*/ };
 		}
 		else if (dir_info.direction == 0) //look DOWN
 		{
 			direction = glm::vec2{ 0, -1 };
 
-			barrel_position -= glm::vec2{ -0.833, dynamics[dyn_id].size.y / 2 };
+			barrel_position -= glm::vec2{ -0.833, dynamics[dyn_id].size.y /*/ 2*/ };
 		}
 	}
 	else if (dir_info.rotation == 4) //attach to floor
@@ -1427,13 +1427,13 @@ void Game::add_turret(const int dyn_id, const turret_info dir_info, const glm::v
 		{
 			direction = glm::vec2{ 1, 0 };
 
-			barrel_position += glm::vec2{ dynamics[dyn_id].size.x / 2, 0.833 };
+			barrel_position += glm::vec2{ dynamics[dyn_id].size.x /*/ 2*/, 0.833 };
 		}
 		else if (dir_info.direction == 0) //look LEFT
 		{
 			direction = glm::vec2{ -1, 0 };
 
-			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x / 2, -0.833 };
+			barrel_position -= glm::vec2{ dynamics[dyn_id].size.x /*/ 2*/, -0.833 };
 		}
 	}
 
