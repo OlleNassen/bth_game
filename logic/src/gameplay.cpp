@@ -184,7 +184,7 @@ LuaExport Gameplay::update(Input inputs,
 
 		game_script.update(inputs.delta, inputs.player_inputs[0],
 			inputs.triggers, inputs.triggers_types, &inputs.dynamics[0],
-			inputs.player_count, spike_frame, turret_frame, test, inputs.laser_hit_array[0]);
+			inputs.player_count, spike_frame, turret_frame, test, inputs.laser_hit_array);
 
 		game_script.data.dash_timer = player_script.dash_timer(player_id);
 
