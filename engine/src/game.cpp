@@ -358,7 +358,7 @@ void Game::update(std::chrono::milliseconds delta)
 			{
 				glm::vec2 start_position = start_positons[indexies[i]];
 				//This is set to always spawn a turrent
-				int type_id = random_picked_object();
+				int type_id = 1; // random_picked_object();
 
 				collision_data data;
 				int m_id = level->add_object(data, type_id);

@@ -139,17 +139,12 @@ function update(delta_seconds, game, entities, player_count)
 			entities[i].velocity.y = 0
 		end
 	end
-	
-	--print("player: ")
-	print(entities[2].laser_hit)
 
 	--Check if players dead
 	for i = 1, player_count, 1
 	do
 		if entities[i].laser_hit and not game.finished[i]
 		then
-			print("player: ", i)
-			print(entities[i].laser_hit)
 			--laser test
 			if entities[i].laser_hit and game.shield_triggered[i] == false and not game.died[i] --and game.turret_frame <= 1
 			then
@@ -166,6 +161,9 @@ function update(delta_seconds, game, entities, player_count)
 				
 				entities[i].velocity.x = 0
 				entities[i].velocity.y = 0
+
+				print(game.died[i])
+				print(game.finished[i])
 
 			elseif entities[i].laser_hit and game.shield_triggered[i] == true
 			then
