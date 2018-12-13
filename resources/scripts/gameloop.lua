@@ -153,6 +153,8 @@ function update(delta_seconds, game, entities, player_count)
 				
 				death_height[i] = entities[i].position.y;
 				
+				print("Dead by laser")
+
 				--entities[i].position.y = entities[i].position.y
 				entities[i].position.x = -40
 				
@@ -188,6 +190,9 @@ function update(delta_seconds, game, entities, player_count)
 				game.died[i] = true
 				
 				death_height[i] = entities[i].position.y;
+
+				print("Dead by spiketrap")
+
 
 				--entities[i].position.y = entities[i].position.y
 				entities[i].position.x = -40
