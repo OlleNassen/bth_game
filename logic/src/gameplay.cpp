@@ -215,7 +215,7 @@ bool Gameplay::pre_playing_stage() const
 	return !pre_playing_done;
 }
 
-void Gameplay::give_up(Input input)
+void Gameplay::give_up(const Input& input)
 {
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(input.delta).count();
 	if (input.player_inputs[0][button::rotate] == button_state::held)
@@ -231,7 +231,7 @@ void Gameplay::give_up(Input input)
 		give_up_timer = 0.0f;
 }
 
-int	Gameplay::get_random_object_id(Input input)
+int	Gameplay::get_random_object_id(const Input& input)
 {
 	return 0;// rand() % input.scene->objects.size();
 }

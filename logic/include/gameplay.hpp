@@ -100,11 +100,11 @@ private:
 	int index{ 0 };
 
 	float give_up_timer{ 0.0f };
-	void give_up(Input input);
+	void give_up(const Input& input);
 
 	int points = 0;
 	std::vector<int> current_gameboard;
-	int	get_random_object_id(Input input);
+	int	get_random_object_id(const Input& input);
 	int players_done = 0;
 	bool pre_playing_done = false;
 	float pre_starter_time = 3.5f;
