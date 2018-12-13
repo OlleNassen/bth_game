@@ -2668,6 +2668,7 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 		if (pre_previous_trigger != 3)
 		{
 			fx_glide.particle_container[nr_of_glide + 1].life = 1.0f;
+			random_buff_active = false;
 		}
 
 		fx_glide.particle_container[nr_of_glide + 1].life -= (seconds.count() / 10.0f);
@@ -2800,6 +2801,7 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 		if (pre_previous_trigger != 4)
 		{
 			fx_speedboost.particle_container[nr_of_speedboost + 1].life = 1.0f;
+			random_buff_active = false;
 		}
 
 		fx_speedboost.particle_container[nr_of_speedboost + 1].life -= (seconds.count() / 10.0f);
@@ -2932,6 +2934,7 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 		if (pre_previous_trigger != 5)
 		{
 			fx_doublejump.particle_container[nr_of_doublejump + 1].life = 1.0f;
+			random_buff_active = false;
 		}
 
 		fx_doublejump.particle_container[nr_of_doublejump + 1].life -= (seconds.count() / 10.0f);
@@ -3105,10 +3108,10 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 
 	fx_random.nr_of_particles = nr_of_random;
 
-	if (trigger_type == 7)
+	/*if (trigger_type == 7)
 	{
 		previous_trigger = 7;
-	}
+	}*/
 
 	//Update data for particles
 	if (fx_random.total_particle_count <= MAX_PARTICLES)
@@ -3126,7 +3129,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 			fx_random.particle_container[i].size = 4.0f;
 		}
 
-		if (active_buff != -1 && !random_buff_active && !dead && previous_trigger == 7)
+		if (active_buff != -1 && !random_buff_active && !dead)// && previous_trigger == 7)
 		{
 			if (fx_random.particle_container[nr_of_random + 1].life <= 0.0f)
 			{
@@ -3191,7 +3194,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 		fx_random.total_particle_count++;
 	}
 
-	if (random_buff_active && previous_trigger == 7 && !dead)
+	if (random_buff_active && !dead)//&& previous_trigger == 7)
 	{
 		if (!random_shield_active)
 		{
@@ -3229,7 +3232,7 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 		else
 		{
 			//They ded, hide 'em
-			previous_trigger = -1;
+			//previous_trigger = -1;
 			fx_random.particle_container[nr_of_random + 1].life = 0.0f;
 			fx_random.particle_container[nr_of_random + 1].camera_distance = -1.0f;
 			fx_random.position_data[4 * fx_random.total_particle_count + 3] = 0;
