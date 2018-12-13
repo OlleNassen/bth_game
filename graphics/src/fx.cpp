@@ -2662,7 +2662,7 @@ void FX::calculate_glide_data(std::chrono::milliseconds delta, const Camera & ca
 		fx_glide.total_particle_count++;
 	}
 
-	if (previous_trigger == 3 && !dead)
+	if (previous_trigger == 3 && !dead && !random_buff_active)
 	{
 		if (pre_previous_trigger != 3)
 		{
@@ -2793,7 +2793,7 @@ void FX::calculate_speedboost_data(std::chrono::milliseconds delta, const Camera
 		fx_speedboost.total_particle_count++;
 	}
 
-	if (previous_trigger == 4 && !dead)
+	if (previous_trigger == 4 && !dead && !random_buff_active)
 	{
 		if (pre_previous_trigger != 4)
 		{
@@ -2924,7 +2924,7 @@ void FX::calculate_doublejump_data(std::chrono::milliseconds delta, const Camera
 		fx_doublejump.total_particle_count++;
 	}
 
-	if (previous_trigger == 5 && !dead)
+	if (previous_trigger == 5 && !dead && !random_buff_active)
 	{
 		if (pre_previous_trigger != 5)
 		{
@@ -3058,7 +3058,7 @@ void FX::calculate_shield_data(std::chrono::milliseconds delta, const Camera & c
 		fx_shield.total_particle_count++;
 	}
 
-	if (previous_trigger == 6 && !dead)
+	if (previous_trigger == 6 && !dead && !random_buff_active)
 	{
 		fx_shield.particle_container[nr_of_shield + 1].pos = player_pos + glm::vec3(0, -1.0f, -0.8f);
 		fx_shield.particle_container[nr_of_shield + 1].camera_distance = glm::length(fx_shield.particle_container[nr_of_shield + 1].pos - camera.position);
