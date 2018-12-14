@@ -157,7 +157,7 @@ private:
 		"../resources/shaders/pbr.fs" };
 	Shader pbra{
 		"../resources/shaders/pbra.vs",
-		"../resources/shaders/pbra.fs" };
+		"../resources/shaders/pbr.fs" };
 	Shader text_shader{ 
 		"../resources/shaders/text.vs", 
 		"../resources/shaders/text.fs" };
@@ -173,12 +173,6 @@ private:
 	Shader lines{ 
 		"../resources/shaders/lines.vs", 
 		"../resources/shaders/lines.fs" };
-	Shader skybox_shader{ 
-		"../resources/shaders/skybox.vs",
-		"../resources/shaders/skybox.fs" };
-	Shader irradiance{ 
-		"../resources/shaders/irradiance.vs",
-		"../resources/shaders/irradiance.fs" };
 	Shader fx_dust{ 
 		"../resources/shaders/fx_dust.vs",
 		"../resources/shaders/fx_dust.fs" };
@@ -206,12 +200,6 @@ private:
 	Shader fx_stun{
 		"../resources/shaders/fx_stun.vs",
 		"../resources/shaders/fx_stun.fs" };
-	Shader pre_filter{ 
-		"../resources/shaders/irradiance.vs",
-		"../resources/shaders/pre_filter.fs" };
-	Shader brdf{ 
-		"../resources/shaders/brdf.vs",
-		"../resources/shaders/brdf.fs" };
 	Shader minimap_shader{ 
 		"../resources/shaders/minimap.vs",
 		"../resources/shaders/minimap.fs" };
@@ -219,7 +207,7 @@ private:
 		"../resources/shaders/overlay.vs",
 		"../resources/shaders/overlay.fs" };
 	Shader robot_shader{
-		"../resources/shaders/robots.vs",
+		"../resources/shaders/pbra.vs",
 		"../resources/shaders/robots.fs" };
 	Shader build_stage_screen_shader{
 		"../resources/shaders/build_stage.vs",
@@ -234,8 +222,6 @@ private:
 	std::vector<Model> models;
 	std::vector<Shader> shaders;
 
-	Skybox skybox;
-
 	Laser laser;
 
 	Box light_box;
@@ -249,9 +235,6 @@ private:
 	std::string log;
 
 	Framebuffer scene_texture;
-	Framebuffer irradiance_buffer;
-	Framebuffer prefilter_buffer;
-	Framebuffer brdf_buffer;
 
 	PostProcessingEffects post_processing_effects;
 

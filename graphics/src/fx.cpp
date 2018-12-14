@@ -3123,9 +3123,6 @@ void FX::calculate_random_data(std::chrono::milliseconds delta, const Camera & c
 		random_buff_active = true;
 	}
 
-	std::cout << "Previous Trigger:\t" << previous_trigger << std::endl;
-	std::cout << "Random Buff:     \t" << random_buff_active << std::endl;
-	std::cout << "Random Shield:   \t" << random_shield_active << std::endl;
 	//Update data for particles
 	if (fx_random.total_particle_count <= MAX_PARTICLES)
 	{

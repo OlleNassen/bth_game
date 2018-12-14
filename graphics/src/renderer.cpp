@@ -47,9 +47,6 @@ Renderer::Renderer(GameScene* scene)
 	: db_camera{glm::radians(90.0f), 1920.f / 1080.f, 0.1f, 100.f}
 	, game_camera{glm::radians(65.0f), 1920.f / 1080.f, 0.1f, 100.f}
 	, scene{scene}
-	, irradiance_buffer{irradiance, skybox}
-	, prefilter_buffer{pre_filter, skybox, true}
-	, brdf_buffer{brdf, skybox, 3.f}
 	, leaderboard(projection)
 {
 	grid.calculate_grid(game_camera);
@@ -59,13 +56,6 @@ Renderer::Renderer(GameScene* scene)
 	dir_light.direction = glm::vec3(0, -0.7, -1);
 	dir_light.color = glm::vec3(1.0, 0.8, 0.8);
 	dir_light.intensity = 0.7f;
-
-	//spotlights[0].position = glm::vec3(0, 30, 0);
-	//spotlights[0].color = glm::vec3(1.f, 1.0f, 0.0f);
-	//spotlights[0].direction = glm::vec3(0, -1, 0);
-	//spotlights[0].intensity = 200.f;
-	//spotlights[0].cos_total_width = std::cos(glm::radians(10.f));
-	//spotlights[0].cos_falloff_start = std::cos(glm::radians(8.f));
 }
 
 void Renderer::render(
