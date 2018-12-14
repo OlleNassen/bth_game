@@ -202,7 +202,7 @@ void Renderer::render(
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
 
 			if (total_players_ready == player_count)
-				build_text.render_text("Host: Press 'R' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);
+				build_text.render_text("Host: Press 'Space' to start", screen_width * 0.33f + 120.f, screen_height - 35.f, 0.75f);
 		}
 
 

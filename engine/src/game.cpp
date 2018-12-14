@@ -30,7 +30,7 @@ Game::Game()
 	window.assign_key(logic::button::down, GLFW_KEY_S);
 	window.assign_key(logic::button::right, GLFW_KEY_D);
 	window.assign_key(logic::button::jump, GLFW_KEY_SPACE);
-	window.assign_key(logic::button::rotate, GLFW_KEY_R);
+	window.assign_key(logic::button::rotate, GLFW_KEY_LEFT_SHIFT);
 	window.assign_key(logic::button::refresh, GLFW_KEY_F5);
 	window.assign_key(logic::button::score, GLFW_KEY_TAB);
 	window.assign_key(logic::button::menu, GLFW_KEY_F1);
@@ -238,7 +238,7 @@ void Game::update(std::chrono::milliseconds delta)
 			}
 		}
 
-		if ((*local_input)[logic::button::rotate] == logic::button_state::pressed && !(game_state & state::menu) && all_ready)
+		if ((*local_input)[logic::button::jump] == logic::button_state::pressed && !(game_state & state::menu) && all_ready)
 		{
 			if (net.id() == 0)
 			{
