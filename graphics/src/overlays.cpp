@@ -89,21 +89,21 @@ void Overlays::render(const Shader & shader, bool how_to_play) const
 	empty.bind(0);
 	empty.bind(1);
 
-	if (current_state & state::playing)
-	{
-		this->dash.bind(1);
-		//Render death screen
-		if (is_dead && has_finished && death_timer <= 2000ms)
-		{
-			this->death.at(0).bind(0);
-		}
-	}
+	//if (current_state & state::playing)
+	//{
+	//	this->dash.bind(1);
+	//	//Render death screen
+	//	if (is_dead && has_finished && death_timer <= 2000ms)
+	//	{
+	//		this->death.at(0).bind(0);
+	//	}
+	//}
 
-	if (current_state & state::game_over)
-		empty.bind(0);
+	//if (current_state & state::game_over)
+	//	empty.bind(0);
 
-	if (how_to_play)
-		how_to_play_texture.bind(0);
+	//if (how_to_play)
+	//	how_to_play_texture.bind(0);
 
 	overlay.render(shader);
 }

@@ -118,67 +118,7 @@ void World::update(
 		body.position = {p.x, p.y, 0.0f};
 	}
 	
-	for (int i = 0; i < 4; ++i)
-	{
-		auto& left = bodies[i];
-		
-		for (auto& right : statics)
-		{
-			CollisionManifold result;
-			reset_collison_manifold(result);
-
-			result = find_collision_features(left, right);
-
-			if (result.colliding)
-			{
-				colliders1.push_back(&left);
-				colliders2.push_back(&right);
-				results.push_back(result);
-			}
-		}
-	}
-
-	for (auto& t : triggers)
-		t = -1;
-
-	for (auto& t : triggers_types) //test for triggers
-		t = -1;
-
-	for (auto i = 0u; i < bodies.size(); ++i)
-	{
-		auto& left = bodies[i];
-		for (auto j = 0u; j < bodies.size(); ++j)
-		{
-			auto& right = bodies[j];
-			if (&left != &right && obb_obb(left.box, right.box))
-			{
-				triggers[i] = j;
-				triggers_types[i] = bodies[j].trigger_type; //test for triggers;
-			}
-		}
-	}
-
-	/*for (auto& left : bodies)
-	{
-		for (auto& right : bodies)
-		{
-			if (&left != &right)
-			{
-				CollisionManifold result;
-				reset_collison_manifold(result);
-
-				result = find_collision_features(left, right);
-
-				if (result.colliding)
-				{
-					colliders1.push_back(&left);
-					colliders2.push_back(&right);
-					results.push_back(result);
-				}
-			}		
-		}
-	}*/
-
+	
 	for (int i = 0; i < 4; ++i) //test for elevator
 	{
 		auto& left = bodies[i];

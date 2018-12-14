@@ -104,50 +104,27 @@ local epsilon = 0.001
 
 function update(delta_seconds, entity)
 	
-	if entity.stun_trap_triggered == false
-	then
-		update_control(delta_seconds, entity)
+	local vely = 0
+	if entity.button.up then 
+		vely = vely + 10
 	end
 
-	update_triggers(delta_seconds, entity)
-
-	if entity.have_set_seed == false
-	then
-		math.randomseed(entity.random_value)
-		entity.have_set_seed = true
+	if entity.button.down then 
+		vely = vely - 10
 	end
 
-	entity.falling_delay_timer = entity.falling_delay_timer + delta_seconds
-	
-	--Gravity
-	if entity.current_state == entity.states[6] and entity.velocity.y < 0
-	or entity.current_state == entity.states[7] and entity.velocity.y < 0 
-	then
-		entity.velocity.y = entity.velocity.y -(entity.gravity * 0.2 * delta_seconds)
-		
-	else
-		entity.velocity.y = entity.velocity.y - entity.gravity * delta_seconds
-		if entity.velocity.y < -entity.max_gravity * delta_seconds
-		then
-			entity.velocity.y = -entity.max_gravity * delta_seconds
-		end
+	entity.velocity.y = vely
+
+	local velx = 0
+	if entity.button.left then 
+		velx = velx - 100
 	end
 
-	--Dash timer
-	entity.dash_timer = entity.dash_timer - delta_seconds
-	entity.dash_control = entity.dash_control - delta_seconds
-	
-	--triggers
-	entity.jump_pushed_last_frame = entity.button.jump
-
-	if entity.can_double_jump and entity.jump_pushed_last_frame == false and entity.now_you_can_jump == false
-	then
-		entity.now_you_can_jump = true
-
-	elseif entity.can_double_jump == false
-	then
-		entity.now_you_can_jump = false
+	if entity.button.right then 
+		velx = velx + 100
 	end
+
+	entity.velocity.x = velx
 end
 
 function update_control(delta_seconds, entity)
