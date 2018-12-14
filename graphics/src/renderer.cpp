@@ -404,8 +404,6 @@ void Renderer::render(
 
 		if (game_state & state::game_over)
 		{
-			glClearColor(0.f, 0.f, 0.f, 1.f);
-			glClear(GL_COLOR_BUFFER_BIT);
 			text_shader.use();
 			text_shader.uniform("projection", projection);
 			text_shader.uniform("text_color", glm::vec3(0.8f, 0.8f, 0.8f));
