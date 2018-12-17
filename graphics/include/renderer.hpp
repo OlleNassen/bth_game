@@ -25,6 +25,8 @@
 //test of new leaderboard
 #include <leaderboard.hpp>
 
+
+
 namespace graphics
 {
 
@@ -148,9 +150,6 @@ private:
 	
 	void render_character(const Shader& shader, const Camera& camera, 
 		const std::vector<Model>& data, int num_players) const;
-
-	void vramUsage();
-	void ramUsage();
 
 	Shader pbr{ 
 		"../resources/shaders/pbr.vs", 

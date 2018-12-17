@@ -45,8 +45,6 @@ Window::Window(const glm::ivec2& window_size, bool fullscreen, const std::string
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);	
 	glEnable(GL_CULL_FACE);
 	this->window_size = window_size;
-
-	glfwSwapInterval(1);
 }
 
 Window::~Window()
