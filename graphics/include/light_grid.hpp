@@ -1,6 +1,7 @@
 #ifndef LIGHT_GRID_HPP
 #define LIGHT_GRID_HPP
 #include <array>
+#include <GL/glew.h>
 #include "lights.hpp"
 #include "camera.hpp"
 
@@ -27,24 +28,23 @@ struct Frustum
 	Plane bottom;
 };
 
-struct light_grid_element
+struct light_grid_element 
 {
-	int count;
-	int indices[15];
+	glm::ivec4 count;
+	glm::ivec4 indices[15];
 };
 
 class LightGrid
 {
 public:
 	LightGrid();
-	
-	const light_grid_element* data()const;
-	int size()const;
 
 	void calculate_grid(const Camera& camera);
-	void update(const Camera& camera, const std::array<PointLight, 32> lights);
+	void update(const Camera& camera, const std::array<PointLight, 32>& lights);
 
 private:
+	GLuint ubo;
+	
 	static constexpr int block_size = 12;
 
 	light_grid_element indices[block_size * block_size];

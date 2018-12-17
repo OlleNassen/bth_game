@@ -62,6 +62,11 @@ struct Input
 	int turret_keyframe = 0;
 
 	const trigger_type_array& triggers_types; //test for triggers
+	std::array<bool, 4> laser_hit_array;
+
+	std::array<int, 5> random_values;
+	std::array<int, 4>& buff_activ;
+	const std::vector<int> moving_platform_ids;
 };
 
 
@@ -75,8 +80,8 @@ public:
 
 	void refresh();
 
-	LuaExport update(Input input,
-		int& current_state);
+	LuaExport update(const Input& inputs,
+		int& current_state, bool rw[], bool lw[], int player_id);
 	bool build_stage(int player_count) const;
 	bool pre_playing_stage() const;
 	bool is_new_round = false;
@@ -86,6 +91,8 @@ private:
 	PlayerScript player_script{"../resources/scripts/player.lua"};
 	PlacingScript placement_script{"../resources/scripts/placing_objects.lua"};
 	GameScript game_script;
+	MovingPlatformsScript moving_platforms_script{ "../resources/scripts/moving_platforms.lua" };
+
 	std::array<glm::vec3, 4> directions;
 
 	int model_id{ -1 };
@@ -93,11 +100,11 @@ private:
 	int index{ 0 };
 
 	float give_up_timer{ 0.0f };
-	void give_up(Input input);
+	void give_up(const Input& input);
 
 	int points = 0;
 	std::vector<int> current_gameboard;
-	int	get_random_object_id(Input input);
+	int	get_random_object_id(const Input& input);
 	int players_done = 0;
 	bool pre_playing_done = false;
 	float pre_starter_time = 3.5f;

@@ -12,7 +12,6 @@ uniform mat4 view;
 uniform mat4 projection;
 
 const int JOINT_SIZE = 40;
-uniform int animated;
 uniform mat4 bone_mats[JOINT_SIZE];
 
 out VS_OUT{

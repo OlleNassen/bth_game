@@ -172,11 +172,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\animation_handler.cpp" />
-    <ClCompile Include="src\animation_logic.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="src\build_stage_screen.cpp" />
     <ClCompile Include="src\fx.cpp" />
+    <ClCompile Include="src\laser.cpp" />
     <ClCompile Include="src\leaderboard.cpp" />
     <ClCompile Include="src\light_grid.cpp" />
     <ClCompile Include="src\minimap.cpp" />
@@ -199,15 +197,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\animation_handler.hpp" />
-    <ClInclude Include="include\animation_logic.hpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="include\build_stage_screen.hpp" />
     <ClInclude Include="include\fx.hpp" />
     <ClInclude Include="include\game_scene.hpp" />
     <ClInclude Include="include\helpers.hpp" />
     <ClInclude Include="include\camera.hpp" />
     <ClInclude Include="include\framebuffer.hpp" />
+    <ClInclude Include="include\laser.hpp" />
     <ClInclude Include="include\lights.hpp" />
     <ClInclude Include="include\light_grid.hpp" />
     <ClInclude Include="include\mesh.hpp" />

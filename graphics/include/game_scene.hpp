@@ -28,20 +28,25 @@ class GameScene
 	};
 
 private:
+	int emissive_counter = 0;
+	int current_emissive = 0;
+	glm::vec3 emissive_colors[5] = { glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.2f, 0.9f, 0.1f), glm::vec3(0.1f, 0.1f, 0.9f), glm::vec3(0.9f, 0.8f, 0.1f) };
 
 public:
 	GameScene();
 	GameScene(const char* file_name, MeshLib* mesh_lib, MeshLib* object_lib);
 	~GameScene();
-	
+
 	void light_lobby();
 	void light_level_1();
+	void light_level_2();
 
 	glm::vec2 v[4];
 	std::vector<Model> moving_models;
 	std::vector<Model> models;
 	std::vector<Model> animated_models;
 	std::vector<collision_data> coll_data;
+	std::string level_name;
 
 // Lucas/Vincet Test för placering av object.
 	std::vector<placeableObjectInfo> objects;

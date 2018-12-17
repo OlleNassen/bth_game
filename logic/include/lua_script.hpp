@@ -31,6 +31,7 @@ public:
 	bool game_over = false;
 	float time;
 	float goal_height;
+	float dash_timer; 
 };
 
 class objects
@@ -59,13 +60,16 @@ public:
 		int index,
 		const int& trigger,
 		const int& type,
-		anim& anim_state);
-		bool rw[4], lw[4];
+		anim& anim_state,
+		int random_values,
+		std::array<int, 4>& buff_activ,
+		bool rw, bool lw);
 
 	bool build_stage_done(int index);
 	bool build_stage_force_done(int index);
 	void set_build_stage_done(int index, bool state);
 	float get_time(int index);
+	double dash_timer(int index);
 
 private:
 	LuaStack stack;
@@ -85,7 +89,9 @@ public:
 		objects* players,
 		int player_count,
 		int spike_frame,
-		int turret_frame);
+		int turret_frame,
+		bool dash_active[],
+		std::array<bool, 4> player_hit_array);
 
 	void update_export();
 	float get_time();
@@ -113,6 +119,20 @@ public:
 	bool build_stage_force_done(int index);
 	void set_build_stage_done(int index, bool state);
 	float get_time(int index);
+
+private:
+	LuaStack stack;
+};
+
+class MovingPlatformsScript
+{
+public:
+	MovingPlatformsScript(const std::string& path);
+	void setup(int entity);
+	void update(
+		std::chrono::milliseconds delta,
+		objects& object,
+		int index);
 
 private:
 	LuaStack stack;

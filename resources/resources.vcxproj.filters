@@ -49,7 +49,6 @@
     <None Include="shaders\death_screen.vs" />
     <None Include="shaders\main_menu_screen.fs" />
     <None Include="shaders\main_menu_screen.vs" />
-    <None Include="shaders\robots.vs" />
     <None Include="shaders\robots.fs" />
     <None Include="shaders\fx_blitz.fs" />
     <None Include="shaders\fx_blitz.vs" />
@@ -67,5 +66,11 @@
     <None Include="shaders\fx_gust.vs" />
     <None Include="shaders\fx_stun.fs" />
     <None Include="shaders\fx_stun.vs" />
+    <None Include="scripts\projectile.lua" />
+    <None Include="shaders\fx_bubble.fs" />
+    <None Include="shaders\fx_bubble.vs" />
+    <None Include="scripts\moving_platforms.lua" />
+    <None Include="shaders\laser.vs" />
+    <None Include="shaders\laser.fs" />
   </ItemGroup>
 </Project>

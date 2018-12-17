@@ -322,37 +322,33 @@ bool Animation_handler::switch_animation(anim state)
 	bool foundAnimation = false;
 	if(current_state != state)
 	{
-		float interpolation_time = animation_logic(state);
-		if (interpolation_time > -0.20)
+		for (unsigned int i = 0; i < this->animations.size(); i++)
 		{
-			for (unsigned int i = 0; i < this->animations.size(); i++)
+			if (animation_states[i] == state)
 			{
-				if (animation_states[i] == state)
+				foundAnimation = true;
+
+				previous_animation = current_animation;
+				current_state = state;
+				time_at_switch = 0.0;
+
+				switch_quat.clear();
+				switch_translations.clear();
+				switch_scales.clear();
+				switch_time = 0.16f;
+				for (int i = 0; i < this->joints.size(); i++)
 				{
-					foundAnimation = true;
-
-					previous_animation = current_animation;
-					current_state = state;
-					time_at_switch = 0.0;
-
-					switch_quat.clear();
-					switch_translations.clear();
-					switch_scales.clear();
-					switch_time = interpolation_time;
-					for (int i = 0; i < this->joints.size(); i++)
-					{
-						switch_quat.push_back(calc_interpolated_quaternion(this->time_seconds, i));
-						switch_translations.push_back(calc_interpolated_translation(this->time_seconds, i));
-						switch_scales.push_back(calc_interpolated_scale(this->time_seconds, i));
-					}
-					time_seconds = 0.0f;
-					current_keyframe = 0;
-					current_animation = i;
-					animations[current_animation]->switching = true;
-
+					switch_quat.push_back(calc_interpolated_quaternion(this->time_seconds, i));
+					switch_translations.push_back(calc_interpolated_translation(this->time_seconds, i));
+					switch_scales.push_back(calc_interpolated_scale(this->time_seconds, i));
 				}
+				time_seconds = 0.0f;
+				current_keyframe = 0;
+				current_animation = i;
+				animations[current_animation]->switching = true;
 
 			}
+
 		}
 	}
 	return foundAnimation;
@@ -396,7 +392,9 @@ float Animation_handler::animation_logic(anim state)
 		if (state == anim::in_jump)
 			time = 0.02f;
 		else if (state == anim::independent)
+		{
 			time = 0.0;
+		}
 	}
 	else if (current_state == anim::in_jump)
 	{
@@ -560,16 +558,16 @@ bool Animation_handler::update_animation(float delta, anim& play_anim)
 				switch_animation(anim::in_jump);
 				play_anim = current_state;
 			}
-			else if (current_state == anim::landing)
+			/*else if (current_state == anim::landing)		//Makes the player.lua work better if commented out
 			{
 				switch_animation(anim::idle);
 				play_anim = current_state;
 			}
-			else
+			else											//Makes the player.lua work better if commented out
 			{
 				switch_animation(anim::idle);
 				play_anim = current_state;
-			}
+			}*/
 		}
 	}
 

@@ -36,11 +36,17 @@ void Gameplay::refresh()
 		placement_script.setup(i);
 	}
 
+	//test for moving platforms
+	for (int i = 0; i < 3; ++i)
+	{
+		moving_platforms_script.setup(i);
+	}
+
 	game_script.setup();
 }
 
-LuaExport Gameplay::update(Input inputs,
-	int& current_state)
+LuaExport Gameplay::update(const Input& inputs,
+	int& current_state, bool rw[], bool lw[], int player_id)
 {
 	float time = -1.0f;
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(inputs.delta).count();
@@ -48,13 +54,21 @@ LuaExport Gameplay::update(Input inputs,
 	int turret_frame = inputs.turret_keyframe;
 	if (current_state & state::lobby)
 	{
+
 		glm::vec2 level_1_door = { -19.7, 26.1 };
+		glm::vec2 level_2_door = { 19.7, 26.1 };
 		for (int i = 0; i < inputs.player_count; i++)
 		{
 			auto& dyn = inputs.dynamics[i];
 			if (glm::distance(level_1_door, glm::vec2(dyn.position)) < 0.5f || dyn.position.x < -22)
 			{
 				dyn.position.x = -40;
+				game_script.data.finished[i] = true;
+			}
+
+			if (glm::distance(level_2_door, glm::vec2(dyn.position)) < 0.5f || dyn.position.x > 22)
+			{
+				dyn.position.x = 40;
 				game_script.data.finished[i] = true;
 			}
 		}
@@ -69,8 +83,12 @@ LuaExport Gameplay::update(Input inputs,
 					i,
 					inputs.triggers[i],
 					inputs.triggers_types[i],
-					inputs.anim_states[i]);
+					inputs.anim_states[i],
+					inputs.random_values[4],
+					inputs.buff_activ,
+					rw[i], lw[i]);
 		}
+
 	}
 
 	if (current_state & state::pre_building)
@@ -81,6 +99,15 @@ LuaExport Gameplay::update(Input inputs,
 	
 	if (current_state & state::building)
 	{
+
+		for (int i = 0; i < inputs.moving_platform_ids.size(); i++)
+		{
+			moving_platforms_script.update(
+				inputs.delta,
+				inputs.dynamics[inputs.moving_platform_ids[i]],
+				i);
+		}
+
 		if (inputs.players_placed_objects_id[0].dynamics_id != -1)
 		{
 			for (int i = 0; i < inputs.player_count; i++)
@@ -124,7 +151,15 @@ LuaExport Gameplay::update(Input inputs,
 	}
 	
 	if (current_state & state::playing)
-	{
+	{		
+		for (int i = 0; i < inputs.moving_platform_ids.size(); i++)
+		{
+			moving_platforms_script.update(
+				inputs.delta,
+				inputs.dynamics[inputs.moving_platform_ids[i]],
+				i);
+		}
+
 		for (int i = 0; i < inputs.player_count; i++)
 		{
 			if (!game_script.data.finished[i] && !game_script.data.died[i])
@@ -136,11 +171,22 @@ LuaExport Gameplay::update(Input inputs,
 					i,
 					inputs.triggers[i],
 					inputs.triggers_types[i],
-					inputs.anim_states[i]);
+					inputs.anim_states[i],
+					inputs.random_values[4],
+					inputs.buff_activ,
+					rw[i], lw[i]);
 			}
 		}
+
+		bool test[4] = {player_script.dash_timer(0) > 0.0, player_script.dash_timer(1) > 0.0,
+			player_script.dash_timer(2) > 0.0 , player_script.dash_timer(3) > 0.0 };
 		
-		game_script.update(inputs.delta, inputs.player_inputs[0], inputs.triggers, inputs.triggers_types, &inputs.dynamics[0], inputs.player_count, spike_frame, turret_frame);
+
+		game_script.update(inputs.delta, inputs.player_inputs[0],
+			inputs.triggers, inputs.triggers_types, &inputs.dynamics[0],
+			inputs.player_count, spike_frame, turret_frame, test, inputs.laser_hit_array);
+
+		game_script.data.dash_timer = player_script.dash_timer(player_id);
 
 		time = game_script.get_time();
 	}
@@ -169,7 +215,7 @@ bool Gameplay::pre_playing_stage() const
 	return !pre_playing_done;
 }
 
-void Gameplay::give_up(Input input)
+void Gameplay::give_up(const Input& input)
 {
 	float dt = std::chrono::duration_cast<std::chrono::duration<float>>(input.delta).count();
 	if (input.player_inputs[0][button::rotate] == button_state::held)
@@ -185,7 +231,7 @@ void Gameplay::give_up(Input input)
 		give_up_timer = 0.0f;
 }
 
-int	Gameplay::get_random_object_id(Input input)
+int	Gameplay::get_random_object_id(const Input& input)
 {
 	return 0;// rand() % input.scene->objects.size();
 }

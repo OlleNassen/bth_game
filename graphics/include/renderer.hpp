@@ -20,6 +20,7 @@
 #include "minimap.hpp"
 #include "build_stage_screen.hpp"
 #include "overlays.hpp"
+#include "laser.hpp"
 
 //test of new leaderboard
 #include <leaderboard.hpp>
@@ -32,6 +33,7 @@ class objects
 public:
 	glm::vec2 position;
 	glm::vec2 size;
+	bool bullet_hit = false;
 };
 
 using objects_array = std::array<objects, 100>;
@@ -44,9 +46,12 @@ class ModelsToRender
 {
 public:
 	ModelsToRender() = default;
-	ModelsToRender(const Model& player, const Model* begin, const Model* end);
-	const Model* first = 0;
-	const Model* last = 0;
+	ModelsToRender(float player_y, Model* begin, Model* end);
+	Model* first = 0;
+	Model* last = 0;
+
+	const Model* begin() const { return first; }
+	const Model* end() const { return last; }
 };
 
 
@@ -55,7 +60,6 @@ class Renderer
 {
 public:
 	Renderer(GameScene* scene);
-
 	void render(
 		const std::string* begin,
 		const std::string* end,
@@ -71,7 +75,9 @@ public:
 		int player_id,
 		int player_object_id,
 		std::vector<glm::vec3> remove_lines,
-		bool view_score) const;
+		bool view_score,
+		std::array<glm::vec2, 4> player_positions,
+		bool how_to_play) const;
 
 	void update(std::chrono::milliseconds delta,
 		const objects_array& dynamics,
@@ -85,12 +91,20 @@ public:
 		std::array<bool, 4> finish,
 		std::array<float, 4> scores,
 		std::array<int, 4> trigger_type,
+		std::array<int, 4> random_active,
 		float print_time,
 		float goal_height,
 		std::vector<build_information>& all_placed_objects,
 		int spectator_id,
 		std::array<int, 4> moving_objects_id,
-		bool view_score);
+		bool view_score, float dash_timer,
+		int turretframe,
+		const std::vector<glm::vec2>& start,
+		const std::vector<glm::vec2>& end);
+
+	void update_moving_platforms(const objects_array& dynamics,
+		int model_id,
+		int nr_of_moving_platforms);
 
 	static void point_debug(const std::vector<glm::vec3>& lines)
 	{
@@ -135,12 +149,15 @@ private:
 	void render_character(const Shader& shader, const Camera& camera, 
 		const std::vector<Model>& data, int num_players) const;
 
+	void vramUsage();
+	void ramUsage();
+
 	Shader pbr{ 
 		"../resources/shaders/pbr.vs", 
 		"../resources/shaders/pbr.fs" };
 	Shader pbra{
 		"../resources/shaders/pbra.vs",
-		"../resources/shaders/pbra.fs" };
+		"../resources/shaders/pbr.fs" };
 	Shader text_shader{ 
 		"../resources/shaders/text.vs", 
 		"../resources/shaders/text.fs" };
@@ -156,15 +173,12 @@ private:
 	Shader lines{ 
 		"../resources/shaders/lines.vs", 
 		"../resources/shaders/lines.fs" };
-	Shader skybox_shader{ 
-		"../resources/shaders/skybox.vs",
-		"../resources/shaders/skybox.fs" };
-	Shader irradiance{ 
-		"../resources/shaders/irradiance.vs",
-		"../resources/shaders/irradiance.fs" };
 	Shader fx_dust{ 
 		"../resources/shaders/fx_dust.vs",
 		"../resources/shaders/fx_dust.fs" };
+	Shader fx_bubble{
+		"../resources/shaders/fx_bubble.vs",
+		"../resources/shaders/fx_bubble.fs" };
 	Shader fx_spark{ 
 		"../resources/shaders/fx_spark.vs",
 		"../resources/shaders/fx_spark.fs" };
@@ -186,12 +200,6 @@ private:
 	Shader fx_stun{
 		"../resources/shaders/fx_stun.vs",
 		"../resources/shaders/fx_stun.fs" };
-	Shader pre_filter{ 
-		"../resources/shaders/irradiance.vs",
-		"../resources/shaders/pre_filter.fs" };
-	Shader brdf{ 
-		"../resources/shaders/brdf.vs",
-		"../resources/shaders/brdf.fs" };
 	Shader minimap_shader{ 
 		"../resources/shaders/minimap.vs",
 		"../resources/shaders/minimap.fs" };
@@ -199,11 +207,14 @@ private:
 		"../resources/shaders/overlay.vs",
 		"../resources/shaders/overlay.fs" };
 	Shader robot_shader{
-		"../resources/shaders/robots.vs",
+		"../resources/shaders/pbra.vs",
 		"../resources/shaders/robots.fs" };
 	Shader build_stage_screen_shader{
 		"../resources/shaders/build_stage.vs",
 		"../resources/shaders/build_stage.fs" };
+	Shader turret_laser{
+		"../resources/shaders/laser.vs",
+		"../resources/shaders/laser.fs" };
 
 	GameScene* scene;
 	DebugCamera db_camera;
@@ -211,7 +222,7 @@ private:
 	std::vector<Model> models;
 	std::vector<Shader> shaders;
 
-	Skybox skybox;
+	Laser laser;
 
 	Box light_box;
 
@@ -224,9 +235,6 @@ private:
 	std::string log;
 
 	Framebuffer scene_texture;
-	Framebuffer irradiance_buffer;
-	Framebuffer prefilter_buffer;
-	Framebuffer brdf_buffer;
 
 	PostProcessingEffects post_processing_effects;
 
@@ -251,7 +259,7 @@ private:
 	std::vector<build_information> build_info_vec;
 
 	int game_state;
-
+	int current_map = -1;
 
 	//Test of leaderboard
 	glm::mat4 projection = glm::ortho(0.0f, 1920.f, 0.0f, 1080.f);
@@ -264,21 +272,22 @@ private:
 
 	//Timer info
 	Text timer_text;
+	float spawn_timer = 3.5f;
 
 	//Build instructions
 	Text build_text;
 
 	//Arrays of strings and vec3
-	std::array<std::string, 8> objects_description =
+	std::array<std::string, 8> objects_name =
 	{ 	
-		"Spike Trap - Kills if hit",
-		"Turret - Shoots a projectile that kills",
-		"Stun Trap - Stuns the player",
-		"Glide Trap - Makes the player glide",
-		"Speed Boost - Increases running speed",
-		"Double Jump - Enables double jump",
-		"Shield - Invulnerable for one hit",
-		"Random Buff - Random buff"
+		"Spike Trap",
+		"Turret",
+		"Stun Trap",
+		"Glide Debuff",
+		"Speed Boost",
+		"Double Jump",
+		"Shield",
+		"Random Buff"
 	};
 
 	std::array<std::string, 4> players = { "Red", "Green", "Blue", "Yellow" };

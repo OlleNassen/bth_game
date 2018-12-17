@@ -34,7 +34,10 @@ void PlayerScript::update(
 	int index,
 	const int& trigger,
 	const int& type,
-	anim& anim_state)
+	anim& anim_state,
+	int random_value,
+	std::array<int, 4>& buff_activ,
+	bool rw, bool lw)
 {
 	std::string name{ "entities[" + std::to_string(index) + "]" };
 	stack.getglobal(name.c_str());
@@ -45,6 +48,15 @@ void PlayerScript::update(
 		{
 			stack.push("button");
 			stack.push(i);
+			stack.rawset(top);
+		}
+
+		{
+			stack.push("lw");
+			stack.push(lw);
+			stack.rawset(top);
+			stack.push("rw");
+			stack.push(rw);
 			stack.rawset(top);
 		}
 
@@ -90,7 +102,18 @@ void PlayerScript::update(
 			stack.push("shield_active");
 			stack.push(object.shield_active);
 			stack.rawset(top);
-			
+		}
+
+		{
+			stack.push("random_value");
+			stack.push(random_value);
+			stack.rawset(top);
+		}
+
+		{
+			stack.push("buff_activ");
+			stack.push(buff_activ[index]);
+			stack.rawset(top);
 		}
 		stack.clear();
 	}
@@ -149,6 +172,14 @@ void PlayerScript::update(
 		stack.getfield(top, "shield_active");
 		object.shield_active = stack.toboolean(-1);
 
+		stack.getfield(top, "buff_activ");
+		buff_activ[index] = stack.tonumber(-1);
+		//if (buff_activ[index] > 0)
+		//{
+		//	std::cout << buff_activ[index] << std::endl;
+		//}
+
+
 		stack.clear();
 	}	
 }
@@ -204,6 +235,19 @@ float PlayerScript::get_time(int index)
 	return temp;
 }
 
+double PlayerScript::dash_timer(int index)
+{
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	stack.getfield(-1, "dash_timer");
+
+	double temp = stack.tonumber(-1);
+
+	stack.clear();
+
+	return temp;
+}
+
 GameScript::GameScript()
 	: stack{ "../resources/scripts/gameloop.lua" }
 {
@@ -246,7 +290,9 @@ void GameScript::update(
 	objects* players,
 	int player_count,
 	int spike_frame, 
-	int turret_frame)
+	int turret_frame,
+	bool dash_active[],
+	std::array<bool, 4> player_hit_array)
 {
 	{
 		stack.getglobal("game");
@@ -262,6 +308,21 @@ void GameScript::update(
 			int top_pos = stack.top();
 			stack.push("position");
 			stack.push(players[i - 1].position);
+			stack.rawset(top_pos);
+		}
+
+		stack.clear();
+	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+			stack.push("dash_active");
+			stack.push(dash_active[i - 1]);
 			stack.rawset(top_pos);
 		}
 
@@ -342,6 +403,22 @@ void GameScript::update(
 		}
 		stack.clear();
 	}
+
+	{
+		stack.getglobal("entities");
+		int top = stack.top();
+		for (int i = 1; i <= 4; i++)
+		{
+			stack.rawget(top, i);
+			int top_pos = stack.top();
+	
+			stack.push("laser_hit");
+			stack.push(player_hit_array[i - 1]);
+			stack.rawset(top_pos);
+		}
+		stack.clear();
+	}
+
 	{
 		stack.getglobal("game");
 
@@ -353,6 +430,18 @@ void GameScript::update(
 
 		stack.clear();
 	}
+
+	//{
+	//	stack.getglobal("game");
+	//
+	//	int top_pos = stack.top();
+	//
+	//	stack.push("turret_frame");
+	//	stack.push(turret_frame);
+	//	stack.rawset(top_pos);
+	//
+	//	stack.clear();
+	//}
 
 	stack.getglobal("update");
 	stack.push(delta.count() / 1000.0f);
@@ -405,47 +494,7 @@ void GameScript::update(
 		}
 
 		stack.clear();
-
-
 	}
-
-
-	/*{
-		stack.getglobal("entities");
-		int top = stack.top();
-		for (int i = 1; i <= 4; ++i)
-		{
-			stack.rawget(top, i);
-			stack.getfield(-1, "velocity");
-			stack.getfield(-1, "x");
-			stack.getfield(-2, "y");
-			players[i - 1].velocity.x = stack.tonumber(-2);
-			players[i - 1].velocity.y = stack.tonumber(-1);
-
-
-		}
-
-		stack.clear();
-	}
-
-	{
-		stack.getglobal("entities");
-		int top = stack.top();
-		for (int i = 1; i <= 4; ++i)
-		{
-			stack.rawget(top, i);
-			stack.getfield(-1, "forces");
-			stack.getfield(-1, "x");
-			stack.getfield(-2, "y");
-			players[i - 1].forces.x = stack.tonumber(-2);
-			players[i - 1].forces.y = stack.tonumber(-1);
-
-
-		}
-
-		stack.clear();
-	}*/
-
 }
 
 void GameScript::update_export()
@@ -690,5 +739,80 @@ float PlacingScript::get_time(int index)
 
 	return temp;
 }
+
+MovingPlatformsScript::MovingPlatformsScript(const std::string& path)
+	: stack{ path.c_str() }
+{
+	stack.setglobal("entities");
+}
+
+void MovingPlatformsScript::setup(int entity)
+{
+	std::string name{ "entities[" + std::to_string(entity) + "]" };
+	stack.newtable();
+	stack.setglobal(name.c_str());
+
+	stack.getglobal("setup");
+	stack.push(entity);
+	stack.getglobal(name.c_str());
+	stack.call(2, 0);
+
+	if (lua_isfunction(stack.lua_state, -1))
+	{
+		stack.getglobal(name.c_str());
+		stack.call(1, 0);
+	}
+
+	stack.clear();
+}
+
+void MovingPlatformsScript::update(
+	std::chrono::milliseconds delta,
+	objects& object,
+	int index)
+{
+	std::string name{ "entities[" + std::to_string(index) + "]" };
+	stack.getglobal(name.c_str());
+	int top = stack.top();
+
+	if (lua_istable(stack.lua_state, top))
+	{
+
+		{
+			stack.push("position");
+			stack.push(object.position);
+			stack.rawset(top);
+			stack.push("velocity");
+			stack.push(object.velocity);
+			stack.rawset(top);
+		}
+	}
+
+	stack.getglobal("update");
+	stack.push(delta.count() / 1000.0f);
+	stack.getglobal(name.c_str());
+	stack.call(2, 0);
+
+
+	{
+		stack.getglobal(name.c_str());
+		int top = stack.top();
+
+		stack.getfield(top, "position");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.position.x = stack.tonumber(-2);
+		object.position.y = stack.tonumber(-1);
+
+		stack.getfield(top, "velocity");
+		stack.getfield(-1, "x");
+		stack.getfield(-2, "y");
+		object.velocity.x = stack.tonumber(-2);
+		object.velocity.y = stack.tonumber(-1);
+
+		stack.clear();
+	}
+}
+
 }
 
