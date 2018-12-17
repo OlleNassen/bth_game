@@ -1,6 +1,9 @@
 Scrap Escape
 ================
 
+Download:
+https://www.dropbox.com/s/q82ffhd82hrm211/scrap_escape.rar?dl=0
+
 Game project @Blekinge Tekniska Högskola, made by
 
 Olle Nässén
@@ -35,9 +38,3 @@ Third Party Libs
 ----------------
 
 GLEW, GLFW, GLM, ENET, FREETYPE, LUAJIT, STB_IMAGE 
-
-
-Future work
-----------------
-
-Everything
