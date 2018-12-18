@@ -42,8 +42,9 @@ Game::Game()
 	window.assign_button(logic::button::down, controller_buttons::down);
 	window.assign_button(logic::button::right, controller_buttons::right);
 	window.assign_button(logic::button::jump, controller_buttons::a);
-	window.assign_button(logic::button::quit, controller_buttons::b);
+	window.assign_button(logic::button::rotate, controller_buttons::b);
 	window.assign_button(logic::button::select, controller_buttons::y);
+	window.assign_button(logic::button::quit, controller_buttons::start);
 
 	window.assign_axis_neg(logic::button::left, controller_axis::ls_right);
 	window.assign_axis_pos(logic::button::right, controller_axis::ls_right);
